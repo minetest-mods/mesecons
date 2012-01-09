@@ -62,7 +62,7 @@
 
 -- SETTINGS
 ENABLE_TEMPEREST=0
-ENABLE_PISTON_ANIMATION=0
+ENABLE_PISTON_ANIMATION=1
 BLINKY_PLANT_INTERVAL=3
 
 -- PUBLIC VARIABLES
@@ -1142,6 +1142,7 @@ dofile(minetest.get_modpath("jeija").."/torches.lua")
 dofile(minetest.get_modpath("jeija").."/detector.lua")
 dofile(minetest.get_modpath("jeija").."/pressureplates.lua")
 dofile(minetest.get_modpath("jeija").."/wireless.lua")
+dofile(minetest.get_modpath("jeija").."/lightstone.lua")
 --TEMPEREST's STUFF
 if ENABLE_TEMPEREST==1 then
 	dofile(minetest.get_modpath("jeija").."temperest.lua")
