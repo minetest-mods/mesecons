@@ -32,6 +32,12 @@ minetest.register_on_dignode(
         end    
     end
 )
+minetest.register_on_placenode(function(pos, node)
+    if node.param2 == 4 or node.param2 == 8 then
+        minetest.env:remove_node(pos)
+        minetest.env:add_item(pos, 'node jeija:wall_button_off 1')
+    end
+end)
 minetest.register_on_punchnode(function(pos, node, puncher)
 	if node.name == "jeija:wall_button_off" then
 		minetest.env:add_node(pos, {name="jeija:wall_button_on",param2=node.param2})
