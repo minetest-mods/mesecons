@@ -3,7 +3,7 @@
 -- |  \/  | |___ ____  |___ |      |    | | \  | |____
 -- |      | |        | |    |      |    | |  \ |     |
 -- |      | |___ ____| |___ |____  |____| |   \| ____|
--- by Jeija and Minerd247
+-- by Jeija, minerd247, sfan5, temperest and other contributors!
 
-This is a mod for minetest.
+This is a mod for minetest-c55.
 Paste the "jeija" directory into minetest/data/mods/ to install it.
