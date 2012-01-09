@@ -34,3 +34,6 @@ function mesecon:lightstone_add(name, base_item, texture_off, texture_on)
 end
 
 mesecon:lightstone_add("red", "craft default:clay_brick 1", "jeija_lightstone_red_off.png", "jeija_lightstone_red_on.png")
+mesecon:lightstone_add("green", "node default:cactus 1", "jeija_lightstone_green_off.png", "jeija_lightstone_green_on.png")
+mesecon:lightstone_add("gray", "node default:cobble 1", "jeija_lightstone_gray_off.png", "jeija_lightstone_gray_on.png")
+mesecon:lightstone_add("darkgray", "node default:gravel 1", "jeija_lightstone_darkgray_off.png", "jeija_lightstone_darkgray_on.png")
