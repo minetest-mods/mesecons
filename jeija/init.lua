@@ -67,6 +67,7 @@ BLINKY_PLANT_INTERVAL=3
 
 -- PUBLIC VARIABLES
 mesecon={} -- contains all functions and all global variables
+mesecon.modpath = dump(minetest.get_modpath("jeija"))
 mesecon.actions_on={} -- Saves registered function callbacks for mesecon on
 mesecon.actions_off={} -- Saves registered function callbacks for mesecon off
 mesecon.pwr_srcs={} -- this is public for now
@@ -1136,16 +1137,16 @@ end)
 
 
 -- Include other files
-dofile(minetest.get_modpath("jeija").."/movestone.lua")
-dofile(minetest.get_modpath("jeija").."/button.lua")
-dofile(minetest.get_modpath("jeija").."/torches.lua")
-dofile(minetest.get_modpath("jeija").."/detector.lua")
-dofile(minetest.get_modpath("jeija").."/pressureplates.lua")
-dofile(minetest.get_modpath("jeija").."/wireless.lua")
-dofile(minetest.get_modpath("jeija").."/lightstone.lua")
+dofile(mesecon.modpath.."/movestone.lua")
+dofile(mesecon.modpath.."/button.lua")
+dofile(mesecon.modpath.."/torches.lua")
+dofile(mesecon.modpath.."/detector.lua")
+dofile(mesecon.modpath.."/pressureplates.lua")
+dofile(mesecon.modpath.."/wireless.lua")
+dofile(mesecon.modpath.."/lightstone.lua")
 --TEMPEREST's STUFF
 if ENABLE_TEMPEREST==1 then
-	dofile(minetest.get_modpath("jeija").."temperest.lua")
+	dofile(mesecon.modpath.."temperest.lua")
 end
 
 --INIT
