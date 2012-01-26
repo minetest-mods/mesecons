@@ -22,7 +22,7 @@ minetest.register_node("jeija:wall_button_on", {
         type = "wallmounted",
     },
     material = minetest.digprop_constanttime(0.3),
-    dug_item = 'node jeija:wall_button_off 1',
+    drop = '"jeija:wall_button_off" 1',
 })
 
 minetest.register_on_dignode(
@@ -32,14 +32,6 @@ minetest.register_on_dignode(
         end    
     end
 )
-minetest.register_on_placenode(function(pos, node)
-    if node.name == "jeija:wall_button_off" or node.name == "jeija:wall_button_on" then
-        if node.param2 == 4 or node.param2 == 8 then
-            minetest.env:remove_node(pos)
-            minetest.env:add_item(pos, 'node jeija:wall_button_off 1')
-        end
-    end
-end)
 minetest.register_on_punchnode(function(pos, node, puncher)
 	if node.name == "jeija:wall_button_off" then
 		minetest.env:add_node(pos, {name="jeija:wall_button_on",param2=node.param2})
@@ -83,9 +75,9 @@ minetest.register_abm({
 	end
 })
 minetest.register_craft({
-	output = 'node "jeija:wall_button_off" 2',
+	output = '"jeija:wall_button_off" 2',
 	recipe = {
-		{'node "jeija:mesecon_off"','node "default:stone"'},
+		{'"jeija:mesecon_off"','"default:stone"'},
 	}
 })
 mesecon:add_receptor_node("jeija:wall_button")

@@ -24,13 +24,13 @@ minetest.register_node("jeija:pressure_plate_wood_on", {
 		type = "fixed",
 	},
 	material = minetest.digprop_constanttime(0.3),
-	dug_item='node "jeija:pressure_plate_wood_off" 1'
+	drop='"jeija:pressure_plate_wood_off" 1'
 })
 
 minetest.register_craft({
-	output = 'node "jeija:pressure_plate_wood_off" 1',
+	output = '"jeija:pressure_plate_wood_off" 1',
 	recipe = {
-		{'node "default:wood"', 'node "default:wood"'},
+		{'"default:wood"', '"default:wood"'},
 	}
 })
 
@@ -100,13 +100,13 @@ minetest.register_node("jeija:pressure_plate_stone_on", {
 		type = "fixed",
 	},
 	material = minetest.digprop_constanttime(0.3),
-	dug_item='node "jeija:pressure_plate_stone_off" 1'
+	drop='"jeija:pressure_plate_stone_off" 1'
 })
 
 minetest.register_craft({
-	output = 'node "jeija:pressure_plate_stone_off" 1',
+	output = '"jeija:pressure_plate_stone_off" 1',
 	recipe = {
-		{'node "default:cobble"', 'node "default:cobble"'},
+		{'"default:cobble"', '"default:cobble"'},
 	}
 })
 

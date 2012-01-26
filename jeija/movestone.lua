@@ -60,7 +60,6 @@ end
 
 minetest.register_node("jeija:movestone", {
 	tile_images = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_arrows.png", "jeija_movestone_arrows.png"},
-	inventory_image = minetest.inventorycube("jeija_movestone_arrows.png", "jeija_movestone_side.png", "jeija_movestone_side.png"),
 	paramtype = "facedir_simple",
 	material = minetest.digprop_stonelike(0.8),
 })
@@ -78,7 +77,7 @@ minetest.register_entity("jeija:movestone_entity", {
 
 	on_punch = function(self, hitter)
 		self.object:remove()
-		hitter:add_to_inventory('node jeija:movestone 1')
+		hitter:get_inventory():add_item("main", "jeija:movestone")
 	end,
 
 	on_step = function(self, dtime)
@@ -131,11 +130,11 @@ minetest.register_entity("jeija:movestone_entity", {
 })
 
 minetest.register_craft({
-	output = 'node "jeija:movestone" 2',
+	output = '"jeija:movestone" 2',
 	recipe = {
-		{'node "default:stone"', 'node "default:stone"', 'node "default:stone"'},
-		{'node "jeija:mesecon_off"', 'node "jeija:mesecon_off"', 'node "jeija:mesecon_off"'},
-		{'node "default:stone"', 'node "default:stone"', 'node "default:stone"'},
+		{'"default:stone"', '"default:stone"', '"default:stone"'},
+		{'"jeija:mesecon_off"', '"jeija:mesecon_off"', '"jeija:mesecon_off"'},
+		{'"default:stone"', '"default:stone"', '"default:stone"'},
 	}
 })
 
@@ -173,9 +172,9 @@ minetest.register_node("jeija:sticky_movestone", {
 })
 
 minetest.register_craft({
-	output = 'node "jeija:sticky_movestone" 2',
+	output = '"jeija:sticky_movestone" 2',
 	recipe = {
-		{'craft "jeija:glue"', 'node "jeija:movestone"', 'craft "jeija:glue"'},
+		{'"jeija:glue"', '"jeija:movestone"', '"jeija:glue"'},
 	}
 })
 
@@ -188,7 +187,7 @@ minetest.register_entity("jeija:sticky_movestone_entity", {
 
 	on_punch = function(self, hitter)
 		self.object:remove()
-		hitter:add_to_inventory('node jeija:sticky_movestone 1')
+		hitter:get_inventory():add_item("main", 'jeija:sticky_movestone')
 	end,
 
 	on_step = function(self, dtime)
@@ -252,11 +251,11 @@ minetest.register_entity("jeija:sticky_movestone_entity", {
 })
 
 minetest.register_craft({
-	output = 'node "jeija:sticky_movestone" 2',
+	output = '"jeija:sticky_movestone" 2',
 	recipe = {
-		{'node "default:stone"', 'node "default:stone"', 'node "default:stone"'},
-		{'node "jeija:mesecon_off"', 'node "jeija:mesecon_off"', 'node "default:tree"'},
-		{'node "default:stone"', 'node "default:stone"', 'node "default:stone"'},
+		{'"default:stone"', '"default:stone"', '"default:stone"'},
+		{'"jeija:mesecon_off"', '"jeija:mesecon_off"', '"default:tree"'},
+		{'"default:stone"', '"default:stone"', '"default:stone"'},
 	}
 })
 

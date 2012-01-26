@@ -1,7 +1,6 @@
 --SHORT RANGE DETECTORS
 minetest.register_node("jeija:object_detector_off", {
 	tile_images = {"default_steel_block.png", "default_steel_block.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png"},
-	inventory_image = minetest.inventorycube("default_steel_block.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png"),
 	paramtype = "light",
 	walkable = true,
 	material = minetest.digprop_stonelike(4),
@@ -9,19 +8,18 @@ minetest.register_node("jeija:object_detector_off", {
 
 minetest.register_node("jeija:object_detector_on", {
 	tile_images = {"default_steel_block.png", "default_steel_block.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png"},
-	inventory_image = minetest.inventorycube("jeija_object_detector_on.png"),
 	paramtype = "light",
 	walkable = true,
 	material = minetest.digprop_stonelike(4),
-	dug_item = 'node "jeija:object_detector_off" 1'
+	drop = '"jeija:object_detector_off" 1'
 })
 
 minetest.register_craft({
-	output = 'node "jeija:object_detector_off" 1',
+	output = '"jeija:object_detector_off" 1',
 	recipe = {
-		{'node "default:steelblock"', '', 'node "default:steelblock"'},
-		{'node "default:steelblock"', 'craft "jeija:ic"', 'node "default:steelblock"'},
-		{'node "default:steelblock"', 'node "jeija:mesecon_off', 'node "default:steelblock"'},
+		{'"default:steelblock"', '', '"default:steelblock"'},
+		{'"default:steelblock"', '"jeija:ic"', '"default:steelblock"'},
+		{'"default:steelblock"', '"jeija:mesecon_off', '"default:steelblock"'},
 	}
 })
 

@@ -1,9 +1,9 @@
 --MESECON TORCHES
 
 minetest.register_craft({
-    output = 'node "jeija:mesecon_torch_on" 4',
+    output = '"jeija:mesecon_torch_on" 4',
     recipe = {
-        {'node "jeija:mesecon_off"'},
+        {'"jeija:mesecon_off"'},
         {'craft "default:stick"'},
     }
 })
@@ -16,7 +16,7 @@ minetest.register_node("jeija:mesecon_torch_off", {
     walkable = false,
     wall_mounted = true,
     material = minetest.digprop_constanttime(0.5),
-    dug_item = 'node "jeija:mesecon_torch_on" 1',
+    drop = '"jeija:mesecon_torch_on" 1',
 })
 
 minetest.register_node("jeija:mesecon_torch_on", {
