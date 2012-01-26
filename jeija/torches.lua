@@ -48,33 +48,24 @@ minetest.register_abm({
 	pa.y = 1
 	local rules_string=""
 
-	if node.param2 == 32 then
+	if node.param2 == 5 then
 		pa.z = -1
 		rules_string="mesecontorch_z+"
-	end
-	if node.param2 == 2 then
+	elseif node.param2 == 3 then
 		pa.x = -1
 		rules_string="mesecontorch_x+"
-	end
-	if node.param2 == 16 then
+	elseif node.param2 == 4 then
 		pa.z = 1
 		rules_string="mesecontorch_z-"
-	end
-	if node.param2 == 1 then
+	elseif node.param2 == 2 then
 		pa.x = 1
 		rules_string="mesecontorch_x-"
-	end
-	if node.param2 == 4 then
-		rules_string="mesecontorch_y-"
+	elseif node.param2 == 0 then
 		pa.y = 1
-		pa.z=0
-		pa.x=0
-        end
-        if node.param2 == 8 then
-		rules_string="mesecontorch_y+"
+		rules_string="mesecontorch_y-"
+        elseif node.param2 == 1 then
 		pa.y = -1
-		pa.z=0
-		pa.x=0
+		rules_string="mesecontorch_y+"
         end
 
         if mesecon:is_power_on({x=pos.x, y=pos.y, z=pos.z}, pa.x, pa.y, pa.z)==1 then
@@ -103,22 +94,17 @@ minetest.register_on_placenode(function(pos, node, placer)
 	if node.name == "jeija:mesecon_torch_on" then
 		local rules_string=""
 
-		if node.param2 == 32 then
+		if node.param2 == 5 then
 			rules_string="mesecontorch_z+"
-		end
-		if node.param2 == 2 then
+		elseif node.param2 == 3 then
 			rules_string="mesecontorch_x+"
-		end
-		if node.param2 == 16 then
+		elseif node.param2 == 4 then
 			rules_string="mesecontorch_z-"
-		end
-		if node.param2 == 1 then
+		elseif node.param2 == 2 then
 			rules_string="mesecontorch_x-"
-		end
-		if node.param2 == 4 then
+		elseif node.param2 == 0 then
 			rules_string="mesecontorch_y-"
-	        end
-	        if node.param2 == 8 then
+	        elseif node.param2 == 1 then
 			rules_string="mesecontorch_y+"
 	        end
 		
@@ -130,9 +116,9 @@ mesecon:add_receptor_node("jeija:mesecon_torch_on")
 mesecon:add_receptor_node_off("jeija:mesecon_torch_off")
 
 -- Param2 Table (Block Attached To)
--- 32 = z-1
--- 2 = x-1
--- 16 = z+1
--- 1 = x+1
--- 4 = y+1
--- 8 = y-1
+-- 5 = z-1
+-- 3 = x-1
+-- 4 = z+1
+-- 2 = x+1
+-- 0 = y+1
+-- 1 = y-1

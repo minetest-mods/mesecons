@@ -36,16 +36,16 @@ minetest.register_on_punchnode(function(pos, node, puncher)
 	if node.name == "jeija:wall_button_off" then
 		minetest.env:add_node(pos, {name="jeija:wall_button_on",param2=node.param2})
 		local rules_string=""
-		if node.param2 == 32 then
+		if node.param2 == 5 then
 			rules_string="button_z+"
 		end
-		if node.param2 == 2 then
+		if node.param2 == 3 then
 			rules_string="button_x+"
 		end
-		if node.param2 == 16 then
+		if node.param2 == 4 then
 			rules_string="button_z-"
 		end
-		if node.param2 == 1 then
+		if node.param2 == 2 then
 			rules_string="button_x-"
 		end
 		mesecon:receptor_on(pos, rules_string)
@@ -59,16 +59,16 @@ minetest.register_abm({
 		minetest.env:add_node(pos, {name="jeija:wall_button_off",param2=node.param2})
 
 		local rules_string=""
-		if node.param2 == 32 then
+		if node.param2 == 5 then
 			rules_string="button_z+"
 		end
-		if node.param2 == 2 then
+		if node.param2 == 3 then
 			rules_string="button_x+"
 		end
-		if node.param2 == 16 then
+		if node.param2 == 4 then
 			rules_string="button_z-"
 		end
-		if node.param2 == 1 then
+		if node.param2 == 2 then
 			rules_string="button_x-"
 		end
         	mesecon:receptor_off(pos, rules_string)
