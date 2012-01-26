@@ -14,7 +14,8 @@ minetest.register_node("jeija:mesecon_torch_off", {
     inventory_image = "jeija_torches_off.png",
     sunlight_propagates = true,
     walkable = false,
-    wall_mounted = true,
+    paramtype2 = "wallmounted",
+    legacy_wallmounted = true,
     material = minetest.digprop_constanttime(0.5),
     drop = '"jeija:mesecon_torch_on" 1',
 })
@@ -26,7 +27,8 @@ minetest.register_node("jeija:mesecon_torch_on", {
     paramtype = "light",
     sunlight_propagates = true,
     walkable = false,
-    wall_mounted = true,
+    paramtype2 = "wallmounted",
+    legacy_wallmounted = true,
     material = minetest.digprop_constanttime(0.5),
     light_source = LIGHT_MAX-5,
 })

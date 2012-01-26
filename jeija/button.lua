@@ -4,7 +4,8 @@ minetest.register_node("jeija:wall_button_off", {
     tile_images = {"jeija_wall_button_off.png"},
     inventory_image = "jeija_wall_button_off.png",
     paramtype = "light",
-    wall_mounted = true,
+    paramtype2 = "wallmounted",
+    legacy_wallmounted = true,
     walkable = false,
     selection_box = {
         type = "wallmounted",
@@ -16,7 +17,8 @@ minetest.register_node("jeija:wall_button_on", {
     tile_images = {"jeija_wall_button_on.png"},
     inventory_image = "jeija_wall_button_on.png",
     paramtype = "light",
-    wall_mounted = true,
+    paramtype2 = "wallmounted",
+    legacy_wallmounted = true,
     walkable = false,
     selection_box = {
         type = "wallmounted",
