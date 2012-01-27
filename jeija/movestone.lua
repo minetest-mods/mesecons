@@ -61,7 +61,7 @@ end
 minetest.register_node("jeija:movestone", {
 	tile_images = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_arrows.png", "jeija_movestone_arrows.png"},
 	paramtype2 = "facedir",
-	legacy_facedir = true,
+	legacy_facedir_simple = true,
 	material = minetest.digprop_stonelike(0.8),
 })
 
@@ -169,7 +169,7 @@ minetest.register_node("jeija:sticky_movestone", {
 	tile_images = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_sticky_movestone.png", "jeija_sticky_movestone.png"},
 	inventory_image = minetest.inventorycube("jeija_sticky_movestone.png", "jeija_movestone_side.png", "jeija_movestone_side.png"),
 	paramtype2 = "facedir",
-	legacy_facedir = true,
+	legacy_facedir_simple = true,
 	material = minetest.digprop_stonelike(0.8),
 })
 
