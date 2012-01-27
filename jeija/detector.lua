@@ -17,9 +17,9 @@ minetest.register_node("jeija:object_detector_on", {
 minetest.register_craft({
 	output = '"jeija:object_detector_off" 1',
 	recipe = {
-		{'"default:steelblock"', '', '"default:steelblock"'},
-		{'"default:steelblock"', '"jeija:ic"', '"default:steelblock"'},
-		{'"default:steelblock"', '"jeija:mesecon_off', '"default:steelblock"'},
+		{"default:steelblock", '', "default:steelblock"},
+		{"default:steelblock", "jeija:ic", "default:steelblock"},
+		{"default:steelblock", "jeija:mesecon_off", "default:steelblock"},
 	}
 })
 
