@@ -62,12 +62,12 @@
 
 -- SETTINGS
 ENABLE_TEMPEREST=0
-ENABLE_PISTON_ANIMATION=1
+ENABLE_PISTON_ANIMATION=0
 BLINKY_PLANT_INTERVAL=3
+OLD_PISTON_DIRECTION=0
 
 -- PUBLIC VARIABLES
 mesecon={} -- contains all functions and all global variables
-mesecon.modpath = minetest.get_modpath("jeija")
 mesecon.actions_on={} -- Saves registered function callbacks for mesecon on
 mesecon.actions_off={} -- Saves registered function callbacks for mesecon off
 mesecon.pwr_srcs={} -- this is public for now
@@ -102,14 +102,14 @@ minetest.register_node("jeija:mesecon_on", {
 		type = "fixed",
 	},
 	material = minetest.digprop_constanttime(0.1),
-	dug_item = 'node "jeija:mesecon_off" 1',
+	drop = '"jeija:mesecon_off" 1',
 	light_source = LIGHT_MAX-11,
 })
 
 minetest.register_craft({
-	output = 'node "jeija:mesecon_off" 16',
+	output = '"jeija:mesecon_off" 16',
 	recipe = {
-		{'node "default:mese"'},
+		{'"default:mese"'},
 	}
 })
 
@@ -552,11 +552,11 @@ minetest.register_node("jeija:power_plant", {
 })
 
 minetest.register_craft({
-	output = 'node "jeija:power_plant" 1',
+	output = '"jeija:power_plant" 1',
 	recipe = {
-		{'node "jeija:mesecon_off"'},
-		{'node "jeija:mesecon_off"'},
-		{'node "default:junglegrass"'},
+		{'"jeija:mesecon_off"'},
+		{'"jeija:mesecon_off"'},
+		{'"default:junglegrass"'},
 	}
 })
 
@@ -597,16 +597,16 @@ minetest.register_node("jeija:blinky_plant_on", {
 	paramtype = "light",
 	walkable = false,
 	material = minetest.digprop_leaveslike(0.2),
-	dug_item='node "jeija:blinky_plant_off" 1',
+	drop='"jeija:blinky_plant_off" 1',
 	light_source = LIGHT_MAX-7,
 })
 
 minetest.register_craft({
-	output = 'node "jeija:blinky_plant_off" 1',
+	output = '"jeija:blinky_plant_off" 1',
 	recipe = {
-	{'','node "jeija:mesecon_off"',''},
-	{'','node "jeija:mesecon_off"',''},
-	{'node "default:junglegrass"','node "default:junglegrass"','node "default:junglegrass"'},
+	{'','"jeija:mesecon_off"',''},
+	{'','"jeija:mesecon_off"',''},
+	{'"default:junglegrass"','"default:junglegrass"','"default:junglegrass"'},
 	}
 })
 
@@ -669,18 +669,18 @@ minetest.register_node("jeija:solar_panel", {
 })
 
 minetest.register_craft({
-	output = 'craft "jeija:silicon" 4',
+	output = '"jeija:silicon" 4',
 	recipe = {
-		{'node "default:sand"', 'node "default:sand"'},
-		{'node "default:sand"', 'craft "default:steel_ingot"'},
+		{'"default:sand"', '"default:sand"'},
+		{'"default:sand"', '"default:steel_ingot"'},
 	}
 })
 
 minetest.register_craft({
-	output = 'node "jeija:solar_panel" 1',
+	output = '"jeija:solar_panel" 1',
 	recipe = {
-		{'craft "jeija:silicon"', 'craft "jeija:silicon"'},
-		{'craft "jeija:silicon"', 'craft "jeija:silicon"'},
+		{'"jeija:silicon"', '"jeija:silicon"'},
+		{'"jeija:silicon"', '"jeija:silicon"'},
 	}
 })
 
@@ -708,14 +708,16 @@ minetest.register_node("jeija:meselamp_on", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
-	wall_mounted = false,
+	legacy_wallmounted = true,
+	paramtype2 = "wallmounted",
 	light_source = LIGHT_MAX,
 	selection_box = {
+		type = "wallmounted",
 		type = "fixed",
 		fixed = {-0.38, -0.5, -0.1, 0.38, -0.2, 0.1},
 	},
 	material = minetest.digprop_constanttime(0.1),
-	dug_item='node "jeija:meselamp_off" 1',
+	drop='"jeija:meselamp_off" 1',
 })
 
 minetest.register_node("jeija:meselamp_off", {
@@ -734,11 +736,11 @@ minetest.register_node("jeija:meselamp_off", {
 })
 
 minetest.register_craft({
-	output = 'node "jeija:meselamp_off" 1',
+	output = '"jeija:meselamp_off" 1',
 	recipe = {
-		{'', 'node "default:glass"', ''},
-		{'node "jeija:mesecon_off"', 'craft "default:steel_ingot"', 'node "jeija:mesecon_off"'},
-		{'', 'node "default:glass"', ''},
+		{'', '"default:glass"', ''},
+		{'"jeija:mesecon_off"', '"default:steel_ingot"', '"jeija:mesecon_off"'},
+		{'', '"default:glass"', ''},
 	}
 })
 
@@ -746,69 +748,84 @@ minetest.register_craft({
 --PISTONS
 --registration normal one:
 minetest.register_node("jeija:piston_normal", {
-	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png", "jeija_piston_side.png", "jeija_piston_side.png", "jeija_piston_side.png"},
-	inventory_image = minetest.inventorycube("jeija_piston_tb.png", "jeija_piston_side.png", "jeija_piston_side.png"),
+	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png"},
 	material = minetest.digprop_stonelike(0.5),
+	paramtype2="facedir",
 })
 
 minetest.register_craft({
-	output = 'node "jeija:piston_normal" 2',
+	output = '"jeija:piston_normal" 2',
 	recipe = {
-		{'node "default:wood"', 'node "default:wood"', 'node "default:wood"'},
-		{'node "default:cobble"', 'craft "default:steel_ingot"', 'node "default:cobble"'},
-		{'node "default:cobble"', 'node "jeija:mesecon_off"', 'node "default:cobble"'},
+		{'"default:wood"', '"default:wood"', '"default:wood"'},
+		{'"default:cobble"', '"default:steel_ingot"', '"default:cobble"'},
+		{'"default:cobble"', '"jeija:mesecon_off"', '"default:cobble"'},
 	}
 })
 
 --registration sticky one:
 minetest.register_node("jeija:piston_sticky", {
 	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png", "jeija_piston_sticky_side.png", "jeija_piston_sticky_side.png", "jeija_piston_sticky_side.png"},
-	inventory_image = minetest.inventorycube("jeija_piston_tb.png", "jeija_piston_sticky_side.png", "jeija_piston_sticky_side.png"),
 	material = minetest.digprop_stonelike(0.5),
+	paramtype2="facedir",
 })
 
 minetest.register_craft({
-	output = 'node "jeija:piston_sticky" 1',
+	output = '"jeija:piston_sticky" 1',
 	recipe = {
-		{'craft "jeija:glue"'},
-		{'node "jeija:piston_normal"'},
+		{'"jeija:glue"'},
+		{'"jeija:piston_normal"'},
 	}
 })
 
 -- get push direction normal
 function mesecon:piston_get_direction(pos)
-	getactivated=0
 	local direction = {x=0, y=0, z=0}
-	local lpos={x=pos.x, y=pos.y, z=pos.z}
-	local getactivated=0
-	local rules=mesecon:get_rules("piston")
+	if OLD_PISTON_DIRECTION==1 then
+		getactivated=0
+		local lpos={x=pos.x, y=pos.y, z=pos.z}
+		local getactivated=0
+		local rules=mesecon:get_rules("piston")
+	
+		getactivated=getactivated+mesecon:is_power_on(pos, rules[1].x, rules[1].y, rules[1].z)
+		if getactivated>0 then direction.y=-1 return direction end
+		getactivated=getactivated+mesecon:is_power_on(pos, rules[2].x, rules[2].y, rules[2].z)
+		if getactivated>0 then direction.y=1 return direction end
+		for k=3, 5 do
+			getactivated=getactivated+mesecon:is_power_on(pos, rules[k].x, rules[k].y, rules[k].z)
+		end
+		if getactivated>0 then direction.z=1 return direction end
+	
+		for n=6, 8 do
+			getactivated=getactivated+mesecon:is_power_on(pos, rules[n].x, rules[n].y, rules[n].z)
+		end
 
-	getactivated=getactivated+mesecon:is_power_on(pos, rules[1].x, rules[1].y, rules[1].z)
-	if getactivated>0 then direction.y=-1 return direction end
-	getactivated=getactivated+mesecon:is_power_on(pos, rules[2].x, rules[2].y, rules[2].z)
-	if getactivated>0 then direction.y=1 return direction end
+		if getactivated>0 then direction.z=-1 return direction end
+	
+		for j=9, 11 do
+			getactivated=getactivated+mesecon:is_power_on(pos, rules[j].x, rules[j].y, rules[j].z)
+		end
 
-	for k=3, 5 do
-		getactivated=getactivated+mesecon:is_power_on(pos, rules[k].x, rules[k].y, rules[k].z)
+		if getactivated>0 then direction.x=-1 return direction end
+
+		for l=12, 14 do
+			getactivated=getactivated+mesecon:is_power_on(pos, rules[l].x, rules[l].y, rules[l].z)
+		end
+		if getactivated>0 then direction.x=1 return direction end
+	else
+		local node=minetest.env:get_node(pos)
+		if node.param2==3 then
+			return {x=1, y=0, z=0}
+		end
+		if node.param2==2 then
+			return {x=0, y=0, z=1}
+		end
+		if node.param2==1 then
+			return {x=-1, y=0, z=0}
+		end
+		if node.param2==0 then
+			return {x=0, y=0, z=-1}
+		end
 	end
-	if getactivated>0 then direction.z=1 return direction end
-
-	for n=6, 8 do
-		getactivated=getactivated+mesecon:is_power_on(pos, rules[n].x, rules[n].y, rules[n].z)
-	end
-
-	if getactivated>0 then direction.z=-1 return direction end
-
-	for j=9, 11 do
-		getactivated=getactivated+mesecon:is_power_on(pos, rules[j].x, rules[j].y, rules[j].z)
-	end
-
-	if getactivated>0 then direction.x=-1 return direction end
-
-	for l=12, 14 do
-		getactivated=getactivated+mesecon:is_power_on(pos, rules[l].x, rules[l].y, rules[l].z)
-	end
-	if getactivated>0 then direction.x=1 return direction end
 	return direction
 end
 
@@ -986,10 +1003,10 @@ minetest.register_craftitem("jeija:glue", {
 })
 
 minetest.register_craft({
-	output = 'craft "jeija:glue" 2',
+	output = '"jeija:glue" 2',
 	recipe = {
-		{'node "default:junglegrass"', 'node "default:junglegrass"'},
-		{'node "default:junglegrass"', 'node "default:junglegrass"'},
+		{'"default:junglegrass"', '"default:junglegrass"'},
+		{'"default:junglegrass"', '"default:junglegrass"'},
 	}
 })
 
@@ -998,14 +1015,12 @@ minetest.register_craft({
 
 minetest.register_node("jeija:hydro_turbine_off", {
 	tile_images = {"jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png"},
-	inventory_image = minetest.inventorycube("jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png"),
 	material = minetest.digprop_constanttime(0.5),
 })
 
 minetest.register_node("jeija:hydro_turbine_on", {
 	tile_images = {"jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png"},
-	inventory_image = minetest.inventorycube("jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png"),
-	dug_item = 'node "jeija:hydro_turbine_off" 1',
+	drop = '"jeija:hydro_turbine_off" 1',
 	material = minetest.digprop_constanttime(0.5),
 })
 
@@ -1044,11 +1059,11 @@ mesecon:add_receptor_node("jeija:hydro_turbine_on")
 mesecon:add_receptor_node_off("jeija:hydro_turbine_off")
 
 minetest.register_craft({
-	output = 'node "jeija:hydro_turbine_off" 2',
+	output = '"jeija:hydro_turbine_off" 2',
 	recipe = {
-	{'','craft "default:stick"', ''},
-	{'craft "default:stick"', 'craft "default:steel_ingot"', 'craft "default:stick"'},
-	{'','craft "default:stick"', ''},
+	{'','"default:stick"', ''},
+	{'"default:stick"', '"default:steel_ingot"', '"default:stick"'},
+	{'','"default:stick"', ''},
 	}
 })
 
@@ -1057,17 +1072,15 @@ minetest.register_craft({
 
 minetest.register_node("jeija:mesecon_switch_off", {
 	tile_images = {"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_off.png"},
-	inventory_image = minetest.inventorycube("jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_off.png"),
-	paramtype = "facedir_simple",
+	paramtype2="facedir",
 	material = minetest.digprop_constanttime(0.5),
 })
 
 minetest.register_node("jeija:mesecon_switch_on", {
 	tile_images = {"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_on.png"},
-	inventory_image = minetest.inventorycube("jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_on.png"),
-	paramtype = "facedir_simple",
+	paramtype2="facedir",
 	material = minetest.digprop_constanttime(0.5),
-	dug_item='node "jeija:mesecon_switch_off" 1',
+	drop='"jeija:mesecon_switch_off" 1',
 })
 
 mesecon:add_receptor_node("jeija:mesecon_switch_on")
@@ -1095,10 +1108,10 @@ minetest.register_on_dignode(
 )
 
 minetest.register_craft({
-	output = 'node "jeija:mesecon_switch_off" 2',
+	output = '"jeija:mesecon_switch_off" 2',
 	recipe = {
-		{'craft "default:steel_ingot"', 'node "default:cobble"', 'craft "default:steel_ingot"'},
-		{'node "jeija:mesecon_off"','', 'node "jeija:mesecon_off"'},
+		{'"default:steel_ingot"', '"default:cobble"', '"default:steel_ingot"'},
+		{'"jeija:mesecon_off"','', '"jeija:mesecon_off"'},
 	}
 })
 
@@ -1121,11 +1134,11 @@ minetest.register_node("jeija:removestone", {
 })
 
 minetest.register_craft({
-	output = 'node "jeija:removestone" 4',
+	output = '"jeija:removestone" 4',
 	recipe = {
-		{'', 'node "default:cobble"',''},
-		{'node "default:cobble"', 'node "jeija:mesecon_off"', 'node "default:cobble"'},
-		{'', 'node "default:cobble"',''},
+		{'', '"default:cobble"',''},
+		{'"default:cobble"', '"jeija:mesecon_off"', '"default:cobble"'},
+		{'', '"default:cobble"',''},
 	}
 })
 
@@ -1137,16 +1150,16 @@ end)
 
 
 -- Include other files
-dofile(mesecon.modpath.."/movestone.lua")
-dofile(mesecon.modpath.."/button.lua")
-dofile(mesecon.modpath.."/torches.lua")
-dofile(mesecon.modpath.."/detector.lua")
-dofile(mesecon.modpath.."/pressureplates.lua")
-dofile(mesecon.modpath.."/wireless.lua")
-dofile(mesecon.modpath.."/lightstone.lua")
+dofile(minetest.get_modpath("jeija").."/movestone.lua")
+dofile(minetest.get_modpath("jeija").."/button.lua")
+dofile(minetest.get_modpath("jeija").."/torches.lua")
+dofile(minetest.get_modpath("jeija").."/detector.lua")
+dofile(minetest.get_modpath("jeija").."/pressureplates.lua")
+dofile(minetest.get_modpath("jeija").."/wireless.lua")
+dofile(minetest.get_modpath("jeija").."/alias.lua")
 --TEMPEREST's STUFF
 if ENABLE_TEMPEREST==1 then
-	dofile(mesecon.modpath.."/temperest.lua")
+	dofile(minetest.get_modpath("jeija").."temperest.lua")
 end
 
 --INIT
