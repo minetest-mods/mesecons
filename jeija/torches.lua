@@ -43,42 +43,43 @@ end)]]
 
 minetest.register_abm({
     nodenames = {"jeija:mesecon_torch_off","jeija:mesecon_torch_on"},
-    interval = 0.2,
+    interval = 0.1,
     chance = 1,
     action = function(pos, node, active_object_count, active_object_count_wider)
         local pa = {x=0, y=0, z=0}
-	pa.y = 1
-	local rules_string=""
+	    --pa.y = 1
+	    local rules_string=""
 
-	if node.param2 == 5 then
-		pa.z = -1
-		rules_string="mesecontorch_z+"
-	elseif node.param2 == 3 then
-		pa.x = -1
-		rules_string="mesecontorch_x+"
-	elseif node.param2 == 4 then
-		pa.z = 1
-		rules_string="mesecontorch_z-"
-	elseif node.param2 == 2 then
-		pa.x = 1
-		rules_string="mesecontorch_x-"
-	elseif node.param2 == 0 then
-		pa.y = 1
-		rules_string="mesecontorch_y-"
-        elseif node.param2 == 1 then
-		pa.y = -1
-		rules_string="mesecontorch_y+"
+	    if node.param2 == 4 then
+		    pa.z = -2
+		    rules_string="mesecontorch_z+"
+	    elseif node.param2 == 2 then
+		    pa.x = -2
+		    rules_string="mesecontorch_x+"
+	    elseif node.param2 == 5 then
+		    pa.z = 2
+		    rules_string="mesecontorch_z-"
+	    elseif node.param2 == 3 then
+		    pa.x = 2
+		    rules_string="mesecontorch_x-"
+	    elseif node.param2 == 1 then
+		    pa.y = 2
+		    rules_string="mesecontorch_y-"
+        elseif node.param2 == 0 then
+		    pa.y = -2
+		    rules_string="mesecontorch_y+"
         end
-
-        if mesecon:is_power_on({x=pos.x, y=pos.y, z=pos.z}, pa.x, pa.y, pa.z)==1 then
+        local postc = {x=pos.x-pa.x, y=pos.y-pa.y, z=pos.z-pa.z}
+        --print("Checking at "..dump(postc).." with "..rules_string)
+        if mesecon:is_power_on(postc,0,0,0)==1 then
             if node.name ~= "jeija:mesecon_torch_off" then
                 minetest.env:add_node(pos, {name="jeija:mesecon_torch_off",param2=node.param2})
-                mesecon:receptor_off({x=pos.x-pa.x, y=pos.y-pa.y, z=pos.z-pa.z}, rules_string)
+                mesecon:receptor_off(pos, rules_string)
             end
         else
             if node.name ~= "jeija:mesecon_torch_on" then
                 minetest.env:add_node(pos, {name="jeija:mesecon_torch_on",param2=node.param2})
-                mesecon:receptor_on({x=pos.x-pa.x, y=pos.y-pa.y, z=pos.z-pa.z}, rules_string)
+                mesecon:receptor_on(pos, rules_string)
             end
         end
     end
@@ -96,19 +97,19 @@ minetest.register_on_placenode(function(pos, node, placer)
 	if node.name == "jeija:mesecon_torch_on" then
 		local rules_string=""
 
-		if node.param2 == 5 then
-			rules_string="mesecontorch_z+"
-		elseif node.param2 == 3 then
-			rules_string="mesecontorch_x+"
-		elseif node.param2 == 4 then
-			rules_string="mesecontorch_z-"
-		elseif node.param2 == 2 then
-			rules_string="mesecontorch_x-"
-		elseif node.param2 == 0 then
-			rules_string="mesecontorch_y-"
-	        elseif node.param2 == 1 then
-			rules_string="mesecontorch_y+"
-	        end
+		if node.param2 == 4 then
+		    rules_string="mesecontorch_z+"
+	    elseif node.param2 == 2 then
+		    rules_string="mesecontorch_x+"
+	    elseif node.param2 == 5 then
+		    rules_string="mesecontorch_z-"
+	    elseif node.param2 == 3 then
+		    rules_string="mesecontorch_x-"
+	    elseif node.param2 == 1 then
+		    rules_string="mesecontorch_y-"
+        elseif node.param2 == 0 then
+		    rules_string="mesecontorch_y+"
+        end
 		
 		mesecon:receptor_on(pos, rules_string)
 	end

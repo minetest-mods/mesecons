@@ -455,49 +455,37 @@ function mesecon:get_rules(name)
 		table.insert(rules, {x=0, y=-1,  z=0})
 		table.insert(rules, {x=0, y=1,  z=0})
 	end
-	if name=="mesecontorch_x+" then
-		table.insert(rules, {x=1,  y=1,  z=0})
-		table.insert(rules, {x=1,  y=0,  z=0})
-		table.insert(rules, {x=1,  y=-1,  z=0})
-	end
 	if name=="mesecontorch_x-" then
-		table.insert(rules, {x=-1,  y=1,  z=0})
-		table.insert(rules, {x=-1,  y=0,  z=0})
-		table.insert(rules, {x=-1,  y=-1,  z=0})
-	end
-	if name=="mesecontorch_z+" then
-		table.insert(rules, {x=0,  y=1,  z=1})
+		table.insert(rules, {x=1,  y=0,  z=0})
 		table.insert(rules, {x=0,  y=0,  z=1})
-		table.insert(rules, {x=0,  y=-1,  z=1})
+		table.insert(rules, {x=0,  y=0,  z=-1})
+	end
+	if name=="mesecontorch_x+" then
+		table.insert(rules, {x=-1,  y=0,  z=0})
+		table.insert(rules, {x=0,  y=0,  z=1})
+		table.insert(rules, {x=0,  y=0,  z=-1})
 	end
 	if name=="mesecontorch_z-" then
-		table.insert(rules, {x=0,  y=1,  z=-1})
-		table.insert(rules, {x=0,  y=0,  z=-1})
-		table.insert(rules, {x=0,  y=-1,  z=-1})
+		table.insert(rules, {x=0,  y=0,  z=1})
+		table.insert(rules, {x=1,  y=0,  z=0})
+		table.insert(rules, {x=-1,  y=0,  z=0})
 	end
-	if name=="mesecontorch_y+" then
-		table.insert(rules, {x=-1,  y=1,  z=0})
-		table.insert(rules, {x=-1,  y=1,  z=1})
-		table.insert(rules, {x=-1,  y=1,  z=-1})
-
+	if name=="mesecontorch_z+" then
+		table.insert(rules, {x=0,  y=0,  z=-1})
+		table.insert(rules, {x=1,  y=0,  z=0})
+		table.insert(rules, {x=-1,  y=0,  z=0})
+	end
+	if name=="mesecontorch_y-" then
+	    table.insert(rules, {x=0,  y=1,  z=0})
 		table.insert(rules, {x=1,  y=1,  z=0})
-		table.insert(rules, {x=1,  y=1,  z=1})
-		table.insert(rules, {x=1,  y=1,  z=-1})
-
-		table.insert(rules, {x=0,  y=1,  z=0})
+		table.insert(rules, {x=-1,  y=1,  z=0})
 		table.insert(rules, {x=0,  y=1,  z=1})
 		table.insert(rules, {x=0,  y=1,  z=-1})
 	end
-	if name=="mesecontorch_y-" then
-		table.insert(rules, {x=-1,  y=-1,  z=0})
-		table.insert(rules, {x=-1,  y=-1,  z=1})
-		table.insert(rules, {x=-1,  y=-1,  z=-1})
-
+	if name=="mesecontorch_y+" then
+	    table.insert(rules, {x=0,  y=-1,  z=0})
 		table.insert(rules, {x=1,  y=-1,  z=0})
-		table.insert(rules, {x=1,  y=-1,  z=1})
-		table.insert(rules, {x=1,  y=-1,  z=-1})
-
-		table.insert(rules, {x=0,  y=-1,  z=0})
+		table.insert(rules, {x=-1,  y=-1,  z=0})
 		table.insert(rules, {x=0,  y=-1,  z=1})
 		table.insert(rules, {x=0,  y=-1,  z=-1})
 	end
