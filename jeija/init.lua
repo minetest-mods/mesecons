@@ -756,15 +756,15 @@ minetest.register_node("jeija:piston_normal", {
 minetest.register_craft({
 	output = '"jeija:piston_normal" 2',
 	recipe = {
-		{'"default:wood"', '"default:wood"', '"default:wood"'},
-		{'"default:cobble"', '"default:steel_ingot"', '"default:cobble"'},
-		{'"default:cobble"', '"jeija:mesecon_off"', '"default:cobble"'},
+		{"default:wood", "default:wood", "default:wood"},
+		{"default:cobble", "default:steel_ingot", "default:cobble"},
+		{"default:cobble", "jeija:mesecon_off", "default:cobble"},
 	}
 })
 
 --registration sticky one:
 minetest.register_node("jeija:piston_sticky", {
-	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png", "jeija_piston_sticky_side.png", "jeija_piston_sticky_side.png", "jeija_piston_sticky_side.png"},
+	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png"},
 	material = minetest.digprop_stonelike(0.5),
 	paramtype2="facedir",
 })
@@ -831,38 +831,54 @@ end
 
 -- get pull/push direction sticky
 function mesecon:sticky_piston_get_direction(pos)
-	getactivated=0
-	local direction = {x=0, y=0, z=0}
-	local lpos={x=pos.x, y=pos.y, z=pos.z}
-	local getactivated=0
-	local rules=mesecon:get_rules("piston")
+	if OLD_PISTON_DIRECTION==1 then
+		getactivated=0
+		local direction = {x=0, y=0, z=0}
+		local lpos={x=pos.x, y=pos.y, z=pos.z}
+		local getactivated=0
+		local rules=mesecon:get_rules("piston")
 
-	getactivated=getactivated+mesecon:is_power_off(pos, rules[1].x, rules[1].y, rules[1].z)
-	if getactivated>0 then direction.y=-1 return direction end
-	getactivated=getactivated+mesecon:is_power_off(pos, rules[2].x, rules[2].y, rules[2].z)
-	if getactivated>0 then direction.y=1 return direction end
+		getactivated=getactivated+mesecon:is_power_off(pos, rules[1].x, rules[1].y, rules[1].z)
+		if getactivated>0 then direction.y=-1 return direction end
+		getactivated=getactivated+mesecon:is_power_off(pos, rules[2].x, rules[2].y, rules[2].z)
+		if getactivated>0 then direction.y=1 return direction end
 
-	for k=3, 5 do
-		getactivated=getactivated+mesecon:is_power_off(pos, rules[k].x, rules[k].y, rules[k].z)
+		for k=3, 5 do
+			getactivated=getactivated+mesecon:is_power_off(pos, rules[k].x, rules[k].y, rules[k].z)
+		end
+		if getactivated>0 then direction.z=1 return direction end
+
+		for n=6, 8 do
+			getactivated=getactivated+mesecon:is_power_off(pos, rules[n].x, rules[n].y, rules[n].z)
+		end
+
+		if getactivated>0 then direction.z=-1 return direction end
+	
+		for j=9, 11 do
+			getactivated=getactivated+mesecon:is_power_off(pos, rules[j].x, rules[j].y, rules[j].z)
+		end
+
+		if getactivated>0 then direction.x=-1 return direction end
+	
+		for l=12, 14 do
+			getactivated=getactivated+mesecon:is_power_off(pos, rules[l].x, rules[l].y, rules[l].z)
+		end
+		if getactivated>0 then direction.x=1 return direction end
+	else
+		local node=minetest.env:get_node(pos)
+		if node.param2==3 then
+			return {x=1, y=0, z=0}
+		end
+		if node.param2==2 then
+			return {x=0, y=0, z=1}
+		end
+		if node.param2==1 then
+			return {x=-1, y=0, z=0}
+		end
+		if node.param2==0 then
+			return {x=0, y=0, z=-1}
+		end
 	end
-	if getactivated>0 then direction.z=1 return direction end
-
-	for n=6, 8 do
-		getactivated=getactivated+mesecon:is_power_off(pos, rules[n].x, rules[n].y, rules[n].z)
-	end
-
-	if getactivated>0 then direction.z=-1 return direction end
-
-	for j=9, 11 do
-		getactivated=getactivated+mesecon:is_power_off(pos, rules[j].x, rules[j].y, rules[j].z)
-	end
-
-	if getactivated>0 then direction.x=-1 return direction end
-
-	for l=12, 14 do
-		getactivated=getactivated+mesecon:is_power_off(pos, rules[l].x, rules[l].y, rules[l].z)
-	end
-	if getactivated>0 then direction.x=1 return direction end
 	return direction
 end
 
