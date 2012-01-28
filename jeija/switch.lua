@@ -18,12 +18,12 @@ mesecon:add_receptor_node_off("jeija:mesecon_switch_off")
 
 minetest.register_on_punchnode(function(pos, node, puncher)
 	if node.name == "jeija:mesecon_switch_on" then
-		minetest.env:add_node(pos, {name="jeija:mesecon_switch_off", param1=node.param1})
+		minetest.env:add_node(pos, {name="jeija:mesecon_switch_off", param2=node.param2})
 		nodeupdate(pos)
 		mesecon:receptor_off(pos)
 	end
 	if node.name == "jeija:mesecon_switch_off" then
-		minetest.env:add_node(pos, {name="jeija:mesecon_switch_on", param1=node.param1})
+		minetest.env:add_node(pos, {name="jeija:mesecon_switch_on", param2=node.param2})
 		nodeupdate(pos)
 		mesecon:receptor_on(pos)
 	end
