@@ -862,7 +862,7 @@ dofile(minetest.get_modpath("jeija").."/switch.lua")
 dofile(minetest.get_modpath("jeija").."/pistons.lua")
 --TEMPEREST's STUFF
 if ENABLE_TEMPEREST==1 then
-	dofile(minetest.get_modpath("jeija").."temperest.lua")
+	dofile(minetest.get_modpath("jeija").."/temperest.lua")
 end
 
 --INIT
