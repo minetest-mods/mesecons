@@ -16,7 +16,7 @@ minetest.register_node("jeija:mesecon_plug", {
 mesecon:register_on_signal_on(function(pos, node)
 	if node.name=="jeija:mesecon_plug" then
 	local set_node_on = function(pos)
-		node = minetest.env:get_node(pos)
+		local node = minetest.env:get_node(pos)
 		if node.name=="jeija:mesecon_socket_off" then
 			minetest.env:add_node(pos, {name="jeija:mesecon_socket_on"})
 			nodeupdate(pos)
@@ -28,16 +28,16 @@ mesecon:register_on_signal_on(function(pos, node)
 		end
 	end
 	
-	lnode = minetest.env:get_node({x=pos.x-1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
+	local lnode = minetest.env:get_node({x=pos.x-1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
 	if lnode.name=="air" then set_node_on({x=pos.x-2, y=pos.y, z=pos.z}) end
 	
-	lnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
+	local lnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
 	if lnode.name=="air" then set_node_on({x=pos.x+2, y=pos.y, z=pos.z}) end
 	
-	lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z-1}) --a node between this node and the one two nodes away
+	local lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z-1}) --a node between this node and the one two nodes away
 	if lnode.name=="air" then set_node_on({x=pos.x, y=pos.y, z=pos.z-2}) end
 	
-	lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z+1}) --a node between this node and the one two nodes away
+	local lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z+1}) --a node between this node and the one two nodes away
 	if lnode.name=="air" then set_node_on({x=pos.x, y=pos.y, z=pos.z+2}) end
 	end
 end)
@@ -136,7 +136,7 @@ minetest.register_node("jeija:mesecon_socket_on", {
 	selection_box = {
 		type = "fixed",
 	},
-	dug_item='node "jeija:mesecon_socket_off" 1',
+	drop='node "jeija:mesecon_socket_off" 1',
 })
 
 minetest.register_on_dignode(
@@ -185,7 +185,7 @@ minetest.register_node("jeija:mesecon_inverter_on", {
 	selection_box = {
 		type = "fixed",
 	},
-	dug_item='node "jeija:mesecon_inverter_off" 1',
+	drop='node "jeija:mesecon_inverter_off" 1',
 })
 
 minetest.register_on_dignode(
