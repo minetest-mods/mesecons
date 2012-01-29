@@ -1,6 +1,7 @@
 --TEMPEREST-PLUG
 
 minetest.register_node("jeija:mesecon_plug", {
+	description = "Plug",
 	drawtype = "raillike",
 	paramtype = "light",
 	is_ground_content = true,
@@ -113,6 +114,7 @@ minetest.register_craft({
 --TEMPEREST-SOCKET
 
 minetest.register_node("jeija:mesecon_socket_off", {
+	description = "Socket",
 	drawtype = "raillike",
 	paramtype = "light",
 	is_ground_content = true,
@@ -162,6 +164,7 @@ minetest.register_craft({
 --TEMPEREST-INVERTER
 
 minetest.register_node("jeija:mesecon_inverter_off", {
+	description = "Inverter",
 	drawtype = "raillike",
 	paramtype = "light",
 	is_ground_content = true,
