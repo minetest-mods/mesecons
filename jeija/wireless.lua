@@ -2,6 +2,7 @@
 minetest.register_craftitem("jeija:ic", {
 	image = "jeija_ic.png",
 	on_place_on_ground = minetest.craftitem_place_item,
+    	description="IC",
 })
 
 minetest.register_craft({
@@ -162,13 +163,15 @@ minetest.register_node("jeija:wireless_receiver_off", {
 	tile_images = {"jeija_wireless_receiver_tb_off.png", "jeija_wireless_receiver_tb_off.png", "jeija_wireless_receiver_off.png", "jeija_wireless_receiver_off.png", "jeija_wireless_receiver_off.png", "jeija_wireless_receiver_off.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_receiver_off.png"),
 	material = minetest.digprop_constanttime(0.8),
+    	description="Wireless Receiver",
 })
 
 minetest.register_node("jeija:wireless_receiver_on", {
 	tile_images = {"jeija_wireless_receiver_tb_on.png", "jeija_wireless_receiver_tb_on.png", "jeija_wireless_receiver_on.png", "jeija_wireless_receiver_on.png", "jeija_wireless_receiver_on.png", "jeija_wireless_receiver_on.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_receiver_on.png"),
 	material = minetest.digprop_constanttime(0.8),
-	dug_item = 'node "jeija:wireless_receiver_off" 1'
+	dug_item = 'node "jeija:wireless_receiver_off" 1',
+    	description="Wireless Receiver",
 })
 
 minetest.register_craft({
@@ -228,13 +231,15 @@ minetest.register_node("jeija:wireless_inverter_off", {
 	tile_images = {"jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_off.png", "jeija_wireless_inverter_off.png", "jeija_wireless_inverter_off.png", "jeija_wireless_inverter_off.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_inverter_off.png"),
 	material = minetest.digprop_constanttime(0.8),
-	dug_item = 'node "jeija:wireless_inverter_on" 1'
+	dug_item = 'node "jeija:wireless_inverter_on" 1',
+    	description="Wireless Inverter",
 })
 
 minetest.register_node("jeija:wireless_inverter_on", {
 	tile_images = {"jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_on.png", "jeija_wireless_inverter_on.png", "jeija_wireless_inverter_on.png", "jeija_wireless_inverter_on.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_inverter_on.png"),
 	material = minetest.digprop_constanttime(0.8),
+    	description="Wireless Inverter",
 })
 
 minetest.register_craft({
@@ -289,12 +294,14 @@ minetest.register_node("jeija:wireless_transmitter_on", {
 	inventory_image = minetest.inventorycube("jeija_wireless_transmitter_on.png"),
 	material = minetest.digprop_constanttime(0.8),
 	dug_item = 'node "jeija:wireless_transmitter_off" 1',
+    	description="Wireless Transmitter",
 })
 
 minetest.register_node("jeija:wireless_transmitter_off", {
 	tile_images = {"jeija_wireless_transmitter_tb.png", "jeija_wireless_transmitter_tb.png", "jeija_wireless_transmitter_off.png", "jeija_wireless_transmitter_off.png", "jeija_wireless_transmitter_off.png", "jeija_wireless_transmitter_off.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_transmitter_off.png"),
 	material = minetest.digprop_constanttime(0.8),
+    	description="Wireless Transmitter",
 })
 
 minetest.register_craft({

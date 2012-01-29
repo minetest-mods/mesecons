@@ -12,6 +12,7 @@ minetest.register_node("jeija:wall_button_off", {
         type = "wallmounted",
     },
     material = minetest.digprop_constanttime(0.3),
+    description="Button",
 })
 minetest.register_node("jeija:wall_button_on", {
     drawtype = "signlike",
@@ -26,6 +27,7 @@ minetest.register_node("jeija:wall_button_on", {
     },
     material = minetest.digprop_constanttime(0.3),
     drop = '"jeija:wall_button_off" 1',
+    description="Button",
 })
 
 minetest.register_on_dignode(

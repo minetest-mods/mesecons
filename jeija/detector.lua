@@ -4,6 +4,7 @@ minetest.register_node("jeija:object_detector_off", {
 	paramtype = "light",
 	walkable = true,
 	material = minetest.digprop_stonelike(4),
+	description="Player Detector",
 })
 
 minetest.register_node("jeija:object_detector_on", {
@@ -11,7 +12,8 @@ minetest.register_node("jeija:object_detector_on", {
 	paramtype = "light",
 	walkable = true,
 	material = minetest.digprop_stonelike(4),
-	drop = '"jeija:object_detector_off" 1'
+	drop = '"jeija:object_detector_off" 1',
+	description="Player Detector",
 })
 
 minetest.register_craft({

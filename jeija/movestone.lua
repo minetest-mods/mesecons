@@ -63,6 +63,7 @@ minetest.register_node("jeija:movestone", {
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
 	material = minetest.digprop_stonelike(0.8),
+    	description="Movestone",
 })
 
 minetest.register_entity("jeija:movestone_entity", {
@@ -171,6 +172,7 @@ minetest.register_node("jeija:sticky_movestone", {
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
 	material = minetest.digprop_stonelike(0.8),
+    	description="Sticky Movestone",
 })
 
 minetest.register_craft({

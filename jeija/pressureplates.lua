@@ -11,6 +11,7 @@ minetest.register_node("jeija:pressure_plate_wood_off", {
 		type = "fixed",
 	},
 	material = minetest.digprop_constanttime(0.3),
+    	description="Wood Pressure Plate",
 })
 
 minetest.register_node("jeija:pressure_plate_wood_on", {
@@ -24,7 +25,8 @@ minetest.register_node("jeija:pressure_plate_wood_on", {
 		type = "fixed",
 	},
 	material = minetest.digprop_constanttime(0.3),
-	drop='"jeija:pressure_plate_wood_off" 1'
+	drop='"jeija:pressure_plate_wood_off" 1',
+    	description="Wood Pressure Plate",
 })
 
 minetest.register_craft({
@@ -87,6 +89,7 @@ minetest.register_node("jeija:pressure_plate_stone_off", {
 		type = "fixed",
 	},
 	material = minetest.digprop_constanttime(0.3),
+    	description="Stone Pressure Plate",
 })
 
 minetest.register_node("jeija:pressure_plate_stone_on", {
@@ -100,7 +103,8 @@ minetest.register_node("jeija:pressure_plate_stone_on", {
 		type = "fixed",
 	},
 	material = minetest.digprop_constanttime(0.3),
-	drop='"jeija:pressure_plate_stone_off" 1'
+	drop='"jeija:pressure_plate_stone_off" 1',
+    	description="Stone Pressure Plate",
 })
 
 minetest.register_craft({
