@@ -18,6 +18,7 @@ minetest.register_node("jeija:mesecon_torch_off", {
     legacy_wallmounted = true,
     material = minetest.digprop_constanttime(0.5),
     drop = '"jeija:mesecon_torch_on" 1',
+    description="Mesecon Torch",
 })
 
 minetest.register_node("jeija:mesecon_torch_on", {
@@ -31,6 +32,7 @@ minetest.register_node("jeija:mesecon_torch_on", {
     legacy_wallmounted = true,
     material = minetest.digprop_constanttime(0.5),
     light_source = LIGHT_MAX-5,
+    description="Mesecon Torch",
 })
 
 --[[minetest.register_on_placenode(function(pos, newnode, placer)

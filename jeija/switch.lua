@@ -4,6 +4,7 @@ minetest.register_node("jeija:mesecon_switch_off", {
 	tile_images = {"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_off.png"},
 	paramtype2="facedir",
 	material = minetest.digprop_constanttime(0.5),
+    	description="Switch",
 })
 
 minetest.register_node("jeija:mesecon_switch_on", {
@@ -11,6 +12,7 @@ minetest.register_node("jeija:mesecon_switch_on", {
 	paramtype2="facedir",
 	material = minetest.digprop_constanttime(0.5),
 	drop='"jeija:mesecon_switch_off" 1',
+    	description="Switch",
 })
 
 mesecon:add_receptor_node("jeija:mesecon_switch_on")

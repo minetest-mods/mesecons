@@ -89,6 +89,7 @@ minetest.register_node("jeija:mesecon_off", {
 		type = "fixed",
 	},
 	material = minetest.digprop_constanttime(0.1),
+    	description="Mesecons",
 })
 
 minetest.register_node("jeija:mesecon_on", {
@@ -104,6 +105,7 @@ minetest.register_node("jeija:mesecon_on", {
 	material = minetest.digprop_constanttime(0.1),
 	drop = '"jeija:mesecon_off" 1',
 	light_source = LIGHT_MAX-11,
+    	description="Mesecons",
 })
 
 minetest.register_craft({
@@ -537,6 +539,7 @@ minetest.register_node("jeija:power_plant", {
 	walkable = false,
 	material = minetest.digprop_leaveslike(0.2),
 	light_source = LIGHT_MAX-9,
+    	description="Power Plant",
 })
 
 minetest.register_craft({
@@ -575,6 +578,7 @@ minetest.register_node("jeija:blinky_plant_off", {
 	paramtype = "light",
 	walkable = false,
 	material = minetest.digprop_leaveslike(0.2),
+    	description="Blinky Plant",
 })
 
 minetest.register_node("jeija:blinky_plant_on", {
@@ -587,6 +591,7 @@ minetest.register_node("jeija:blinky_plant_on", {
 	material = minetest.digprop_leaveslike(0.2),
 	drop='"jeija:blinky_plant_off" 1',
 	light_source = LIGHT_MAX-7,
+    	description="Blinky Plant",
 })
 
 minetest.register_craft({
@@ -639,6 +644,7 @@ minetest.register_on_dignode(
 minetest.register_craftitem("jeija:silicon", {
 	image = "jeija_silicon.png",
 	on_place_on_ground = minetest.craftitem_place_item,
+    	description="Silicon",
 })
 
 
@@ -654,6 +660,7 @@ minetest.register_node("jeija:solar_panel", {
 	},
 	furnace_burntime = 5,
 	material = minetest.digprop_dirtlike(0.1),
+    	description="Solar Panel",
 })
 
 minetest.register_craft({
@@ -706,6 +713,7 @@ minetest.register_node("jeija:meselamp_on", {
 	},
 	material = minetest.digprop_constanttime(0.1),
 	drop='"jeija:meselamp_off" 1',
+    	description="Meselamp",
 })
 
 minetest.register_node("jeija:meselamp_off", {
@@ -721,6 +729,7 @@ minetest.register_node("jeija:meselamp_off", {
 		fixed = {-0.38, -0.5, -0.1, 0.38, -0.2, 0.1},
 	},
 	material = minetest.digprop_constanttime(0.1),
+    	description="Meselamp",
 })
 
 minetest.register_craft({
@@ -736,6 +745,7 @@ minetest.register_craft({
 minetest.register_craftitem("jeija:glue", {
 	image = "jeija_glue.png",
 	on_place_on_ground = minetest.craftitem_place_item,
+    	description="Glue",
 })
 
 minetest.register_craft({
@@ -752,12 +762,14 @@ minetest.register_craft({
 minetest.register_node("jeija:hydro_turbine_off", {
 	tile_images = {"jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png"},
 	material = minetest.digprop_constanttime(0.5),
+    	description="Water Turbine",
 })
 
 minetest.register_node("jeija:hydro_turbine_on", {
 	tile_images = {"jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png"},
 	drop = '"jeija:hydro_turbine_off" 1',
 	material = minetest.digprop_constanttime(0.5),
+    	description="Water Turbine",
 })
 
 
@@ -819,6 +831,7 @@ minetest.register_node("jeija:removestone", {
 	tile_images = {"jeija_removestone.png"},
 	inventory_image = minetest.inventorycube("jeija_removestone_inv.png"),
 	material = minetest.digprop_stonelike(1.0),
+    	description="Removestone",
 })
 
 minetest.register_craft({

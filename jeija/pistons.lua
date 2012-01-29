@@ -4,6 +4,7 @@ minetest.register_node("jeija:piston_normal", {
 	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png"},
 	material = minetest.digprop_stonelike(0.5),
 	paramtype2="facedir",
+    	description="Piston",
 })
 
 minetest.register_craft({
@@ -20,6 +21,7 @@ minetest.register_node("jeija:piston_sticky", {
 	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png"},
 	material = minetest.digprop_stonelike(0.5),
 	paramtype2="facedir",
+    	description="Sticky Piston",
 })
 
 minetest.register_craft({
