@@ -12,7 +12,7 @@ minetest.register_node("jeija:mesecon_torch_off", {
     drawtype = "torchlike",
     tile_images = {"jeija_torches_off.png", "jeija_torches_off_ceiling.png", "jeija_torches_off_side.png"},
     inventory_image = "jeija_torches_off.png",
-    sunlight_propagates = true,
+    paramtype = "light",
     walkable = false,
     paramtype2 = "wallmounted",
     legacy_wallmounted = true,
@@ -24,6 +24,7 @@ minetest.register_node("jeija:mesecon_torch_on", {
     drawtype = "torchlike",
     tile_images = {"jeija_torches_on.png", "jeija_torches_on_ceiling.png", "jeija_torches_on_side.png"},
     inventory_image = "jeija_torches_on.png",
+    wield_image = "jeija_torches_on.png",
     paramtype = "light",
     sunlight_propagates = true,
     walkable = false,
@@ -43,7 +44,7 @@ end)]]
 
 minetest.register_abm({
     nodenames = {"jeija:mesecon_torch_off","jeija:mesecon_torch_on"},
-    interval = 0.1,
+    interval = 0.2,
     chance = 1,
     action = function(pos, node, active_object_count, active_object_count_wider)
         local pa = {x=0, y=0, z=0}

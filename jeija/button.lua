@@ -3,6 +3,7 @@ minetest.register_node("jeija:wall_button_off", {
     drawtype = "signlike",
     tile_images = {"jeija_wall_button_off.png"},
     inventory_image = "jeija_wall_button_off.png",
+    wield_image = "jeija_wall_button_off.png",
     paramtype = "light",
     paramtype2 = "wallmounted",
     legacy_wallmounted = true,
