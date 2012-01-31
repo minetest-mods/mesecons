@@ -254,16 +254,6 @@ minetest.register_entity("jeija:sticky_movestone_entity", {
 	end
 })
 
-minetest.register_craft({
-	output = '"jeija:sticky_movestone" 2',
-	recipe = {
-		{'"default:stone"', '"default:stone"', '"default:stone"'},
-		{'"jeija:mesecon_off"', '"jeija:mesecon_off"', '"default:tree"'},
-		{'"default:stone"', '"default:stone"', '"default:stone"'},
-	}
-})
-
-
 mesecon:register_on_signal_on(function (pos, node)
 	if node.name=="jeija:sticky_movestone" then
 		local direction=jeija_get_movestone_direction({x=pos.x, y=pos.y, z=pos.z})
