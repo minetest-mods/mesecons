@@ -655,9 +655,9 @@ minetest.register_craftitem("jeija:ic", {
 minetest.register_craft({
 	output = 'craft "jeija:ic" 2',
 	recipe = {
-		{'craft "jeija:silicon"', 'craft "jeija:silicon"', 'node "jeija:mesecon_off"'},
-		{'craft "jeija:silicon"', 'craft "jeija:silicon"', 'node "jeija:mesecon_off"'},
-		{'node "jeija:mesecon_off"', 'node "jeija:mesecon_off"', ''},
+		{'jeija:silicon', 'jeija:silicon', 'jeija:mesecon_off'},
+		{'jeija:silicon', 'jeija:silicon', 'jeija:mesecon_off'},
+		{'jeija:mesecon_off', 'jeija:mesecon_off', ''},
 	}
 })
 

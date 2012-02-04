@@ -154,7 +154,7 @@ minetest.register_node("jeija:wireless_receiver_on", {
 	tile_images = {"jeija_wireless_receiver_tb_on.png", "jeija_wireless_receiver_tb_on.png", "jeija_wireless_receiver_on.png", "jeija_wireless_receiver_on.png", "jeija_wireless_receiver_on.png", "jeija_wireless_receiver_on.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_receiver_on.png"),
 	material = minetest.digprop_constanttime(0.8),
-	dug_item = 'node "jeija:wireless_receiver_off" 1',
+	drop = 'jeija:wireless_receiver_off',
     	description="Wireless Receiver",
 })
 
@@ -215,7 +215,7 @@ minetest.register_node("jeija:wireless_inverter_off", {
 	tile_images = {"jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_off.png", "jeija_wireless_inverter_off.png", "jeija_wireless_inverter_off.png", "jeija_wireless_inverter_off.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_inverter_off.png"),
 	material = minetest.digprop_constanttime(0.8),
-	dug_item = 'node "jeija:wireless_inverter_on" 1',
+	drop = 'jeija:wireless_inverter_on',
     	description="Wireless Inverter",
 })
 
@@ -227,11 +227,11 @@ minetest.register_node("jeija:wireless_inverter_on", {
 })
 
 minetest.register_craft({
-	output = 'node "jeija:wireless_inverter_off" 2',
+	output = '"jeija:wireless_inverter_off" 2',
 	recipe = {
-		{'', 'craft "default:steel_ingot"', ''},
-		{'craft "jeija:ic"', 'node "jeija:mesecon_off"', 'craft "jeija:ic"'},
-		{'', 'node "jeija:mesecon_off"', ''},
+		{'', 'default:steel_ingot', ''},
+		{'jeija:ic', 'jeija:mesecon_off', 'jeija:ic'},
+		{'', 'jeija:mesecon_off', ''},
 	}
 })
 
@@ -289,11 +289,11 @@ minetest.register_node("jeija:wireless_transmitter_off", {
 })
 
 minetest.register_craft({
-	output = 'node "jeija:wireless_transmitter_off" 2',
+	output = '"jeija:wireless_transmitter_off" 2',
 	recipe = {
-		{'craft "default:steel_ingot"', 'node "jeija:mesecon_off"', 'craft "default:steel_ingot"'},
-		{'', 'node "jeija:mesecon_off"', ''},
-		{'', 'craft "jeija:ic"', ''},
+		{'default:steel_ingot', 'jeija:mesecon_off', 'default:steel_ingot'},
+		{'', 'jeija:mesecon_off', ''},
+		{'', 'jeija:ic', ''},
 	}
 })
 
