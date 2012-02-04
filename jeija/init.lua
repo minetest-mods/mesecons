@@ -638,16 +638,30 @@ minetest.register_on_dignode(
 	end
 )
 
-
--- Solar Panel
-
+-- Silicon
 minetest.register_craftitem("jeija:silicon", {
 	image = "jeija_silicon.png",
 	on_place_on_ground = minetest.craftitem_place_item,
     	description="Silicon",
 })
 
+-- IC
+minetest.register_craftitem("jeija:ic", {
+	image = "jeija_ic.png",
+	on_place_on_ground = minetest.craftitem_place_item,
+    	description="IC",
+})
 
+minetest.register_craft({
+	output = 'craft "jeija:ic" 2',
+	recipe = {
+		{'craft "jeija:silicon"', 'craft "jeija:silicon"', 'node "jeija:mesecon_off"'},
+		{'craft "jeija:silicon"', 'craft "jeija:silicon"', 'node "jeija:mesecon_off"'},
+		{'node "jeija:mesecon_off"', 'node "jeija:mesecon_off"', ''},
+	}
+})
+
+-- Solar Panel
 minetest.register_node("jeija:solar_panel", {
 	drawtype = "raillike",
 	tile_images = {"jeija_solar_panel.png"},
