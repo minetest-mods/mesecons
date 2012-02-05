@@ -46,7 +46,7 @@ end)]]
 
 minetest.register_abm({
     nodenames = {"jeija:mesecon_torch_off","jeija:mesecon_torch_on"},
-    interval = 0.2,
+    interval = 0.1,
     chance = 1,
     action = function(pos, node, active_object_count, active_object_count_wider)
         local pa = {x=0, y=0, z=0}
