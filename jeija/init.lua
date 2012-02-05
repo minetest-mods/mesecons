@@ -639,16 +639,30 @@ minetest.register_on_dignode(
 	end
 )
 
-
--- Solar Panel
-
+-- Silicon
 minetest.register_craftitem("jeija:silicon", {
 	image = "jeija_silicon.png",
 	on_place_on_ground = minetest.craftitem_place_item,
     	description="Silicon",
 })
 
+-- IC
+minetest.register_craftitem("jeija:ic", {
+	image = "jeija_ic.png",
+	on_place_on_ground = minetest.craftitem_place_item,
+    	description="IC",
+})
 
+minetest.register_craft({
+	output = 'craft "jeija:ic" 2',
+	recipe = {
+		{'jeija:silicon', 'jeija:silicon', 'jeija:mesecon_off'},
+		{'jeija:silicon', 'jeija:silicon', 'jeija:mesecon_off'},
+		{'jeija:mesecon_off', 'jeija:mesecon_off', ''},
+	}
+})
+
+-- Solar Panel
 minetest.register_node("jeija:solar_panel", {
 	drawtype = "raillike",
 	tile_images = {"jeija_solar_panel.png"},
@@ -700,7 +714,7 @@ minetest.register_abm(
 -- MESELAMPS
 minetest.register_node("jeija:meselamp_on", {
 	drawtype = "torchlike",
-	tile_images = {"jeija_meselamp_on_floor_on.png", "jeija_meselamp_on_ceiling_on.png", "jeija_meselamp_on.png"},
+	tile_images = {"jeija_meselamp_on_ceiling_on.png", "jeija_meselamp_on_floor_on.png", "jeija_meselamp_on.png"},
 	inventory_image = "jeija_meselamp_on_floor_on.png",
 	paramtype = "light",
 	sunlight_propagates = true,
@@ -709,8 +723,8 @@ minetest.register_node("jeija:meselamp_on", {
 	paramtype2 = "wallmounted",
 	light_source = LIGHT_MAX,
 	selection_box = {
-		type = "wallmounted",
-		type = "fixed",
+		--type = "wallmounted",
+		--type = "fixed",
 		fixed = {-0.38, -0.5, -0.1, 0.38, -0.2, 0.1},
 	},
 	material = minetest.digprop_constanttime(0.1),
@@ -720,7 +734,7 @@ minetest.register_node("jeija:meselamp_on", {
 
 minetest.register_node("jeija:meselamp_off", {
 	drawtype = "torchlike",
-	tile_images = {"jeija_meselamp_on_floor_off.png", "jeija_meselamp_on_ceiling_off.png", "jeija_meselamp_off.png"},
+	tile_images = {"jeija_meselamp_on_ceiling_off.png", "jeija_meselamp_on_floor_off.png", "jeija_meselamp_off.png"},
 	inventory_image = "jeija_meselamp_on_floor_off.png",
 	wield_image = "jeija_meselamp_on_ceiling_off.png",
 	paramtype = "light",
@@ -728,7 +742,7 @@ minetest.register_node("jeija:meselamp_off", {
 	walkable = false,
 	wall_mounted = false,
 	selection_box = {
-		type = "fixed",
+		--type = "fixed",
 		fixed = {-0.38, -0.5, -0.1, 0.38, -0.2, 0.1},
 	},
 	material = minetest.digprop_constanttime(0.1),
@@ -863,9 +877,10 @@ dofile(minetest.get_modpath("jeija").."/wireless.lua")
 dofile(minetest.get_modpath("jeija").."/alias.lua")
 dofile(minetest.get_modpath("jeija").."/switch.lua")
 dofile(minetest.get_modpath("jeija").."/pistons.lua")
+dofile(minetest.get_modpath("jeija").."/lightstone.lua")
 --TEMPEREST's STUFF
 if ENABLE_TEMPEREST==1 then
-	dofile(minetest.get_modpath("jeija").."temperest.lua")
+	dofile(minetest.get_modpath("jeija").."/temperest.lua")
 end
 
 --INIT
