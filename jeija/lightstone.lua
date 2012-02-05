@@ -3,15 +3,15 @@ function mesecon:lightstone_add(name, base_item, texture_off, texture_on)
 	    tile_images = {texture_off},
 	    inventory_image = minetest.inventorycube(texture_off),
 	    material = minetest.digprop_stonelike(0.5),
-    	    description=name.." Lightstone",
+    	description=name.." Lightstone",
     })
     minetest.register_node("jeija:lightstone_" .. name .. "_on", {
 	    tile_images = {texture_on},
 	    inventory_image = minetest.inventorycube(texture_on),
 	    material = minetest.digprop_stonelike(0.5),
-	    dug_item = "node jeija:lightstone_" .. name .. "_off 1",
+	    drop = "jeija:lightstone_" .. name .. "_off 1",
 	    light_source = LIGHT_MAX-2,
-    	    description=name.." Lightstone",
+    	description=name.." Lightstone",
     })
     assert(loadstring('mesecon:register_on_signal_on(function(pos, node) \n \
                     if node.name == "jeija:lightstone_' .. name .. '_off" then \n \
