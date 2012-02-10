@@ -17,5 +17,5 @@ minetest.register_alias("jeija:pressure_plate_wood", "jeija:pressure_plate_wood_
 
 if ENABLE_TEMPEREST==1 then
 	minetest.register_alias("jeija:mesecon_socket", "jeija:mesecon_socket_off")
-	minetest.register_alias("jeija:mesecon_inverter", "jeija:mesecon_inverter_off")
+	minetest.register_alias("jeija:mesecon_inverter", "jeija:mesecon_inverter_on")
 end

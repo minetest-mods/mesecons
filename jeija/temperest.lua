@@ -15,93 +15,68 @@ minetest.register_node("jeija:mesecon_plug", {
 	description = "Plug",
 })
 
-mesecon:register_on_signal_on(function(pos, node)
-	if node.name=="jeija:mesecon_plug" then
-	local set_node_on = function(pos)
-		local node = minetest.env:get_node(pos)
-		if node.name=="jeija:mesecon_socket_off" then
-			minetest.env:add_node(pos, {name="jeija:mesecon_socket_on"})
-			nodeupdate(pos)
-			mesecon:receptor_on(pos)
-		elseif node.name=="jeija:mesecon_inverter_on" then
-			minetest.env:add_node(pos, {name="jeija:mesecon_inverter_off"})
-			nodeupdate(pos)
-			mesecon:receptor_off(pos)
-		end
-	end
-	
-	local lnode = minetest.env:get_node({x=pos.x-1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_on({x=pos.x-2, y=pos.y, z=pos.z}) end
-	
-	local lnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_on({x=pos.x+2, y=pos.y, z=pos.z}) end
-	
-	local lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z-1}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_on({x=pos.x, y=pos.y, z=pos.z-2}) end
-	
-	local lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z+1}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_on({x=pos.x, y=pos.y, z=pos.z+2}) end
-	end
-end)
-
-mesecon:register_on_signal_off(function(pos, node)
-	if node.name=="jeija:mesecon_plug" then
-	local set_node_off = function(pos)
-		node = minetest.env:get_node(pos)
-		if node.name=="jeija:mesecon_socket_on" then
-			minetest.env:add_node(pos, {name="jeija:mesecon_socket_off"})
-			nodeupdate(pos)
-			mesecon:receptor_off(pos)
-		elseif node.name=="jeija:mesecon_inverter_off" then
-			minetest.env:add_node(pos, {name="jeija:mesecon_inverter_on"})
-			nodeupdate(pos)
-			mesecon:receptor_on(pos)
-		end
-	end
-	
-	lnode = minetest.env:get_node({x=pos.x-1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_off({x=pos.x-2, y=pos.y, z=pos.z}) end
-	
-	lnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_off({x=pos.x+2, y=pos.y, z=pos.z}) end
-	
-	lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z-1}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_off({x=pos.x, y=pos.y, z=pos.z-2}) end
-	
-	lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z+1}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_off({x=pos.x, y=pos.y, z=pos.z+2}) end
-	end
-end)
-
-minetest.register_on_dignode(function(pos, oldnode, digger)
-	if oldnode.name == "jeija:mesecon_plug" then
-	local set_node_deactivated = function(pos)
-	node = minetest.env:get_node(pos)
-	if node.name=="jeija:mesecon_socket_on" then
-		minetest.env:add_node(pos, {name="jeija:mesecon_socket_off"})
+local set_node_on = function(pos)
+	local node = minetest.env:get_node(pos)
+	if node.name=="jeija:mesecon_socket_off" then
+		minetest.env:add_node(pos, {name="jeija:mesecon_socket_on"})
 		nodeupdate(pos)
-		mesecon:receptor_off(pos)
+		mesecon:receptor_on(pos)
 	elseif node.name=="jeija:mesecon_inverter_on" then
 		minetest.env:add_node(pos, {name="jeija:mesecon_inverter_off"})
 		nodeupdate(pos)
 		mesecon:receptor_off(pos)
 	end
-	end
-	
-	lnode = minetest.env:get_node({x=pos.x-1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_deactivated({x=pos.x-2, y=pos.y, z=pos.z}) end
-	
-	lnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_deactivated({x=pos.x+2, y=pos.y, z=pos.z}) end
-	
-	lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z-1}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_deactivated({x=pos.x, y=pos.y, z=pos.z-2}) end
-	
-	lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z+1}) --a node between this node and the one two nodes away
-	if lnode.name=="air" then set_node_deactivated({x=pos.x, y=pos.y, z=pos.z+2}) end
-	end
-end)
+end
 
+local set_node_off = function(pos)
+	node = minetest.env:get_node(pos)
+	if node.name=="jeija:mesecon_socket_on" then
+		minetest.env:add_node(pos, {name="jeija:mesecon_socket_off"})
+		nodeupdate(pos)
+		mesecon:receptor_off(pos)
+	elseif node.name=="jeija:mesecon_inverter_off" then
+		minetest.env:add_node(pos, {name="jeija:mesecon_inverter_on"})
+		nodeupdate(pos)
+		mesecon:receptor_on(pos)
+	end
+end
+
+local plug_on = function(pos, node)
+	if node.name=="jeija:mesecon_plug" then
+		local lnode = minetest.env:get_node({x=pos.x-1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_on({x=pos.x-2, y=pos.y, z=pos.z}) end
+		
+		local lnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_on({x=pos.x+2, y=pos.y, z=pos.z}) end
+		
+		local lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z-1}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_on({x=pos.x, y=pos.y, z=pos.z-2}) end
+		
+		local lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z+1}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_on({x=pos.x, y=pos.y, z=pos.z+2}) end
+	end
+end
+
+local plug_off = function(pos, node)
+	if node.name=="jeija:mesecon_plug" then
+		lnode = minetest.env:get_node({x=pos.x-1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_off({x=pos.x-2, y=pos.y, z=pos.z}) end
+		
+		lnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_off({x=pos.x+2, y=pos.y, z=pos.z}) end
+		
+		lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z-1}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_off({x=pos.x, y=pos.y, z=pos.z-2}) end
+		
+		lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z+1}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_off({x=pos.x, y=pos.y, z=pos.z+2}) end
+	end
+end
+
+mesecon:register_on_signal_on(plug_on)
+mesecon:register_on_signal_off(plug_off)
+
+minetest.register_on_dignode(plug_off)
 
 minetest.register_craft({
 	output = 'node "jeija:mesecon_plug" 2',
