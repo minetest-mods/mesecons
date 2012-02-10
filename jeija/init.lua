@@ -734,6 +734,7 @@ minetest.register_node("jeija:meselamp_off", {
 	drawtype = "torchlike",
 	tile_images = {"jeija_meselamp_on_ceiling_off.png", "jeija_meselamp_on_floor_off.png", "jeija_meselamp_off.png"},
 	inventory_image = "jeija_meselamp_on_floor_off.png",
+	wield_image = "jeija_meselamp_on_ceiling_off.png",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
@@ -875,6 +876,7 @@ dofile(minetest.get_modpath("jeija").."/alias.lua")
 dofile(minetest.get_modpath("jeija").."/switch.lua")
 dofile(minetest.get_modpath("jeija").."/pistons.lua")
 dofile(minetest.get_modpath("jeija").."/lightstone.lua")
+dofile(minetest.get_modpath("jeija").."/lever.lua")
 --TEMPEREST's STUFF
 if ENABLE_TEMPEREST==1 then
 	dofile(minetest.get_modpath("jeija").."/temperest.lua")

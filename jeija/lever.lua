@@ -1,9 +1,9 @@
--- WALL BUTTON
-minetest.register_node("jeija:wall_button_off", {
+-- WALL LEVER
+minetest.register_node("jeija:wall_lever_off", {
     drawtype = "signlike",
-    tile_images = {"jeija_wall_button_off.png"},
-    inventory_image = "jeija_wall_button_off.png",
-    wield_image = "jeija_wall_button_off.png",
+    tile_images = {"jeija_wall_lever_off.png"},
+    inventory_image = "jeija_wall_lever_off.png",
+    wield_image = "jeija_wall_lever_off.png",
     paramtype = "light",
     paramtype2 = "wallmounted",
     legacy_wallmounted = true,
@@ -12,12 +12,12 @@ minetest.register_node("jeija:wall_button_off", {
         type = "wallmounted",
     },
     material = minetest.digprop_constanttime(0.3),
-    description="Button",
+    description="Lever",
 })
-minetest.register_node("jeija:wall_button_on", {
+minetest.register_node("jeija:wall_lever_on", {
     drawtype = "signlike",
-    tile_images = {"jeija_wall_button_on.png"},
-    inventory_image = "jeija_wall_button_on.png",
+    tile_images = {"jeija_wall_lever_on.png"},
+    inventory_image = "jeija_wall_lever_on.png",
     paramtype = "light",
     paramtype2 = "wallmounted",
     legacy_wallmounted = true,
@@ -26,21 +26,21 @@ minetest.register_node("jeija:wall_button_on", {
         type = "wallmounted",
     },
     material = minetest.digprop_constanttime(0.3),
-    drop = '"jeija:wall_button_off" 1',
-    description="Button",
+    drop = '"jeija:wall_lever_off" 1',
+    description="Lever",
 })
 
 minetest.register_on_dignode(
     function(pos, oldnode, digger)
-        if oldnode.name == "jeija:wall_button_on" then
+        if oldnode.name == "jeija:wall_lever_on" then
             mesecon:receptor_off(pos)
         end    
     end
 )
 minetest.register_on_punchnode(function(pos, node, puncher)
-	if node.name == "jeija:wall_button_off" then
-		minetest.env:add_node(pos, {name="jeija:wall_button_on",param2=node.param2})
-		local rules_string=""
+	if node.name == "jeija:wall_lever_off" then
+		minetest.env:add_node(pos, {name="jeija:wall_lever_on",param2=node.param2})
+		local rules_string=nil
 		if node.param2 == 5 then
 			rules_string="button_z+"
 		end
@@ -55,15 +55,9 @@ minetest.register_on_punchnode(function(pos, node, puncher)
 		end
 		mesecon:receptor_on(pos, rules_string)
 	end
-end)
-minetest.register_abm({
-	nodenames = {"jeija:wall_button_on"},
-	interval = 0.1,
-	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		minetest.env:add_node(pos, {name="jeija:wall_button_off",param2=node.param2})
-
-		local rules_string=""
+	if node.name == "jeija:wall_lever_on" then
+		minetest.env:add_node(pos, {name="jeija:wall_lever_off",param2=node.param2})
+		local rules_string=nil
 		if node.param2 == 5 then
 			rules_string="button_z+"
 		end
@@ -76,14 +70,17 @@ minetest.register_abm({
 		if node.param2 == 2 then
 			rules_string="button_x-"
 		end
-        	mesecon:receptor_off(pos, rules_string)
+		mesecon:receptor_off(pos, rules_string)
 	end
-})
+end)
+
 minetest.register_craft({
-	output = '"jeija:wall_button_off" 2',
+	output = '"jeija:wall_lever_off" 2',
 	recipe = {
-		{'"jeija:mesecon_off"','"default:stone"'},
+	    {'"jeija:mesecon_off"'},
+		{'"default:stone"'},
+		{'"default:stick"'},
 	}
 })
-mesecon:add_receptor_node("jeija:wall_button")
-mesecon:add_receptor_node_off("jeija:wall_button_off")
+mesecon:add_receptor_node("jeija:wall_lever")
+mesecon:add_receptor_node_off("jeija:wall_lever_off")
