@@ -1,17 +1,18 @@
 --TEMPEREST-PLUG
 
 minetest.register_node("jeija:mesecon_plug", {
-	description = "Plug",
 	drawtype = "raillike",
 	paramtype = "light",
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_plug.png"},
 	inventory_image = "jeija_mesecon_plug.png",
+	wield_image = "jeija_mesecon_plug.png",
 	material = minetest.digprop_constanttime(0.1),
 	walkable = false,
 	selection_box = {
 		type = "fixed",
 	},
+	description = "Plug",
 })
 
 mesecon:register_on_signal_on(function(pos, node)
@@ -120,6 +121,7 @@ minetest.register_node("jeija:mesecon_socket_off", {
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_socket_off.png"},
 	inventory_image = "jeija_mesecon_socket_off.png",
+	wield_image = "jeija_mesecon_socket_off.png",
 	material = minetest.digprop_constanttime(0.1),
 	walkable = false,
 	selection_box = {
@@ -132,7 +134,6 @@ minetest.register_node("jeija:mesecon_socket_on", {
 	paramtype = "light",
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_socket_on.png"},
-	inventory_image = "jeija_mesecon_socket_on.png",
 	material = minetest.digprop_constanttime(0.1),
 	walkable = false,
 	selection_box = {
@@ -170,6 +171,7 @@ minetest.register_node("jeija:mesecon_inverter_off", {
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_inverter_off.png"},
 	inventory_image = "jeija_mesecon_inverter_off.png",
+	wield_image = "jeija_mesecon_inverter_off.png",
 	material = minetest.digprop_constanttime(0.1),
 	walkable = false,
 	selection_box = {
@@ -182,7 +184,6 @@ minetest.register_node("jeija:mesecon_inverter_on", {
 	paramtype = "light",
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_inverter_on.png"},
-	inventory_image = "jeija_mesecon_inverter_on.png",
 	material = minetest.digprop_constanttime(0.1),
 	walkable = false,
 	selection_box = {

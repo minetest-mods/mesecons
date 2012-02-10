@@ -82,6 +82,7 @@ minetest.register_node("jeija:mesecon_off", {
 	drawtype = "raillike",
 	tile_images = {"jeija_mesecon_off.png", "jeija_mesecon_curved_off.png", "jeija_mesecon_t_junction_off.png", "jeija_mesecon_crossing_off.png"},
 	inventory_image = "jeija_mesecon_off.png",
+	wield_image = "jeija_mesecon_off.png",
 	paramtype = "light",
 	is_ground_content = true,
 	walkable = false,
@@ -95,7 +96,6 @@ minetest.register_node("jeija:mesecon_off", {
 minetest.register_node("jeija:mesecon_on", {
 	drawtype = "raillike",
 	tile_images = {"jeija_mesecon_on.png", "jeija_mesecon_curved_on.png", "jeija_mesecon_t_junction_on.png", "jeija_mesecon_crossing_on.png"},
-	inventory_image = "jeija_mesecon_on.png",
 	paramtype = "light",
 	is_ground_content = true,
 	walkable = false,
@@ -105,7 +105,6 @@ minetest.register_node("jeija:mesecon_on", {
 	material = minetest.digprop_constanttime(0.1),
 	drop = '"jeija:mesecon_off" 1',
 	light_source = LIGHT_MAX-11,
-    	description="Mesecons",
 })
 
 minetest.register_craft({
@@ -666,6 +665,7 @@ minetest.register_node("jeija:solar_panel", {
 	drawtype = "raillike",
 	tile_images = {"jeija_solar_panel.png"},
 	inventory_image = "jeija_solar_panel.png",
+	wield_image = "jeija_solar_panel.png",
 	paramtype = "light",
 	walkable = false,
 	is_ground_content = true,
