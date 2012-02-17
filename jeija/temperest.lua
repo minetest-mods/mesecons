@@ -76,6 +76,7 @@ end
 mesecon:register_on_signal_on(plug_on)
 mesecon:register_on_signal_off(plug_off)
 
+minetest.register_on_placenode(plug_off)
 minetest.register_on_dignode(plug_off)
 
 minetest.register_craft({
@@ -114,7 +115,7 @@ minetest.register_node("jeija:mesecon_socket_on", {
 	selection_box = {
 		type = "fixed",
 	},
-	drop='node "jeija:mesecon_socket_off" 1',
+	drop='"jeija:mesecon_socket_off" 1',
 })
 
 minetest.register_on_dignode(
@@ -140,13 +141,26 @@ minetest.register_craft({
 --TEMPEREST-INVERTER
 
 minetest.register_node("jeija:mesecon_inverter_off", {
-	description = "Inverter",
 	drawtype = "raillike",
 	paramtype = "light",
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_inverter_off.png"},
-	inventory_image = "jeija_mesecon_inverter_off.png",
-	wield_image = "jeija_mesecon_inverter_off.png",
+	material = minetest.digprop_constanttime(0.1),
+	walkable = false,
+	selection_box = {
+		type = "fixed",
+	},
+	drop='"jeija:mesecon_inverter_on" 1',
+})
+
+minetest.register_node("jeija:mesecon_inverter_on", {
+	description = "Inverter",
+	drawtype = "raillike",
+	paramtype = "light",
+	is_ground_content = true,
+	tile_images = {"jeija_mesecon_inverter_on.png"},
+	inventory_image = "jeija_mesecon_inverter_on.png",
+	wield_image = "jeija_mesecon_inverter_on.png",
 	material = minetest.digprop_constanttime(0.1),
 	walkable = false,
 	selection_box = {
@@ -154,18 +168,10 @@ minetest.register_node("jeija:mesecon_inverter_off", {
 	},
 })
 
-minetest.register_node("jeija:mesecon_inverter_on", {
-	drawtype = "raillike",
-	paramtype = "light",
-	is_ground_content = true,
-	tile_images = {"jeija_mesecon_inverter_on.png"},
-	material = minetest.digprop_constanttime(0.1),
-	walkable = false,
-	selection_box = {
-		type = "fixed",
-	},
-	drop='node "jeija:mesecon_inverter_off" 1',
-})
+minetest.register_on_placenode(function(pos, node)
+	mesecon:receptor_on(pos)
+end
+)
 
 minetest.register_on_dignode(
 	function(pos, oldnode, digger)
@@ -179,7 +185,7 @@ mesecon:add_receptor_node("jeija:mesecon_inverter_on")
 mesecon:add_receptor_node_off("jeija:mesecon_inverter_off")
 
 minetest.register_craft({
-	output = 'node "jeija:mesecon_inverter_off" 2',
+	output = 'node "jeija:mesecon_inverter_on" 2',
 	recipe = {
 		{'node "jeija:mesecon_off"', 'craft "default:steel_ingot"', 'node "jeija:mesecon_off"'},
 		{'craft "default:steel_ingot"', '', 'craft "default:steel_ingot"'},
