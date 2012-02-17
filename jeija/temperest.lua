@@ -169,7 +169,9 @@ minetest.register_node("jeija:mesecon_inverter_on", {
 })
 
 minetest.register_on_placenode(function(pos, node)
-	mesecon:receptor_on(pos)
+	if node.name=="jeija:mesecon_inverter" then
+		mesecon:receptor_on(pos)
+	end
 end
 )
 
