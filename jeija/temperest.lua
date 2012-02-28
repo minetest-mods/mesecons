@@ -192,7 +192,7 @@ if ENABLE_TEMPEREST==1 then
 	})
 
 	minetest.register_on_placenode(function(pos, node)
-		if node.name=="jeija:mesecon_inverter" then
+		if node.name=="jeija:mesecon_inverter_on" then
 			mesecon:receptor_on(pos)
 		end
 	end
