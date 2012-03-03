@@ -700,7 +700,7 @@ minetest.register_abm(
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		local light = minetest.env:get_node_light(pos, nil)
 		if light == nil then light = 0 end
-		if light >= 13 then
+		if light >= 12 then
 			mesecon:receptor_on(pos)
 		else
 			mesecon:receptor_off(pos)
