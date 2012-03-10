@@ -72,6 +72,12 @@ local plug_on = function(pos, node)
 		local lnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
 		if lnode.name=="air" then set_node_on({x=pos.x+2, y=pos.y, z=pos.z}) end
 		
+		lnode = minetest.env:get_node({x=pos.x, y=pos.y-1, z=pos.z}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_on({x=pos.x, y=pos.y-2, z=pos.z}) end
+		
+		lnode = minetest.env:get_node({x=pos.x, y=pos.y+1, z=pos.z}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_on({x=pos.x, y=pos.y+2, z=pos.z}) end
+		
 		local lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z-1}) --a node between this node and the one two nodes away
 		if lnode.name=="air" then set_node_on({x=pos.x, y=pos.y, z=pos.z-2}) end
 		
@@ -87,6 +93,12 @@ local plug_off = function(pos, node)
 		
 		lnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) --a node between this node and the one two nodes away
 		if lnode.name=="air" then set_node_off({x=pos.x+2, y=pos.y, z=pos.z}) end
+		
+		lnode = minetest.env:get_node({x=pos.x, y=pos.y-1, z=pos.z}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_off({x=pos.x, y=pos.y-2, z=pos.z}) end
+		
+		lnode = minetest.env:get_node({x=pos.x, y=pos.y+1, z=pos.z}) --a node between this node and the one two nodes away
+		if lnode.name=="air" then set_node_off({x=pos.x, y=pos.y+2, z=pos.z}) end
 		
 		lnode = minetest.env:get_node({x=pos.x, y=pos.y, z=pos.z-1}) --a node between this node and the one two nodes away
 		if lnode.name=="air" then set_node_off({x=pos.x, y=pos.y, z=pos.z-2}) end
