@@ -32,7 +32,7 @@ minetest.register_alias("jeija:mesecon_socket_off", "mesecons_temperest:mesecon_
 minetest.register_alias("jeija:mesecon_inverter_on", "mesecons_temperest:mesecon_inverter_on")
 minetest.register_alias("jeija:mesecon_inverter_off", "mesecons_temperest:mesecon_inverter_off")
 
-minetest.register_alias("mesecons:meselamp", "mesecons_lamp:lamp")
+minetest.register_alias("mesecons:meselamp", "mesecons_lamp:lamp_off")
 minetest.register_alias("mesecons:mesecon", "mesecons:mesecon_off")
 minetest.register_alias("mesecons:object_detector", "mesecons_detector:object_detector_off")
 minetest.register_alias("mesecons:wireless_inverter", "mesecons_wireless:wireless_inverter_on")
