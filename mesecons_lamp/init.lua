@@ -16,7 +16,6 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 	},
 	material = minetest.digprop_constanttime(0.1),
 	drop='"mesecons_lamp:lamp_off" 1',
-    	description="Meselamp",
 })
 
 minetest.register_node("mesecons_lamp:lamp_off", {
@@ -44,3 +43,17 @@ minetest.register_craft({
 		{'', '"default:glass"', ''},
 	}
 })
+
+mesecon:register_on_signal_on(function(pos, node)
+	if node.name == "mesecons_lamp:lamp_off" then
+		minetest.env:add_node(pos, {name="mesecons_lamp:lamp_on"})
+		nodeupdate(pos)
+	end
+end)
+
+mesecon:register_on_signal_off(function(pos, node)
+	if node.name == "mesecons_lamp:lamp_on" then
+		minetest.env:add_node(pos, {name="mesecons_lamp:lamp_off"})
+		nodeupdate(pos)
+	end
+end)
