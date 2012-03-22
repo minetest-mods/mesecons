@@ -3,14 +3,14 @@
 minetest.register_node("mesecons_switch:mesecon_switch_off", {
 	tile_images = {"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_off.png"},
 	paramtype2="facedir",
-	material = minetest.digprop_constanttime(0.5),
+	groups = {dig_immediate=2},
     	description="Switch",
 })
 
 minetest.register_node("mesecons_switch:mesecon_switch_on", {
 	tile_images = {"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_on.png"},
 	paramtype2="facedir",
-	material = minetest.digprop_constanttime(0.5),
+	groups = {dig_immediate=2},
 	drop='"mesecons_switch:mesecon_switch_off" 1',
     	description="Switch",
 })

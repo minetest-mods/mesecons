@@ -7,7 +7,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_off", {
 	inventory_image = "jeija_blinky_plant_off.png",
 	paramtype = "light",
 	walkable = false,
-	material = minetest.digprop_leaveslike(0.2),
+	groups = {snappy=2},
     	description="Blinky Plant",
 })
 
@@ -18,7 +18,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	inventory_image = "jeija_blinky_plant_off.png",
 	paramtype = "light",
 	walkable = false,
-	material = minetest.digprop_leaveslike(0.2),
+	groups = {snappy=2},
 	drop='"mesecons_blinkyplant:blinky_plant_off" 1',
 	light_source = LIGHT_MAX-7,
     	description="Blinky Plant",

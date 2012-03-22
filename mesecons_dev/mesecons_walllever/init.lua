@@ -11,7 +11,7 @@ minetest.register_node("mesecons_walllever:wall_lever_off", {
     selection_box = {
         type = "wallmounted",
     },
-    material = minetest.digprop_constanttime(0.3),
+    groups = {dig_immediate=2},
     description="Lever",
 })
 minetest.register_node("mesecons_walllever:wall_lever_on", {
@@ -25,7 +25,7 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
     selection_box = {
         type = "wallmounted",
     },
-    material = minetest.digprop_constanttime(0.3),
+    groups = {dig_immediate=2},
     drop = '"mesecons_walllever:wall_lever_off" 1',
     description="Lever",
 })

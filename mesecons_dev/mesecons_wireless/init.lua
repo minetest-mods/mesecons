@@ -148,14 +148,14 @@ minetest.register_abm(
 minetest.register_node("mesecons_wireless:wireless_receiver_off", {
 	tile_images = {"jeija_wireless_receiver_tb_off.png", "jeija_wireless_receiver_tb_off.png", "jeija_wireless_receiver_off.png", "jeija_wireless_receiver_off.png", "jeija_wireless_receiver_off.png", "jeija_wireless_receiver_off.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_receiver_off.png"),
-	material = minetest.digprop_constanttime(0.8),
+	groups = {choppy=2},
     	description="Wireless Receiver",
 })
 
 minetest.register_node("mesecons_wireless:wireless_receiver_on", {
 	tile_images = {"jeija_wireless_receiver_tb_on.png", "jeija_wireless_receiver_tb_on.png", "jeija_wireless_receiver_on.png", "jeija_wireless_receiver_on.png", "jeija_wireless_receiver_on.png", "jeija_wireless_receiver_on.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_receiver_on.png"),
-	material = minetest.digprop_constanttime(0.8),
+	groups = {choppy=2},
 	drop = 'mesecons_wireless:wireless_receiver_off',
     	description="Wireless Receiver",
 })
@@ -216,7 +216,7 @@ mesecon:add_receptor_node_off("mesecons_wireless:wireless_receiver_off")
 minetest.register_node("mesecons_wireless:wireless_inverter_off", {
 	tile_images = {"jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_off.png", "jeija_wireless_inverter_off.png", "jeija_wireless_inverter_off.png", "jeija_wireless_inverter_off.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_inverter_off.png"),
-	material = minetest.digprop_constanttime(0.8),
+	groups = {choppy=2},
 	drop = 'mesecons_wireless:wireless_inverter_on',
     	description="Wireless Inverter",
 })
@@ -224,7 +224,7 @@ minetest.register_node("mesecons_wireless:wireless_inverter_off", {
 minetest.register_node("mesecons_wireless:wireless_inverter_on", {
 	tile_images = {"jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_on.png", "jeija_wireless_inverter_on.png", "jeija_wireless_inverter_on.png", "jeija_wireless_inverter_on.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_inverter_on.png"),
-	material = minetest.digprop_constanttime(0.8),
+	groups = {choppy=2},
     	description="Wireless Inverter",
 })
 
@@ -278,7 +278,7 @@ end
 minetest.register_node("mesecons_wireless:wireless_transmitter_on", {
 	tile_images = {"jeija_wireless_transmitter_tb.png", "jeija_wireless_transmitter_tb.png", "jeija_wireless_transmitter_on.png", "jeija_wireless_transmitter_on.png", "jeija_wireless_transmitter_on.png", "jeija_wireless_transmitter_on.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_transmitter_on.png"),
-	material = minetest.digprop_constanttime(0.8),
+	groups = {choppy=2},
 	drop = {'"mesecons_wireless:wireless_transmitter_off" 1'},
     	description="Wireless Transmitter",
 })
@@ -286,7 +286,7 @@ minetest.register_node("mesecons_wireless:wireless_transmitter_on", {
 minetest.register_node("mesecons_wireless:wireless_transmitter_off", {
 	tile_images = {"jeija_wireless_transmitter_tb.png", "jeija_wireless_transmitter_tb.png", "jeija_wireless_transmitter_off.png", "jeija_wireless_transmitter_off.png", "jeija_wireless_transmitter_off.png", "jeija_wireless_transmitter_off.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_transmitter_off.png"),
-	material = minetest.digprop_constanttime(0.8),
+	groups = {choppy=2},
     	description="Wireless Transmitter",
 })
 

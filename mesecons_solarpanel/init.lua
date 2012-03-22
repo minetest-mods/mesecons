@@ -11,7 +11,7 @@ minetest.register_node("mesecons_solarpanel:solar_panel", {
 		type = "fixed",
 	},
 	furnace_burntime = 5,
-	material = minetest.digprop_dirtlike(0.1),
+	groups = {snappy=2},
     	description="Solar Panel",
 })
 

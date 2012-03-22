@@ -85,7 +85,7 @@ minetest.register_node("mesecons:mesecon_off", {
 	selection_box = {
 		type = "fixed",
 	},
-	material = minetest.digprop_constanttime(0.1),
+	groups = {dig_immediate=3},
     	description="Mesecons",
 })
 
@@ -98,7 +98,7 @@ minetest.register_node("mesecons:mesecon_on", {
 	selection_box = {
 		type = "fixed",
 	},
-	material = minetest.digprop_constanttime(0.1),
+	groups = {dig_immediate=3},
 	drop = '"mesecons:mesecon_off" 1',
 	light_source = LIGHT_MAX-11,
 })

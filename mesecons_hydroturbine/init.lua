@@ -2,14 +2,14 @@
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 	tile_images = {"jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png"},
-	material = minetest.digprop_constanttime(0.5),
+	groups = {dig_immediate=2},
     	description="Water Turbine",
 })
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 	tile_images = {"jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png"},
 	drop = '"mesecons_hydroturbine:hydro_turbine_off" 1',
-	material = minetest.digprop_constanttime(0.5),
+	groups = {dig_immediate=2},
     	description="Water Turbine",
 })
 

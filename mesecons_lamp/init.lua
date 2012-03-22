@@ -14,7 +14,7 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 		--type = "fixed",
 		fixed = {-0.38, -0.5, -0.1, 0.38, -0.2, 0.1},
 	},
-	material = minetest.digprop_constanttime(0.1),
+	groups = {dig_immediate=3},
 	drop='"mesecons_lamp:lamp_off" 1',
 })
 
@@ -31,7 +31,7 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 		--type = "fixed",
 		fixed = {-0.38, -0.5, -0.1, 0.38, -0.2, 0.1},
 	},
-	material = minetest.digprop_constanttime(0.1),
+	groups = {dig_immediate=3},
     	description="Meselamp",
 })
 

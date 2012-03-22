@@ -3,7 +3,7 @@ minetest.register_node("mesecons_detector:object_detector_off", {
 	tile_images = {"default_steel_block.png", "default_steel_block.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png"},
 	paramtype = "light",
 	walkable = true,
-	material = minetest.digprop_stonelike(4),
+	groups = {cracky=3},
 	description="Player Detector",
 })
 
@@ -11,7 +11,7 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	tile_images = {"default_steel_block.png", "default_steel_block.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png"},
 	paramtype = "light",
 	walkable = true,
-	material = minetest.digprop_stonelike(4),
+	groups = {cracky=3},
 	drop = '"mesecons_detector:object_detector_off" 1',
 	description="Player Detector",
 })

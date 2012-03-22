@@ -9,7 +9,7 @@ minetest.register_node("mesecons_button:button_off", {
     selection_box = {
         type = "wallmounted",
     },
-    material = minetest.digprop_constanttime(0.3),
+    groups = {dig_immediate=2},
     description="Button",
 })
 minetest.register_node("mesecons_button:button_on", {
@@ -22,7 +22,7 @@ minetest.register_node("mesecons_button:button_on", {
     selection_box = {
         type = "wallmounted",
     },
-    material = minetest.digprop_constanttime(0.3),
+    groups = {dig_immediate=2},
     drop = '"mesecons_button:button_off" 1',
     description="Button",
 })

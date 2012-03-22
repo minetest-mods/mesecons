@@ -16,7 +16,7 @@ minetest.register_node("mesecons_torch:mesecon_torch_off", {
     walkable = false,
     paramtype2 = "wallmounted",
     legacy_wallmounted = true,
-    material = minetest.digprop_constanttime(0.5),
+    groups = {dig_immediate=2},
     drop = '"mesecons_torch:mesecon_torch_on" 1',
     description="Mesecon Torch",
 })
@@ -31,7 +31,7 @@ minetest.register_node("mesecons_torch:mesecon_torch_on", {
     walkable = false,
     paramtype2 = "wallmounted",
     legacy_wallmounted = true,
-    material = minetest.digprop_constanttime(0.5),
+    groups = {dig_immediate=2},
     light_source = LIGHT_MAX-5,
     description="Mesecon Torch",
 })
