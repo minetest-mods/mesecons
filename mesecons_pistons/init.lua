@@ -2,7 +2,7 @@
 --registration normal one:
 minetest.register_node("mesecons_pistons:piston_normal", {
 	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png"},
-	groups = {crackly=3},
+	groups = {cracky=3},
 	paramtype2="facedir",
     	description="Piston",
 })
@@ -19,7 +19,7 @@ minetest.register_craft({
 --registration sticky one:
 minetest.register_node("mesecons_pistons:piston_sticky", {
 	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png"},
-	groups = {crackly=3},
+	groups = {cracky=3},
 	paramtype2="facedir",
     	description="Sticky Piston",
 })
