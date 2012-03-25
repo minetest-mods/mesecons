@@ -35,6 +35,8 @@ minetest.register_alias("jeija:mesecon_socket_on", "mesecons_temperest:mesecon_s
 minetest.register_alias("jeija:mesecon_socket_off", "mesecons_temperest:mesecon_socket_off")
 minetest.register_alias("jeija:mesecon_inverter_on", "mesecons_temperest:mesecon_inverter_on")
 minetest.register_alias("jeija:mesecon_inverter_off", "mesecons_temperest:mesecon_inverter_off")
+minetest.register_alias("jeija:movestone", "mesecons_movestones:movestone")
+minetest.register_alias("jeija:sticky_movestone", "mesecons_movestones:sticky_movestone")
 
 minetest.register_alias("mesecons:power_plant", "mesecons_powerplant:power_plant")
 minetest.register_alias("mesecons:powerplant", "mesecons_powerplant:power_plant")
@@ -54,3 +56,5 @@ minetest.register_alias("mesecons:pressure_plate_stone", "mesecons_pressureplate
 minetest.register_alias("mesecons:pressure_plate_wood", "mesecons_pressureplates:pressure_plate_wood_off")
 minetest.register_alias("mesecons:mesecon_socket", "mesecons_temperest:mesecon_socket_off")
 minetest.register_alias("mesecons:mesecon_inverter", "mesecons_temperest:mesecon_inverter_on")
+minetest.register_alias("mesecons:movestone", "mesecons_movestones:movestone")
+minetest.register_alias("mesecons:sticky_movestone", "mesecons_movestones:sticky_movestone")
