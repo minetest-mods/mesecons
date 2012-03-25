@@ -2,13 +2,13 @@ function mesecon:lightstone_add(name, base_item, texture_off, texture_on)
     minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_off", {
 	    tile_images = {texture_off},
 	    inventory_image = minetest.inventorycube(texture_off),
-	    groups = {crackly=2},
+	    groups = {cracky=2},
     	    description=name.." Lightstone",
     })
     minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_on", {
 	    tile_images = {texture_on},
 	    inventory_image = minetest.inventorycube(texture_on),
-	    groups = {crackly=2},
+	    groups = {cracky=2},
 	    drop = "node mesecons_lightstone:lightstone_" .. name .. "_off 1",
 	    light_source = LIGHT_MAX-2,
     	    description=name.." Lightstone",

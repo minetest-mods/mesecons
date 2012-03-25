@@ -44,7 +44,7 @@ minetest.register_node("mesecons_movestones:movestone", {
 	tile_images = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_arrows.png", "jeija_movestone_arrows.png"},
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
-	groups = {crackly=3},
+	groups = {cracky=3},
     	description="Movestone",
 })
 
@@ -153,7 +153,7 @@ minetest.register_node("mesecons_movestones:sticky_movestone", {
 	inventory_image = minetest.inventorycube("jeija_sticky_movestone.png", "jeija_movestone_side.png", "jeija_movestone_side.png"),
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
-	groups = {crackly=3},
+	groups = {cracky=3},
     	description="Sticky Movestone",
 })
 
