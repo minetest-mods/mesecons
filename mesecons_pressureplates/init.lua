@@ -11,7 +11,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_off", {
 	selection_box = {
 		type = "fixed",
 	},
-	groups = {choppy=2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
     	description="Wood Pressure Plate",
 })
 
@@ -24,7 +24,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 	selection_box = {
 		type = "fixed",
 	},
-	groups = {choppy=2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
 	drop='"mesecons_pressureplates:pressure_plate_wood_off" 1',
 })
 
@@ -88,7 +88,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_off", {
 	selection_box = {
 		type = "fixed",
 	},
-	groups = {choppy=2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
     	description="Stone Pressure Plate",
 })
 
@@ -101,7 +101,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
 	selection_box = {
 		type = "fixed",
 	},
-	groups = {choppy=2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
 	drop='"mesecons_pressureplates:pressure_plate_stone_off" 1',
 })
 
