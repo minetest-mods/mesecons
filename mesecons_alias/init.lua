@@ -1,6 +1,7 @@
 -- This file registers aliases for the /give /giveme commands.
 
 minetest.register_alias("jeija:power_plant", "mesecons_powerplant:power_plant")
+minetest.register_alias("jeija:removestone", "mesecons_random:removestone")
 minetest.register_alias("jeija:meselamp_off", "mesecons_lamp:lamp_off")
 minetest.register_alias("jeija:meselamp_on", "mesecons_lamp:lamp_on")
 minetest.register_alias("jeija:mesecon_off", "mesecons:mesecon_off")
@@ -38,6 +39,7 @@ minetest.register_alias("jeija:mesecon_inverter_off", "mesecons_temperest:meseco
 minetest.register_alias("jeija:movestone", "mesecons_movestones:movestone")
 minetest.register_alias("jeija:sticky_movestone", "mesecons_movestones:sticky_movestone")
 
+minetest.register_alias("mesecons:removestone", "mesecons_random:removestone")
 minetest.register_alias("mesecons:power_plant", "mesecons_powerplant:power_plant")
 minetest.register_alias("mesecons:powerplant", "mesecons_powerplant:power_plant")
 minetest.register_alias("mesecons:meselamp", "mesecons_lamp:lamp_off")
