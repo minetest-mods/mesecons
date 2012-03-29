@@ -132,7 +132,6 @@ minetest.register_on_punchnode(function (pos, node)
 end)
 
 mesecon.delayer_signal_change = function(pos, node)
-	print "CHANGE"
 	if string.find(node.name, "mesecons_delayer:delayer_off")~=nil then
 		np={x=pos.x-1, y=pos.y, z=pos.z}
 		nn=minetest.env:get_node(np)
