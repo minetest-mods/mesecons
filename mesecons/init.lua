@@ -115,24 +115,16 @@ minetest.register_craft({
 	}
 })
 
-function mesecon:is_power_on(p, x, y, z)
-	local lpos = {}
-	lpos.x=p.x+x
-	lpos.y=p.y+y
-	lpos.z=p.z+z
-	local node = minetest.env:get_node(lpos)
+function mesecon:is_power_on(pos)
+	local node = minetest.env:get_node(pos)
 	if node.name == "mesecons:mesecon_on" or mesecon:is_receptor_node(node.name) then
-		return 1
+		return true
 	end
-	return 0
+	return false
 end
 
-function mesecon:is_power_off(p, x, y, z)
-	local lpos = {}
-	lpos.x=p.x+x
-	lpos.y=p.y+y
-	lpos.z=p.z+z
-	local node = minetest.env:get_node(lpos)
+function mesecon:is_power_off(pos)
+	local node = minetest.env:get_node(pos)
 	if node.name == "mesecons:mesecon_off" or mesecon:is_receptor_node_off(node.name) then
 		return 1
 	end
@@ -229,7 +221,7 @@ function mesecon:connected_to_pw_src(pos, x, y, z, checked, firstcall)
 		checked[i].y=lpos.y
 		checked[i].z=lpos.z
 
-		if mesecon:is_receptor_node(node.name) == true then -- receptor nodes (power sources) can be added using mesecon:add_receptor_node
+		if mesecon:is_receptor_node(node.name, lpos, pos) == true then -- receptor nodes (power sources) can be added using mesecon:add_receptor_node
 			return 1
 		end
 
@@ -250,16 +242,34 @@ function mesecon:connected_to_pw_src(pos, x, y, z, checked, firstcall)
 end
 
 function mesecon:check_if_turnon(pos)
-	local getactivated=0
-	local rules=mesecon:get_rules("default")
 	local i=1
-	while rules[i]~=nil do
-		getactivated=getactivated+mesecon:is_power_on(pos, rules[i].x, rules[i].y, rules[i].z)
+	local j=1
+	local k=1
+	local rcpt
+	local rcpt_pos={}
+	local rules
+
+	rules=mesecon:get_rules("default")
+	while rules[k]~=nil do
+		if minetest.env:get_node({x=pos.x+rules[k].x, y=pos.y+rules[k].y, z=pos.z+rules[k].z}).name=="mesecons:mesecon_on" then
+			return true
+		end
+		k=k+1
+	end
+
+	while mesecon.rules[i]~=nil do
+		j=1
+		while mesecon.rules[i].rules[j]~=nil do
+			rcpt_pos={x=pos.x-mesecon.rules[i].rules[j].x, y=pos.y-mesecon.rules[i].rules[j].y, z=pos.z-mesecon.rules[i].rules[j].z}
+			rcpt=minetest.env:get_node(rcpt_pos)
+			if mesecon:is_receptor_node(rcpt.name, rcpt_pos, pos) then 
+				return true 
+			end
+			j=j+1
+		end
 		i=i+1
 	end
-	if getactivated > 0 then
-		return true
-	end
+	
 	return false
 end
 
@@ -283,22 +293,34 @@ minetest.register_on_dignode(
 
 -- API API API API API API API API API API API API API API API API API API
 
-function mesecon:add_receptor_node(nodename)
+function mesecon:add_receptor_node(nodename, rules, get_rules) --rules table is optional; if rules depend on param2 pass (nodename, nil, function get_rules)
 	local i=1
 	repeat
-		i=i+1
 		if mesecon.pwr_srcs[i]==nil then break end
+		i=i+1
 	until false
-	mesecon.pwr_srcs[i]=nodename
+	if get_rules==nil and rules==nil then
+		rules=mesecon:get_rules("default")
+	end
+	mesecon.pwr_srcs[i]={}
+	mesecon.pwr_srcs[i].name=nodename
+	mesecon.pwr_srcs[i].rules=rules
+	mesecon.pwr_srcs[i].get_rules=get_rules
 end
 
-function mesecon:add_receptor_node_off(nodename)
+function mesecon:add_receptor_node_off(nodename, rules, get_rules)
 	local i=1
 	repeat
-		i=i+1
 		if mesecon.pwr_srcs_off[i]==nil then break end
+		i=i+1
 	until false
-	mesecon.pwr_srcs_off[i]=nodename
+	if get_rules==nil and rules==nil then
+		rules=mesecon:get_rules("default")
+	end
+	mesecon.pwr_srcs_off[i]={}
+	mesecon.pwr_srcs_off[i].name=nodename
+	mesecon.pwr_srcs_off[i].rules=rules
+	mesecon.pwr_srcs_off[i].get_rules=get_rules
 end
 
 function mesecon:receptor_on(pos, rules)
@@ -332,20 +354,60 @@ end
 -- INTERNAL API
 
 
-function mesecon:is_receptor_node(nodename)
+function mesecon:is_receptor_node(nodename, pos, ownpos) --ownpos must be position of the effector/mesecon NOT of the receptor node; pos is the receptor position
 	local i=1
+	local j=1
 	repeat
+		if mesecon.pwr_srcs[i].name==nodename then
+			if pos==nil and ownpos==nil then --old usage still possible
+				return true
+			end
+			local rules=mesecon.pwr_srcs[i].rules
+			local node=minetest.env:get_node(pos)
+			if rules==nil then
+				rules=mesecon.pwr_srcs[i].get_rules(node.param2)
+			end
+
+			j=1
+			while rules[j]~=nil do --Check if dest. position is specified in the receptor's rules
+				if pos.x+rules[j].x==ownpos.x
+				and pos.y+rules[j].y==ownpos.y
+				and pos.z+rules[j].z==ownpos.z then
+					return true
+				end
+				j=j+1
+			end
+		end
 		i=i+1
-		if mesecon.pwr_srcs[i]==nodename then return true end
 	until mesecon.pwr_srcs[i]==nil
 	return false
 end
 
-function mesecon:is_receptor_node_off(nodename)
+function mesecon:is_receptor_node_off(nodename, pos, ownpos) --ownpos must be position of the effector/mesecon NOT of the receptor node; pos is the receptor position
 	local i=1
+	local j=1
 	repeat
+		if mesecon.pwr_srcs_off[i].name==nodename then
+			if pos==nil and ownpos==nil then --old usage still possible
+				return true
+			end
+			local rules=mesecon.pwr_srcs_off[i].rules
+			local node=minetest.env:get_node(pos)
+			if rules==nil then
+				rules=mesecon.pwr_srcs_off[i].get_rules(node.param2)
+			end
+
+			j=1
+			while rules[j]~=nil do
+				if pos.x+rules[j].x==ownpos.x
+				and pos.y+rules[j].y==ownpos.y
+				and pos.z+rules[j].z==ownpos.z then
+					return true
+				end
+				j=j+1
+			end
+		end
 		i=i+1
-		if mesecon.pwr_srcs_off[i]==nodename then return true end
 	until mesecon.pwr_srcs_off[i]==nil
 	return false
 end
@@ -410,7 +472,6 @@ function mesecon:get_rules(name)
 		i=i+1
 	end
 end
-
 
 mesecon:add_rules("default", 
 {{x=0,  y=0,  z=-1},
