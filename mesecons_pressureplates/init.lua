@@ -151,3 +151,19 @@ minetest.register_on_dignode(
 
 mesecon:add_receptor_node("mesecons_pressureplates:pressure_plate_stone_on")
 mesecon:add_receptor_node_off("mesecons_pressureplates:pressure_plate_stone_off")
+
+mesecon:add_rules("pressureplate", 
+{{x=0,  y=1,  z=-1},
+{x=0,  y=0,  z=-1},
+{x=0,  y=-1, z=-1},
+{x=0,  y=1,  z=1},
+{x=0,  y=-1, z=1},
+{x=0,  y=0,  z=1},
+{x=1,  y=0,  z=0},
+{x=1,  y=1,  z=0},
+{x=1,  y=-1, z=0},
+{x=-1, y=1,  z=0},
+{x=-1, y=-1, z=0},
+{x=-1, y=0,  z=0},
+{x=0, y=-1,  z=0},
+{x=0, y=1,  z=0}})
