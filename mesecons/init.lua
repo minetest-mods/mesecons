@@ -72,6 +72,7 @@ dofile(minetest.get_modpath("mesecons").."/settings.lua")
 mesecon={} -- contains all functions and all global variables
 mesecon.actions_on={} -- Saves registered function callbacks for mesecon on
 mesecon.actions_off={} -- Saves registered function callbacks for mesecon off
+mesecon.actions_change={} -- Saves registered function callbacks for mesecon change
 mesecon.pwr_srcs={}
 mesecon.pwr_srcs_off={}
 mesecon.rules={}
@@ -140,6 +141,7 @@ function mesecon:turnon(p, x, y, z, firstcall, rules)
 	lpos.y=p.y+y
 	lpos.z=p.z+z
 
+	mesecon:changesignal(lpos)
 	mesecon:activate(lpos)
 
 	local node = minetest.env:get_node(lpos)
@@ -170,6 +172,8 @@ function mesecon:turnoff(pos, x, y, z, firstcall, rules)
 	local connected = 0
 	local checked = {}
 
+	--Send Signals to effectors:
+	mesecon:changesignal(lpos)
 	if not mesecon:check_if_turnon(lpos) then
 		mesecon:deactivate(lpos)
 	end
@@ -278,6 +282,7 @@ minetest.register_on_placenode(function(pos, newnode, placer)
 		if newnode.name == "mesecons:mesecon_off" then
 			mesecon:turnon(pos, 0, 0, 0)		
 		else
+			mesecon:changesignal(pos)
 			mesecon:activate(pos)
 		end
 	end
@@ -347,6 +352,15 @@ function mesecon:register_on_signal_off(action)
 		if mesecon.actions_off[i]==nil then break end
 	until false
 	mesecon.actions_off[i]=action
+end
+
+function mesecon:register_on_signal_change(action)
+	local i	= 1	
+	repeat
+		i=i+1
+		if mesecon.actions_change[i]==nil then break end
+	until false
+	mesecon.actions_change[i]=action
 end
 
 
@@ -427,10 +441,20 @@ end
 function mesecon:deactivate(pos)
 	local node = minetest.env:get_node(pos)	
 	local i = 1
-	local checked={}		
 	repeat
 		i=i+1
 		if mesecon.actions_off[i]~=nil then mesecon.actions_off[i](pos, node) 
+		else break			
+		end
+	until false
+end
+
+function mesecon:changesignal(pos)
+	local node = minetest.env:get_node(pos)	
+	local i = 1
+	repeat
+		i=i+1
+		if mesecon.actions_change[i]~=nil then mesecon.actions_change[i](pos, node) 
 		else break			
 		end
 	until false
