@@ -45,7 +45,7 @@ minetest.register_abm(
 			local objpos=obj:getpos()
 			if objpos.y>pos.y-1 and objpos.y<pos.y then
 				minetest.env:add_node(pos, {name="mesecons_pressureplates:pressure_plate_wood_on"})
-				mesecon:receptor_on(pos, "pressureplate")
+				mesecon:receptor_on(pos, mesecon:get_rules("pressureplate"))
 			end
 		end	
 	end,
@@ -59,7 +59,7 @@ minetest.register_abm(
 		local objs = minetest.env:get_objects_inside_radius(pos, 1)
 		if objs[1]==nil then
 			minetest.env:add_node(pos, {name="mesecons_pressureplates:pressure_plate_wood_off"})
-			mesecon:receptor_off(pos, "pressureplate")
+			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
 		end
 	end,
 })
@@ -67,7 +67,7 @@ minetest.register_abm(
 minetest.register_on_dignode(
 	function(pos, oldnode, digger)
 		if oldnode.name == "mesecons_pressureplates:pressure_plate_wood_on" then
-			mesecon:receptor_off(pos, "pressureplate")
+			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
 		end	
 	end
 )
@@ -122,7 +122,7 @@ minetest.register_abm(
 			local objpos=obj:getpos()
 			if objpos.y>pos.y-1 and objpos.y<pos.y then
 				minetest.env:add_node(pos, {name="mesecons_pressureplates:pressure_plate_stone_on"})
-				mesecon:receptor_on(pos, "pressureplate")
+				mesecon:receptor_on(pos, mesecon:get_rules("pressureplate"))
 			end
 		end	
 	end,
@@ -136,7 +136,7 @@ minetest.register_abm(
 		local objs = minetest.env:get_objects_inside_radius(pos, 1)
 		if objs[1]==nil then
 			minetest.env:add_node(pos, {name="mesecons_pressureplates:pressure_plate_stone_off"})
-			mesecon:receptor_off(pos, "pressureplate")
+			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
 		end
 	end,
 })
@@ -144,7 +144,7 @@ minetest.register_abm(
 minetest.register_on_dignode(
 	function(pos, oldnode, digger)
 		if oldnode.name == "mesecons_pressureplates:pressure_plate_stone_on" then
-			mesecon:receptor_off(pos, "pressureplate")
+			mesecon:receptor_off(pos, mesecons:get_rules("pressureplate"))
 		end	
 	end
 )
@@ -166,4 +166,5 @@ mesecon:add_rules("pressureplate",
 {x=-1, y=-1, z=0},
 {x=-1, y=0,  z=0},
 {x=0, y=-1,  z=0},
+{x=0, y=-2,  z=0},
 {x=0, y=1,  z=0}})

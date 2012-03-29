@@ -40,7 +40,7 @@ minetest.register_abm(
 				end
 				local objpos=obj:getpos()
 				minetest.env:add_node(pos, {name="mesecons_detector:object_detector_on"})
-				mesecon:receptor_on(pos, "pressureplate")
+				mesecon:receptor_on(pos, mesecon:get_rules("pressureplate"))
 			end
 		end	
 	end,
@@ -68,7 +68,7 @@ minetest.register_abm(
 		end	
 		if objectfound==0 then
 			minetest.env:add_node(pos, {name="mesecons_detector:object_detector_off"})
-			mesecon:receptor_off(pos, "pressureplate")
+			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
 		end
 	end,
 })
@@ -76,7 +76,7 @@ minetest.register_abm(
 minetest.register_on_dignode(
 	function(pos, oldnode, digger)
 		if oldnode.name == "mesecons_detector:object_detector_on" then
-			mesecon:receptor_off(pos, "pressureplate")
+			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
 		end	
 	end
 )
