@@ -35,6 +35,11 @@
 --		mesecon:receptor_off(pos, rules) } as their parameter.
 --
 --You can specify the rules using the rules parameter. If you don't want special rules, just leave it out
+--e.g. if you want to use the "pressureplate" rules, you use this command:
+--mesecon:receptor_on (pos, mesecon:get_rules("pressureplate"))
+--The rules can be manipulated by several rotate functions:
+--rules=mesecon:rotate_rules_right/left/up/down(rules)
+--
 --
 --!! If a receptor node is removed, the circuit should be recalculated. This means you have to
 --send an mesecon:receptor_off signal to the api when the function in minetest.register_on_dignode
