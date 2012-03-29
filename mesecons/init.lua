@@ -460,23 +460,6 @@ function mesecon:changesignal(pos)
 	until false
 end
 
-
-mesecon:register_on_signal_on(function(pos, node)
-	if node.name=="mesecons:meselamp_off" then
-		--minetest.env:remove_node(pos)
-		minetest.env:add_node(pos, {name="mesecons:meselamp_on"})
-		nodeupdate(pos)
-	end
-end)
-
-mesecon:register_on_signal_off(function(pos, node)
-	if node.name=="mesecons:meselamp_on" then
-		--minetest.env:remove_node(pos)
-		minetest.env:add_node(pos, {name="mesecons:meselamp_off"})
-		nodeupdate(pos)
-	end
-end)
-
 function mesecon:add_rules(name, rules)
 	local i=0
 	while mesecon.rules[i]~=nil do
