@@ -46,34 +46,33 @@ end)]]
 
 minetest.register_abm({
     nodenames = {"mesecons_torch:mesecon_torch_off","mesecons_torch:mesecon_torch_on"},
-    interval = 0.1,
+    interval = 1,
     chance = 1,
     action = function(pos, node, active_object_count, active_object_count_wider)
         local pa = {x=0, y=0, z=0}
 	    --pa.y = 1
-	    local rules_string=""
+	    local rules=mesecon:get_rules("mesecontorch")
 
 	    if node.param2 == 4 then
-		    pa.z = -2
-		    rules_string="mesecontorch_z+"
+		pa.z = -2
+		rules=mesecon:rotate_rules_right(rules)
 	    elseif node.param2 == 2 then
-		    pa.x = -2
-		    rules_string="mesecontorch_x+"
+		pa.x = -2
+		rules=mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules)) --180 degrees
 	    elseif node.param2 == 5 then
-		    pa.z = 2
-		    rules_string="mesecontorch_z-"
+		pa.z = 2
+		rules=mesecon:rotate_rules_left(rules)
 	    elseif node.param2 == 3 then
-		    pa.x = 2
-		    rules_string="mesecontorch_x-"
+		 pa.x = 2
 	    elseif node.param2 == 1 then
-		    pa.y = 2
-		    rules_string="mesecontorch_y-"
+		pa.y = 2
+		rules=mesecon:rotate_rules_down(rules)
         elseif node.param2 == 0 then
-		    pa.y = -2
-		    rules_string="mesecontorch_y+"
+		pa.y = -2
+		rules=mesecon:rotate_rules_up(rules)
         end
+
         local postc = {x=pos.x-pa.x, y=pos.y-pa.y, z=pos.z-pa.z}
-        --print("Checking at "..dump(postc).." with "..rules_string)
         if mesecon:is_power_on(postc,0,0,0)==1 then
             if node.name ~= "mesecons_torch:mesecon_torch_off" then
                 minetest.env:add_node(pos, {name="mesecons_torch:mesecon_torch_off",param2=node.param2})
@@ -98,25 +97,28 @@ minetest.register_on_dignode(
 
 minetest.register_on_placenode(function(pos, node, placer)
 	if node.name == "mesecons_torch:mesecon_torch_on" then
-		local rules_string=""
-
+		local rules=mesecon:get_rules("mesecontorch")
 		if node.param2 == 4 then
-		    rules_string="mesecontorch_z+"
-	    elseif node.param2 == 2 then
-		    rules_string="mesecontorch_x+"
-	    elseif node.param2 == 5 then
-		    rules_string="mesecontorch_z-"
-	    elseif node.param2 == 3 then
-		    rules_string="mesecontorch_x-"
-	    elseif node.param2 == 1 then
-		    rules_string="mesecontorch_y-"
-        elseif node.param2 == 0 then
-		    rules_string="mesecontorch_y+"
-        end
-		
-		mesecon:receptor_on(pos, rules_string)
+			rules=mesecon:rotate_rules_right(rules)
+		elseif node.param2 == 2 then
+			rules=mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules)) --180 degrees
+		elseif node.param2 == 5 then
+			rules=mesecon:rotate_rules_left(rules)
+		elseif node.param2 == 1 then
+			rules=mesecon:rotate_rules_down(rules)
+		elseif node.param2 == 0 then
+			rules=mesecon:rotate_rules_up(rules)
+		end
+		mesecon:receptor_on(pos, rules)
 	end
 end)
+
+mesecon:add_rules("mesecontorch", 
+{{x=1,  y=0,  z=0},
+{x=0,  y=0,  z=1},
+{x=0,  y=0,  z=-1},
+{x=0,  y=1,  z=0},
+{x=0,  y=-1,  z=0}})
 
 mesecon:add_receptor_node("mesecons_torch:mesecon_torch_on")
 mesecon:add_receptor_node_off("mesecons_torch:mesecon_torch_off")

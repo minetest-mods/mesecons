@@ -63,13 +63,13 @@
 -- INCLUDE SETTINGS
 dofile(minetest.get_modpath("mesecons").."/settings.lua")
 
-
 -- PUBLIC VARIABLES
 mesecon={} -- contains all functions and all global variables
 mesecon.actions_on={} -- Saves registered function callbacks for mesecon on
 mesecon.actions_off={} -- Saves registered function callbacks for mesecon off
-mesecon.pwr_srcs={} -- this is public for now
-mesecon.pwr_srcs_off={} -- this is public for now
+mesecon.pwr_srcs={}
+mesecon.pwr_srcs_off={}
+mesecon.rules={}
 
 
 -- MESECONS
@@ -136,7 +136,7 @@ end
 
 function mesecon:turnon(p, x, y, z, firstcall, rules)
 	if rules==nil then
-		rules="default"
+		rules=mesecon:get_rules("default")
 	end
 	local lpos = {}
 	lpos.x=p.x+x
@@ -152,10 +152,9 @@ function mesecon:turnon(p, x, y, z, firstcall, rules)
 		nodeupdate(lpos)
 	end
 	if node.name == "mesecons:mesecon_off" or firstcall then
-		local rules=mesecon:get_rules(rules)
 		local i=1
 		while rules[i]~=nil do 
-			mesecon:turnon(lpos, rules[i].x, rules[i].y, rules[i].z, false, "default")
+			mesecon:turnon(lpos, rules[i].x, rules[i].y, rules[i].z, false)
 			i=i+1
 		end
 	end
@@ -163,7 +162,7 @@ end
 
 function mesecon:turnoff(pos, x, y, z, firstcall, rules)
 	if rules==nil then
-		rules="default"
+		rules=mesecon:get_rules("default")
 	end
 	local lpos = {}
 	lpos.x=pos.x+x
@@ -191,10 +190,9 @@ function mesecon:turnoff(pos, x, y, z, firstcall, rules)
 
 	if node.name == "mesecons:mesecon_on" or firstcall then
 		if connected == 0 then
-			local rules=mesecon:get_rules(rules)
 			local i=1
 			while rules[i]~=nil do 
-				mesecon:turnoff(lpos, rules[i].x, rules[i].y, rules[i].z, false, "default")
+				mesecon:turnoff(lpos, rules[i].x, rules[i].y, rules[i].z, false)
 				i=i+1
 			end
 		end
@@ -250,7 +248,7 @@ function mesecon:check_if_turnon(pos)
 	local getactivated=0
 	local rules=mesecon:get_rules("default")
 	local i=1
-	while rules[i]~=nil do 
+	while rules[i]~=nil do
 		getactivated=getactivated+mesecon:is_power_on(pos, rules[i].x, rules[i].y, rules[i].z)
 		i=i+1
 	end
@@ -388,137 +386,94 @@ mesecon:register_on_signal_off(function(pos, node)
 	end
 end)
 
--- mesecon rules
-function mesecon:get_rules(name)
-	local rules={}
-	rules[0]="dummy"
-	if name=="default" then	
-		table.insert(rules, {x=0,  y=0,  z=-1})
-		table.insert(rules, {x=1,  y=0,  z=0})
-		table.insert(rules, {x=-1, y=0,  z=0})
-		table.insert(rules, {x=0,  y=0,  z=1})
-		table.insert(rules, {x=1,  y=1,  z=0})
-		table.insert(rules, {x=1,  y=-1, z=0})
-		table.insert(rules, {x=-1, y=1,  z=0})
-		table.insert(rules, {x=-1, y=-1, z=0})
-		table.insert(rules, {x=0,  y=1,  z=1})
-		table.insert(rules, {x=0,  y=-1, z=1})
-		table.insert(rules, {x=0,  y=1,  z=-1})
-		table.insert(rules, {x=0,  y=-1, z=-1})
+function mesecon:add_rules(name, rules)
+	local i=0
+	while mesecon.rules[i]~=nil do
+		i=i+1
 	end
-	if name=="movestone" then
-		table.insert(rules, {x=0,  y=1,  z=-1})
-		table.insert(rules, {x=0,  y=0,  z=-1})
-		table.insert(rules, {x=0,  y=-1, z=-1})
-		table.insert(rules, {x=0,  y=1,  z=1})
-		table.insert(rules, {x=0,  y=-1, z=1})
-		table.insert(rules, {x=0,  y=0,  z=1})
-		table.insert(rules, {x=1,  y=0,  z=0})
-		table.insert(rules, {x=1,  y=1,  z=0})
-		table.insert(rules, {x=1,  y=-1, z=0})
-		table.insert(rules, {x=-1, y=1,  z=0})
-		table.insert(rules, {x=-1, y=-1, z=0})
-		table.insert(rules, {x=-1, y=0,  z=0})
-	end
-	if name=="piston" then
-		table.insert(rules, {x=0,  y=1,  z=0})
-		table.insert(rules, {x=0,  y=-1,  z=0})
-		table.insert(rules, {x=0,  y=1,  z=-1})
-		table.insert(rules, {x=0,  y=0,  z=-1})
-		table.insert(rules, {x=0,  y=-1, z=-1})
-		table.insert(rules, {x=0,  y=1,  z=1})
-		table.insert(rules, {x=0,  y=-1, z=1})
-		table.insert(rules, {x=0,  y=0,  z=1})
-		table.insert(rules, {x=1,  y=0,  z=0})
-		table.insert(rules, {x=1,  y=1,  z=0})
-		table.insert(rules, {x=1,  y=-1, z=0})
-		table.insert(rules, {x=-1, y=1,  z=0})
-		table.insert(rules, {x=-1, y=-1, z=0})
-		table.insert(rules, {x=-1, y=0,  z=0})
-	end
-	if name=="pressureplate" then
-		table.insert(rules, {x=0,  y=1,  z=-1})
-		table.insert(rules, {x=0,  y=0,  z=-1})
-		table.insert(rules, {x=0,  y=-1, z=-1})
-		table.insert(rules, {x=0,  y=1,  z=1})
-		table.insert(rules, {x=0,  y=-1, z=1})
-		table.insert(rules, {x=0,  y=0,  z=1})
-		table.insert(rules, {x=1,  y=0,  z=0})
-		table.insert(rules, {x=1,  y=1,  z=0})
-		table.insert(rules, {x=1,  y=-1, z=0})
-		table.insert(rules, {x=-1, y=1,  z=0})
-		table.insert(rules, {x=-1, y=-1, z=0})
-		table.insert(rules, {x=-1, y=0,  z=0})
-		table.insert(rules, {x=0, y=-1,  z=0})
-		table.insert(rules, {x=0, y=1,  z=0})
-	end
-	if name=="mesecontorch_x-" then
-		table.insert(rules, {x=1,  y=0,  z=0})
-		table.insert(rules, {x=0,  y=0,  z=1})
-		table.insert(rules, {x=0,  y=0,  z=-1})
-	end
-	if name=="mesecontorch_x+" then
-		table.insert(rules, {x=-1,  y=0,  z=0})
-		table.insert(rules, {x=0,  y=0,  z=1})
-		table.insert(rules, {x=0,  y=0,  z=-1})
-	end
-	if name=="mesecontorch_z-" then
-		table.insert(rules, {x=0,  y=0,  z=1})
-		table.insert(rules, {x=1,  y=0,  z=0})
-		table.insert(rules, {x=-1,  y=0,  z=0})
-	end
-	if name=="mesecontorch_z+" then
-		table.insert(rules, {x=0,  y=0,  z=-1})
-		table.insert(rules, {x=1,  y=0,  z=0})
-		table.insert(rules, {x=-1,  y=0,  z=0})
-	end
-	if name=="mesecontorch_y-" then
-	    table.insert(rules, {x=0,  y=1,  z=0})
-		table.insert(rules, {x=1,  y=1,  z=0})
-		table.insert(rules, {x=-1,  y=1,  z=0})
-		table.insert(rules, {x=0,  y=1,  z=1})
-		table.insert(rules, {x=0,  y=1,  z=-1})
-	end
-	if name=="mesecontorch_y+" then
-	    table.insert(rules, {x=0,  y=-1,  z=0})
-		table.insert(rules, {x=1,  y=-1,  z=0})
-		table.insert(rules, {x=-1,  y=-1,  z=0})
-		table.insert(rules, {x=0,  y=-1,  z=1})
-		table.insert(rules, {x=0,  y=-1,  z=-1})
-	end
+	mesecon.rules[i]={}
+	mesecon.rules[i].name=name
+	mesecon.rules[i].rules=rules
+end
 
-	if name=="button_x+" or name=="button_x-"
-	or name=="button_z-" or name=="button_z+" then --Is any button
-table.insert(rules, {x=0,  y=0,  z=-1})
-		table.insert(rules, {x=1,  y=0,  z=0})
-		table.insert(rules, {x=-1, y=0,  z=0})
-		table.insert(rules, {x=0,  y=0,  z=1})
-		table.insert(rules, {x=1,  y=1,  z=0})
-		table.insert(rules, {x=1,  y=-1, z=0})
-		table.insert(rules, {x=-1, y=1,  z=0})
-		table.insert(rules, {x=-1, y=-1, z=0})
-		table.insert(rules, {x=0,  y=1,  z=1})
-		table.insert(rules, {x=0,  y=-1, z=1})
-		table.insert(rules, {x=0,  y=1,  z=-1})
-		table.insert(rules, {x=0,  y=-1, z=-1})
-		table.insert(rules, {x=0,  y=-1, z=0})
+function mesecon:get_rules(name)
+	local i=0
+	while mesecon.rules[i]~=nil do
+		if mesecon.rules[i].name==name then
+			return mesecon.rules[i].rules
+		end
+		i=i+1
 	end
-	if name=="button_x+" then	
-		table.insert(rules, {x=-2,  y=0,  z=0})	
-	end
-	if name=="button_x-" then	
-		table.insert(rules, {x=2,  y=0,  z=0})	
-	end
-	if name=="button_z+" then	
-		table.insert(rules, {x=0,  y=0,  z=-2})	
-	end
-	if name=="button_z-" then	
-		table.insert(rules, {x=0,  y=0,  z=2})	
-	end
-	return rules
 end
 
 
+mesecon:add_rules("default", 
+{{x=0,  y=0,  z=-1},
+{x=1,  y=0,  z=0},
+{x=-1, y=0,  z=0},
+{x=0,  y=0,  z=1},
+{x=1,  y=1,  z=0},
+{x=1,  y=-1, z=0},
+{x=-1, y=1,  z=0},
+{x=-1, y=-1, z=0},
+{x=0,  y=1,  z=1},
+{x=0,  y=-1, z=1},
+{x=0,  y=1,  z=-1},
+{x=0,  y=-1, z=-1}})
+
+
+--Rules rotation Functions:
+function mesecon:rotate_rules_right(rules)
+	local i=1
+	local nr={};
+	while rules[i]~=nil do
+		nr[i]={}
+		nr[i].z=rules[i].x
+		nr[i].x=-rules[i].z
+		nr[i].y=rules[i].y
+		i=i+1
+	end
+	return nr
+end
+
+function mesecon:rotate_rules_left(rules)
+	local i=1
+	local nr={};
+	while rules[i]~=nil do
+		nr[i]={}
+		nr[i].z=-rules[i].x
+		nr[i].x=rules[i].z
+		nr[i].y=rules[i].y
+		i=i+1
+	end
+	return nr
+end
+
+function mesecon:rotate_rules_down(rules)
+	local i=1
+	local nr={};
+	while rules[i]~=nil do
+		nr[i]={}
+		nr[i].y=rules[i].x
+		nr[i].x=-rules[i].y
+		nr[i].z=rules[i].z
+		i=i+1
+	end
+	return nr
+end
+
+function mesecon:rotate_rules_up(rules)
+	local i=1
+	local nr={};
+	while rules[i]~=nil do
+		nr[i]={}
+		nr[i].y=-rules[i].x
+		nr[i].x=rules[i].y
+		nr[i].z=rules[i].z
+		i=i+1
+	end
+	return nr
+end
 
 print("[MESEcons] Loaded!")
 

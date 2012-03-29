@@ -37,50 +37,67 @@ minetest.register_on_dignode(
 minetest.register_on_punchnode(function(pos, node, puncher)
 	if node.name == "mesecons_button:button_off" then
 		minetest.env:add_node(pos, {name="mesecons_button:button_on",param2=node.param2})
-		local rules_string=""
+
+		local rules=mesecon:get_rules("button")
 		if node.param2 == 5 then
-			rules_string="button_z+"
+			rules=mesecon:rotate_rules_left(rules)
 		end
 		if node.param2 == 3 then
-			rules_string="button_x+"
+			rules=mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
 		end
 		if node.param2 == 4 then
-			rules_string="button_z-"
+			rules=mesecon:rotate_rules_right(rules)
 		end
-		if node.param2 == 2 then
-			rules_string="button_x-"
-		end
-		mesecon:receptor_on(pos, rules_string)
+        	mesecon:receptor_on(pos, rules)
 	end
 end)
+
 minetest.register_abm({
 	nodenames = {"mesecons_button:button_on"},
-	interval = 0.1,
+	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		minetest.env:add_node(pos, {name="mesecons_button:button_off",param2=node.param2})
 
-		local rules_string=""
+		local rules=mesecon:get_rules("button")
+		print (rules[1].x)
 		if node.param2 == 5 then
-			rules_string="button_z+"
+			rules=mesecon:rotate_rules_left(rules)
 		end
+		print (rules[1].x)
 		if node.param2 == 3 then
-			rules_string="button_x+"
+			rules=mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
 		end
+		print (rules[1].x)
 		if node.param2 == 4 then
-			rules_string="button_z-"
+			rules=mesecon:rotate_rules_right(rules)
 		end
-		if node.param2 == 2 then
-			rules_string="button_x-"
-		end
-        	mesecon:receptor_off(pos, rules_string)
+		print (rules[1].x)
+        	mesecon:receptor_off(pos, rules)
 	end
 })
+
 minetest.register_craft({
 	output = '"mesecons_button:button_off" 2',
 	recipe = {
 		{'"mesecons:mesecon_off"','"default:stone"'},
 	}
 })
+
+mesecon:add_rules("button", {
+{x=1,  y=0,  z=0},
+{x=-1, y=0,  z=0},
+{x=0,  y=0,  z=1},
+{x=1,  y=1,  z=0},
+{x=1,  y=-1, z=0},
+{x=-1, y=1,  z=0},
+{x=-1, y=-1, z=0},
+{x=0,  y=1,  z=1},
+{x=0,  y=-1, z=1},
+{x=0,  y=1,  z=-1},
+{x=0,  y=-1, z=-1},
+{x=0,  y=-1, z=0},
+{x=2,  y=0,  z=0}})
+
 mesecon:add_receptor_node("mesecons_button:button")
 mesecon:add_receptor_node_off("mesecons_button:button_off")
