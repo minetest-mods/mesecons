@@ -33,44 +33,18 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 minetest.register_on_dignode(
     function(pos, oldnode, digger)
         if oldnode.name == "mesecons_walllever:wall_lever_on" then
-            mesecon:receptor_off(pos)
+            mesecon:receptor_off(pos, mesecon.button_get_rules(oldnode.param2))
         end    
     end
 )
 minetest.register_on_punchnode(function(pos, node, puncher)
 	if node.name == "mesecons_walllever:wall_lever_off" then
 		minetest.env:add_node(pos, {name="mesecons_walllever:wall_lever_on",param2=node.param2})
-		local rules_string=nil
-		if node.param2 == 5 then
-			rules_string="button_z+"
-		end
-		if node.param2 == 3 then
-			rules_string="button_x+"
-		end
-		if node.param2 == 4 then
-			rules_string="button_z-"
-		end
-		if node.param2 == 2 then
-			rules_string="button_x-"
-		end
-		mesecon:receptor_on(pos, rules_string)
+		mesecon:receptor_on(pos, mesecon.button_get_rules(node.param2))
 	end
 	if node.name == "mesecons_walllever:wall_lever_on" then
 		minetest.env:add_node(pos, {name="mesecons_walllever:wall_lever_off",param2=node.param2})
-		local rules_string=nil
-		if node.param2 == 5 then
-			rules_string="button_z+"
-		end
-		if node.param2 == 3 then
-			rules_string="button_x+"
-		end
-		if node.param2 == 4 then
-			rules_string="button_z-"
-		end
-		if node.param2 == 2 then
-			rules_string="button_x-"
-		end
-		mesecon:receptor_off(pos, rules_string)
+		mesecon:receptor_off(pos, mesecon.button_get_rules(node.param2))
 	end
 end)
 
@@ -82,5 +56,5 @@ minetest.register_craft({
 		{'"default:stick"'},
 	}
 })
-mesecon:add_receptor_node("mesecons_walllever:wall_lever")
-mesecon:add_receptor_node_off("mesecons_walllever:wall_lever_off")
+mesecon:add_receptor_node("mesecons_walllever:wall_lever", nil, mesecon.button_get_rules)
+mesecon:add_receptor_node_off("mesecons_walllever:wall_lever_off", nil, mesecon.button_get_rules)
