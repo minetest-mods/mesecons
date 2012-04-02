@@ -3,6 +3,7 @@ minetest.register_node("mesecons_delayer:delayer_off_1", {
 	drawtype = "raillike",
 	tile_images = {"mesecons_delayer_off_1.png"},
 	inventory_image = "mesecons_delayer_off_1.png",
+	wield_image = "mesecons_delayer_off_1.png",
 	walkable = false,
 	selection_box = {type = "fixed",},
 	groups = {bendy=2,snappy=1,dig_immediate=2},
