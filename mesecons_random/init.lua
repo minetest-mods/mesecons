@@ -1,13 +1,3 @@
---Launch TNT
-
-mesecon:register_on_signal_on(function(pos, node)
-	if node.name=="experimental:tnt" then
-		minetest.env:remove_node(pos)
-		minetest.env:add_entity(pos, "experimental:tnt")
-		nodeupdate(pos)
-	end
-end)
-
 -- REMOVE_STONE
 
 minetest.register_node("mesecons_random:removestone", {
