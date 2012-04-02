@@ -68,7 +68,6 @@ minetest.register_abm({
 
         local postc = {x=pos.x-pa.x, y=pos.y-pa.y, z=pos.z-pa.z}
         if mesecon:is_power_on(postc) then
-		print ("LAWL")
             if node.name ~= "mesecons_torch:mesecon_torch_off" then
                 minetest.env:add_node(pos, {name="mesecons_torch:mesecon_torch_off",param2=node.param2})
                 mesecon:receptor_off(pos, rules_string)
