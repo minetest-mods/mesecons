@@ -61,3 +61,4 @@ minetest.register_alias("mesecons:mesecon_socket", "mesecons_temperest:mesecon_s
 minetest.register_alias("mesecons:mesecon_inverter", "mesecons_temperest:mesecon_inverter_on")
 minetest.register_alias("mesecons:movestone", "mesecons_movestones:movestone")
 minetest.register_alias("mesecons:sticky_movestone", "mesecons_movestones:sticky_movestone")
+minetest.register_alias("mesecons:noteblock", "mesecons_noteblock:noteblock")
