@@ -140,19 +140,19 @@ mesecon.delayer_signal_change = function(pos, node)
 			local time
 			if node.name=="mesecons_delayer:delayer_off_1" then
 				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_1"})
-				time=0.5
+				time=0.1
 			end
 			if node.name=="mesecons_delayer:delayer_off_2" then
 				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_2"})
-				time=1
+				time=0.3
 			end
 			if node.name=="mesecons_delayer:delayer_off_3" then
 				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_3"})
-				time=1.5
+				time=0.5
 			end
 			if node.name=="mesecons_delayer:delayer_off_4" then
 				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_4"})
-				time=2
+				time=1
 			end
 			minetest.after(time, mesecon.delayer_turnon, {pos=pos})
 
@@ -165,19 +165,19 @@ mesecon.delayer_signal_change = function(pos, node)
 			local time
 			if node.name=="mesecons_delayer:delayer_on_1" then
 				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_1"})
-				time=0.5
+				time=0.1
 			end
 			if node.name=="mesecons_delayer:delayer_on_2" then
 				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_2"})
-				time=1
+				time=0.3
 			end
 			if node.name=="mesecons_delayer:delayer_on_3" then
 				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_3"})
-				time=1.5
+				time=0.5
 			end
 			if node.name=="mesecons_delayer:delayer_on_4" then
 				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_4"})
-				time=2
+				time=1
 			end
 			minetest.after(time, mesecon.delayer_turnoff, {pos=pos})
 		end
