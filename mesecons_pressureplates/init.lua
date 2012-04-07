@@ -144,7 +144,7 @@ minetest.register_abm(
 minetest.register_on_dignode(
 	function(pos, oldnode, digger)
 		if oldnode.name == "mesecons_pressureplates:pressure_plate_stone_on" then
-			mesecon:receptor_off(pos, mesecons:get_rules("pressureplate"))
+			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
 		end	
 	end
 )
