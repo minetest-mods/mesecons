@@ -18,35 +18,35 @@ minetest.register_on_punchnode(function (pos, node)
 		local param2 = node.param2+1
 		if param2==12 then param2=0 end
 		minetest.env:add_node(pos, {name=node.name, param2=param2})
-		mesecon.noteblock_play(pos, node)
+		mesecon.noteblock_play(pos, param2)
 	end
 end)
 
-mesecon.noteblock_play = function (pos, node)
+mesecon.noteblock_play = function (pos, param2)
 	local soundname
-	if node.param2==8 then
+	if param2==8 then
 		soundname="mesecons_noteblock_a"
-	elseif node.param2==9 then
+	elseif param2==9 then
 		soundname="mesecons_noteblock_asharp"
-	elseif node.param2==10 then
+	elseif param2==10 then
 		soundname="mesecons_noteblock_b"
-	elseif node.param2==11 then
+	elseif param2==11 then
 		soundname="mesecons_noteblock_c"
-	elseif node.param2==0 then
+	elseif param2==0 then
 		soundname="mesecons_noteblock_csharp"
-	elseif node.param2==1 then
+	elseif param2==1 then
 		soundname="mesecons_noteblock_d"
-	elseif node.param2==2 then
+	elseif param2==2 then
 		soundname="mesecons_noteblock_dsharp"
-	elseif node.param2==3 then
+	elseif param2==3 then
 		soundname="mesecons_noteblock_e"
-	elseif node.param2==4 then
+	elseif param2==4 then
 		soundname="mesecons_noteblock_f"
-	elseif node.param2==5 then
+	elseif param2==5 then
 		soundname="mesecons_noteblock_fsharp"
-	elseif node.param2==6 then
+	elseif param2==6 then
 		soundname="mesecons_noteblock_g"
-	elseif node.param2==7 then
+	elseif param2==7 then
 		soundname="mesecons_noteblock_gsharp"
 	end
 	local block_below_name = minetest.env:get_node({x=pos.x, y=pos.y-1, z=pos.z}).name
@@ -71,6 +71,6 @@ end
 
 mesecon:register_on_signal_on(function(pos, node)
 	if node.name=="mesecons_noteblock:noteblock" then
-		mesecon.noteblock_play(pos, node)
+		mesecon.noteblock_play(pos, node.param2)
 	end
 end)
