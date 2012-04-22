@@ -7,7 +7,7 @@ minetest.register_node("mesecons_powerplant:power_plant", {
 	inventory_image = "jeija_power_plant.png",
 	paramtype = "light",
 	walkable = false,
-	groups = {snappy=2},
+	groups = {snappy=3},
 	light_source = LIGHT_MAX-9,
     	description="Power Plant",
 })
