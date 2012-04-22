@@ -64,6 +64,21 @@
 --		minetest.env:remove_node(pos) -- The action: The removestone is removed
 --	end -- end of if
 --end) -- end of the function, )=end of the parameters of mesecon:register_on_signal_on
+--
+--CONDUCTORS: (new feature!! yay)
+--You can specify your custom conductors using
+--# mesecon:register_conductor(onstate, offstate)
+--	onstate=the conductor's nodename when it is turned on
+--	offstate=the conductor's nodename when it is turned off
+--
+--As you can see, conductors need an offstate and an onstate node, just like receptors
+--mesecons:mesecon_on / mesecons:mesecon_off are the default conductors
+--Other conductors connect to other conductors. It's always "the same energy"
+--! As there is no special drawtype, conductors don't connect to others visually,
+--but it works in fact.
+--
+--The function # mesecon:register_conductor(onstate, offstate) is the only thing you need to do,
+--the mod does everything else for you (turn the conductor on and off...)
 
 -- INCLUDE SETTINGS
 dofile(minetest.get_modpath("mesecons").."/settings.lua")
