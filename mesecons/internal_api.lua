@@ -387,7 +387,6 @@ end
 minetest.register_on_placenode(function(pos, newnode, placer)
 	if mesecon:check_if_turnon(pos) then
 		if mesecon:is_conductor_off(newnode.name) then
-			print ("IS CONDUCTOR OFF")
 			mesecon:turnon(pos, 0, 0, 0)		
 		else
 			mesecon:changesignal(pos)
