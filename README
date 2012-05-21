@@ -14,6 +14,6 @@ minerd247: Some textures
 ...other contributors
 
 This is a mod for minetest-c55.
-Paste the "jeija" directory into minetest/data/mods/ to install it.
+Copy the mesecons_* directories into minetest/data/mods/ to install it.
 
 VERSION: 0.9 DEV
