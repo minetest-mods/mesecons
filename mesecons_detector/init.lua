@@ -12,12 +12,15 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	paramtype = "light",
 	walkable = true,
 	groups = {cracky=3},
-	drop = '"mesecons_detector:object_detector_off" 1',
+	drop = 'mesecons_detector:object_detector_off',
 	description="Player Detector",
+	after_dig_node = function(pos)
+		mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
+	end
 })
 
 minetest.register_craft({
-	output = '"mesecons_detector:object_detector_off" 1',
+	output = 'mesecons_detector:object_detector_off',
 	recipe = {
 		{"default:steelblock", '', "default:steelblock"},
 		{"default:steelblock", "mesecons_materials:ic", "default:steelblock"},
@@ -42,7 +45,7 @@ minetest.register_abm(
 				minetest.env:add_node(pos, {name="mesecons_detector:object_detector_on"})
 				mesecon:receptor_on(pos, mesecon:get_rules("pressureplate"))
 			end
-		end	
+		end
 	end,
 })
 
@@ -65,21 +68,13 @@ minetest.register_abm(
 					objectfound=objectfound + 1
 				end
 			end
-		end	
+		end
 		if objectfound==0 then
 			minetest.env:add_node(pos, {name="mesecons_detector:object_detector_off"})
 			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
 		end
 	end,
 })
-
-minetest.register_on_dignode(
-	function(pos, oldnode, digger)
-		if oldnode.name == "mesecons_detector:object_detector_on" then
-			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
-		end	
-	end
-)
 
 mesecon:add_receptor_node("mesecons_detector:object_detector_on")
 mesecon:add_receptor_node_off("mesecons_detector:object_detector_off")

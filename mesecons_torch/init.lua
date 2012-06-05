@@ -22,27 +22,26 @@ minetest.register_node("mesecons_torch:mesecon_torch_off", {
 })
 
 minetest.register_node("mesecons_torch:mesecon_torch_on", {
-    drawtype = "torchlike",
-    tile_images = {"jeija_torches_on.png", "jeija_torches_on_ceiling.png", "jeija_torches_on_side.png"},
-    inventory_image = "jeija_torches_on.png",
-    wield_image = "jeija_torches_on.png",
-    paramtype = "light",
-    sunlight_propagates = true,
-    walkable = false,
-    paramtype2 = "wallmounted",
-    legacy_wallmounted = true,
-    groups = {dig_immediate=2},
-    light_source = LIGHT_MAX-5,
-    description="Mesecon Torch",
-})
-
---[[minetest.register_on_placenode(function(pos, newnode, placer)
-	if (newnode.name=="mesecons_torch:mesecon_torch_off" or newnode.name=="mesecons_torch:mesecon_torch_on")
-	and (newnode.param2==8 or newnode.param2==4) then
-		minetest.env:remove_node(pos)
-		--minetest.env:add_item(pos, "'mesecons_torch:mesecon_torch_on' 1")
+	drawtype = "torchlike",
+	tile_images = {"jeija_torches_on.png", "jeija_torches_on_ceiling.png", "jeija_torches_on_side.png"},
+	inventory_image = "jeija_torches_on.png",
+	wield_image = "jeija_torches_on.png",
+	paramtype = "light",
+	sunlight_propagates = true,
+	walkable = false,
+	paramtype2 = "wallmounted",
+	legacy_wallmounted = true,
+	groups = {dig_immediate=2},
+	light_source = LIGHT_MAX-5,
+	description="Mesecon Torch",
+	after_place_node = function(pos)
+		local rules = mesecon.torch_get_rules(minetest.env:get_node(pos).param2)
+		mesecon:receptor_on(pos, rules)
+	end,
+	after_dig_node = function(pos)
+		mesecon:receptor_off(pos)
 	end
-end)]]
+})
 
 minetest.register_abm({
     nodenames = {"mesecons_torch:mesecon_torch_off","mesecons_torch:mesecon_torch_on"},
@@ -80,21 +79,6 @@ minetest.register_abm({
         end
     end
 })
-
-minetest.register_on_dignode(
-	function(pos, oldnode, digger)
-		if oldnode.name == "mesecons_torch:mesecon_torch_on" then
-			mesecon:receptor_off(pos)
-		end	
-	end
-)
-
-minetest.register_on_placenode(function(pos, node, placer)
-	if node.name == "mesecons_torch:mesecon_torch_on" then
-		local rules=mesecon.torch_get_rules(minetest.env:get_node(pos).param2)
-		mesecon:receptor_on(pos, rules)
-	end
-end)
 
 mesecon.torch_get_rules = function(param2)
 	local rules=mesecon:get_rules("mesecontorch")

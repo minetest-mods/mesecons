@@ -5,6 +5,14 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 	groups = {cracky=3},
 	paramtype2="facedir",
     	description="Piston",
+	after_dig_node = function(pos)
+		local objs = minetest.env:get_objects_inside_radius(pos, 2)
+		for k, obj in pairs(objs) do
+			if obj:get_entity_name() == "mesecons_pistons:piston_pusher_normal" then
+				obj:remove()
+			end
+		end
+	end
 })
 
 minetest.register_craft({
@@ -22,6 +30,14 @@ minetest.register_node("mesecons_pistons:piston_sticky", {
 	groups = {cracky=3},
 	paramtype2="facedir",
     	description="Sticky Piston",
+	after_dig_node = function(pos)
+		local objs = minetest.env:get_objects_inside_radius(pos, 2)
+		for k, obj in pairs(objs) do
+			if obj:get_entity_name() == "mesecons_pistons:piston_pusher_sticky" then
+				obj:remove()
+			end
+		end
+	end
 })
 
 minetest.register_craft({
@@ -260,15 +276,3 @@ end
 
 minetest.register_entity("mesecons_pistons:piston_pusher_normal", PISTON_PUSHER_NORMAL)
 minetest.register_entity("mesecons_pistons:piston_pusher_sticky", PISTON_PUSHER_STICKY)
-
-minetest.register_on_dignode(function(pos, node)
-	if node.name=="mesecons_pistons:piston_normal" or node.name=="mesecons_pistons:piston_sticky" then
-		local objs = minetest.env:get_objects_inside_radius(pos, 2)
-		for k, obj in pairs(objs) do
-			local obj_name = obj:get_entity_name()
-			if obj_name == "mesecons_pistons:piston_pusher_normal" or obj_name == "mesecons_pistons:piston_pusher_sticky" then
-				obj:remove()
-			end
-		end
-	end
-end)

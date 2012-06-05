@@ -54,8 +54,8 @@ function mesecon:remove_wireless_receiver(pos)
 	local i = 1
 	while mesecon.wireless_receivers[i]~=nil do
 		if mesecon.wireless_receivers[i].pos.x==pos.x and
-		   mesecon.wireless_receivers[i].pos.y==pos.y and
-		   mesecon.wireless_receivers[i].pos.z==pos.z then
+			mesecon.wireless_receivers[i].pos.y==pos.y and
+			mesecon.wireless_receivers[i].pos.z==pos.z then
 			mesecon.wireless_receivers[i]=nil
 			break
 		end
@@ -84,8 +84,8 @@ function mesecon:get_wlre(pos)
 	local i=1
 	while mesecon.wireless_receivers[i]~=nil do
 		if mesecon.wireless_receivers[i].pos.x==pos.x and
-		   mesecon.wireless_receivers[i].pos.y==pos.y and
-		   mesecon.wireless_receivers[i].pos.z==pos.z then
+			mesecon.wireless_receivers[i].pos.y==pos.y and
+			mesecon.wireless_receivers[i].pos.z==pos.z then
 			return mesecon.wireless_receivers[i]
 		end
 		i=i+1
@@ -95,9 +95,9 @@ end
 minetest.register_on_placenode(function(pos, newnode, placer)
 	pos.y=pos.y+1
 	if minetest.env:get_node(pos).name == "mesecons_wireless:wireless_receiver_off" or
-	   minetest.env:get_node(pos).name == "mesecons_wireless:wireless_receiver_on"  or
-	   minetest.env:get_node(pos).name == "mesecons_wireless:wireless_inverter_off" or
-	   minetest.env:get_node(pos).name == "mesecons_wireless:wireless_inverter_on" then
+		minetest.env:get_node(pos).name == "mesecons_wireless:wireless_receiver_on"  or
+		minetest.env:get_node(pos).name == "mesecons_wireless:wireless_inverter_off" or
+		minetest.env:get_node(pos).name == "mesecons_wireless:wireless_inverter_on" then
 		mesecon:set_wlre_channel(pos, newnode.name)
 	end
 end)
@@ -107,17 +107,17 @@ minetest.register_on_dignode(
 		local channel
 		pos.y=pos.y+1
 		if minetest.env:get_node(pos).name == "mesecons_wireless:wireless_receiver_on" or
-		   minetest.env:get_node(pos).name == "mesecons_wireless:wireless_receiver_off" or
-		   minetest.env:get_node(pos).name == "mesecons_wireless:wireless_inverter_on" or
-		   minetest.env:get_node(pos).name == "mesecons_wireless:wireless_inverter_off" then
+			minetest.env:get_node(pos).name == "mesecons_wireless:wireless_receiver_off" or
+			minetest.env:get_node(pos).name == "mesecons_wireless:wireless_inverter_on" or
+			minetest.env:get_node(pos).name == "mesecons_wireless:wireless_inverter_off" then
 			mesecon:set_wlre_channel(pos, "air")
-		end	
+		end
 	end
 )
 
 minetest.register_abm(
 	{nodenames = {"mesecons_wireless:wireless_receiver_on", "mesecons_wireless:wireless_receiver_off",
-		      "mesecons_wireless:wireless_inverter_on", "mesecons_wireless:wireless_inverter_off"},
+		"mesecons_wireless:wireless_inverter_on", "mesecons_wireless:wireless_inverter_off"},
 	interval = 1.0,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
@@ -149,7 +149,14 @@ minetest.register_node("mesecons_wireless:wireless_receiver_off", {
 	tile_images = {"jeija_wireless_receiver_tb_off.png", "jeija_wireless_receiver_tb_off.png", "jeija_wireless_receiver_off.png", "jeija_wireless_receiver_off.png", "jeija_wireless_receiver_off.png", "jeija_wireless_receiver_off.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_receiver_off.png"),
 	groups = {choppy=2},
-    	description="Wireless Receiver",
+	description="Wireless Receiver",
+	after_place_node = function(pos)
+		mesecon:register_wireless_receiver(pos, 0)
+	end,
+	after_dig_node = function(pos)
+		mesecon:remove_wireless_receiver(pos)
+		mesecon:receptor_off(pos)
+	end
 })
 
 minetest.register_node("mesecons_wireless:wireless_receiver_on", {
@@ -157,7 +164,13 @@ minetest.register_node("mesecons_wireless:wireless_receiver_on", {
 	inventory_image = minetest.inventorycube("jeija_wireless_receiver_on.png"),
 	groups = {choppy=2},
 	drop = 'mesecons_wireless:wireless_receiver_off',
-    	description="Wireless Receiver",
+	description="Wireless Receiver",
+	after_place_node = function(pos)
+		mesecon:register_wireless_receiver(pos, 0)
+	end,
+	after_dig_node = function(pos)
+		mesecon:remove_wireless_receiver(pos)
+	end
 })
 
 minetest.register_craft({
@@ -168,24 +181,6 @@ minetest.register_craft({
 		{'', "mesecons_materials:ic", ''},
 	}
 })
-
-minetest.register_on_placenode(function(pos, newnode, placer)
-	if newnode.name == "mesecons_wireless:wireless_receiver_off" then
-		mesecon:register_wireless_receiver(pos, 0)
-	end
-end)
-
-minetest.register_on_dignode(
-	function(pos, oldnode, digger)
-		if oldnode.name == "mesecons_wireless:wireless_receiver_on" then
-			mesecon:remove_wireless_receiver(pos)
-			mesecon:receptor_off(pos)
-		end	
-		if oldnode.name == "mesecons_wireless:wireless_receiver_off" then
-			mesecon:remove_wireless_receiver(pos)		
-		end
-	end
-)
 
 minetest.register_abm( -- SAVE WIRELESS RECEIVERS TO FILE
 	{nodenames = {"mesecons_wireless:wireless_receiver_off", "mesecons_wireless:wireless_receiver_on", "mesecons_wireless:wireless_inverter_on", "mesecons_wireless:wireless_inverter_off"},
@@ -218,14 +213,29 @@ minetest.register_node("mesecons_wireless:wireless_inverter_off", {
 	inventory_image = minetest.inventorycube("jeija_wireless_inverter_off.png"),
 	groups = {choppy=2},
 	drop = 'mesecons_wireless:wireless_inverter_on',
-    	description="Wireless Inverter",
+    	description = "Wireless Inverter",
+	after_place_node = function(pos)
+		mesecon:register_wireless_receiver(pos, 1)
+		mesecon:receptor_on(pos)
+	end,
+	after_dig_node = function(pos)
+		mesecon:remove_wireless_receiver(pos)
+	end
 })
 
 minetest.register_node("mesecons_wireless:wireless_inverter_on", {
 	tile_images = {"jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_tb.png", "jeija_wireless_inverter_on.png", "jeija_wireless_inverter_on.png", "jeija_wireless_inverter_on.png", "jeija_wireless_inverter_on.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_inverter_on.png"),
 	groups = {choppy=2},
-    	description="Wireless Inverter",
+	description = "Wireless Inverter",
+	after_place_node = function(pos)
+		mesecon:register_wireless_receiver(pos, 1)
+		mesecon:receptor_on(pos)
+	end,
+	after_dig_node = function(pos)
+		mesecon:remove_wireless_receiver(pos)
+		mesecon:receptor_off(pos)
+	end
 })
 
 minetest.register_craft({
@@ -236,25 +246,6 @@ minetest.register_craft({
 		{'', 'mesecons:mesecon_off', ''},
 	}
 })
-
-minetest.register_on_placenode(function(pos, newnode, placer)
-	if newnode.name == "mesecons_wireless:wireless_inverter_on" then
-		mesecon:register_wireless_receiver(pos, 1)
-		mesecon:receptor_on(pos)
-	end
-end)
-
-minetest.register_on_dignode(
-	function(pos, oldnode, digger)
-		if oldnode.name == "mesecons_wireless:wireless_inverter_on" then
-			mesecon:remove_wireless_receiver(pos)
-			mesecon:receptor_off(pos)
-		end	
-		if oldnode.name == "mesecons_wireless:wireless_inverter_off" then
-			mesecon:remove_wireless_receiver(pos)		
-		end
-	end
-)
 
 mesecon:add_receptor_node("mesecons_wireless:wireless_inverter_on")
 mesecon:add_receptor_node_off("mesecons_wireless:wireless_inverter_off")
@@ -280,14 +271,14 @@ minetest.register_node("mesecons_wireless:wireless_transmitter_on", {
 	inventory_image = minetest.inventorycube("jeija_wireless_transmitter_on.png"),
 	groups = {choppy=2},
 	drop = {'"mesecons_wireless:wireless_transmitter_off" 1'},
-    	description="Wireless Transmitter",
+	description="Wireless Transmitter",
 })
 
 minetest.register_node("mesecons_wireless:wireless_transmitter_off", {
 	tile_images = {"jeija_wireless_transmitter_tb.png", "jeija_wireless_transmitter_tb.png", "jeija_wireless_transmitter_off.png", "jeija_wireless_transmitter_off.png", "jeija_wireless_transmitter_off.png", "jeija_wireless_transmitter_off.png"},
 	inventory_image = minetest.inventorycube("jeija_wireless_transmitter_off.png"),
 	groups = {choppy=2},
-    	description="Wireless Transmitter",
+	description="Wireless Transmitter",
 })
 
 minetest.register_craft({

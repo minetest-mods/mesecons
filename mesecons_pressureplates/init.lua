@@ -26,6 +26,9 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
 	drop='"mesecons_pressureplates:pressure_plate_wood_off" 1',
+	after_dig_node = function(pos)
+		mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
+	end
 })
 
 minetest.register_craft({
@@ -64,14 +67,6 @@ minetest.register_abm(
 	end,
 })
 
-minetest.register_on_dignode(
-	function(pos, oldnode, digger)
-		if oldnode.name == "mesecons_pressureplates:pressure_plate_wood_on" then
-			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
-		end	
-	end
-)
-
 mesecon:add_receptor_node("mesecons_pressureplates:pressure_plate_wood_on")
 mesecon:add_receptor_node_off("mesecons_pressureplates:pressure_plate_wood_off")
 
@@ -103,6 +98,9 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
 	drop='"mesecons_pressureplates:pressure_plate_stone_off" 1',
+	after_dig_node = function(pos)
+		mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
+	end
 })
 
 minetest.register_craft({
@@ -140,14 +138,6 @@ minetest.register_abm(
 		end
 	end,
 })
-
-minetest.register_on_dignode(
-	function(pos, oldnode, digger)
-		if oldnode.name == "mesecons_pressureplates:pressure_plate_stone_on" then
-			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
-		end	
-	end
-)
 
 mesecon:add_receptor_node("mesecons_pressureplates:pressure_plate_stone_on")
 mesecon:add_receptor_node_off("mesecons_pressureplates:pressure_plate_stone_off")

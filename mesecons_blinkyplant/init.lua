@@ -21,7 +21,10 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	groups = {snappy=2},
 	drop='"mesecons_blinkyplant:blinky_plant_off" 1',
 	light_source = LIGHT_MAX-7,
-    	description="Blinky Plant",
+	description = "Blinky Plant",
+	after_dig_node = function(pos)
+		mesecon:receptor_off(pos)
+	end
 })
 
 minetest.register_craft({
@@ -59,11 +62,3 @@ minetest.register_abm({
 
 mesecon:add_receptor_node("mesecons_blinkyplant:blinky_plant_on")
 mesecon:add_receptor_node_off("mesecons_blinkyplant:blinky_plant_off")
-
-minetest.register_on_dignode(
-	function(pos, oldnode, digger)
-		if oldnode.name == "mesecons_blinkyplant:blinky_plant_on" then
-			mesecon:receptor_off(pos)
-		end
-	end
-)

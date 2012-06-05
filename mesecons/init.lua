@@ -42,8 +42,8 @@
 --
 --
 --!! If a receptor node is removed, the circuit should be recalculated. This means you have to
---send an mesecon:receptor_off signal to the api when the function in minetest.register_on_dignode
---is called.
+--send an mesecon:receptor_off signal to the api when the node is dug, using the
+--after_dig_node node property.
 --
 --EFFECTORS
 --

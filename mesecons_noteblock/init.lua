@@ -5,13 +5,10 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 	drawtype = "allfaces_optional",
 	visual_scale = 1.3,
 	paramtype="light",
-})
-
-minetest.register_on_placenode(function (pos, node)
-	if node.name=="mesecons_noteblock:noteblock" then
-		minetest.env:add_node(pos, {name=node.name, param2=0})
+	after_place_node = function(pos)
+		minetest.env:add_node(pos, {name="mesecons_noteblock:noteblock", param2=0})
 	end
-end)
+})
 
 minetest.register_on_punchnode(function (pos, node)
 	if node.name=="mesecons_noteblock:noteblock" then

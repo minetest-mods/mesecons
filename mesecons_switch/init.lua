@@ -13,6 +13,9 @@ minetest.register_node("mesecons_switch:mesecon_switch_on", {
 	groups = {dig_immediate=2},
 	drop='"mesecons_switch:mesecon_switch_off" 1',
     	description="Switch",
+	after_dig_node = function(pos)
+		mesecon:receptor_off(pos)
+	end
 })
 
 mesecon:add_receptor_node("mesecons_switch:mesecon_switch_on")
@@ -30,14 +33,6 @@ minetest.register_on_punchnode(function(pos, node, puncher)
 		mesecon:receptor_on(pos)
 	end
 end)
-
-minetest.register_on_dignode(
-	function(pos, oldnode, digger)
-		if oldnode.name == "mesecons_switch:mesecon_switch_on" then
-			mesecon:receptor_off(pos)
-		end
-	end
-)
 
 minetest.register_craft({
 	output = '"mesecons_switch:mesecon_switch_off" 2',

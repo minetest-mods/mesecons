@@ -10,30 +10,26 @@ minetest.register_node("mesecons_button:button_off", {
         type = "wallmounted",
     },
     groups = {dig_immediate=2},
-    description="Button",
+    description = "Button",
 })
 minetest.register_node("mesecons_button:button_on", {
-    drawtype = "signlike",
-    tile_images = {"jeija_wall_button_on.png"},
-    paramtype = "light",
-    paramtype2 = "wallmounted",
-    legacy_wallmounted = true,
-    walkable = false,
-    selection_box = {
-        type = "wallmounted",
-    },
-    groups = {dig_immediate=2},
-    drop = '"mesecons_button:button_off" 1',
-    description="Button",
+	drawtype = "signlike",
+	tile_images = {"jeija_wall_button_on.png"},
+	paramtype = "light",
+	paramtype2 = "wallmounted",
+	legacy_wallmounted = true,
+	walkable = false,
+	selection_box = {
+		type = "wallmounted",
+	},
+	groups = {dig_immediate=2},
+	drop = 'mesecons_button:button_off',
+	description = "Button",
+	after_dig_node = function(pos)
+		mesecon:receptor_off(pos, mesecon.button_get_rules(minetest.env:get_node(pos).param2))
+	end
 })
 
-minetest.register_on_dignode(
-    function(pos, oldnode, digger)
-        if oldnode.name == "mesecons_button:button_on" then
-            mesecon:receptor_off(pos, mesecon.button_get_rules(oldnode.param2))
-        end    
-    end
-)
 minetest.register_on_punchnode(function(pos, node, puncher)
 	if node.name == "mesecons_button:button_off" then
 		minetest.env:add_node(pos, {name="mesecons_button:button_on",param2=node.param2})
@@ -47,7 +43,7 @@ mesecon.button_turnoff = function (params)
 	if minetest.env:get_node(params.pos).name=="mesecons_button:button_on" then
 		minetest.env:add_node(params.pos, {name="mesecons_button:button_off", param2=params.param2})
 		local rules=mesecon.button_get_rules(param2)
-        	mesecon:receptor_off(params.pos, rules)
+		mesecon:receptor_off(params.pos, rules)
 	end
 end
 

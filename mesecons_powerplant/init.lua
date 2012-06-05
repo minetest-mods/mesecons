@@ -10,6 +10,12 @@ minetest.register_node("mesecons_powerplant:power_plant", {
 	groups = {snappy=3},
 	light_source = LIGHT_MAX-9,
     	description="Power Plant",
+	after_place_node = function(pos)
+		mesecon:receptor_on(pos)
+	end,
+	after_dig_node = function(pos)
+		mesecon:receptor_off(pos)
+	end
 })
 
 minetest.register_craft({
@@ -20,19 +26,5 @@ minetest.register_craft({
 		{'"default:junglegrass"'},
 	}
 })
-
-minetest.register_on_placenode(function(pos, newnode, placer)
-	if newnode.name == "mesecons_powerplant:power_plant" then
-		mesecon:receptor_on(pos)
-	end
-end)
-
-minetest.register_on_dignode(
-	function(pos, oldnode, digger)
-		if oldnode.name == "mesecons_powerplant:power_plant" then
-			mesecon:receptor_off(pos)
-		end	
-	end
-)
 
 mesecon:add_receptor_node("mesecons_powerplant:power_plant")
