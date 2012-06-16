@@ -3,41 +3,42 @@
 function mesecon:get_movestone_direction(pos)
 	getactivated=0
 	local direction = {x=0, y=0, z=0}
-	local lpos={x=pos.x, y=pos.y, z=pos.z}
+	local lpos
 
 	local getactivated=0
 	local rules=mesecon:get_rules("movestone")
 
-	lpos.x=pos.x+0.499
-
-	for k=1, 3 do
-		getactivated=getactivated+mesecon:is_power_on(lpos, rules[k].x, rules[k].y, rules[k].z)
+	lpos={x=pos.x+1, y=pos.y, z=pos.z}
+	for n=1, 3 do
+		if mesecon:is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+			direction.z=-1
+			return direction
+		end
 	end
-	if getactivated>0 then direction.x=-1 return direction end
-	lpos=pos
-	lpos.x=pos.x-0.499
 
+	lpos={x=pos.x-1, y=pos.y, z=pos.z}
 	for n=4, 6 do
-		getactivated=getactivated+mesecon:is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z)
+		if mesecon:is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+			direction.z=1
+			return direction
+		end
 	end
 
-	if getactivated>0 then direction.x=1 return direction end
-	lpos=pos
-	lpos.z=pos.z+0.499
-
-	for j=7, 9 do
-		getactivated=getactivated+mesecon:is_power_on(lpos, rules[j].x, rules[j].y, rules[j].z)
+	lpos={x=pos.x, y=pos.y, z=pos.z+1}
+	for n=7, 9 do
+		if mesecon:is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+			direction.x=-1
+			return direction
+		end
 	end
 
-	if getactivated>0 then direction.z=-1 return direction end
-	lpos=pos
-	lpos.z=pos.z-0.499
-
-	for l=10, 12 do
-		getactivated=getactivated+mesecon:is_power_on(lpos, rules[l].x, rules[l].y, rules[l].z)
+	lpos={x=pos.x, y=pos.y, z=pos.z-1}
+	for n=10, 12 do
+		if mesecon:is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+			direction.x=1
+			return direction
+		end
 	end
-	if getactivated>0 then direction.z=1 return direction end
-	return direction
 end
 
 minetest.register_node("mesecons_movestones:movestone", {
@@ -74,12 +75,12 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 		--colp.y=colp.y-direction.y
 		--colp.z=colp.z-(direction.z/2.01)
 
-		if (direction.x==0 and direction.y==0 and direction.z==0)
+		if not direction
 		or (minetest.env:get_node_or_nil(pos).name ~="air" 
 		and minetest.env:get_node_or_nil(pos).name ~= nil) then
 			minetest.env:add_node(pos, {name="mesecons_movestones:movestone"})
 			self.object:remove()
-			return		
+			return
 		end 
 		--if not mesecon:check_if_turnon(colp) then
 		--	minetest.env:add_node(pos, {name="mesecons_movestones:movestone"})
@@ -99,13 +100,13 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 			local thisp= {x=pos.x, y=pos.y, z=pos.z}
 			local thisnode=minetest.env:get_node(thisp)
 			local nextnode={}
-			minetest.env:remove_node(thisp)
+			minetest.env:dig_node(thisp)
 			repeat
 				thisp.x=thisp.x+direction.x
 				thisp.y=thisp.y+direction.y
 				thisp.z=thisp.z+direction.z
 				nextnode=minetest.env:get_node(thisp)
-				minetest.env:add_node(thisp, {name=thisnode.name})
+				minetest.env:place_node(thisp, {name=thisnode.name})
 				nodeupdate(thisp)
 				thisnode=nextnode
 			until thisnode.name=="air" or thisnode.name=="ignore" or thisnode.name=="default:water" or thisnode.name=="default:water_flowing"
@@ -122,22 +123,22 @@ minetest.register_craft({
 	}
 })
 
-
 mesecon:register_on_signal_on(function (pos, node)
 	if node.name=="mesecons_movestones:movestone" then
 		local direction=mesecon:get_movestone_direction({x=pos.x, y=pos.y, z=pos.z})
+		if not direction then return end
 		local checknode={}
 		local collpos={x=pos.x, y=pos.y, z=pos.z}
 		repeat -- Check if it collides with a stopper
 			collpos={x=collpos.x+direction.x, y=collpos.y+direction.y, z=collpos.z+direction.z}
 			checknode=minetest.env:get_node(collpos)
 			if mesecon:is_mvps_stopper(checknode.name) then 
-				return 
+				return
 			end
 		until checknode.name=="air"
 		or checknode.name=="ignore" 
-		or checknode.name=="default:water" 
-		or checknode.name=="default:water_flowing" 
+		or checknode.name=="default:water"
+		or checknode.name=="default:water_flowing"
 		minetest.env:remove_node(pos)
 		nodeupdate(pos)
 		minetest.env:add_entity(pos, "mesecons_movestones:movestone_entity")
@@ -183,6 +184,14 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 		local direction=mesecon:get_movestone_direction(colp)
 		local velocity={x=direction.x*3, y=direction.y*3, z=direction.z*3}
 
+		if not direction then
+		--or (minetest.env:get_node_or_nil(pos).name ~="air" 
+		--and minetest.env:get_node_or_nil(pos).name ~= nil) then
+			minetest.env:add_node(pos, {name="mesecons_movestones:sticky_movestone"})
+			self.object:remove()
+			return
+		end 
+
 		self.object:setvelocity(velocity)
 
 		local np = {x=pos.x+direction.x, y=pos.y+direction.y, z=pos.z+direction.z}	
@@ -191,13 +200,13 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 			local thisp= {x=pos.x, y=pos.y, z=pos.z}
 			local thisnode=minetest.env:get_node(thisp)
 			local nextnode={}
-			minetest.env:remove_node(thisp)
+			minetest.env:dig_node(thisp)
 			repeat
 				thisp.x=thisp.x+direction.x
 				thisp.y=thisp.y+direction.y
 				thisp.z=thisp.z+direction.z
 				nextnode=minetest.env:get_node(thisp)
-				minetest.env:add_node(thisp, {name=thisnode.name})
+				minetest.env:place_node(thisp, {name=thisnode.name})
 				nodeupdate(thisp)
 				thisnode=nextnode
 			until thisnode.name=="air" or thisnode.name=="ignore" or thisnode.name=="default:water" or thisnode.name=="default:water_flowing"
@@ -217,29 +226,22 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 				newpos.x=thisp.x+direction.x
 				newpos.y=thisp.y+direction.y
 				newpos.z=thisp.z+direction.z
-				minetest.env:add_node(newpos, {name=minetest.env:get_node(thisp).name})
+				minetest.env:place_node(newpos, {name=minetest.env:get_node(thisp).name})
 				nodeupdate(newpos)
 				oldpos={x=thisp.x, y=thisp.y, z=thisp.z}
 				thisp.x=thisp.x-direction.x
 				thisp.y=thisp.y-direction.y
 				thisp.z=thisp.z-direction.z
 			until minetest.env:get_node(thisp).name=="air" or minetest.env:get_node(thisp).name=="ignore" or minetest.env:get_node(thisp).name=="default:water" or minetest.env:get_node(thisp).name=="default:water_flowing"
-			minetest.env:remove_node(oldpos)
+			minetest.env:dig_node(oldpos)
 		end
-
-		if (direction.x==0 and direction.y==0 and direction.z==0) then
-		--or (minetest.env:get_node_or_nil(pos).name ~="air" 
-		--and minetest.env:get_node_or_nil(pos).name ~= nil) then
-			minetest.env:add_node(pos, {name="mesecons_movestones:sticky_movestone"})
-			self.object:remove()
-			return		
-		end 
 	end
 })
 
 mesecon:register_on_signal_on(function (pos, node)
 	if node.name=="mesecons_movestones:sticky_movestone" then
 		local direction=mesecon:get_movestone_direction({x=pos.x, y=pos.y, z=pos.z})
+		if not direction then return end
 		local checknode={}
 		local collpos={x=pos.x, y=pos.y, z=pos.z}
 		repeat -- Check if it collides with a stopper
@@ -269,3 +271,16 @@ mesecon:register_on_signal_on(function (pos, node)
 	end
 end)
 
+mesecon:add_rules("movestone", {
+{x=0,  y=1,  z=-1},
+{x=0,  y=0,  z=-1},
+{x=0,  y=-1, z=-1},
+{x=0,  y=1,  z=1},
+{x=0,  y=-1, z=1},
+{x=0,  y=0,  z=1},
+{x=1,  y=0,  z=0},
+{x=1,  y=1,  z=0},
+{x=1,  y=-1, z=0},
+{x=-1, y=1,  z=0},
+{x=-1, y=-1, z=0},
+{x=-1, y=0,  z=0}})
