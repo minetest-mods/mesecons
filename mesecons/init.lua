@@ -110,6 +110,7 @@ minetest.register_node("mesecons:mesecon_off", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 	groups = {dig_immediate=3},
     	description="Mesecons",
@@ -123,6 +124,7 @@ minetest.register_node("mesecons:mesecon_on", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 	groups = {dig_immediate=3},
 	drop = '"mesecons:mesecon_off" 1',
