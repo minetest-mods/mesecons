@@ -1,7 +1,7 @@
 -- PRESSURE PLATE WOOD
 
 minetest.register_node("mesecons_pressureplates:pressure_plate_wood_off", {
-	drawtype = "raillike",
+	drawtype = "nodebox",
 	tile_images = {"jeija_pressure_plate_wood_off.png"},
 	inventory_image = "jeija_pressure_plate_wood_off.png",
 	wield_image = "jeija_pressure_plate_wood_off.png",
@@ -10,19 +10,29 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_off", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
     	description="Wood Pressure Plate",
 })
 
 minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
-	drawtype = "raillike",
+	drawtype = "nodebox",
 	tile_images = {"jeija_pressure_plate_wood_on.png"},
 	paramtype = "light",
 	is_ground_content = true,
 	walkable = false,
 	selection_box = {
 		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.48, 0.5},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.48, 0.5},
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
 	drop='"mesecons_pressureplates:pressure_plate_wood_off" 1',
@@ -73,7 +83,7 @@ mesecon:add_receptor_node_off("mesecons_pressureplates:pressure_plate_wood_off")
 -- PRESSURE PLATE STONE
 
 minetest.register_node("mesecons_pressureplates:pressure_plate_stone_off", {
-	drawtype = "raillike",
+	drawtype = "nodebox",
 	tile_images = {"jeija_pressure_plate_stone_off.png"},
 	inventory_image = "jeija_pressure_plate_stone_off.png",
 	wield_image = "jeija_pressure_plate_stone_off.png",
@@ -82,19 +92,29 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_off", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
     	description="Stone Pressure Plate",
 })
 
 minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
-	drawtype = "raillike",
+	drawtype = "nodebox",
 	tile_images = {"jeija_pressure_plate_stone_on.png"},
 	paramtype = "light",
 	is_ground_content = true,
 	walkable = false,
 	selection_box = {
 		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.48, 0.5},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.48, 0.5},
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
 	drop='"mesecons_pressureplates:pressure_plate_stone_off" 1',
