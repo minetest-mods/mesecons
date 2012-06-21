@@ -217,3 +217,33 @@ if ENABLE_TEMPEREST==1 then
 		}
 	})
 end
+
+--End Temperest's code
+
+--Whiskers75's code
+--AND block
+
+local i
+
+
+-- Make the block:
+
+minetest.register_node ("mesecons_temperest:andblock", {
+    drawtype = raillike,
+    description = "AND block",
+    tile_images = {"whiskers75andblock.png"},
+    inventory_image = {"whiskers75andblock.png"},
+    sunlight_propagates = true,
+    paramtype = 'light',
+    walkable = true,
+    groups = {dig_immediate=2},
+    material = minetest.digprop_constanttime(1.0),
+   })
+
+minetest.register_on_punchnode(function(pos, node, puncher)
+	if node.name=="mesecons_temperest:andblock" then
+		anode = minetest.env:get_node({x=pos.x-1, y=pos.y, z=pos.z})
+		bnode = minetest.env:get_node({x=pos.x+1, y=pos.y, z=pos.z}) 
+		if anode.name=="mesecons:mesecon_on" and bnode.name=="mesecons:mesecon_on" then mesecon:receptor_on({x=pos.x, y=pos.y+1, z=pos.z}) end
+	end
+end)

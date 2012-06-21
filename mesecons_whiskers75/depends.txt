@@ -1,3 +1,0 @@
-default
-mesecons
-mesecons_temperest
