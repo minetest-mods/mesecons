@@ -10,11 +10,11 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_off", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = {-0.45, -0.5, -0.45, 0.45, -0.45, 0.45},
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = {-0.45, -0.5, -0.45, 0.45, -0.45, 0.45},
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
     	description="Wood Pressure Plate",
@@ -28,11 +28,11 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.48, 0.5},
+		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.48, 0.5},
+		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
 	drop='"mesecons_pressureplates:pressure_plate_wood_off" 1',
