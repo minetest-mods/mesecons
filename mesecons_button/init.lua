@@ -35,8 +35,8 @@ minetest.register_node("mesecons_button:button_on", {
 	groups = {dig_immediate=2},
 	drop = 'mesecons_button:button_off',
 	description = "Button",
-	after_dig_node = function(pos)
-		mesecon:receptor_off(pos, mesecon.button_get_rules(minetest.env:get_node(pos).param2))
+	after_dig_node = function(pos, oldnode)
+		mesecon:receptor_off(pos, mesecon.button_get_rules(oldnode.param2))
 	end
 })
 
