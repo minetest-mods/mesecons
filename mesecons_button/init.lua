@@ -1,27 +1,37 @@
 -- WALL BUTTON
 minetest.register_node("mesecons_button:button_off", {
-    drawtype = "signlike",
+    drawtype = "nodebox",
     tile_images = {"jeija_wall_button_off.png"},
     paramtype = "light",
-    paramtype2 = "wallmounted",
+    paramtype2 = "facedir",
     legacy_wallmounted = true,
     walkable = false,
     selection_box = {
-        type = "wallmounted",
+        type = "fixed",
+	fixed = {-0.2, -0.15, 0.3, 0.2, 0.15, 0.5},
+    },
+    node_box = {
+        type = "fixed",
+	fixed = {-0.2, -0.15, 0.3, 0.2, 0.15, 0.5},
     },
     groups = {dig_immediate=2},
     description = "Button",
 })
 minetest.register_node("mesecons_button:button_on", {
-	drawtype = "signlike",
+	drawtype = "nodebox",
 	tile_images = {"jeija_wall_button_on.png"},
 	paramtype = "light",
-	paramtype2 = "wallmounted",
+	paramtype2 = "facedir",
 	legacy_wallmounted = true,
 	walkable = false,
-	selection_box = {
-		type = "wallmounted",
-	},
+    selection_box = {
+        type = "fixed",
+	fixed = {-0.2, -0.15, 0.4, 0.2, 0.15, 0.5},
+    },
+    node_box = {
+        type = "fixed",
+	fixed = {-0.2, -0.15, 0.4, 0.2, 0.15, 0.5},
+    },
 	groups = {dig_immediate=2},
 	drop = 'mesecons_button:button_off',
 	description = "Button",
