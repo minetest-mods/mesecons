@@ -1,5 +1,13 @@
 --Whiskers75's code
 --AND block
+
+-- Make the block:
+
+minetest.register_node("mesecons_whiskers75:andblock", {
+	tile_images = {"whiskers75andblock.png"},
+	material = minetest.digprop_constanttime(1),
+})
+
 local update = function(pos)
 	local node = minetest.env:get_node(pos)
 	if node.name=="mesecons_whiskers75:andblock" then
