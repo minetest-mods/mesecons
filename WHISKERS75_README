@@ -4,6 +4,6 @@ README for Whiskers75's contributions
 1: You need Temperest's code enabled (ENABLE_TEMPEREST=1 in settings.lua).
 2: To work it, place mesecons (on) in the position x plus or minus 1 from the block.
 3: Then punch, and off mesecons in the position y plus or minus 1 from the block will be powered.
-4: Currently, you will have to dig the mesecons in the above positions up if the circuit changes, but that will be fixed.
-5: The name of the block is mesecons_temperest:andblock.
+4: The AND gate will auto power on, but NOT off, punch to update (help here)
+5: The name of the block is mesecons_whiskers75:andblock.
 6: Enjoy!
