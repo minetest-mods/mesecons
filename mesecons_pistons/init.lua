@@ -195,13 +195,13 @@ mesecon:register_on_signal_on(function (pos, node)
 			local thisp= {x=np.x, y=np.y, z=np.z}
 			local thisnode=minetest.env:get_node(thisp)
 			local nextnode={}
-			minetest.env:remove_node(thisp)
+			minetest.env:dig_node(thisp)
 			repeat
 				thisp.x=thisp.x+direction.x
 				thisp.y=thisp.y+direction.y
 				thisp.z=thisp.z+direction.z
 				nextnode=minetest.env:get_node(thisp)
-				minetest.env:add_node(thisp, {name=thisnode.name})
+				minetest.env:place_node(thisp, {name=thisnode.name})
 				nodeupdate(thisp)
 				thisnode=nextnode
 			until thisnode.name=="air" 
@@ -233,8 +233,8 @@ mesecon:register_on_signal_off(function (pos, node)
 				if thisnode.name~="air" and thisnode.name~="water" and not mesecon:is_mvps_stopper(thisnode.name) then
 					local newpos={}
 					local oldpos={}
-					minetest.env:add_node(np, {name=thisnode.name})
-					minetest.env:remove_node(thisp)
+					minetest.env:place_node(np, {name=thisnode.name})
+					minetest.env:dig_node(thisp)
 				end		
 			end
 		end
