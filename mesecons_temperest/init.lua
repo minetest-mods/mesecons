@@ -99,7 +99,7 @@ mesecon:register_on_signal_on(plug_on)
 mesecon:register_on_signal_off(plug_off)
 
 minetest.register_node("mesecons_temperest:mesecon_plug", {
-	drawtype = "raillike",
+	drawtype = "nodebox",
 	paramtype = "light",
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_plug.png"},
@@ -109,6 +109,11 @@ minetest.register_node("mesecons_temperest:mesecon_plug", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 	description = "Plug",
 	after_place_node = plug_off,
@@ -128,7 +133,7 @@ minetest.register_craft({
 
 minetest.register_node("mesecons_temperest:mesecon_socket_off", {
 	description = "Socket",
-	drawtype = "raillike",
+	drawtype = "nodebox",
 	paramtype = "light",
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_socket_off.png"},
@@ -138,11 +143,16 @@ minetest.register_node("mesecons_temperest:mesecon_socket_off", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 })
 
 minetest.register_node("mesecons_temperest:mesecon_socket_on", {
-	drawtype = "raillike",
+	drawtype = "nodebox",
 	paramtype = "light",
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_socket_on.png"},
@@ -150,6 +160,11 @@ minetest.register_node("mesecons_temperest:mesecon_socket_on", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 	drop='"mesecons_temperest:mesecon_socket_off" 1',
 	after_dig_node = function(pos)
@@ -172,7 +187,7 @@ minetest.register_craft({
 --TEMPEREST-INVERTER
 if ENABLE_TEMPEREST==1 then
 	minetest.register_node("mesecons_temperest:mesecon_inverter_off", {
-		drawtype = "raillike",
+		drawtype = "nodebox",
 		paramtype = "light",
 		is_ground_content = true,
 		tile_images = {"jeija_mesecon_inverter_off.png"},
@@ -180,13 +195,18 @@ if ENABLE_TEMPEREST==1 then
 		walkable = false,
 		selection_box = {
 			type = "fixed",
+			fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		},
+		node_box = {
+			type = "fixed",
+			fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 		},
 		drop='"mesecons_temperest:mesecon_inverter_on" 1',
 	})
 
 	minetest.register_node("mesecons_temperest:mesecon_inverter_on", {
 		description = "Inverter",
-		drawtype = "raillike",
+		drawtype = "nodebox",
 		paramtype = "light",
 		is_ground_content = true,
 		tile_images = {"jeija_mesecon_inverter_on.png"},
@@ -196,6 +216,11 @@ if ENABLE_TEMPEREST==1 then
 		walkable = false,
 		selection_box = {
 			type = "fixed",
+			fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		},
+		node_box = {
+			type = "fixed",
+			fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 		},
 		after_place_node = function(pos)
 			mesecon:receptor_on(pos)
@@ -223,22 +248,19 @@ end
 --Whiskers75's code
 --AND block
 
-local i
-
-
 -- Make the block:
 
-minetest.register_node ("mesecons_temperest:andblock", {
-    drawtype = raillike,
-    description = "AND block",
-    tile_images = {"whiskers75andblock.png"},
-    inventory_image = {"whiskers75andblock.png"},
-    sunlight_propagates = true,
-    paramtype = 'light',
-    walkable = true,
-    groups = {dig_immediate=2},
-    material = minetest.digprop_constanttime(1.0),
-   })
+minetest.register_node("mesecons_temperest:andblock", {
+	description = "AND block",
+	drawtype = "raillike",
+	tile_images = {"whiskers75andblock.png"},
+	inventory_image = {"whiskers75andblock.png"},
+	sunlight_propagates = true,
+	paramtype = 'light',
+	walkable = true,
+	groups = {dig_immediate=2},
+	material = minetest.digprop_constanttime(1.0),
+})
 
 minetest.register_on_punchnode(function(pos, node, puncher)
 	if node.name=="mesecons_temperest:andblock" then
