@@ -37,7 +37,7 @@ minetest.register_abm(
 		for k, obj in pairs(objs) do
 			if obj:get_entity_name()~="mesecons_pistons:piston_pusher_sticky" and obj:get_entity_name()~="mesecons_pistons:piston_pusher_normal" and obj:get_player_name()~=nil then -- Detected object is not piston pusher - will be changed if every entity has a type (like entity_type=mob)
 				if minetest.env:get_node({x=pos.x, y=pos.y-1, z=pos.z}).name=="default:sign_wall" then
-					if obj:get_player_name()~=minetest.env:get_meta({x=pos.x, y=pos.y-1, z=pos.z}):get_text() then
+					if obj:get_player_name()~=minetest.env:get_meta({x=pos.x, y=pos.y-1, z=pos.z}):get_string("text") then
 						return
 					end
 				end
@@ -60,7 +60,7 @@ minetest.register_abm(
 			if obj:get_entity_name()~="mesecons_pistons:piston_pusher_sticky" and obj:get_entity_name()~="mesecons_pistons:piston_pusher_normal" and obj~=nil 
 			and obj:get_player_name()~=nil then
 				if minetest.env:get_node({x=pos.x, y=pos.y-1, z=pos.z}).name=="default:sign_wall" then
-					if minetest.env:get_meta({x=pos.x, y=pos.y-1, z=pos.z}):get_text() == obj:get_player_name() then
+					if minetest.env:get_meta({x=pos.x, y=pos.y-1, z=pos.z}):get_string("text")== obj:get_player_name() then
 						objectfound=objectfound+1
 					end
 				else
