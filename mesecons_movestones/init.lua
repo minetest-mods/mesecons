@@ -64,27 +64,14 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 		local direction=mesecon:get_movestone_direction(pos)
 
 		if not direction then
-			minetest.env:place_node(pos, {name="mesecons_movestones:movestone"})
+			minetest.env:add_node(pos, {name="mesecons_movestones:movestone"})
 			self.object:remove()
 			return
 		end
 
 		self.object:setvelocity({x=direction.x*3, y=direction.y*3, z=direction.z*3})
 
-		local lnode = minetest.env:get_node(pos)
-		if lnode.name ~= "ignore" and lnode.name ~= "air" and lnode.name ~= "default:water" and lnode.name ~= "default:water_flowing" then
-			local newnode
-			repeat
-				minetest.env:dig_node(pos)
-				pos.x=pos.x+direction.x
-				pos.y=pos.y+direction.y
-				pos.z=pos.z+direction.z
-				newnode = {name=lnode.name}
-				lnode = minetest.env:get_node(pos)
-				minetest.env:place_node(pos, newnode)
-				nodeupdate(pos)
-			until lnode.name == "ignore" or lnode.name == "air" or lnode.name == "default:water" or lnode.name == "default:water_flowing"
-		end
+		mesecon:mvps_push(pos, direction)
 	end
 })
 
@@ -113,7 +100,7 @@ mesecon:register_on_signal_on(function (pos, node)
 		or checknode.name=="ignore" 
 		or checknode.name=="default:water"
 		or checknode.name=="default:water_flowing"
-		minetest.env:dig_node(pos)
+		minetest.env:remove_node(pos)
 		nodeupdate(pos)
 		minetest.env:add_entity(pos, "mesecons_movestones:movestone_entity")
 	end
@@ -160,53 +147,17 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 		if not direction then
 		--or (minetest.env:get_node_or_nil(pos).name ~="air" 
 		--and minetest.env:get_node_or_nil(pos).name ~= nil) then
-			minetest.env:place_node(pos, {name="mesecons_movestones:sticky_movestone"})
+			minetest.env:add_node(pos, {name="mesecons_movestones:sticky_movestone"})
 			self.object:remove()
 			return
 		end
 
 		self.object:setvelocity({x=direction.x*3, y=direction.y*3, z=direction.z*3})
 
-		pos.x=pos.x+direction.x
-		pos.y=pos.y+direction.y
-		pos.z=pos.z+direction.z
-
-		local lpos = {x=pos.x, y=pos.y, z=pos.z}
-		local lnode = minetest.env:get_node(lpos)
-		if lnode.name ~= "ignore" and lnode.name ~= "air" and lnode.name ~= "default:water" and lnode.name ~= "default:water_flowing" then
-			local newnode
-			repeat
-				minetest.env:dig_node(lpos)
-				lpos.x=lpos.x+direction.x
-				lpos.y=lpos.y+direction.y
-				lpos.z=lpos.z+direction.z
-				newnode = {name=lnode.name}
-				lnode = minetest.env:get_node(lpos)
-				minetest.env:place_node(lpos, newnode)
-				nodeupdate(lpos)
-			until lnode.name == "ignore" or lnode.name == "air" or lnode.name == "default:water" or lnode.name == "default:water_flowing"
-		end
+		mesecon:mvps_push(pos, direction)
 
 		--STICKY
-		local lpos = {x=pos.x-direction.x, y=pos.y-direction.y, z=pos.z-direction.z} -- 1 away
-		local lnode = minetest.env:get_node(lpos)
-		local lpos2 = {x=pos.x-direction.x*2, y=pos.y-direction.y*2, z=pos.z-direction.z*2} -- 2 away
-		local lnode2 = minetest.env:get_node(lpos2)
-
-		if lnode.name ~= "ignore" and lnode.name ~= "air" and lnode.name ~= "default:water" and lnode.name ~= "default:water_flowing" then return end
-		if lnode2.name == "ignore" or lnode2.name == "air" or lnode2.name == "default:water" or lnode2.name == "default:water_flowing" then return end
-
-		local oldpos = {x=lpos2.x+direction.x, y=lpos2.y+direction.y, z=lpos2.z+direction.z}
-		repeat
-			minetest.env:place_node(oldpos, {name=minetest.env:get_node(lpos2).name})
-			nodeupdate(oldpos)
-			oldpos = {x=lpos2.x, y=lpos2.y, z=lpos2.z}
-			lpos2.x = lpos2.x-direction.x
-			lpos2.y = lpos2.y-direction.y
-			lpos2.z = lpos2.z-direction.z
-			lnode = minetest.env:get_node(lpos2)
-		until lnode.name=="air" or lnode.name=="ignore" or lnode.name=="default:water" or lnode.name=="default:water_flowing"
-		minetest.env:dig_node(oldpos)
+		mesecon:mvps_pull_all(pos, direction)
 	end
 })
 
@@ -237,7 +188,7 @@ mesecon:register_on_signal_on(function (pos, node)
 		or checknode.name=="default:water" 
 		or checknode.name=="default:water_flowing" 
 
-		minetest.env:dig_node(pos)
+		minetest.env:remove_node(pos)
 		nodeupdate(pos)
 		minetest.env:add_entity(pos, "mesecons_movestones:sticky_movestone_entity")
 	end
