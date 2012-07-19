@@ -3,7 +3,7 @@
 local set_node_on
 local set_node_off
 
-if ENABLE_TEMPEREST==1 then
+if ENABLE_TEMPEREST then
 	set_node_on = function(pos)
 		local node = minetest.env:get_node(pos)
 		if node.name=="mesecons_temperest:mesecon_socket_off" then
@@ -185,7 +185,7 @@ minetest.register_craft({
 })
 
 --TEMPEREST-INVERTER
-if ENABLE_TEMPEREST==1 then
+if ENABLE_TEMPEREST then
 	minetest.register_node("mesecons_temperest:mesecon_inverter_off", {
 		drawtype = "nodebox",
 		paramtype = "light",
@@ -242,5 +242,3 @@ if ENABLE_TEMPEREST==1 then
 		}
 	})
 end
-
-
