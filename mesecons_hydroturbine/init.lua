@@ -1,16 +1,48 @@
 -- HYDRO_TURBINE
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
-	tile_images = {"jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png", "jeija_hydro_turbine_off.png"},
+	drawtype = "nodebox",
+	tile_images = {"jeija_hydro_turbine_off.png"},
 	groups = {dig_immediate=2},
     	description="Water Turbine",
+	paramtype = "light",
+	selection_box = {
+		type = "fixed",
+		fixed = {{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+			{-0.15, 0.5, -0.15, 0.15, 1.45, 0.15},
+			{-0.45, 1.15, -0.1, 0.45, 1.45, 0.1},
+			{-0.1, 1.15, -0.45, 0.1, 1.45, 0.45}},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+			{-0.15, 0.5, -0.15, 0.15, 1.45, 0.15},
+			{-0.45, 1.15, -0.1, 0.45, 1.45, 0.1},
+			{-0.1, 1.15, -0.45, 0.1, 1.45, 0.45}},
+	},
 })
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
-	tile_images = {"jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png", "jeija_hydro_turbine_on.png"},
+	drawtype = "nodebox",
+	tile_images = {"jeija_hydro_turbine_on.png"},
 	drop = '"mesecons_hydroturbine:hydro_turbine_off" 1',
 	groups = {dig_immediate=2},
     	description="Water Turbine",
+	paramtype = "light",
+	selection_box = {
+		type = "fixed",
+		fixed = {{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+			{-0.15, 0.5, -0.15, 0.15, 1.45, 0.15},
+			{-0.5, 1.15, -0.1, 0.5, 1.45, 0.1},
+			{-0.1, 1.15, -0.5, 0.1, 1.45, 0.5}},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+			{-0.15, 0.5, -0.15, 0.15, 1.45, 0.15},
+			{-0.5, 1.15, -0.1, 0.5, 1.45, 0.1},
+			{-0.1, 1.15, -0.5, 0.1, 1.45, 0.5}},
+	},
 })
 
 
