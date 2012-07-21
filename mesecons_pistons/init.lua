@@ -115,28 +115,34 @@ mesecon:register_on_signal_on(function(pos, node)
 	--determine the number of nodes that need to be pushed
 	local count = 0
 	local checkpos = {x=pos.x, y=pos.y, z=pos.z} --first node being pushed
-	local checknode = minetest.env:get_node(checkpos)
-	while checknode.name ~= "air"
-	and checknode.name ~= "ignore"
-	and checknode.name ~= "default:water_source"
-	and checknode.name ~= "default:water_flowing"
-	and checknode.name ~= "default:lava_source"
-	and checknode.name ~= "default:lava_flowing" do
+	while true do
+		local checknode = minetest.env:get_node(checkpos)
+
+		--check for collision with stopper
+		if mesecon:is_mvps_stopper(checknode.name) then 
+			return
+		end
+
+		--check for column end
+		if checknode.name == "air"
+		or checknode.name == "ignore"
+		or checknode.name == "default:water_source"
+		or checknode.name == "default:water_flowing"
+		or checknode.name == "default:lava_source"
+		or checknode.name == "default:lava_flowing" then
+			break
+		end
+
 		--limit piston pushing capacity
 		count = count + 1
 		if count > 15 then
 			return
 		end
 
-		--check for collision with stopper
-		checknode = minetest.env:get_node(checkpos)
-		if mesecon:is_mvps_stopper(checknode.name) then 
-			return
-		end
 		checkpos.x, checkpos.y, checkpos.z = checkpos.x + dir.x, checkpos.y + dir.y, checkpos.z + dir.z
 	end
 
-	checknode = minetest.env:get_node(pos)
+	local checknode = minetest.env:get_node(pos)
 	minetest.env:dig_node(pos) --remove the first node
 
 	--add pusher
@@ -148,11 +154,11 @@ mesecon:register_on_signal_on(function(pos, node)
 
 	--move nodes forward
 	for i = 1, count do
-		--move to the next node
-		pos.x, pos.y, pos.z = pos.x + dir.x, pos.y + dir.y, pos.z + dir.z
+		pos.x, pos.y, pos.z = pos.x + dir.x, pos.y + dir.y, pos.z + dir.z --move to the next node
 
 		--move the node forward
 		local nextnode = minetest.env:get_node(pos)
+		minetest.env:dig_node(pos)
 		minetest.env:place_node(pos, checknode)
 		checknode = nextnode
 	end
