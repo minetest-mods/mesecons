@@ -64,7 +64,7 @@ end
 
 minetest.register_on_placenode(function (pos, newnode, placer)
 	meta = minetest.env:get_meta(pos)
-	meta:set_int("batterstate", 0)
+	meta:set_int("batterystate", 1)
 	meta:set_int("charging", 0)
 end)
 
@@ -73,7 +73,8 @@ minetest.register_on_punchnode(function(pos, node, puncher)
 		local meta = minetest.env:get_meta(pos);
 		local batterystate = meta:get_int("batterystate")
 		local charging = meta:get_int("charging")
-		minetest.env:add_node(pos, {name=string.gsub(node.name, "charging", "discharging")})
+		minetest.env:remove_node(pos)
+		minetest.env:place_node(pos, {name=string.gsub(node.name, "charging", "discharging")})
 		mesecon:receptor_on(pos)
 		meta:set_int("batterystate", batterystate)
 		meta:set_int("charging", charging)
@@ -82,7 +83,8 @@ minetest.register_on_punchnode(function(pos, node, puncher)
 		local meta = minetest.env:get_meta(pos);
 		local batterystate = meta:get_int("batterystate")
 		local charging = meta:get_int("charging")
-		minetest.env:add_node(pos, {name=string.gsub(node.name, "discharging", "charging")})
+		minetest.env:remove_node(pos)
+		minetest.env:place_node(pos, {name=string.gsub(node.name, "discharging", "charging")})
 		mesecon:receptor_off(pos)
 		meta:set_int("batterystate", batterystate)
 		meta:set_int("charging", charging)
@@ -101,6 +103,8 @@ nodenames = {"mesecons_battery:battery_charging_1", "mesecons_battery:battery_ch
 			local name = node.name;
 			if batterystate < 100 then --change battery charging state
 				batterystate = batterystate + 1
+			else
+				node.name=string.gsub(node.name, "charging", "discharging")
 			end
 
 			if string.find(node.name, tostring(math.ceil(batterystate/20))) == nil then
@@ -112,6 +116,33 @@ nodenames = {"mesecons_battery:battery_charging_1", "mesecons_battery:battery_ch
 		end
 	end,
 })
+
+minetest.register_abm({
+nodenames = {"mesecons_battery:battery_discharging_1", "mesecons_battery:battery_discharging_2", "mesecons_battery:battery_discharging_3", "mesecons_battery:battery_discharging_4", "mesecons_battery:battery_discharging_5"},
+	interval = 1,
+	chance = 1,
+	action = function(pos, node, active_object_count, active_object_count_wider)
+		local meta = minetest.env:get_meta(pos);
+		local batterystate = meta:get_int("batterystate")
+		local charging = meta:get_int("charging")
+		local name = node.name;
+		if batterystate > 1 then --change battery charging state
+			batterystate = batterystate - 1
+		else
+			node.name=string.gsub(node.name, "discharging", "charging")
+		end
+
+		print(tostring(math.ceil(batterystate/20)))
+		print("battstate: "..batterystate)
+		if string.find(node.name, tostring(math.ceil(batterystate/20))) == nil then
+			node.name = string.gsub(node.name, tostring(math.ceil(batterystate/20)+1), tostring(math.ceil(batterystate/20))) --change node for new nodebox model
+		end
+		minetest.env:add_node(pos, node)
+		meta:set_int("batterystate", batterystate)
+		meta:set_int("charging", charging)
+	end,
+})
+
 
 mesecon:register_on_signal_on(function(pos, node)
 	if string.find(node.name, "mesecons_battery:battery") then
