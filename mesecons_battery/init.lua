@@ -17,12 +17,7 @@ for i = 1, 5 do
 
 		selection_box = {
 			type = "fixed",
-			fixed = {
-				{-0.499, -0.499, -0.499, -0.4,   0.499,       0.499},
-				{ 0.499, -0.499, -0.499,  0.4,   0.499,       0.499},
-				{-0.499, -0.499, -0.499,  0.499, 0.499,      -0.4  },
-				{-0.499, -0.499,  0.499,  0.499, 0.499,       0.4  },
-				{-0.4  , -0.5  , -0.4  ,  0.4  , 1*(i/5)-0.5, 0.4}}
+			fixed = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		},
 		groups = {dig_immediate=2},
 	    	description="Battery",
@@ -49,12 +44,7 @@ for i = 1, 5 do
 
 		selection_box = {
 			type = "fixed",
-			fixed = {
-				{-0.499, -0.499, -0.499, -0.4,   0.499,       0.499},
-				{ 0.499, -0.499, -0.499,  0.4,   0.499,       0.499},
-				{-0.499, -0.499, -0.499,  0.499, 0.499,      -0.4  },
-				{-0.499, -0.499,  0.499,  0.499, 0.499,       0.4  },
-				{-0.4  , -0.5  , -0.4  ,  0.4  , 1*(i/5)-0.5, 0.4}}
+			fixed = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		},
 		groups = {dig_immediate=2},
 	    	description="Battery",
@@ -63,9 +53,11 @@ for i = 1, 5 do
 end
 
 minetest.register_on_placenode(function (pos, newnode, placer)
-	meta = minetest.env:get_meta(pos)
-	meta:set_int("batterystate", 1)
-	meta:set_int("charging", 0)
+	if string.find(newnode.name, "mesecons_battery:battery") then
+		meta = minetest.env:get_meta(pos)
+		meta:set_int("batterystate", tonumber(string.sub(newnode.name, string.len(newnode.name)))*20-19)
+		meta:set_int("charging", 0)
+	end
 end)
 
 minetest.register_on_punchnode(function(pos, node, puncher)
@@ -132,8 +124,6 @@ nodenames = {"mesecons_battery:battery_discharging_1", "mesecons_battery:battery
 			node.name=string.gsub(node.name, "discharging", "charging")
 		end
 
-		print(tostring(math.ceil(batterystate/20)))
-		print("battstate: "..batterystate)
 		if string.find(node.name, tostring(math.ceil(batterystate/20))) == nil then
 			node.name = string.gsub(node.name, tostring(math.ceil(batterystate/20)+1), tostring(math.ceil(batterystate/20))) --change node for new nodebox model
 		end
@@ -154,8 +144,4 @@ mesecon:register_on_signal_off(function(pos, node)
 	if string.find(node.name, "mesecons_battery:battery") then
 		minetest.env:get_meta(pos):set_int("charging", 0)
 	end
-end)
-
-minetest.register_on_punchnode(function(pos, node, puncher)
-	print(minetest.env:get_meta(pos):get_int("batterystate"))
 end)
