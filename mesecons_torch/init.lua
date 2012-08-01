@@ -15,8 +15,14 @@ minetest.register_node("mesecons_torch:mesecon_torch_off", {
     paramtype = "light",
     walkable = false,
     paramtype2 = "wallmounted",
+    selection_box = {
+        type = "wallmounted",
+        wall_top = {-0.1, 0.5-0.6, -0.1, 0.1, 0.5, 0.1},
+        wall_bottom = {-0.1, -0.5, -0.1, 0.1, -0.5+0.6, 0.1},
+        wall_side = {-0.5, -0.1, -0.1, -0.5+0.6, 0.1, 0.1},
+    },
     legacy_wallmounted = true,
-    groups = {dig_immediate=2},
+    groups = {dig_immediate=3,not_in_creative_inventory=1},
     drop = '"mesecons_torch:mesecon_torch_on" 1',
     description="Mesecon Torch",
 })
@@ -30,8 +36,14 @@ minetest.register_node("mesecons_torch:mesecon_torch_on", {
 	sunlight_propagates = true,
 	walkable = false,
 	paramtype2 = "wallmounted",
+	selection_box = {
+		type = "wallmounted",
+		wall_top = {-0.1, 0.5-0.6, -0.1, 0.1, 0.5, 0.1},
+		wall_bottom = {-0.1, -0.5, -0.1, 0.1, -0.5+0.6, 0.1},
+		wall_side = {-0.5, -0.1, -0.1, -0.5+0.6, 0.1, 0.1},
+	},
 	legacy_wallmounted = true,
-	groups = {dig_immediate=2,not_in_creative_inventory=1},
+	groups = {dig_immediate=3},
 	light_source = LIGHT_MAX-5,
 	description="Mesecon Torch",
 	after_place_node = function(pos)
