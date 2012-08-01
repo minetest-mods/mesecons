@@ -32,7 +32,7 @@ minetest.register_node("mesecons_button:button_on", {
         type = "fixed",
 	fixed = {-0.2, -0.15, 0.4, 0.2, 0.15, 0.5},
     },
-	groups = {dig_immediate=2},
+	groups = {dig_immediate=2, not_in_creative_inventory=1},
 	drop = 'mesecons_button:button_off',
 	description = "Button",
 	after_dig_node = function(pos, oldnode)

@@ -34,7 +34,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 		type = "fixed",
 		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
 	},
-	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1},
 	drop='"mesecons_pressureplates:pressure_plate_wood_off" 1',
 	after_dig_node = function(pos)
 		mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
@@ -116,7 +116,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
 		type = "fixed",
 		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
 	},
-	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1},
 	drop='"mesecons_pressureplates:pressure_plate_stone_off" 1',
 	after_dig_node = function(pos)
 		mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
