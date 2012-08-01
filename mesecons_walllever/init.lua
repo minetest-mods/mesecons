@@ -25,7 +25,7 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 	selection_box = {
 		type = "wallmounted",
 	},
-	groups = {dig_immediate=2},
+	groups = {dig_immediate=2,not_in_creative_inventory=1},
 	drop = '"mesecons_walllever:wall_lever_off" 1',
 	description="Lever",
 	after_dig_node = function(pos, oldnode)

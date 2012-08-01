@@ -35,7 +35,7 @@ minetest.register_node("mesecons_delayer:delayer_off_2", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2},
+	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
@@ -57,7 +57,7 @@ minetest.register_node("mesecons_delayer:delayer_off_3", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2},
+	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
@@ -79,17 +79,13 @@ minetest.register_node("mesecons_delayer:delayer_off_4", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2},
+	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
 	is_ground_content = true,
 	drop = 'mesecons_delayer:delayer_off_1',
 })
-
-
-
-
 
 minetest.register_node("mesecons_delayer:delayer_on_1", {
 	description = "Delayer",
@@ -105,7 +101,7 @@ minetest.register_node("mesecons_delayer:delayer_on_1", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2},
+	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
@@ -127,7 +123,7 @@ minetest.register_node("mesecons_delayer:delayer_on_2", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2},
+	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
@@ -149,7 +145,7 @@ minetest.register_node("mesecons_delayer:delayer_on_3", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2},
+	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
@@ -171,7 +167,7 @@ minetest.register_node("mesecons_delayer:delayer_on_4", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2},
+	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,

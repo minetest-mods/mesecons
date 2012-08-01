@@ -31,7 +31,7 @@ minetest.register_node("mesecons_torch:mesecon_torch_on", {
 	walkable = false,
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,
-	groups = {dig_immediate=2},
+	groups = {dig_immediate=2,not_in_creative_inventory=1},
 	light_source = LIGHT_MAX-5,
 	description="Mesecon Torch",
 	after_place_node = function(pos)

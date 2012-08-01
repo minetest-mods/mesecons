@@ -10,9 +10,9 @@ minetest.register_node("mesecons_switch:mesecon_switch_off", {
 minetest.register_node("mesecons_switch:mesecon_switch_on", {
 	tile_images = {"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_on.png"},
 	paramtype2="facedir",
-	groups = {dig_immediate=2},
+	groups = {dig_immediate=2,not_in_creative_inventory=1},
 	drop='"mesecons_switch:mesecon_switch_off" 1',
-    	description="Switch",
+	description="Switch",
 	after_dig_node = function(pos)
 		mesecon:receptor_off(pos)
 	end
