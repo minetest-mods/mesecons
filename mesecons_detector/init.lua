@@ -11,7 +11,7 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	tile_images = {"default_steel_block.png", "default_steel_block.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png"},
 	paramtype = "light",
 	walkable = true,
-	groups = {cracky=3},
+	groups = {cracky=3,not_in_creative_inventory=1},
 	drop = 'mesecons_detector:object_detector_off',
 	description="Player Detector",
 	after_dig_node = function(pos)

@@ -18,7 +18,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	inventory_image = "jeija_blinky_plant_off.png",
 	paramtype = "light",
 	walkable = false,
-	groups = {snappy=2},
+	groups = {snappy=2, not_in_creative_inventory=1},
 	drop='"mesecons_blinkyplant:blinky_plant_off" 1',
 	light_source = LIGHT_MAX-7,
 	description = "Blinky Plant",
