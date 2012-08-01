@@ -1,7 +1,7 @@
 -- The BLINKY_PLANT
 
 minetest.register_node("mesecons_blinkyplant:blinky_plant_off", {
-	drawtype = "torchlike",
+	drawtype = "plantlike",
 	visual_scale = 1,
 	tile_images = {"jeija_blinky_plant_off.png"},
 	inventory_image = "jeija_blinky_plant_off.png",
@@ -16,7 +16,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_off", {
 })
 
 minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
-	drawtype = "torchlike",
+	drawtype = "plantlike",
 	visual_scale = 1,
 	tile_images = {"jeija_blinky_plant_on.png"},
 	inventory_image = "jeija_blinky_plant_off.png",
