@@ -6,7 +6,7 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,
 	sunlight_propagates = true,
-	walkable = false,
+	walkable = true,
 	light_source = LIGHT_MAX,
 	node_box = {
 		type = "wallmounted",
@@ -32,7 +32,7 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	sunlight_propagates = true,
-	walkable = false,
+	walkable = true,
 	node_box = {
 		type = "wallmounted",
 		wall_top = {-0.3125,0.375,-0.3125,0.3125,0.5,0.3125},

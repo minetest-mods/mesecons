@@ -7,7 +7,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_off", {
 	wield_image = "jeija_pressure_plate_wood_off.png",
 	paramtype = "light",
 	is_ground_content = true,
-	walkable = false,
+	walkable = true,
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.45, -0.5, -0.45, 0.45, -0.45, 0.45},
@@ -25,7 +25,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 	tile_images = {"jeija_pressure_plate_wood_on.png"},
 	paramtype = "light",
 	is_ground_content = true,
-	walkable = false,
+	walkable = true,
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
@@ -89,7 +89,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_off", {
 	wield_image = "jeija_pressure_plate_stone_off.png",
 	paramtype = "light",
 	is_ground_content = true,
-	walkable = false,
+	walkable = true,
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.45, -0.5, -0.45, 0.45, -0.45, 0.45},
@@ -107,7 +107,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
 	tile_images = {"jeija_pressure_plate_stone_on.png"},
 	paramtype = "light",
 	is_ground_content = true,
-	walkable = false,
+	walkable = true,
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
