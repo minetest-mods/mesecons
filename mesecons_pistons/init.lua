@@ -2,7 +2,7 @@
 --registration normal one:
 minetest.register_node("mesecons_pistons:piston_normal", {
 	description = "Piston",
-	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png"},
+	tiles = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png"},
 	groups = {cracky=3},
 	paramtype2 = "facedir",
 	after_dig_node = function(pos, oldnode)
@@ -22,7 +22,7 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 --registration sticky one:
 minetest.register_node("mesecons_pistons:piston_sticky", {
 	description = "Sticky Piston",
-	tile_images = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png"},
+	tiles = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png"},
 	groups = {cracky=3},
 	paramtype2 = "facedir",
 	after_dig_node = function(pos, oldnode)
@@ -58,7 +58,7 @@ minetest.register_craft({
 
 minetest.register_node("mesecons_pistons:piston_pusher_normal", {
 	drawtype = "nodebox",
-	tile_images = {"jeija_piston_pusher_normal.png"},
+	tiles = {"jeija_piston_pusher_normal.png"},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	diggable = false,
@@ -83,7 +83,14 @@ mesecon:register_mvps_stopper("mesecons_pistons:piston_pusher_sticky")
 
 minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 	drawtype = "nodebox",
-	tile_images = {"jeija_piston_pusher_sticky.png"},
+	tiles = {
+		"jeija_piston_pusher_normal.png",
+		"jeija_piston_pusher_normal.png",
+		"jeija_piston_pusher_normal.png",
+		"jeija_piston_pusher_normal.png",
+		"jeija_piston_pusher_normal.png",
+		"jeija_piston_pusher_sticky.png"
+		},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	diggable = false,
