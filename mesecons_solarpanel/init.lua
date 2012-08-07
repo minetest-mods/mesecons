@@ -1,19 +1,31 @@
 -- Solar Panel
 minetest.register_node("mesecons_solarpanel:solar_panel", {
-	drawtype = "raillike",
+	drawtype = "nodebox",
 	tile_images = {"jeija_solar_panel.png"},
 	inventory_image = "jeija_solar_panel.png",
 	wield_image = "jeija_solar_panel.png",
 	paramtype = "light",
+	paramtype2 = "wallmounted",
 	walkable = false,
 	is_ground_content = true,
+	node_box = {
+		type = "wallmounted",
+		wall_bottom = {-0.4375, -0.5, -0.4375, 0.4375, -0.45, 0.4375},
+		wall_top = {-0.4375, 0.45, -0.4375, 0.4375, 0.5, 0.4375},
+		wall_side = {-0.5, -0.4375, -0.4375, -0.45, 0.4375, 0.4375},
+	},
 	selection_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		type = "wallmounted",
+		wall_bottom = {-0.4375, -0.5, -0.4375, 0.4375, -0.45, 0.4375},
+		wall_top = {-0.4375, 0.45, -0.4375, 0.4375, 0.5, 0.4375},
+		wall_side = {-0.5, -0.4375, -0.4375, -0.45, 0.4375, 0.4375},
 	},
 	furnace_burntime = 5,
 	groups = {dig_immediate=3},
     	description="Solar Panel",
+	after_dig_node = function(pos, node, digger)
+		mesecon:receptor_off(pos)
+	end,
 })
 
 minetest.register_craft({
