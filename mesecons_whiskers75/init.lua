@@ -5,14 +5,25 @@
 
 minetest.register_node("mesecons_whiskers75:andblock", {
 	description = "AND block",
-	drawtype = "raillike",
-	tile_images = {"whiskers75andblock.png"},
+	drawtype = "nodebox",
+	tiles = {
+		"whiskers75_andblock_top.png",
+		"whiskers75_andblock_sides.png"
+		},
 	inventory_image = {"whiskers75andblock.png"},
 	sunlight_propagates = true,
 	paramtype = 'light',
 	walkable = true,
 	groups = {dig_immediate=2},
 	material = minetest.digprop_constanttime(1.0),
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+	},
+	node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+	},
 })
 
 minetest.register_on_punchnode(function(pos, node, puncher)
