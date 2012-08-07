@@ -1,36 +1,56 @@
 -- WALL BUTTON
 minetest.register_node("mesecons_button:button_off", {
     drawtype = "nodebox",
-    tile_images = {"jeija_wall_button_off.png"},
+    tiles = {
+	"jeija_wall_button_sides.png",	
+	"jeija_wall_button_sides.png",
+	"jeija_wall_button_sides.png",
+	"jeija_wall_button_sides.png",
+	"jeija_wall_button_sides.png",
+	"jeija_wall_button_off.png"
+	},
     paramtype = "light",
     paramtype2 = "facedir",
     legacy_wallmounted = true,
     walkable = false,
     selection_box = {
         type = "fixed",
-	fixed = {-0.2, -0.15, 0.3, 0.2, 0.15, 0.5},
+	fixed = { -6/16, -6/16, 5/16, 6/16, 6/16, 8/16 }
     },
     node_box = {
-        type = "fixed",
-	fixed = {-0.2, -0.15, 0.3, 0.2, 0.15, 0.5},
+        type = "fixed",	
+	fixed = {
+		{ -6/16, -6/16, 7/16, 6/16, 6/16, 8/16 },	-- the thin plate behind the button
+		{ -4/16, -2/16, 5/16, 4/16, 2/16, 7/16 }	-- the button itself
+	}
     },
     groups = {dig_immediate=2},
     description = "Button",
 })
 minetest.register_node("mesecons_button:button_on", {
 	drawtype = "nodebox",
-	tile_images = {"jeija_wall_button_on.png"},
+	tiles = {
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_on.png"
+		},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	legacy_wallmounted = true,
 	walkable = false,
     selection_box = {
         type = "fixed",
-	fixed = {-0.2, -0.15, 0.4, 0.2, 0.15, 0.5},
+	fixed = { -6/16, -6/16, 5/16, 6/16, 6/16, 8/16 }
     },
     node_box = {
         type = "fixed",
-	fixed = {-0.2, -0.15, 0.4, 0.2, 0.15, 0.5},
+	fixed = {
+		{ -6/16, -6/16, 7/16, 6/16, 6/16, 8/16 },
+		{ -4/16, -2/16, 13/32, 4/16, 2/16, 7/16 }
+	}
     },
 	groups = {dig_immediate=2, not_in_creative_inventory=1},
 	drop = 'mesecons_button:button_off',
