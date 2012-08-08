@@ -197,7 +197,10 @@ function yc_command_if_parsecondition(cond, L)
 		local a = tonumber(cond:sub(i+1, i+1))
 		if a == nil then break end
 		if s == "=" then
-			cond = string.gsub(cond, b..s..a, tostring(a == b))
+			buf = (a == b)
+			if buf == true  then buf = "1" end
+			if buf == false then buf = "0" end
+			cond = string.gsub(cond, b..s..a, buf)
 			i = 1
 			l = string.len(cond)
 		end
