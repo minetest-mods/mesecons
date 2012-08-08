@@ -150,7 +150,8 @@ mesecon:register_on_signal_on(function(pos, node)
 	end
 
 	local checknode = minetest.env:get_node(pos)
-	minetest.env:dig_node(pos) --remove the first node
+	minetest.env:remove_node(pos) --remove the first node
+	mesecon:updatenode(pos)
 
 	--add pusher
 	if node.name == "mesecons_pistons:piston_normal" then
@@ -165,8 +166,9 @@ mesecon:register_on_signal_on(function(pos, node)
 
 		--move the node forward
 		local nextnode = minetest.env:get_node(pos)
-		minetest.env:dig_node(pos)
-		minetest.env:place_node(pos, checknode)
+		--minetest.env:dig_node(pos)
+		minetest.env:set_node(pos, checknode)
+		mesecon:updatenode(pos)
 		checknode = nextnode
 	end
 end)
@@ -204,8 +206,9 @@ mesecon:register_on_signal_off(function(pos, node)
 		and checknode.name ~= "default:lava_source"
 		and checknode.name ~= "default:lava_flowing"
 		and not mesecon:is_mvps_stopper(checknode.name) then
-			minetest.env:place_node(pos, checknode)
-			minetest.env:dig_node(checkpos)
+		    minetest.env:set_node(pos, checknode)
+		    mesecon:updatenode(pos)
+		    --minetest.env:dig_node(pos)
 		end
 	end
 	if node.name == "mesecons_pistons:piston_sticky" then
