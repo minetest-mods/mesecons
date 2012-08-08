@@ -171,7 +171,7 @@ mesecon:register_on_signal_on(function(pos, node)
 	end
 end)
 
---Pull action (sticky only)
+--Pull action
 mesecon:register_on_signal_off(function(pos, node)
 	if node.name ~= "mesecons_pistons:piston_normal" and node.name ~= "mesecons_pistons:piston_sticky" then
 		return
@@ -191,6 +191,9 @@ mesecon:register_on_signal_off(function(pos, node)
 
 	--retract piston
 	minetest.env:remove_node(pos) --remove pusher
+	if node.name ~= "mesecons_pistons:piston_sticky" then
+	    nodeupdate(pos)
+	end
 	if node.name == "mesecons_pistons:piston_sticky" then --retract block
 		local checkpos = {x=pos.x + dir.x, y=pos.y + dir.y, z=pos.z + dir.z} --move to the node to be retracted
 		checknode = minetest.env:get_node(checkpos)
@@ -204,6 +207,9 @@ mesecon:register_on_signal_off(function(pos, node)
 			minetest.env:place_node(pos, checknode)
 			minetest.env:dig_node(checkpos)
 		end
+	end
+	if node.name == "mesecons_pistons:piston_sticky" then
+	    nodeupdate(pos)
 	end
 end)
 
