@@ -189,23 +189,26 @@ function yc_command_if_parsecondition(cond, L)
 
 	cond = string.gsub(cond, "!0", "1")
 	cond = string.gsub(cond, "!1", "0")
+
+	print(cond)
 	local i = 2
 	local l = string.len(cond)
 	while i<=l do
 		local s = cond:sub(i,i)
 		local b = tonumber(cond:sub(i-1, i-1))
 		local a = tonumber(cond:sub(i+1, i+1))
-		if a == nil then break end
+		if a == "" then print ("ERROR") break end
 		if s == "=" then
-			buf = (a == b)
-			if buf == true  then buf = "1" end
-			if buf == false then buf = "0" end
+			print(b.."="..a.."?")
+			if a == b  then buf = "1" end
+			if a ~= b then buf = "0" end
 			cond = string.gsub(cond, b..s..a, buf)
 			i = 1
 			l = string.len(cond)
 		end
 		i = i + 1
 	end
+	print(cond)
 
 	local i = 2
 	local l = string.len(cond)
@@ -213,7 +216,7 @@ function yc_command_if_parsecondition(cond, L)
 		local s = cond:sub(i,i)
 		local b = tonumber(cond:sub(i-1, i-1))
 		local a = tonumber(cond:sub(i+1, i+1))
-		if a == nil then break end
+		if a == "" then break end
 		if s == "&" then
 			local buf = ((a==1) and (b==1))
 			if buf == true  then buf = "1" end
@@ -240,6 +243,7 @@ function yc_command_if_parsecondition(cond, L)
 		end
 		i = i + 1
 	end
+	print(cond)
 	return cond
 end
 
