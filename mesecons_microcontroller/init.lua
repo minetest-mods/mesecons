@@ -1,3 +1,5 @@
+EEPROM_SIZE = 255
+
 minetest.register_node("mesecons_microcontroller:microcontroller", {
 	description = "Microcontroller",
 	drawtype = "nodebox",
@@ -23,6 +25,9 @@ minetest.register_node("mesecons_microcontroller:microcontroller", {
 			"field[0.256,0.5;8,1;code;Code:;]"..
 			"button_exit[3,0.5;2,2;program;Program]")
 		meta:set_string("infotext", "Unprogrammed Microcontroller")
+		local r = ""
+		for i=1, EEPROM_SIZE+1 do r=r.."0" end --Generate a string with EEPROM_SIZE*"0"
+		meta:set_string("eeprom", r)
 	end,
 	on_receive_fields = function(pos, formanme, fields, sender)
 		if fields.program then
@@ -52,6 +57,10 @@ function reset_yc(pos)
 	mesecon:receptor_off(pos, mesecon:get_rules("microcontrollerB"))
 	mesecon:receptor_off(pos, mesecon:get_rules("microcontrollerC"))
 	mesecon:receptor_off(pos, mesecon:get_rules("microcontrollerD"))
+	local meta = minetest.env:get_meta(pos)
+	local r = ""
+	for i=1, EEPROM_SIZE+1 do r=r.."0" end --Generate a string with EEPROM_SIZE*"0"
+	meta:set_string("eeprom", r)
 end
 
 function update_yc(pos)
@@ -70,12 +79,13 @@ function parse_yccode(code, pos)
 	local endi = 1
 	local L = yc_get_portstates(pos)
 	local c
+	local eeprom = minetest.env:get_meta(pos):get_string("eeprom")
 	while true do
 		command, endi = parse_get_command(code, endi)
 		if command == nil then return nil end
 		if command == true then break end
 		if command == "if" then
-			r, endi = yc_command_if(code, endi, L)
+			r, endi = yc_command_if(code, endi, L, eeprom)
 			if r == nil then return nil end
 			if r == true then -- nothing
 			elseif r == false then
@@ -90,11 +100,15 @@ function parse_yccode(code, pos)
 			L = yc_command_on (params, L)
 		elseif command == "off" then
 			L = yc_command_off(params, L)
+		elseif command == "sbi" then
+			eeprom = yc_command_sbi (params, eeprom)
 		elseif command == "if" then --nothing
 		else
 			return nil
 		end
 		if L == nil then return nil end
+		if eeprom == nil then return nil else
+		minetest.env:get_meta(pos):set_string("eeprom", eeprom) end
 	end
 	yc_action(pos, L)
 	return true
@@ -140,6 +154,22 @@ function parse_get_params(code, starti)
 	return nil, nil
 end
 
+function yc_parse_get_eeprom_params(code, starti)
+	i = starti
+	s = nil
+	local params = {}
+	while s ~= "" do
+		s = string.sub(code, i, i)
+		if s == ">" then
+			table.insert(params, string.sub(code, starti, i-1)) -- i: ) i+1 after )
+			return params, i + 1
+		end
+		if s == "," then return nil, nil end
+		i = i + 1
+	end
+	return nil, nil
+end
+
 function yc_command_on(params, L)
 	local rules = {}
 	for i, port in ipairs(params) do
@@ -156,11 +186,25 @@ function yc_command_off(params, L)
 	return L
 end
 
-function yc_command_if(code, starti, L)
+function yc_command_sbi(params, eeprom)
+	if params[1]==nil or params[2]==nil or params[3] ~=nil or tonumber(params[1])==nil or tonumber(params[2])==nil then return nil end
+	if tonumber(params[1])>EEPROM_SIZE or tonumber(params[1])<1 or (tonumber(params[2])~=1 and tonumber(params[2]~=0)) then return nil end
+	new_eeprom = "";
+	for i=1, #eeprom do
+		if tonumber(params[1])==i then 
+			new_eeprom = new_eeprom..params[2] 
+		else
+			new_eeprom = new_eeprom..eeprom:sub(i, i)
+		end
+	end
+	return new_eeprom
+end
+
+function yc_command_if(code, starti, L, eeprom)
 	local cond, endi = yc_command_if_getcondition(code, starti)
 	if cond == nil then return nil end
 
-	cond = yc_command_if_parsecondition(cond, L)
+	cond = yc_command_if_parsecondition(cond, L, eeprom)
 
 	if cond == "0" then result = false
 	elseif cond == "1" then result = true
@@ -171,17 +215,28 @@ end
 function yc_command_if_getcondition(code, starti)
 	i = starti
 	s = nil
+	local brackets = 1 --1 Bracket to close
 	while s ~= "" do
 		s = string.sub(code, i, i)
+		
 		if s == ")" then
-			return string.sub(code, starti, i-1), i + 1 -- i: (; i+1 after (;
+			brackets = brackets - 1
 		end
+
+		if s == "(" then
+			brackets = brackets + 1
+		end
+
+		if brackets == 0 then
+			return string.sub(code, starti, i-1), i + 1 -- i: ( i+1 after (
+		end
+
 		i = i + 1
 	end
 	return nil, nil
 end
 
-function yc_command_if_parsecondition(cond, L)
+function yc_command_if_parsecondition(cond, L, eeprom)
 	cond = string.gsub(cond, "A", tostring(L.a and 1 or 0))
 	cond = string.gsub(cond, "B", tonumber(L.b and 1 or 0))
 	cond = string.gsub(cond, "C", tonumber(L.c and 1 or 0))
@@ -189,6 +244,22 @@ function yc_command_if_parsecondition(cond, L)
 
 	cond = string.gsub(cond, "!0", "1")
 	cond = string.gsub(cond, "!1", "0")
+
+	local i = 1
+	local l = string.len(cond)
+	while i<=l do
+		local s = cond:sub(i,i)
+		if s == "<" then
+			params, endi = yc_parse_get_eeprom_params(cond, i+1)
+			buf = yc_eeprom_read(tonumber(params[1]), eeprom)
+			if buf == nil then return nil end
+			local call = cond:sub(i, endi-1)
+			cond = string.gsub(cond, call, buf)
+			i = 0
+			l = string.len(cond)
+		end
+		i = i + 1
+	end
 
 	local i = 2
 	local l = string.len(cond)
@@ -207,7 +278,7 @@ function yc_command_if_parsecondition(cond, L)
 		i = i + 1
 	end
 
-	local i = 2
+	local i = 2 
 	local l = string.len(cond)
 	while i<=l do
 		local s = cond:sub(i,i)
@@ -241,6 +312,13 @@ function yc_command_if_parsecondition(cond, L)
 		i = i + 1
 	end
 	return cond
+end
+
+function yc_eeprom_read(number, eeprom)
+	if params == nil then return nil, nil end
+	value = eeprom:sub(params[1], number)
+	if value  == nil then return nil, nil end
+	return value, endi
 end
 
 function yc_get_port_rules(port)
