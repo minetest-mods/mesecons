@@ -159,6 +159,29 @@ end
 function yc_command_if(code, starti, L)
 	local cond, endi = yc_command_if_getcondition(code, starti)
 	if cond == nil then return nil end
+
+	cond = yc_command_if_parsecondition(cond, L)
+
+	if cond == "0" then result = false
+	elseif cond == "1" then result = true
+	else result = nil end
+	return result, endi --endi from local cond, endi = yc_command_if_getcondition(code, starti)
+end
+
+function yc_command_if_getcondition(code, starti)
+	i = starti
+	s = nil
+	while s ~= "" do
+		s = string.sub(code, i, i)
+		if s == ")" then
+			return string.sub(code, starti, i-1), i + 1 -- i: (; i+1 after (;
+		end
+		i = i + 1
+	end
+	return nil, nil
+end
+
+function yc_command_if_parsecondition(cond, L)
 	cond = string.gsub(cond, "A", tostring(L.a and 1 or 0))
 	cond = string.gsub(cond, "B", tonumber(L.b and 1 or 0))
 	cond = string.gsub(cond, "C", tonumber(L.c and 1 or 0))
@@ -166,6 +189,20 @@ function yc_command_if(code, starti, L)
 
 	cond = string.gsub(cond, "!0", "1")
 	cond = string.gsub(cond, "!1", "0")
+	local i = 2
+	local l = string.len(cond)
+	while i<=l do
+		local s = cond:sub(i,i)
+		local b = tonumber(cond:sub(i-1, i-1))
+		local a = tonumber(cond:sub(i+1, i+1))
+		if a == nil then break end
+		if s == "=" then
+			cond = string.gsub(cond, b..s..a, tostring(a == b))
+			i = 1
+			l = string.len(cond)
+		end
+		i = i + 1
+	end
 
 	local i = 2
 	local l = string.len(cond)
@@ -200,39 +237,7 @@ function yc_command_if(code, starti, L)
 		end
 		i = i + 1
 	end
-
-	local i = 2
-	local l = string.len(cond)
-	while i<=l do
-		local s = cond:sub(i,i)
-		local b = tonumber(cond:sub(i-1, i-1))
-		local a = tonumber(cond:sub(i+1, i+1))
-		if a == nil then break end
-		if s == "=" then
-			cond = string.gsub(cond, b..s..a, tostring(a == b))
-			i = 1
-			l = string.len(cond)
-		end
-		i = i + 1
-	end
-
-	if cond == "0" then result = false
-	elseif cond == "1" then result = true
-	else result = nil end
-	return result, endi --endi from local cond, endi = yc_command_if_getcondition(code, starti)
-end
-
-function yc_command_if_getcondition(code, starti)
-	i = starti
-	s = nil
-	while s ~= "" do
-		s = string.sub(code, i, i)
-		if s == ")" then
-			return string.sub(code, starti, i-1), i + 1 -- i: (; i+1 after (;
-		end
-		i = i + 1
-	end
-	return nil, nil
+	return cond
 end
 
 function yc_get_port_rules(port)
