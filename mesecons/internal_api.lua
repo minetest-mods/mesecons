@@ -384,6 +384,14 @@ function mesecon:check_if_turnon(pos)
 	return false
 end
 
+function mesecon:updatenode(pos)
+    if mesecon:connected_to_pwr_src(pos) then
+        mesecon:turnon(pos, 0, 0, 0)
+    else
+        mesecon:turnoff(pos, 0, 0, 0)
+    end
+end
+
 minetest.register_on_placenode(function(pos, newnode, placer)
 	if mesecon:check_if_turnon(pos) then
 		if mesecon:is_conductor_off(newnode.name) then
