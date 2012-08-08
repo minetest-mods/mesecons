@@ -227,7 +227,7 @@ end
 
 function mesecon:is_power_on(pos)
 	local node = minetest.env:get_node(pos)
-	if node.name == "mesecons:mesecon_on" or mesecon:is_receptor_node(node.name) then
+	if mesecon:is_conductor_on(node.name) or mesecon:is_receptor_node(node.name) then
 		return true
 	end
 	return false

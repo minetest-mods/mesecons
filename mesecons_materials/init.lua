@@ -13,22 +13,6 @@ minetest.register_craft({
 	}
 })
 
--- IC
-minetest.register_craftitem("mesecons_materials:ic", {
-	image = "jeija_ic.png",
-	on_place_on_ground = minetest.craftitem_place_item,
-    	description="IC",
-})
-
-minetest.register_craft({
-	output = 'craft "mesecons_materials:ic" 2',
-	recipe = {
-		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'mesecons:mesecon_off'},
-		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'mesecons:mesecon_off'},
-		{'mesecons:mesecon_off', 'mesecons:mesecon_off', ''},
-	}
-})
-
 -- Silicon
 minetest.register_craftitem("mesecons_materials:silicon", {
 	image = "jeija_silicon.png",
