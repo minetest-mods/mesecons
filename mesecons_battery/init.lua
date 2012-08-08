@@ -97,6 +97,7 @@ nodenames = {"mesecons_battery:battery_charging_1", "mesecons_battery:battery_ch
 				batterystate = batterystate + 1
 			else
 				node.name=string.gsub(node.name, "charging", "discharging")
+				mesecon:receptor_on(pos)
 			end
 
 			if string.find(node.name, tostring(math.ceil(batterystate/20))) == nil then
@@ -122,6 +123,7 @@ nodenames = {"mesecons_battery:battery_discharging_1", "mesecons_battery:battery
 			batterystate = batterystate - 1
 		else
 			node.name=string.gsub(node.name, "discharging", "charging")
+			mesecon:receptor_off(pos)
 		end
 
 		if string.find(node.name, tostring(math.ceil(batterystate/20))) == nil then
