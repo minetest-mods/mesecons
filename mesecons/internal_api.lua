@@ -385,7 +385,7 @@ function mesecon:check_if_turnon(pos)
 end
 
 function mesecon:updatenode(pos)
-    if mesecon:connected_to_pwr_src(pos) then
+    if mesecon:connected_to_pw_src(pos) then
         mesecon:turnon(pos, 0, 0, 0)
     else
         mesecon:turnoff(pos, 0, 0, 0)
