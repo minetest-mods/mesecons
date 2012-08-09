@@ -17,7 +17,8 @@ minetest.register_node(nodename, {
 		"jeija_microcontroller_top_"..tostring(d)..tostring(c)..tostring(b)..tostring(a)..".png",
 		"jeija_microcontroller_sides.png",
 		},
-	inventory_image = "jeija_microcontroller_top_0000.png",
+	--inventory_image = "jeija_microcontroller_top_0000.png",
+
 	sunlight_propagates = true,
 	paramtype = "light",
 	walkable = true,
@@ -43,7 +44,7 @@ minetest.register_node(nodename, {
 			"field[0.256,0.5;8,1;code;Code:;]"..
 			"button_exit[3,0.5;2,2;program;Program]")
 		meta:set_string("infotext", "Unprogrammed Microcontroller")
-		meta:set_string("heat", "0")
+		meta:set_int("heat", 0)
 		local r = ""
 		for i=1, EEPROM_SIZE+1 do r=r.."0" end --Generate a string with EEPROM_SIZE*"0"
 		meta:set_string("eeprom", r)
@@ -56,11 +57,11 @@ minetest.register_node(nodename, {
 			meta:set_string("formspec", "size[8,2]"..
 			"field[0.256,0.5;8,1;code;Code:;"..fields.code.."]"..
 			"button_exit[3,0.5;2,2;program;Program]")
-			meta:set_string("heat", "0")
-			reset_yc (pos)
+			meta:set_int("heat", 0)
+			yc_reset (pos)
 			update_yc(pos)
 		end
-	end
+	end,
 })
 local rules={}
 if (a == 1) then table.insert(rules, {x = -1, y = 0, z =  0}) end
@@ -83,7 +84,7 @@ minetest.register_craft({
 	}
 })
 
-function reset_yc(pos)
+function yc_reset(pos)
 	yc_action(pos, {a=false, b=false, c=false, d=false})
 	local meta = minetest.env:get_meta(pos)
 	local r = ""
@@ -93,15 +94,12 @@ end
 
 function update_yc(pos)
 	local meta = minetest.env:get_meta(pos)
-	local timer = minetest.env:get_node_timer(pos)
-	if (timer:get_elapsed()~=nil) then
-		if (timer:get_elapsed() < 0.05) then
-			h = tonumber(meta:get_string("heat"))
-			if h==nil then return nil end
-			meta:set_string("heat", tostring(h + 1))
-		else
-			meta:set_string("heat", "0");
-		end
+	yc_heat(meta)
+	minetest.after(0.5, yc_cool, meta)
+	if (yc_overheat(meta)) then
+		minetest.env:remove_node(pos)
+		minetest.after(0.2, yc_overheat_off, pos) --wait for pending parsings
+		minetest.env:add_item(pos, "mesecons_microcontroller:microcontroller0000")
 	end
 
 	local code = meta:get_string("code")
@@ -114,9 +112,11 @@ function update_yc(pos)
 		meta:set_string("infotext", "Working Microcontroller")
 	end
 	timer = minetest.env:get_node_timer(pos) --action places a new node!
-	timer:start(1)
+	timer:start(0.5)
 end
 
+
+--Code Parsing
 function yc_code_remove_commentary(code)
 	for i = 1, #code do
 		if code:sub(i, i) == ":" then
@@ -130,6 +130,7 @@ function parse_yccode(code, pos)
 	local endi = 1
 	local Lreal = yc_get_real_portstates(pos)
 	local Lvirtual = yc_get_virtual_portstates(pos)
+	if Lvirtual == nil then return nil end
 	local c
 	local eeprom = minetest.env:get_meta(pos):get_string("eeprom")
 	while true do
@@ -224,6 +225,20 @@ function yc_parse_get_eeprom_param(cond, starti)
 	return nil, nil
 end
 
+function yc_skip_to_endif(code, starti)
+	local i = starti
+	local s = false
+	while s ~= nil and s~= "" do
+		s = code:sub(i, i)
+		if s == ";" then
+			return i + 1
+		end
+		i = i + 1
+	end
+	return nil
+end
+
+--Commands
 function yc_command_on(params, L)
 	local rules = {}
 	for i, port in ipairs(params) do
@@ -255,6 +270,7 @@ function yc_command_sbi(params, eeprom, L)
 	return new_eeprom
 end
 
+--If
 function yc_command_if(code, starti, L, eeprom)
 	local cond, endi = yc_command_if_getcondition(code, starti)
 	if cond == nil then return nil end
@@ -268,6 +284,7 @@ function yc_command_if(code, starti, L, eeprom)
 	return result, endi --endi from local cond, endi = yc_command_if_getcondition(code, starti)
 end
 
+--Condition parsing
 function yc_command_if_getcondition(code, starti)
 	i = starti
 	s = nil
@@ -376,6 +393,7 @@ function yc_command_parsecondition(cond, L, eeprom)
 	return cond
 end
 
+--Virtual-Hardware functions
 function yc_eeprom_read(number, eeprom)
 	if number == nil then return nil, nil end
 	value = eeprom:sub(number, number)
@@ -383,11 +401,12 @@ function yc_eeprom_read(number, eeprom)
 	return value, endi
 end
 
+--Real I/O functions
 function yc_action(pos, L) --L-->Lvirtual
 	Lv = yc_get_virtual_portstates(pos)
 	local meta = minetest.env:get_meta(pos)
 	local code = meta:get_string("code")
-	local heat = meta:get_string("heat")
+	local heat = meta:get_int("heat")
 	local eeprom = meta:get_string("eeprom")
 	local infotext   = meta:get_string("infotext")
 	local formspec = meta:get_string("formspec")
@@ -399,7 +418,7 @@ function yc_action(pos, L) --L-->Lvirtual
 	minetest.env:add_node(pos, {name=name})
 	local meta = minetest.env:get_meta(pos)
 	meta:set_string("code", code)
-	meta:set_string("heat", heat)
+	meta:set_int("heat", heat)
 	meta:set_string("eeprom", eeprom)
 	meta:set_string("infotext", infotext)
 	meta:set_string("formspec", formspec)
@@ -408,21 +427,24 @@ function yc_action(pos, L) --L-->Lvirtual
 end
 
 function yc_action_setports(pos, L, Lv)
-
 	local name = "mesecons_microcontroller:microcontroller"
-	if Lv.a ~= L.a then 
+	local rules
+	if Lv.a ~= L.a then
 		rules = mesecon:get_rules(name.."0001")
 		if L.a == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
-	elseif Lv.b ~= L.b then 
+	end
+	if Lv.b ~= L.b then 
 		rules = mesecon:get_rules(name.."0010")
 		if L.b == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
-	elseif Lv.c ~= L.c then 
+	end
+	if Lv.c ~= L.c then 
 		rules = mesecon:get_rules(name.."0100")
 		if L.c == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
-	elseif Lv.d ~= L.d then 
+	end
+	if Lv.d ~= L.d then 
 		rules = mesecon:get_rules(name.."1000")
 		if L.d == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
@@ -466,7 +488,7 @@ function yc_get_virtual_portstates(pos)
 	return Lvirtual
 end
 
-function yc_merge_portstates(Lreal, Lvirtual) --TODO
+function yc_merge_portstates(Lreal, Lvirtual)
 	local L = {a=false, b=false, c=false, d=false}
 	if Lvirtual.a or Lreal.a then L.a = true end
 	if Lvirtual.b or Lreal.b then L.b = true end
@@ -475,21 +497,45 @@ function yc_merge_portstates(Lreal, Lvirtual) --TODO
 	return L
 end
 
-function yc_skip_to_endif(code, starti)
-	local i = starti
-	local s = false
-	while s ~= nil and s~= "" do
-		s = code:sub(i, i)
-		if s == ";" then
-			return i + 1
-		end
-		i = i + 1
+--"Overheat" protection
+function yc_heat(meta)
+	h = meta:get_int("heat")
+	if h ~= nil then
+		meta:set_int("heat", h + 1)
 	end
-	return nil
+end
+
+function yc_cool(meta)
+	h = meta:get_int("heat")
+	if h ~= nil then
+		meta:set_int("heat", h - 1)
+	end
+end
+
+function yc_overheat(meta)
+	h = meta:get_int("heat")
+	if h == nil then return true end -- if nil the overheat
+	if h>30 then 
+		return true
+	else 
+		return false 
+	end
+end
+
+function yc_overheat_off(pos)
+	rules = mesecon:get_rules("mesecons_microcontroller:microcontroller1111")
+	mesecon:receptor_off(pos, rules);
 end
 
 mesecon:register_on_signal_change(function(pos, node)
 	if string.find(node.name, "mesecons_microcontroller:microcontroller")~=nil then
-		minetest.after(0.5, update_yc, pos)
+		update_yc(pos)
+	end
+end)
+
+minetest.register_on_dignode(function(pos, node)
+	if string.find(node.name, "mesecons_microcontroller:microcontroller") then
+		rules = mesecon:get_rules(node.name)
+		mesecon:receptor_off(pos, rules)
 	end
 end)
