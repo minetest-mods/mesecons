@@ -154,15 +154,15 @@ function parse_get_params(code, starti)
 	return nil, nil
 end
 
-function yc_parse_get_eeprom_params(code, starti)
+function yc_parse_get_eeprom_param(cond, starti)
 	i = starti
 	s = nil
-	local params = {}
+	local addr
 	while s ~= "" do
-		s = string.sub(code, i, i)
-		if s == ">" then
-			table.insert(params, string.sub(code, starti, i-1)) -- i: ) i+1 after )
-			return params, i + 1
+		s = string.sub(cond, i, i)
+		if string.find("0123456789", s) == nil or s == "" then
+			addr = string.sub(cond, starti, i-1) -- i: last number i+1 after last number
+			return addr, i
 		end
 		if s == "," then return nil, nil end
 		i = i + 1
@@ -242,16 +242,13 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 	cond = string.gsub(cond, "C", tonumber(L.c and 1 or 0))
 	cond = string.gsub(cond, "D", tonumber(L.d and 1 or 0))
 
-	cond = string.gsub(cond, "!0", "1")
-	cond = string.gsub(cond, "!1", "0")
-
 	local i = 1
 	local l = string.len(cond)
 	while i<=l do
 		local s = cond:sub(i,i)
-		if s == "<" then
-			params, endi = yc_parse_get_eeprom_params(cond, i+1)
-			buf = yc_eeprom_read(tonumber(params[1]), eeprom)
+		if s == "#" then
+			addr, endi = yc_parse_get_eeprom_param(cond, i+1)
+			buf = yc_eeprom_read(tonumber(addr), eeprom)
 			if buf == nil then return nil end
 			local call = cond:sub(i, endi-1)
 			cond = string.gsub(cond, call, buf)
@@ -261,6 +258,9 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 		i = i + 1
 	end
 
+	cond = string.gsub(cond, "!0", "1")
+	cond = string.gsub(cond, "!1", "0")
+
 	local i = 2
 	local l = string.len(cond)
 	while i<=l do
@@ -269,6 +269,7 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 		local a = tonumber(cond:sub(i+1, i+1))
 		if cond:sub(i+1, i+1) == nil then break end
 		if s == "=" then
+			if a==nil then return nil end
 			if a == b  then buf = "1" end
 			if a ~= b then buf = "0" end
 			cond = string.gsub(cond, b..s..a, buf)
@@ -286,6 +287,7 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 		local a = tonumber(cond:sub(i+1, i+1))
 		if cond:sub(i+1, i+1) == nil then break end
 		if s == "&" then
+			if a==nil then return nil end
 			local buf = ((a==1) and (b==1))
 			if buf == true  then buf = "1" end
 			if buf == false then buf = "0" end
@@ -294,6 +296,7 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 			l = string.len(cond)
 		end
 		if s == "|" then
+			if a==nil then return nil end
 			local buf = ((a == 1) or (b == 1))
 			if buf == true  then buf = "1" end
 			if buf == false then buf = "0" end
@@ -302,6 +305,7 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 			l = string.len(cond)
 		end
 		if s == "~" then
+			if a==nil then return nil end
 			local buf = (((a == 1) or (b == 1)) and not((a==1) and (b==1)))
 			if buf == true  then buf = "1" end
 			if buf == false then buf = "0" end
@@ -315,8 +319,8 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 end
 
 function yc_eeprom_read(number, eeprom)
-	if params == nil then return nil, nil end
-	value = eeprom:sub(params[1], number)
+	if number == nil then return nil, nil end
+	value = eeprom:sub(number, number)
 	if value  == nil then return nil, nil end
 	return value, endi
 end
