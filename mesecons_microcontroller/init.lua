@@ -66,6 +66,7 @@ end
 function update_yc(pos)
 	local meta = minetest.env:get_meta(pos)
 	local code = meta:get_string("code")
+	code = yc_code_remove_commentary(code)
 	code = string.gsub(code, " ", "")	--Remove all spaces
 	code = string.gsub(code, "	", "")	--Remove all tabs
 	if parse_yccode(code, pos) == nil then
@@ -73,6 +74,15 @@ function update_yc(pos)
 	else
 		meta:set_string("infotext", "Programmed Microcontroller")
 	end
+end
+
+function yc_code_remove_commentary(code)
+	for i = 1, #code do
+		if code:sub(i, i) == ":" then
+			return code:sub(1, i-1)
+		end
+	end
+	return code
 end
 
 function parse_yccode(code, pos)
