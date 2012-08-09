@@ -3,8 +3,11 @@ EEPROM_SIZE = 255
 minetest.register_node("mesecons_microcontroller:microcontroller", {
 	description = "Microcontroller",
 	drawtype = "nodebox",
-	tiles = {"jeija_ic.png"},
-	inventory_image = {"jeija_ic.png"},
+	tiles = {
+		"jeija_microcontroller_top_0000.png",
+		"jeija_microcontroller_sides.png",
+		},
+	inventory_image = "jeija_microcontroller_top_0000.png",
 	sunlight_propagates = true,
 	paramtype = "light",
 	walkable = true,
@@ -12,11 +15,15 @@ minetest.register_node("mesecons_microcontroller:microcontroller", {
 	material = minetest.digprop_constanttime(1.0),
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -4/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = {
+			{ -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 }, -- bottom slab
+			{ -5/16, -6/16, -5/16, 5/16, -5/16, 5/16 }, -- circuit board
+			{ -3/16, -5/16, -3/16, 3/16, -4/16, 3/16 }, -- IC
+		}
 	},
 	on_construct = function(pos)
 		local meta = minetest.env:get_meta(pos)
