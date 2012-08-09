@@ -250,7 +250,6 @@ function yc_command_if_getcondition(code, starti)
 end
 
 function yc_command_parsecondition(cond, L, eeprom)
-	print("parsing condition: "..cond)
 	cond = string.gsub(cond, "A", tostring(L.a and 1 or 0))
 	cond = string.gsub(cond, "B", tonumber(L.b and 1 or 0))
 	cond = string.gsub(cond, "C", tonumber(L.c and 1 or 0))
@@ -271,10 +270,10 @@ function yc_command_parsecondition(cond, L, eeprom)
 		end
 		i = i + 1
 	end
-	print(cond)
+
 	cond = string.gsub(cond, "!0", "1")
 	cond = string.gsub(cond, "!1", "0")
-	print(cond)
+
 	local i = 2
 	local l = string.len(cond)
 	while i<=l do
@@ -292,7 +291,7 @@ function yc_command_parsecondition(cond, L, eeprom)
 		end
 		i = i + 1
 	end
-	print(cond)
+
 	local i = 2 
 	local l = string.len(cond)
 	while i<=l do
@@ -329,7 +328,7 @@ function yc_command_parsecondition(cond, L, eeprom)
 		end
 		i = i + 1
 	end
-	print(cond)
+
 	return cond
 end
 
