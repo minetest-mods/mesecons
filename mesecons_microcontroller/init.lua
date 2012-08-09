@@ -5,6 +5,11 @@ for b = 0, 1 do
 for c = 0, 1 do
 for d = 0, 1 do
 local nodename = "mesecons_microcontroller:microcontroller"..tostring(d)..tostring(c)..tostring(b)..tostring(a)
+if tostring(d)..tostring(c)..tostring(b)..tostring(a) ~= "0000" then
+	groups = {dig_immediate=2, not_in_creative_inventory=1}
+else
+	groups = {dig_immediate=2}
+end
 minetest.register_node(nodename, {
 	description = "Microcontroller",
 	drawtype = "nodebox",
@@ -16,7 +21,7 @@ minetest.register_node(nodename, {
 	sunlight_propagates = true,
 	paramtype = "light",
 	walkable = true,
-	groups = {dig_immediate=2},
+	groups = groups,
 	material = minetest.digprop_constanttime(1.0),
 	drop = '"mesecons_microcontroller:microcontroller0000" 1',
 	selection_box = {
@@ -120,7 +125,7 @@ function parse_yccode(code, pos)
 		if command == "if" then
 			r, endi = yc_command_if(code, endi, yc_merge_portstates(Lreal, Lvirtual), eeprom)
 			if r == nil then return nil end
-			if r == true then -- nothing
+			if r == true then  -- nothing
 			elseif r == false then
 				endi = yc_skip_to_endif(code, endi)
 				if endi == nil then return nil end
@@ -141,7 +146,7 @@ function parse_yccode(code, pos)
 		else
 			return nil
 		end
-		if L == nil then return nil end
+		if Lvirtual == nil then return nil end
 		if eeprom == nil then return nil else
 		minetest.env:get_meta(pos):set_string("eeprom", eeprom) end
 	end
@@ -245,6 +250,7 @@ function yc_command_if(code, starti, L, eeprom)
 	if cond == "0" then result = false
 	elseif cond == "1" then result = true
 	else result = nil end
+	if result == nil then end
 	return result, endi --endi from local cond, endi = yc_command_if_getcondition(code, starti)
 end
 
