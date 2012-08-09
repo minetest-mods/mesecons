@@ -72,7 +72,7 @@ function update_yc(pos)
 	if parse_yccode(code, pos) == nil then
 		meta:set_string("infotext", "Code not valid!")
 	else
-		meta:set_string("infotext", "Programmed Microcontroller")
+		meta:set_string("infotext", "Working Microcontroller")
 	end
 end
 
@@ -111,7 +111,9 @@ function parse_yccode(code, pos)
 		elseif command == "off" then
 			L = yc_command_off(params, L)
 		elseif command == "sbi" then
-			eeprom = yc_command_sbi (params, eeprom)
+			new_eeprom = yc_command_sbi (params, eeprom, L)
+			if new_eeprom == nil then return nil
+			else eeprom = new_eeprom end
 		elseif command == "if" then --nothing
 		else
 			return nil
@@ -196,13 +198,14 @@ function yc_command_off(params, L)
 	return L
 end
 
-function yc_command_sbi(params, eeprom)
-	if params[1]==nil or params[2]==nil or params[3] ~=nil or tonumber(params[1])==nil or tonumber(params[2])==nil then return nil end
-	if tonumber(params[1])>EEPROM_SIZE or tonumber(params[1])<1 or (tonumber(params[2])~=1 and tonumber(params[2]~=0)) then return nil end
+function yc_command_sbi(params, eeprom, L)
+	if params[1]==nil or params[2]==nil or params[3] ~=nil or tonumber(params[1])==nil then return nil end
+	local status = yc_command_parsecondition(params[2], L, eeprom)
+	if tonumber(params[1])>EEPROM_SIZE or tonumber(params[1])<1 or (status ~= "0" and status ~= "1") then return nil end
 	new_eeprom = "";
 	for i=1, #eeprom do
 		if tonumber(params[1])==i then 
-			new_eeprom = new_eeprom..params[2] 
+			new_eeprom = new_eeprom..status
 		else
 			new_eeprom = new_eeprom..eeprom:sub(i, i)
 		end
@@ -214,7 +217,7 @@ function yc_command_if(code, starti, L, eeprom)
 	local cond, endi = yc_command_if_getcondition(code, starti)
 	if cond == nil then return nil end
 
-	cond = yc_command_if_parsecondition(cond, L, eeprom)
+	cond = yc_command_parsecondition(cond, L, eeprom)
 
 	if cond == "0" then result = false
 	elseif cond == "1" then result = true
@@ -246,7 +249,8 @@ function yc_command_if_getcondition(code, starti)
 	return nil, nil
 end
 
-function yc_command_if_parsecondition(cond, L, eeprom)
+function yc_command_parsecondition(cond, L, eeprom)
+	print("parsing condition: "..cond)
 	cond = string.gsub(cond, "A", tostring(L.a and 1 or 0))
 	cond = string.gsub(cond, "B", tonumber(L.b and 1 or 0))
 	cond = string.gsub(cond, "C", tonumber(L.c and 1 or 0))
@@ -267,10 +271,10 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 		end
 		i = i + 1
 	end
-
+	print(cond)
 	cond = string.gsub(cond, "!0", "1")
 	cond = string.gsub(cond, "!1", "0")
-
+	print(cond)
 	local i = 2
 	local l = string.len(cond)
 	while i<=l do
@@ -288,7 +292,7 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 		end
 		i = i + 1
 	end
-
+	print(cond)
 	local i = 2 
 	local l = string.len(cond)
 	while i<=l do
@@ -325,6 +329,7 @@ function yc_command_if_parsecondition(cond, L, eeprom)
 		end
 		i = i + 1
 	end
+	print(cond)
 	return cond
 end
 
