@@ -40,9 +40,15 @@ minetest.register_node(nodename, {
 	on_construct = function(pos)
 		local meta = minetest.env:get_meta(pos)
 		meta:set_string("code", "")
-		meta:set_string("formspec", "size[8,2]"..
-			"field[0.256,0.5;8,1;code;Code:;]"..
-			"button_exit[3,0.5;2,2;program;Program]")
+		meta:set_string("formspec", "size[9,2.5]"..
+			"field[0.256,-0.2;9,2;code;Code:;]"..
+			"button[0  ,0.2;1.5,3;band;AND]"..
+			"button[1.5,0.2;1.5,3;bxor;XOR]"..
+			"button[3  ,0.2;1.5,3;bnot;NOT]"..
+			"button[4.5,0.2;1.5,3;bnand;NAND]"..
+			"button[6  ,0.2;1.5,3;btflop;T-Flop]"..
+			"button[7.5,0.2;1.5,3;brsflop;RS-Flop]"..
+			"button_exit[3.5,1;2,3;program;Program]")
 		meta:set_string("infotext", "Unprogrammed Microcontroller")
 		meta:set_int("heat", 0)
 		local r = ""
@@ -50,17 +56,36 @@ minetest.register_node(nodename, {
 		meta:set_string("eeprom", r)
 	end,
 	on_receive_fields = function(pos, formanme, fields, sender)
-		if fields.program then
-			local meta = minetest.env:get_meta(pos)
+		local meta = minetest.env:get_meta(pos)
+		if fields.band then
+			fields.code = "off(C)if(A&B)on(C); :A and B are inputs, C is output"
+		elseif fields.bxor then
+			fields.code = "off(C)if(A~B)on(C); :A and B are inputs, C is output"
+		elseif fields.bnot then
+			fields.code = "on(B)if(A)off(B); :A is input, B is output"
+		elseif fields.bnand then
+			fields.code = "on(C)if(A&B)off(C); :A and B are inputs, C is output"
+		elseif fields.btflop then
+			fields.code = "if(A)sbi(1,1); if(!A&#1&B)off(B)sbi(1,0); if(!A&#1&!B)on(B)sbi(1,0); :A is input, B is output (Q), toggles with falling edge"
+		elseif fields.brsflop then
+			fields.code = "if(A)on(C);if(B)off(C); :A is S (Set), B is R (Reset), C is output (R dominates)"
+		elseif fields.program then
 			meta:set_string("infotext", "Programmed Microcontroller")
-			meta:set_string("code", fields.code)
-			meta:set_string("formspec", "size[8,2]"..
-			"field[0.256,0.5;8,1;code;Code:;"..fields.code.."]"..
-			"button_exit[3,0.5;2,2;program;Program]")
-			meta:set_int("heat", 0)
-			yc_reset (pos)
-			update_yc(pos)
-		end
+		else return nil end
+
+		meta:set_int("heat", 0)
+		yc_reset (pos)
+		update_yc(pos)
+		meta:set_string("code", fields.code)
+		meta:set_string("formspec", "size[9,2.5]"..
+		"field[0.256,-0.2;9,2;code;Code:;"..fields.code.."]"..
+		"button[0  ,0.2;1.5,3;band;AND]"..
+		"button[1.5,0.2;1.5,3;bxor;XOR]"..
+		"button[3  ,0.2;1.5,3;bnot;NOT]"..
+		"button[4.5,0.2;1.5,3;bnand;NAND]"..
+		"button[6  ,0.2;1.5,3;btflop;T-Flop]"..
+		"button[7.5,0.2;1.5,3;brsflop;RS-Flop]"..
+		"button_exit[3.5,1;2,3;program;Program]")
 	end,
 })
 local rules={}
