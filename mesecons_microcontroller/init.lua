@@ -69,13 +69,9 @@ minetest.register_node(nodename, {
 			fields.code = "if(A)sbi(1,1); if(!A&#1&B)off(B)sbi(1,0); if(!A&#1&!B)on(B)sbi(1,0); :A is input, B is output (Q), toggles with falling edge"
 		elseif fields.brsflop then
 			fields.code = "if(A)on(C);if(B)off(C); :A is S (Set), B is R (Reset), C is output (R dominates)"
-		elseif fields.program then
-			meta:set_string("infotext", "Programmed Microcontroller")
+		elseif fields.program then --nothing
 		else return nil end
 
-		meta:set_int("heat", 0)
-		yc_reset (pos)
-		update_yc(pos)
 		meta:set_string("code", fields.code)
 		meta:set_string("formspec", "size[9,2.5]"..
 		"field[0.256,-0.2;9,2;code;Code:;"..fields.code.."]"..
@@ -86,6 +82,10 @@ minetest.register_node(nodename, {
 		"button[6  ,0.2;1.5,3;btflop;T-Flop]"..
 		"button[7.5,0.2;1.5,3;brsflop;RS-Flop]"..
 		"button_exit[3.5,1;2,3;program;Program]")
+		meta:set_string("infotext", "Programmed Microcontroller")
+		meta:set_int("heat", 0)
+		yc_reset (pos)
+		update_yc(pos)
 	end,
 })
 local rules={}
