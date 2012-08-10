@@ -159,13 +159,18 @@ function parse_yccode(code, pos)
 	while true do
 		command, endi = parse_get_command(code, endi)
 		if command == nil then return nil end
-		if command == true then break end
+		if command == true then break end --end of code
 		if command == "if" then
 			r, endi = yc_command_if(code, endi, yc_merge_portstates(Lreal, Lvirtual), eeprom)
 			if r == nil then return nil end
 			if r == true then  -- nothing
 			elseif r == false then
-				endi = yc_skip_to_endif(code, endi)
+				endi_new = yc_skip_to_else (code, endi)
+				if endi_new == nil then --else > not found
+					endi = yc_skip_to_endif(code, endi)
+				else
+					endi = endi_new
+				end
 				if endi == nil then return nil end
 			end
 		else
@@ -197,16 +202,21 @@ function parse_get_command(code, starti)
 	s = nil
 	while s ~= "" do
 		s = string.sub(code, i, i)
-		if s == ";" and starti == i then 
-			starti = starti + 1
-			i = starti
-			s = string.sub(code, i, i)
-		end
 		if s == "(" then
 			return string.sub(code, starti, i-1), i + 1 -- i: ( i+1 after (
 		end
-		i = i + 1
+		if s == ";" and starti == i then 
+			starti = starti + 1
+			i = starti
+		elseif s == ">" then
+			starti = yc_skip_to_endif(code, starti)
+			if starti == nil then return nil end
+			i = starti
+		else
+			i = i + 1
+		end
 	end
+
 	if starti == i-1 then
 		return true, true
 	end
@@ -251,9 +261,36 @@ end
 function yc_skip_to_endif(code, starti)
 	local i = starti
 	local s = false
+	local open_ifs = 1
 	while s ~= nil and s~= "" do
 		s = code:sub(i, i)
+		if s == "i" and code:sub(i+1, i+1) == "f" then --if in µCScript
+			open_ifs = open_ifs + 1
+		end
 		if s == ";" then
+			open_ifs = open_ifs - 1
+		end
+		if open_ifs == 0 then
+			return i + 1
+		end
+		i = i + 1
+	end
+	return nil
+end
+
+function yc_skip_to_else(code, starti)
+	local i = starti
+	local s = false
+	local open_ifs = 1
+	while s ~= nil and s~= "" do
+		s = code:sub(i, i)
+		if s == "i" and code:sub(i+1, i+1) == "f" then --if in µCScript
+			open_ifs = open_ifs + 1
+		end
+		if s == ";" then
+			open_ifs = open_ifs - 1
+		end
+		if open_ifs == 1 and s == ">" then
 			return i + 1
 		end
 		i = i + 1
