@@ -32,7 +32,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 	},
 	node_box = {
 		type = "fixed",
-		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
+		fixed = { -7/16, -8/16, -7/16, 7/16, -31/64, 7/16 },
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1},
 	drop='"mesecons_pressureplates:pressure_plate_wood_off" 1',
@@ -114,7 +114,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
 	},
 	node_box = {
 		type = "fixed",
-		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
+		fixed = { -7/16, -8/16, -7/16, 7/16, -31/64, 7/16 },
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1},
 	drop='"mesecons_pressureplates:pressure_plate_stone_off" 1',
