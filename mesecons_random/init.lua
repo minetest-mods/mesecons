@@ -4,7 +4,7 @@ minetest.register_node("mesecons_random:removestone", {
 	tile_images = {"jeija_removestone.png"},
 	inventory_image = minetest.inventorycube("jeija_removestone_inv.png"),
 	material = minetest.digprop_stonelike(1.0),
-	groups = {cracky=3},
+	groups = {cracky=3, mesecon = 1},
 	description="Removestone",
 })
 

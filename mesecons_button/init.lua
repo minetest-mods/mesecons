@@ -24,7 +24,7 @@ minetest.register_node("mesecons_button:button_off", {
 		{ -4/16, -2/16, 4/16, 4/16, 2/16, 6/16 }	-- the button itself
 	}
     },
-    groups = {dig_immediate=2},
+    groups = {dig_immediate=2, mesecon = 1},
     description = "Button",
 })
 minetest.register_node("mesecons_button:button_on", {
@@ -53,7 +53,7 @@ minetest.register_node("mesecons_button:button_on", {
 		{ -4/16, -2/16, 11/32, 4/16, 2/16, 6/16 }
 	}
     },
-	groups = {dig_immediate=2, not_in_creative_inventory=1},
+	groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 1},
 	drop = 'mesecons_button:button_off',
 	description = "Button",
 	after_dig_node = function(pos, oldnode)
