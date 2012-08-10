@@ -3,7 +3,7 @@
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 	drawtype = "nodebox",
 	tile_images = {"jeija_hydro_turbine_off.png"},
-	groups = {dig_immediate=2},
+	groups = {dig_immediate=2, mesecon = 1},
     	description="Water Turbine",
 	paramtype = "light",
 	selection_box = {
@@ -26,7 +26,7 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 	drawtype = "nodebox",
 	tile_images = {"jeija_hydro_turbine_on.png"},
 	drop = '"mesecons_hydroturbine:hydro_turbine_off" 1',
-	groups = {dig_immediate=2,not_in_creative_inventory=1},
+	groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 1},
 	description="Water Turbine",
 	paramtype = "light",
 	selection_box = {

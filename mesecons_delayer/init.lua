@@ -1,9 +1,9 @@
 for i = 1, 4 do
 local groups = {}
 if i == 1 then 
-	groups = {bendy=2,snappy=1,dig_immediate=2}
+	groups = {bendy=2,snappy=1,dig_immediate=2, mesecon = 1}
 else
-	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1}
+	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1, mesecon = 1}
 end
 
 minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), {
@@ -49,7 +49,7 @@ minetest.register_node("mesecons_delayer:delayer_on_"..tostring(i), {
 		type = "fixed",
 		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
+	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1, mesecon = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
