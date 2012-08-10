@@ -141,8 +141,12 @@ end
 
 --Code Parsing
 function yc_code_remove_commentary(code)
+	is_string = false
 	for i = 1, #code do
-		if code:sub(i, i) == ":" then
+		if code:sub(i, i) == '"' then
+			is_string = (is_string==false) --toggle is_string
+		end
+		if code:sub(i, i) == ":" and is_string==false then
 			return code:sub(1, i-1)
 		end
 	end
@@ -181,6 +185,9 @@ function parse_yccode(code, pos)
 			L = yc_command_on (params, Lvirtual)
 		elseif command == "off" then
 			L = yc_command_off(params, Lvirtual)
+		elseif command == "print" then
+			su = yc_command_print(params, eeprom, yc_merge_portstates(Lreal, Lvirtual))
+			if su ~= true then return nil end
 		elseif command == "sbi" then
 			new_eeprom, Lvirtual = yc_command_sbi (params, eeprom, yc_merge_portstates(Lreal, Lvirtual), Lvirtual)
 			if new_eeprom == nil then return nil
@@ -227,13 +234,17 @@ function parse_get_params(code, starti)
 	i = starti
 	s = nil
 	local params = {}
+	local is_string = false
 	while s ~= "" do
 		s = string.sub(code, i, i)
-		if s == ")" then
+		if code:sub(i, i) == '"' then
+			is_string = (is_string==false) --toggle is_string
+		end
+		if s == ")" and is_string == false then
 			table.insert(params, string.sub(code, starti, i-1)) -- i: ) i+1 after )
 			return params, i + 1
 		end
-		if s == "," then
+		if s == "," and is_string == false then
 			table.insert(params, string.sub(code, starti, i-1)) -- i: ) i+1 after )
 			starti = i + 1
 		end
@@ -313,6 +324,22 @@ function yc_command_off(params, L)
 		L = yc_set_portstate (port, false, L)
 	end
 	return L
+end
+
+function yc_command_print(params, eeprom, L)
+	local s = ""
+	for i, param in ipairs(params) do
+		if param:sub(1,1) == '"' and param:sub(#param, #param) == '"' then
+			s = s..param:sub(2, #param-1)
+		else
+			r = yc_command_parsecondition(param, L, eeprom)
+			if r == "1" or r == "0" then
+				s = s..r
+			else return nil end
+		end
+	end
+	print(s) --don't remove
+	return true
 end
 
 function yc_command_sbi(params, eeprom, L, Lv)
