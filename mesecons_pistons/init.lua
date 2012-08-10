@@ -207,8 +207,8 @@ mesecon:register_on_signal_off(function(pos, node)
 		and checknode.name ~= "default:lava_flowing"
 		and not mesecon:is_mvps_stopper(checknode.name) then
 		    minetest.env:set_node(pos, checknode)
-		    mesecon:updatenode(pos)
-		    --minetest.env:dig_node(pos)
+		    minetest.env:remove_node(checkpos)
+		    mesecon:updatenode(checkpos)
 		end
 	end
 	if node.name == "mesecons_pistons:piston_sticky" then
