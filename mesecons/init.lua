@@ -138,8 +138,6 @@ minetest.register_craft({
 	}
 })
 
-mesecon:register_conductor("mesecons:mesecon_on", "mesecons:mesecon_off")
-
 -- API API API API API API API API API API API API API API API API API API
 
 function mesecon:add_receptor_node(nodename, rules, get_rules) --rules table is optional; if rules depend on param2 pass (nodename, nil, function get_rules)
@@ -207,6 +205,16 @@ function mesecon:register_on_signal_change(action)
 	mesecon.actions_change[i]=action
 end
 
+function mesecon:register_conductor (onstate, offstate)
+	local i=0
+	while mesecon.conductors[i]~=nil do
+		i=i+1
+	end
+	mesecon.conductors[i]={}
+	mesecon.conductors[i].on=onstate
+	mesecon.conductors[i].off=offstate
+end
+
 mesecon:add_rules("default", 
 {{x=0,  y=0,  z=-1},
 {x=1,  y=0,  z=0},
@@ -223,17 +231,4 @@ mesecon:add_rules("default",
 
 print("[MESEcons] Main mod Loaded!")
 
---minetest.register_on_newplayer(function(player)
-	--local i=1
-	--while mesecon.wireless_receivers[i]~=nil do
-	--	pos=mesecon.wireless_receivers[i].pos
-	--	request=mesecon.wireless_receivers[i].requested_state
-	--	inverting=mesecon.wireless_receivers[i].inverting
-	--	if request==inverting then
-	--		mesecon:receptor_off(pos)
-	--	end
-	--	if request~=inverting  then
-	--		mesecon:receptor_on(pos)
-	--	end
-	--end
---end)
+mesecon:register_conductor("mesecons:mesecon_on", "mesecons:mesecon_off")

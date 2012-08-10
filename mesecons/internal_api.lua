@@ -117,16 +117,6 @@ end
 
 --Conductor system stuff
 
-function mesecon:register_conductor(onstate, offstate)
-	local i=0
-	while mesecon.conductors[i]~=nil do
-		i=i+1
-	end
-	mesecon.conductors[i]={}
-	mesecon.conductors[i].on=onstate
-	mesecon.conductors[i].off=offstate
-end
-
 function mesecon:get_conductor_on(offstate)
 	local i=0
 	while mesecon.conductors[i]~=nil do
