@@ -58,13 +58,13 @@ minetest.register_node(nodename, {
 	on_receive_fields = function(pos, formanme, fields, sender)
 		local meta = minetest.env:get_meta(pos)
 		if fields.band then
-			fields.code = "off(C)if(A&B)on(C); :A and B are inputs, C is output"
+			fields.code = "sbi(C, A&B) :A and B are inputs, C is output"
 		elseif fields.bxor then
-			fields.code = "off(C)if(A~B)on(C); :A and B are inputs, C is output"
+			fields.code = "sbi(C, A~B) :A and B are inputs, C is output"
 		elseif fields.bnot then
-			fields.code = "on(B)if(A)off(B); :A is input, B is output"
+			fields.code = "sbi(B, !A) :A is input, B is output"
 		elseif fields.bnand then
-			fields.code = "on(C)if(A&B)off(C); :A and B are inputs, C is output"
+			fields.code = "sbi(C, !A|!B) :A and B are inputs, C is output"
 		elseif fields.btflop then
 			fields.code = "if(A)sbi(1,1); if(!A&#1&B)off(B)sbi(1,0); if(!A&#1&!B)on(B)sbi(1,0); :A is input, B is output (Q), toggles with falling edge"
 		elseif fields.brsflop then
@@ -177,7 +177,7 @@ function parse_yccode(code, pos)
 		elseif command == "off" then
 			L = yc_command_off(params, Lvirtual)
 		elseif command == "sbi" then
-			new_eeprom = yc_command_sbi (params, eeprom, yc_merge_portstates(Lreal, Lvirtual))
+			new_eeprom, Lvirtual = yc_command_sbi (params, eeprom, yc_merge_portstates(Lreal, Lvirtual), Lvirtual)
 			if new_eeprom == nil then return nil
 			else eeprom = new_eeprom end
 		elseif command == "if" then --nothing
@@ -278,10 +278,22 @@ function yc_command_off(params, L)
 	return L
 end
 
-function yc_command_sbi(params, eeprom, L)
-	if params[1]==nil or params[2]==nil or params[3] ~=nil or tonumber(params[1])==nil then return nil end
+function yc_command_sbi(params, eeprom, L, Lv)
+	if params[1]==nil or params[2]==nil or params[3] ~=nil then return nil end
 	local status = yc_command_parsecondition(params[2], L, eeprom)
-	if tonumber(params[1])>EEPROM_SIZE or tonumber(params[1])<1 or (status ~= "0" and status ~= "1") then return nil end
+
+	if status == nil then return nil, nil end
+
+	if string.find("ABCD", params[1])~=nil and #params[1]==1 then --is a port
+		if status == "1" then
+			Lv = yc_set_portstate (params[1], true,  Lv)
+		else
+			Lv = yc_set_portstate (params[1], false, Lv)
+		end
+		return eeprom, Lv;
+	end
+
+	--is an eeprom address
 	new_eeprom = "";
 	for i=1, #eeprom do
 		if tonumber(params[1])==i then 
@@ -290,7 +302,7 @@ function yc_command_sbi(params, eeprom, L)
 			new_eeprom = new_eeprom..eeprom:sub(i, i)
 		end
 	end
-	return new_eeprom
+	return new_eeprom, Lv
 end
 
 --If
