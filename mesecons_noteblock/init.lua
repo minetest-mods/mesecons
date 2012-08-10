@@ -10,6 +10,15 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 	end
 })
 
+minetest.register_craft({
+	output = '"mesecons_noteblock:noteblock" 1',
+	recipe = {
+		{"default:wood", "default:wood", "default:wood"},
+		{"mesecons:mesecon_off", "default:steel_ingot", "mesecons:mesecon_off"},
+		{"default:wood", "default:wood", "default:wood"},
+	}
+})
+
 minetest.register_on_punchnode(function (pos, node)
 	if node.name=="mesecons_noteblock:noteblock" then
 		local param2 = node.param2+1
