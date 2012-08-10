@@ -83,5 +83,5 @@ minetest.register_craft({
 		{'"default:stick"'},
 	}
 })
-mesecon:add_receptor_node("mesecons_walllever:wall_lever", nil, mesecon.button_get_rules)
+mesecon:add_receptor_node("mesecons_walllever:wall_lever_on", nil, mesecon.button_get_rules)
 mesecon:add_receptor_node_off("mesecons_walllever:wall_lever_off", nil, mesecon.button_get_rules)
