@@ -43,7 +43,7 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	walkable = false,
-	light_source = LIGHT_MAX-9,
+	light_source = LIGHT_MAX-7,
 	selection_box = {
 		type = "fixed",
 		fixed = { -8/16, -8/16, 3/16, 8/16, 8/16, 8/16 },
