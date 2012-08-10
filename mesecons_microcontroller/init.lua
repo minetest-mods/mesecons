@@ -94,7 +94,11 @@ if (b == 1) then table.insert(rules, {x =  0, y = 0, z =  1}) end
 if (c == 1) then table.insert(rules, {x =  1, y = 0, z =  0}) end
 if (d == 1) then table.insert(rules, {x =  0, y = 0, z = -1}) end
 mesecon:add_rules(nodename, rules)
-mesecon:add_receptor_node(nodename, rules)
+if nodename ~= "mesecons_microcontroller:microcontroller0000" then
+	mesecon:add_receptor_node(nodename, rules)
+else
+	mesecon:add_receptor_node_off(nodename)
+end
 end
 end
 end
