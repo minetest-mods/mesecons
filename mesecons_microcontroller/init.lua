@@ -136,8 +136,6 @@ function update_yc(pos)
 	else
 		meta:set_string("infotext", "Working Microcontroller")
 	end
-	timer = minetest.env:get_node_timer(pos) --action places a new node!
-	timer:start(0.5)
 end
 
 
