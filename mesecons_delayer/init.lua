@@ -10,11 +10,11 @@ minetest.register_node("mesecons_delayer:delayer_off_1", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2},
 	paramtype = "light",
@@ -35,11 +35,11 @@ minetest.register_node("mesecons_delayer:delayer_off_2", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
@@ -60,11 +60,11 @@ minetest.register_node("mesecons_delayer:delayer_off_3", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
@@ -85,11 +85,11 @@ minetest.register_node("mesecons_delayer:delayer_off_4", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
@@ -110,11 +110,11 @@ minetest.register_node("mesecons_delayer:delayer_on_1", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
@@ -135,11 +135,11 @@ minetest.register_node("mesecons_delayer:delayer_on_2", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
@@ -160,11 +160,11 @@ minetest.register_node("mesecons_delayer:delayer_on_3", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",
@@ -185,11 +185,11 @@ minetest.register_node("mesecons_delayer:delayer_on_4", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.35, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1},
 	paramtype = "light",

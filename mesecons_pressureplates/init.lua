@@ -10,11 +10,11 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_off", {
 	walkable = true,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.45, -0.5, -0.45, 0.45, -0.45, 0.45},
+		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.45, -0.5, -0.45, 0.45, -0.45, 0.45},
+		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
     	description="Wood Pressure Plate",
@@ -28,11 +28,11 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 	walkable = true,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
+		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
+		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1},
 	drop='"mesecons_pressureplates:pressure_plate_wood_off" 1',
@@ -92,11 +92,11 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_off", {
 	walkable = true,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.45, -0.5, -0.45, 0.45, -0.45, 0.45},
+		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.45, -0.5, -0.45, 0.45, -0.45, 0.45},
+		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
     	description="Stone Pressure Plate",
@@ -110,11 +110,11 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
 	walkable = true,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
+		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.45, -0.5, -0.45, 0.45, -0.48, 0.45},
+		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1},
 	drop='"mesecons_pressureplates:pressure_plate_stone_off" 1',
