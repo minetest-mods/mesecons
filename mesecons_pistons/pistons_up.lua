@@ -3,7 +3,7 @@
 minetest.register_node("mesecons_pistons:piston_up_normal", {
 	description = "Piston UP",
 	tiles = {"jeija_piston_side.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png"},
-	groups = {cracky=3},
+	groups = {cracky=3, mesecon = 1},
 	after_dig_node = function(pos, oldnode)
 		local dir = {x=0, y=1, z=0}
 		pos.x, pos.y, pos.z = pos.x + dir.x, pos.y + dir.y, pos.z + dir.z --move to first node to check
@@ -22,7 +22,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal", {
 minetest.register_node("mesecons_pistons:piston_up_sticky", {
 	description = "Sticky Piston UP",
 	tiles = {"jeija_piston_sticky_side.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png"},
-	groups = {cracky=3},
+	groups = {cracky=3, mesecon = 1},
 	after_dig_node = function(pos, oldnode)
 		local dir = {x=0, y=1, z=0}
 		pos.x, pos.y, pos.z = pos.x + dir.x, pos.y + dir.y, pos.z + dir.z --move to first node to check
