@@ -109,11 +109,11 @@ minetest.register_node("mesecons_temperest:mesecon_plug", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	description = "Plug",
 	after_place_node = plug_off,
@@ -143,11 +143,11 @@ minetest.register_node("mesecons_temperest:mesecon_socket_off", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 })
 
@@ -160,11 +160,11 @@ minetest.register_node("mesecons_temperest:mesecon_socket_on", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	drop='"mesecons_temperest:mesecon_socket_off" 1',
 	after_dig_node = function(pos)
@@ -195,11 +195,11 @@ if ENABLE_TEMPEREST then
 		walkable = false,
 		selection_box = {
 			type = "fixed",
-			fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 		},
 		node_box = {
 			type = "fixed",
-			fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 		},
 		drop='"mesecons_temperest:mesecon_inverter_on" 1',
 	})
@@ -216,11 +216,11 @@ if ENABLE_TEMPEREST then
 		walkable = false,
 		selection_box = {
 			type = "fixed",
-			fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 		},
 		node_box = {
 			type = "fixed",
-			fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 		},
 		after_place_node = function(pos)
 			mesecon:receptor_on(pos)
