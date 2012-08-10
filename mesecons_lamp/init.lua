@@ -20,7 +20,7 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 		wall_bottom = {-0.3125,-0.5,-0.3125,0.3125,-0.375,0.3125},
 		wall_side = {-0.375,-0.3125,-0.3125,-0.5,0.3125,0.3125},
 	},
-	groups = {dig_immediate=3,not_in_creative_inventory=1},
+	groups = {dig_immediate=3,not_in_creative_inventory=1, mesecon = 1},
 	drop='"mesecons_lamp:lamp_off" 1',
 })
 
@@ -45,7 +45,7 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 		wall_bottom = {-0.3125,-0.5,-0.3125,0.3125,-0.375,0.3125},
 		wall_side = {-0.375,-0.3125,-0.3125,-0.5,0.3125,0.3125},
 	},
-	groups = {dig_immediate=3},
+	groups = {dig_immediate=3, mesecon = 1},
     	description="Meselamp",
 })
 

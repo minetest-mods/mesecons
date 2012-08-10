@@ -19,7 +19,7 @@ for i = 1, 5 do
 			type = "fixed",
 			fixed = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		},
-		groups = {dig_immediate=2},
+		groups = {dig_immediate=2, mesecon = 1},
 	    	description="Battery",
 	})
 	mesecon:add_receptor_node_off("mesecons_battery:battery_charging_"..i)
@@ -46,7 +46,7 @@ for i = 1, 5 do
 			type = "fixed",
 			fixed = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		},
-		groups = {dig_immediate=2,not_in_creative_inventory=1},
+		groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 1},
 	    	description="Battery",
 	})
 	mesecon:add_receptor_node("mesecons_battery:battery_discharging_"..i)

@@ -105,7 +105,7 @@ minetest.register_node("mesecons_temperest:mesecon_plug", {
 	tile_images = {"jeija_mesecon_plug.png"},
 	inventory_image = "jeija_mesecon_plug.png",
 	wield_image = "jeija_mesecon_plug.png",
-	groups = {dig_immediate=2},
+	groups = {dig_immediate=2, mesecon = 1},
 	walkable = false,
 	selection_box = {
 		type = "fixed",
@@ -139,7 +139,7 @@ minetest.register_node("mesecons_temperest:mesecon_socket_off", {
 	tile_images = {"jeija_mesecon_socket_off.png"},
 	inventory_image = "jeija_mesecon_socket_off.png",
 	wield_image = "jeija_mesecon_socket_off.png",
-	groups = {dig_immediate=2},
+	groups = {dig_immediate=2, mesecon = 1},
 	walkable = false,
 	selection_box = {
 		type = "fixed",
@@ -156,7 +156,7 @@ minetest.register_node("mesecons_temperest:mesecon_socket_on", {
 	paramtype = "light",
 	is_ground_content = true,
 	tile_images = {"jeija_mesecon_socket_on.png"},
-	groups = {dig_immediate=2,not_in_creative_inventory=1},
+	groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 1},
 	walkable = false,
 	selection_box = {
 		type = "fixed",
@@ -191,7 +191,7 @@ if ENABLE_TEMPEREST then
 		paramtype = "light",
 		is_ground_content = true,
 		tile_images = {"jeija_mesecon_inverter_off.png"},
-		groups = {dig_immediate=2,not_in_creative_inventory=1},
+		groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 1},
 		walkable = false,
 		selection_box = {
 			type = "fixed",
@@ -212,7 +212,7 @@ if ENABLE_TEMPEREST then
 		tile_images = {"jeija_mesecon_inverter_on.png"},
 		inventory_image = "jeija_mesecon_inverter_on.png",
 		wield_image = "jeija_mesecon_inverter_on.png",
-		groups = {dig_immediate=2},
+		groups = {dig_immediate=2, mesecon = 1},
 		walkable = false,
 		selection_box = {
 			type = "fixed",
