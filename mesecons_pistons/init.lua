@@ -3,7 +3,7 @@
 minetest.register_node("mesecons_pistons:piston_normal", {
 	description = "Piston",
 	tiles = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png"},
-	groups = {cracky=3, mesecon = 1},
+	groups = {cracky=3, mesecon = 2},
 	paramtype2 = "facedir",
 	after_dig_node = function(pos, oldnode)
 		local dir = mesecon:piston_get_direction(oldnode)
@@ -23,7 +23,7 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 minetest.register_node("mesecons_pistons:piston_sticky", {
 	description = "Sticky Piston",
 	tiles = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png"},
-	groups = {cracky=3, mesecon = 1},
+	groups = {cracky=3, mesecon = 2},
 	paramtype2 = "facedir",
 	after_dig_node = function(pos, oldnode)
 		local dir = mesecon:piston_get_direction(oldnode)

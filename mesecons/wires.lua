@@ -69,10 +69,10 @@ for zmy=0, 1 do
 			tostring(xpy)..tostring(zpy)..tostring(xmy)..tostring(zmy)
 
 	if nodeid == "00000000" then
-		groups = {dig_immediate = 3, mesecon = 1}
+		groups = {dig_immediate = 3, mesecon = 2}
 		wiredesc = "Mesecon"
 	else
-		groups = {dig_immediate = 3, mesecon = 1, not_in_creative_inventory = 1}
+		groups = {dig_immediate = 3, mesecon = 2, not_in_creative_inventory = 1}
 		wiredesc = "Mesecons Wire (ID: "..nodeid..")"
 	end
 
@@ -166,7 +166,7 @@ for zmy=0, 1 do
 			type = "fixed",
 			fixed = nodebox
 		},
-		groups = {dig_immediate = 3, mesecon = 1, not_in_creative_inventory = 1},
+		groups = {dig_immediate = 3, mesecon = 2, not_in_creative_inventory = 1},
 		walkable = false,
 		stack_max = 99,
 		drop = "mesecons:wire_00000000_off"
@@ -182,11 +182,15 @@ end
 end
 
 minetest.register_on_placenode(function(pos, node)
-	mesecon:update_autoconnect(pos)
+	if minetest.get_item_group(node.name, "mesecon") > 1 then
+		mesecon:update_autoconnect(pos)
+	end
 end)
 
 minetest.register_on_dignode(function(pos, node)
-	mesecon:update_autoconnect(pos)
+	if minetest.get_item_group(node.name, "mesecon") > 1 then
+		mesecon:update_autoconnect(pos)
+	end
 end)
 
 function mesecon:update_autoconnect(pos, secondcall, replace_old)
@@ -225,20 +229,21 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 	nodename = minetest.env:get_node(pos).name
 	if string.find(nodename, "mesecons:wire_") == nil and not replace_old then return nil end
 
-	xp = 	(minetest.get_item_group(minetest.env:get_node(xppos).name, "mesecon") > 0 or
-		minetest.get_item_group(minetest.env:get_node(xpympos).name, "mesecon") > 0) and 1 or 0
-	zp = 	(minetest.get_item_group(minetest.env:get_node(zppos).name, "mesecon")  > 0 or
-		minetest.get_item_group(minetest.env:get_node(zpympos).name, "mesecon") > 0) and 1 or 0
-	xm = 	(minetest.get_item_group(minetest.env:get_node(xmpos).name, "mesecon") > 0 or
-		minetest.get_item_group(minetest.env:get_node(xmympos).name, "mesecon") > 0) and 1 or 0
-	zm = 	(minetest.get_item_group(minetest.env:get_node(zmpos).name, "mesecon") > 0 or 
-		minetest.get_item_group(minetest.env:get_node(zmympos).name, "mesecon") > 0) and 1 or 0
+	--if the groups mesecon == 1 then wires won't connect to it
+	xp = 	(minetest.get_item_group(minetest.env:get_node(xppos).name, "mesecon") > 1 or
+		minetest.get_item_group(minetest.env:get_node(xpympos).name, "mesecon") > 1) and 1 or 0
+	zp = 	(minetest.get_item_group(minetest.env:get_node(zppos).name, "mesecon")  > 1 or
+		minetest.get_item_group(minetest.env:get_node(zpympos).name, "mesecon") > 1) and 1 or 0
+	xm = 	(minetest.get_item_group(minetest.env:get_node(xmpos).name, "mesecon") > 1 or
+		minetest.get_item_group(minetest.env:get_node(xmympos).name, "mesecon") > 1) and 1 or 0
+	zm = 	(minetest.get_item_group(minetest.env:get_node(zmpos).name, "mesecon") > 1 or 
+		minetest.get_item_group(minetest.env:get_node(zmympos).name, "mesecon") > 1) and 1 or 0
 
 
-	xpy = minetest.get_item_group(minetest.env:get_node(xpypos).name, "mesecon")
-	zpy = minetest.get_item_group(minetest.env:get_node(zpypos).name, "mesecon")
-	xmy = minetest.get_item_group(minetest.env:get_node(xmypos).name, "mesecon")
-	zmy = minetest.get_item_group(minetest.env:get_node(zmypos).name, "mesecon")
+	xpy = (minetest.get_item_group(minetest.env:get_node(xpypos).name, "mesecon") > 1) and 1 or 0
+	zpy = (minetest.get_item_group(minetest.env:get_node(zpypos).name, "mesecon") > 1) and 1 or 0
+	xmy = (minetest.get_item_group(minetest.env:get_node(xmypos).name, "mesecon") > 1) and 1 or 0
+	zmy = (minetest.get_item_group(minetest.env:get_node(zmypos).name, "mesecon") > 1) and 1 or 0
 
 	if replace_old then
 		print ("replacing")

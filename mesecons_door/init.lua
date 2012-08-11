@@ -86,7 +86,7 @@ for i = 1, 4 do
             tile_images = {"default_wood.png"},
             paramtype = "light",
             is_ground_content = true,
-            groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2, mesecon = 1},
+            groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2, mesecon = 2},
             drop = "mesecons_door:door",
             node_box = {
                 type = "fixed",
