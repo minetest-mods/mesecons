@@ -80,8 +80,6 @@
 --The function # mesecon:register_conductor(onstate, offstate) is the only thing you need to do,
 --the mod does everything else for you (turn the conductor on and off...)
 
--- INCLUDE SETTINGS
-dofile(minetest.get_modpath("mesecons").."/settings.lua")
 
 -- PUBLIC VARIABLES
 mesecon={} -- contains all functions and all global variables
@@ -93,50 +91,12 @@ mesecon.pwr_srcs_off={}
 mesecon.rules={}
 mesecon.conductors={}
 
+-- INCLUDE SETTINGS
+dofile(minetest.get_modpath("mesecons").."/settings.lua")
+
 --Internal API
 dofile(minetest.get_modpath("mesecons").."/internal_api.lua");
 
-
-
--- MESECONS
-
-minetest.register_node("mesecons:mesecon_off", {
-	drawtype = "raillike",
-	tile_images = {"jeija_mesecon_off.png", "jeija_mesecon_curved_off.png", "jeija_mesecon_t_junction_off.png", "jeija_mesecon_crossing_off.png"},
-	inventory_image = "jeija_mesecon_off.png",
-	wield_image = "jeija_mesecon_off.png",
-	paramtype = "light",
-	is_ground_content = true,
-	walkable = false,
-	selection_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
-	},
-	groups = {dig_immediate=3},
-    	description="Mesecons",
-})
-
-minetest.register_node("mesecons:mesecon_on", {
-	drawtype = "raillike",
-	tile_images = {"jeija_mesecon_on.png", "jeija_mesecon_curved_on.png", "jeija_mesecon_t_junction_on.png", "jeija_mesecon_crossing_on.png"},
-	paramtype = "light",
-	is_ground_content = true,
-	walkable = false,
-	selection_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
-	},
-	groups = {dig_immediate=3, not_in_creaive_inventory=1},
-	drop = '"mesecons:mesecon_off" 1',
-	light_source = LIGHT_MAX-11,
-})
-
-minetest.register_craft({
-	output = '"mesecons:mesecon_off" 16',
-	recipe = {
-		{'"default:mese"'},
-	}
-})
 
 -- API API API API API API API API API API API API API API API API API API
 
@@ -231,4 +191,5 @@ mesecon:add_rules("default",
 
 print("[MESEcons] Main mod Loaded!")
 
-mesecon:register_conductor("mesecons:mesecon_on", "mesecons:mesecon_off")
+--The actual wires
+dofile(minetest.get_modpath("mesecons").."/wires.lua");

@@ -4,7 +4,7 @@ minetest.register_alias("mesecons:removestone", "mesecons_random:removestone")
 minetest.register_alias("mesecons:power_plant", "mesecons_powerplant:power_plant")
 minetest.register_alias("mesecons:powerplant", "mesecons_powerplant:power_plant")
 minetest.register_alias("mesecons:meselamp", "mesecons_lamp:lamp_off")
-minetest.register_alias("mesecons:mesecon", "mesecons:mesecon_off")
+minetest.register_alias("mesecons:mesecon", "mesecons:wire_00000000_off")
 minetest.register_alias("mesecons:object_detector", "mesecons_detector:object_detector_off")
 minetest.register_alias("mesecons:wireless_inverter", "mesecons_wireless:wireless_inverter_on")
 minetest.register_alias("mesecons:wireless_receiver", "mesecons_wireless:wireless_receiver_off")
@@ -25,3 +25,7 @@ minetest.register_alias("mesecons:sticky_movestone", "mesecons_movestones:sticky
 minetest.register_alias("mesecons:noteblock", "mesecons_noteblock:noteblock")
 minetest.register_alias("mesecons:microcontroller", "mesecons_microcontroller:microcontroller")
 minetest.register_alias("mesecons:delayer", "mesecons_delayer:delayer_off_1")
+
+
+--Backwards compatibility
+minetest.register_alias("mesecons:mesecon_off", "mesecons:wire_00000000_off")
