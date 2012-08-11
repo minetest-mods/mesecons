@@ -13,7 +13,7 @@ minetest.register_node("mesecons:mesecon_off", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
-	groups = {dig_immediate=3, mesecon=1},
+	groups = {dig_immediate=3, mesecon=1, mesecon_conductor_craftable=1},
     	description="Mesecons",
 })
 
@@ -69,7 +69,7 @@ for zmy=0, 1 do
 			tostring(xpy)..tostring(zpy)..tostring(xmy)..tostring(zmy)
 
 	if nodeid == "00000000" then
-		groups = {dig_immediate = 3, mesecon = 2}
+		groups = {dig_immediate = 3, mesecon = 2, mesecon_conductor_craftable=1}
 		wiredesc = "Mesecon"
 	else
 		groups = {dig_immediate = 3, mesecon = 2, not_in_creative_inventory = 1}
