@@ -123,9 +123,9 @@ minetest.register_node("mesecons_temperest:mesecon_plug", {
 minetest.register_craft({
 	output = '"mesecons_temperest:mesecon_plug" 2',
 	recipe = {
-		{'', '"mesecons:mesecon_off"', ''},
-		{'"mesecons:mesecon_off"', '"default:steel_ingot"', '"mesecons:mesecon_off"'},
-		{'', '"mesecons:mesecon_off"', ''},
+		{'', '"group:mesecon_conductor_craftable"', ''},
+		{'"group:mesecon_conductor_craftable"', '"default:steel_ingot"', '"group:mesecon_conductor_craftable"'},
+		{'', '"group:mesecon_conductor_craftable"', ''},
 	}
 })
 
@@ -236,9 +236,9 @@ if ENABLE_TEMPEREST then
 	minetest.register_craft({
 		output = '"mesecons_temperest:mesecon_inverter_on" 2',
 		recipe = {
-			{'"mesecons_temperest:mesecon_off"', '"default:steel_ingot"', '"mesecons:mesecon_off"'},
+			{'"mesecons_temperest:mesecon_off"', '"default:steel_ingot"', '"group:mesecon_conductor_craftable"'},
 			{'"default:steel_ingot"', '', '"default:steel_ingot"'},
-			{'"mesecons:mesecon_off"', '"default:steel_ingot"', '"mesecons:mesecon_off"'},
+			{'"group:mesecon_conductor_craftable"', '"default:steel_ingot"', '"group:mesecon_conductor_craftable"'},
 		}
 	})
 end

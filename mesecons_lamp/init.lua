@@ -53,7 +53,7 @@ minetest.register_craft({
 	output = '"mesecons_lamp:lamp_off" 1',
 	recipe = {
 		{'', '"default:glass"', ''},
-		{'"mesecons:mesecon_off"', '"default:steel_ingot"', '"mesecons:mesecon_off"'},
+		{'"group:mesecon_conductor_craftable"', '"default:steel_ingot"', '"group:mesecon_conductor_craftable"'},
 		{'', '"default:glass"', ''},
 	}
 })

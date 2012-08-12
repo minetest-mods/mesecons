@@ -79,7 +79,7 @@ minetest.register_craft({
 	output = '"mesecons_movestones:movestone" 2',
 	recipe = {
 		{'"default:stone"', '"default:stone"', '"default:stone"'},
-		{'"mesecons:mesecon_off"', '"mesecons:mesecon_off"', '"mesecons:mesecon_off"'},
+		{'"group:mesecon_conductor_craftable"', '"group:mesecon_conductor_craftable"', '"group:mesecon_conductor_craftable"'},
 		{'"default:stone"', '"default:stone"', '"default:stone"'},
 	}
 })
