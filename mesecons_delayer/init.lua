@@ -1,9 +1,9 @@
 for i = 1, 4 do
 local groups = {}
 if i == 1 then 
-	groups = {bendy=2,snappy=1,dig_immediate=2, mesecon = 2}
+	groups = {bendy=2,snappy=1,dig_immediate=2, mesecon_effector_on = 1, mesecon_effector_off = 1, mesecon = 2}
 else
-	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1, mesecon = 2}
+	groups = {bendy=2,snappy=1,dig_immediate=2, mesecon_effector_on = 1, mesecon_effector_off = 1, not_in_creative_inventory=1, mesecon = 2}
 end
 
 boxes = {{ -6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },		-- the main slab

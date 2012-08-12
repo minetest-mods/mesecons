@@ -161,7 +161,6 @@ function mesecon:is_conductor_off(name)
 	return false
 end
 
-
 --Rules rotation Functions:
 function mesecon:rotate_rules_right(rules)
 	local i=1
@@ -257,49 +256,38 @@ function mesecon:turnon(p, x, y, z, firstcall, rules)
 	end
 end
 
-function mesecon:turnoff(pos, x, y, z, firstcall, rules)
-	if rules==nil then
-		rules=mesecon:get_rules("default")
-	end
-	local lpos = {}
-	lpos.x=pos.x+x
-	lpos.y=pos.y+y
-	lpos.z=pos.z+z
-
-	local node = minetest.env:get_node(lpos)
+function mesecon:turnoff(pos)
+	local node = minetest.env:get_node(pos)
 	local connected = 0
-	local checked = {}
 
-	--Send Signals to effectors:
-	mesecon:changesignal(lpos)
-	if not mesecon:check_if_turnon(lpos) then
-		mesecon:deactivate(lpos)
-	end
-
-	if not(firstcall) and connected==0 then
-		connected=mesecon:connected_to_pw_src(lpos, 0, 0, 0, checked)	
-	end
-
-	if connected == 0 and  mesecon:is_conductor_on(node.name) then
-		--minetest.env:remove_node(lpos)
-		minetest.env:add_node(lpos, {name=mesecon:get_conductor_off(node.name)})
-		nodeupdate(lpos)
+	if minetest.get_item_group(node.name, "mesecon_effector_on") == 1 then
+		if not mesecon:check_if_turnon(pos) then --Check if the signal comes from another source
+			--Send Signals to effectors:
+			mesecon:deactivate(pos)
+		end
+		mesecon:changesignal(pos) --Changesignal is always thrown because nodes can be both receptors and effectors
 	end
 
 
-	if mesecon:is_conductor_on(node.name) or firstcall then
-		if connected == 0 then
-			local i=1
-			while rules[i]~=nil do 
-				mesecon:turnoff(lpos, rules[i].x, rules[i].y, rules[i].z, false)
-				i=i+1
-			end
+	if mesecon:is_conductor_on(node.name) then
+		minetest.env:add_node(pos, {name=mesecon:get_conductor_off(node.name)})
+		nodeupdate(pos)
+
+		rules = mesecon:get_rules("default")
+		local i=1
+		while rules[i]~=nil do
+			local np = {}
+			np.x = pos.x + rules[i].x
+			np.y = pos.y + rules[i].y
+			np.z = pos.z + rules[i].z
+			mesecon:turnoff(np)
+			i=i+1
 		end
 	end
 end
 
 
-function mesecon:connected_to_pw_src(pos, x, y, z, checked, firstcall)
+function mesecon:connected_to_pw_src(pos, x, y, z, checked)
 	local i=1
 	local lpos = {}
 
@@ -315,7 +303,7 @@ function mesecon:connected_to_pw_src(pos, x, y, z, checked, firstcall)
 			i=i+1
 			if checked[i]==nil then checked[i]={} break end
 			if  checked[i].x==lpos.x and checked[i].y==lpos.y and checked[i].z==lpos.z then 
-				return 0
+				return false
 			end
 		until false
 
@@ -324,23 +312,19 @@ function mesecon:connected_to_pw_src(pos, x, y, z, checked, firstcall)
 		checked[i].z=lpos.z
 
 		if mesecon:is_receptor_node(node.name, lpos, pos) == true then -- receptor nodes (power sources) can be added using mesecon:add_receptor_node
-			return 1
+			return true
 		end
 
-		if mesecon:is_conductor_on(node.name) or firstcall then -- add other conductors here
-				local pw_source_found=0				
+		if mesecon:is_conductor_on(node.name) then
 				local rules=mesecon:get_rules("default")
 				local i=1
 				while rules[i]~=nil do 
-					pw_source_found=pw_source_found+mesecon:connected_to_pw_src(lpos, rules[i].x, rules[i].y, rules[i].z, checked, false)
+					if mesecon:connected_to_pw_src(lpos, rules[i].x, rules[i].y, rules[i].z, checked) == true then return true end
 					i=i+1
 				end
-			if pw_source_found > 0 then
-				return 1
-			end 
 		end
 	end
-	return 0
+	return false
 end
 
 function mesecon:check_if_turnon(pos)
@@ -378,7 +362,7 @@ function mesecon:updatenode(pos)
     if mesecon:connected_to_pw_src(pos, 0, 0, 0, {}) then
         mesecon:turnon(pos, 0, 0, 0)
     else
-        mesecon:turnoff(pos, 0, 0, 0)
+	mesecon:turnoff(pos)
     end
 end
 
@@ -396,7 +380,9 @@ end)
 minetest.register_on_dignode(
 	function(pos, oldnode, digger)
 		if mesecon:is_conductor_on(oldnode.name) then
-			mesecon:turnoff(pos, 0, 0, 0, true)
+			local i = 1
+
+			mesecon:receptor_off(pos)
 		end	
 	end
 )

@@ -88,6 +88,7 @@ mesecon.actions_off={} -- Saves registered function callbacks for mesecon off
 mesecon.actions_change={} -- Saves registered function callbacks for mesecon change
 mesecon.pwr_srcs={}
 mesecon.pwr_srcs_off={}
+mesecon.effectors={}
 mesecon.rules={}
 mesecon.conductors={}
 
@@ -135,7 +136,21 @@ function mesecon:receptor_on(pos, rules)
 end
 
 function mesecon:receptor_off(pos, rules)
-	mesecon:turnoff(pos, 0, 0, 0, true, rules)
+	if rules == nil then
+		rules = mesecon:get_rules("default")
+	end
+
+	local i = 1
+	while rules[i]~=nil do
+		local np = {}
+		np.x = pos.x + rules[i].x
+		np.y = pos.y + rules[i].y
+		np.z = pos.z + rules[i].z
+		if mesecon:connected_to_pw_src(np, 0, 0, 0, {}) == false then
+			mesecon:turnoff(np)
+		end
+		i=i+1
+	end
 end
 
 function mesecon:register_on_signal_on(action)

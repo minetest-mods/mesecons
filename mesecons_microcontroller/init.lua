@@ -6,9 +6,9 @@ for c = 0, 1 do
 for d = 0, 1 do
 local nodename = "mesecons_microcontroller:microcontroller"..tostring(d)..tostring(c)..tostring(b)..tostring(a)
 if tostring(d)..tostring(c)..tostring(b)..tostring(a) ~= "0000" then
-	groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 2}
+	groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon_effector_on = 1, mesecon_effector_off = 1, mesecon = 2}
 else
-	groups = {dig_immediate=2, mesecon = 2}
+	groups = {dig_immediate=2, mesecon_effector_on = 1, mesecon_effector_off = 1, mesecon = 2}
 end
 minetest.register_node(nodename, {
 	description = "Microcontroller",
