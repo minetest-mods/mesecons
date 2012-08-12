@@ -27,14 +27,14 @@ minetest.register_node(nodename, {
 	drop = '"mesecons_microcontroller:microcontroller0000" 1',
 	selection_box = {
 		type = "fixed",
-		fixed = { -8/16, -8/16, -8/16, 8/16, -4/16, 8/16 },
+		fixed = { -8/16, -8/16, -8/16, 8/16, -5/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
 		fixed = {
-			{ -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 }, -- bottom slab
-			{ -5/16, -6/16, -5/16, 5/16, -5/16, 5/16 }, -- circuit board
-			{ -3/16, -5/16, -3/16, 3/16, -4/16, 3/16 }, -- IC
+			{ -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 }, -- bottom slab
+			{ -5/16, -7/16, -5/16, 5/16, -6/16, 5/16 }, -- circuit board
+			{ -3/16, -6/16, -3/16, 3/16, -5/16, 3/16 }, -- IC
 		}
 	},
 	on_construct = function(pos)
