@@ -132,7 +132,19 @@ function mesecon:add_receptor_node_off(nodename, rules, get_rules)
 end
 
 function mesecon:receptor_on(pos, rules)
-	mesecon:turnon(pos, 0, 0, 0, true, rules)
+	if rules == nil then
+		rules = mesecon:get_rules("default")
+	end
+
+	local i = 1
+	while rules[i]~=nil do
+		local np = {}
+		np.x = pos.x + rules[i].x
+		np.y = pos.y + rules[i].y
+		np.z = pos.z + rules[i].z
+		mesecon:turnon(np)
+		i=i+1
+	end
 end
 
 function mesecon:receptor_off(pos, rules)
@@ -146,7 +158,7 @@ function mesecon:receptor_off(pos, rules)
 		np.x = pos.x + rules[i].x
 		np.y = pos.y + rules[i].y
 		np.z = pos.z + rules[i].z
-		if mesecon:connected_to_pw_src(np, 0, 0, 0, {}) == false then
+		if not mesecon:connected_to_pw_src(np, {}) then
 			mesecon:turnoff(np)
 		end
 		i=i+1
