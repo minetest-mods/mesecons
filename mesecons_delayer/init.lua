@@ -6,23 +6,39 @@ else
 	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1, mesecon = 2}
 end
 
+boxes = {{ -6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },		-- the main slab
+
+	 { -2/16, -7/16, -4/16, 2/16, -26/64, -3/16 },		-- the jeweled "on" indicator
+	 { -3/16, -7/16, -3/16, 3/16, -26/64, -2/16 },
+	 { -4/16, -7/16, -2/16, 4/16, -26/64, 2/16 },
+	 { -3/16, -7/16,  2/16, 3/16, -26/64, 3/16 },
+	 { -2/16, -7/16,  3/16, 2/16, -26/64, 4/16 },
+
+	 { -6/16, -7/16, -6/16, -4/16, -27/64, -4/16 },		-- the timer indicator
+	 { -8/16, -8/16, -1/16, -6/16, -7/16, 1/16 },		-- the two wire stubs
+	 { 6/16, -8/16, -1/16, 8/16, -7/16, 1/16 }}
+
 minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), {
 	description = "Delayer",
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_delayer_off_"..tostring(i)..".png",
-		"mesecons_delayer_sides.png"
+		"mesecons_delayer_sides_bottom.png",
+		"mesecons_delayer_ends_off.png",
+		"mesecons_delayer_ends_off.png",
+		"mesecons_delayer_sides_off.png",
+		"mesecons_delayer_sides_off.png"
 		},
 	inventory_image = "mesecons_delayer_off_1.png",
 	wield_image = "mesecons_delayer_off_1.png",
 	walkable = true,
 	selection_box = {
 		type = "fixed",
-		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
+		fixed = { -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
+		fixed = boxes
 	},
 	groups = groups,
 	paramtype = "light",
@@ -38,16 +54,20 @@ minetest.register_node("mesecons_delayer:delayer_on_"..tostring(i), {
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_delayer_on_"..tostring(i)..".png",
-		"mesecons_delayer_sides.png"
+		"mesecons_delayer_bottom.png",
+		"mesecons_delayer_ends_on.png",
+		"mesecons_delayer_ends_on.png",
+		"mesecons_delayer_sides_on.png",
+		"mesecons_delayer_sides_on.png"
 		},
 	walkable = true,
 	selection_box = {
 		type = "fixed",
-		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
+		fixed = { -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
+		fixed = boxes
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1, mesecon = 2},
 	paramtype = "light",
