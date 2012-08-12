@@ -8,10 +8,12 @@ function mesecon:is_receptor_node(nodename, pos, ownpos) --ownpos must be positi
 			if pos==nil and ownpos==nil then --old usage still possible
 				return true
 			end
-			local rules=mesecon.pwr_srcs[i].rules
-			local node=minetest.env:get_node(pos)
-			if rules==nil then
-				rules=mesecon.pwr_srcs[i].get_rules(node.param2)
+			local rules = mesecon.pwr_srcs[i].rules
+			local get_rules = mesecon.pwr_srcs[i].get_rules
+			local node = minetest.env:get_node(pos)
+
+			if get_rules~=nil then --get_rules preferred
+				rules = get_rules(node.param2)
 			end
 
 			j=1
@@ -37,10 +39,12 @@ function mesecon:is_receptor_node_off(nodename, pos, ownpos) --ownpos must be po
 			if pos==nil and ownpos==nil then --old usage still possible
 				return true
 			end
-			local rules=mesecon.pwr_srcs_off[i].rules
-			local node=minetest.env:get_node(pos)
-			if rules==nil then
-				rules=mesecon.pwr_srcs_off[i].get_rules(node.param2)
+			local rules = mesecon.pwr_srcs_off[i].rules
+			local rules = mesecon.pwr_srcs_off[i].get_rules
+			local node = minetest.env:get_node(pos)
+
+			if get_rules ~= nil then
+				rules = get_rules(node.param2)
 			end
 
 			j=1
@@ -258,16 +262,6 @@ end
 
 function mesecon:turnoff(pos)
 	local node = minetest.env:get_node(pos)
-	local connected = 0
-
-	if minetest.get_item_group(node.name, "mesecon_effector_on") == 1 then
-		if not mesecon:check_if_turnon(pos) then --Check if the signal comes from another source
-			--Send Signals to effectors:
-			mesecon:deactivate(pos)
-		end
-		mesecon:changesignal(pos) --Changesignal is always thrown because nodes can be both receptors and effectors
-	end
-
 
 	if mesecon:is_conductor_on(node.name) then
 		minetest.env:add_node(pos, {name=mesecon:get_conductor_off(node.name)})
@@ -283,6 +277,13 @@ function mesecon:turnoff(pos)
 			mesecon:turnoff(np)
 			i=i+1
 		end
+	end
+
+	mesecon:changesignal(pos) --Changesignal is always thrown because nodes can be both receptors and effectors
+	if minetest.get_item_group(node.name, "mesecon_effector_on") == 1 and
+	not mesecon:check_if_turnon(pos) then --Check if the signal comes from another source
+		--Send Signals to effectors:
+		mesecon:deactivate(pos)
 	end
 end
 
@@ -331,6 +332,9 @@ function mesecon:check_if_turnon(pos)
 	local i=1
 	local j=1
 	local k=1
+	local l=1
+	local m=1
+	local n=1
 	local rcpt
 	local rcpt_pos={}
 	local rules
@@ -355,6 +359,26 @@ function mesecon:check_if_turnon(pos)
 		end
 		i=i+1
 	end
+
+	--[[while mesecon.pwr_srcs[l]~= nil do
+		if mesecon.pwr_srcs[l].get_rules ~= nil then
+			rules =  mesecon.pwr_srcs[l].get_rules("all")
+
+			while rules[m]~=nil do
+				rcpt_pos = {x = pos.x-rules[j].x, y = pos.y-rules[j].y, z = pos.z-rules[j].z}
+				rcpt = minetest.env:get_node(rcpt_pos)
+				if rcpt.name == mesecon.pwr_srcs[l].name then --this name is always the onstate, offstate would be pwr_srcs_off
+					actual_rules = mesecon.pwr_srcs[l].get_rules(rcpt_pos)
+					if (actual_rules.x == rules.x and actual_rules.y == rules.y and actual_rules.z == rules.z) then
+						return true
+					end 
+				end
+				m = m + 1
+			end
+		end
+		l = l + 1
+	end]] --that was rubbish
+
 	return false
 end
 
@@ -381,7 +405,6 @@ minetest.register_on_dignode(
 	function(pos, oldnode, digger)
 		if mesecon:is_conductor_on(oldnode.name) then
 			local i = 1
-
 			mesecon:receptor_off(pos)
 		end	
 	end
