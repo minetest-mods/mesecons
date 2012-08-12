@@ -107,9 +107,9 @@ end
 minetest.register_craft({
 	output = 'craft "mesecons_microcontroller:microcontroller0000" 2',
 	recipe = {
-		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'mesecons:mesecon_off'},
-		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'mesecons:mesecon_off'},
-		{'mesecons:mesecon_off', 'mesecons:mesecon_off', ''},
+		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'group:mesecon_conductor_craftable'},
+		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'group:mesecon_conductor_craftable'},
+		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable', ''},
 	}
 })
 

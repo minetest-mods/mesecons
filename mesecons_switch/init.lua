@@ -38,6 +38,6 @@ minetest.register_craft({
 	output = '"mesecons_switch:mesecon_switch_off" 2',
 	recipe = {
 		{'"default:steel_ingot"', '"default:cobble"', '"default:steel_ingot"'},
-		{'"mesecons:mesecon_off"','', '"mesecons:mesecon_off"'},
+		{'"group:mesecon_conductor_craftable"','', '"group:mesecon_conductor_craftable"'},
 	}
 })

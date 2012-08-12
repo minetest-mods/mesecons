@@ -44,7 +44,7 @@ minetest.register_craft({
 	recipe = {
 		{"default:wood", "default:wood", "default:wood"},
 		{"default:cobble", "default:steel_ingot", "default:cobble"},
-		{"default:cobble", "mesecons:mesecon_off", "default:cobble"},
+		{"default:cobble", "group:mesecon_conductor_craftable", "default:cobble"},
 	}
 })
 

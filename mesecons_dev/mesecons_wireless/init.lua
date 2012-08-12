@@ -176,8 +176,8 @@ minetest.register_node("mesecons_wireless:wireless_receiver_on", {
 minetest.register_craft({
 	output = '"mesecons_wireless:wireless_receiver_off" 2',
 	recipe = {
-		{'', "mesecons:mesecon_off", ''},
-		{'', "mesecons:mesecon_off", ''},
+		{'', "group:mesecon_conductor_craftable", ''},
+		{'', "group:mesecon_conductor_craftable", ''},
 		{'', "mesecons_materials:ic", ''},
 	}
 })
@@ -242,8 +242,8 @@ minetest.register_craft({
 	output = '"mesecons_wireless:wireless_inverter_off" 2',
 	recipe = {
 		{'', 'default:steel_ingot', ''},
-		{'mesecons_materials:ic', 'mesecons:mesecon_off', 'mesecons_materials:ic'},
-		{'', 'mesecons:mesecon_off', ''},
+		{'mesecons_materials:ic', 'group:mesecon_conductor_craftable', 'mesecons_materials:ic'},
+		{'', 'group:mesecon_conductor_craftable', ''},
 	}
 })
 
@@ -284,8 +284,8 @@ minetest.register_node("mesecons_wireless:wireless_transmitter_off", {
 minetest.register_craft({
 	output = '"mesecons_wireless:wireless_transmitter_off" 2',
 	recipe = {
-		{'default:steel_ingot', 'mesecons:mesecon_off', 'default:steel_ingot'},
-		{'', 'mesecons:mesecon_off', ''},
+		{'default:steel_ingot', 'group:mesecon_conductor_craftable', 'default:steel_ingot'},
+		{'', 'group:mesecon_conductor_craftable', ''},
 		{'', 'mesecons_materials:ic', ''},
 	}
 })
