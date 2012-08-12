@@ -38,8 +38,8 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 minetest.register_craft({
 	output = '"mesecons_blinkyplant:blinky_plant_off" 1',
 	recipe = {
-	{'','"mesecons:mesecon_off"',''},
-	{'','"mesecons:mesecon_off"',''},
+	{'','"group:mesecon_conductor_craftable"',''},
+	{'','"group:mesecon_conductor_craftable"',''},
 	{'"default:junglegrass"','"default:junglegrass"','"default:junglegrass"'},
 	}
 })

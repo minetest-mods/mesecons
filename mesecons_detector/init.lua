@@ -23,8 +23,8 @@ minetest.register_craft({
 	output = 'mesecons_detector:object_detector_off',
 	recipe = {
 		{"default:steelblock", '', "default:steelblock"},
-		{"default:steelblock", "mesecons_materials:ic", "default:steelblock"},
-		{"default:steelblock", "mesecons:mesecon_off", "default:steelblock"},
+		{"default:steelblock", "mesecons_microcontroller:microcontroller0000", "default:steelblock"},
+		{"default:steelblock", "group:mesecon_conductor_craftable", "default:steelblock"},
 	}
 })
 
