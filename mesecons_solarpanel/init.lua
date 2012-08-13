@@ -1,10 +1,7 @@
 -- Solar Panel
 minetest.register_node("mesecons_solarpanel:solar_panel", {
 	drawtype = "nodebox",
-	tile_images = {
-		"jeija_solar_panel.png",
-		"jeija_solar_panel_sides.png"
-		},
+	tiles = { "jeija_solar_panel.png", },
 	inventory_image = "jeija_solar_panel.png",
 	wield_image = "jeija_solar_panel.png",
 	paramtype = "light",
