@@ -1,5 +1,6 @@
--- INTERNAL API
+-- INTERNAL
 
+--Receptors
 function mesecon:is_receptor_node(nodename)
 	local i = 1
 	while mesecon.receptors[i] ~= nil do
@@ -53,6 +54,33 @@ function mesecon:receptor_get_rules(node)
 	return nil
 end
 
+-- Effectors
+function mesecon:is_effector_on(nodename)
+	local i = 1
+	while mesecon.effectors[i] ~= nil do
+		if mesecon.effectors[i].onstate == nodename then
+			return true
+		end
+		i = i + 1
+	end
+	return false
+end
+
+function mesecon:is_effector_off(nodename)
+	local i = 1
+	while mesecon.effectors[i] ~= nil do
+		if mesecon.effectors[i].offstate == nodename then
+			return true
+		end
+		i = i + 1
+	end
+	return false
+end
+
+function mesecon:is_effector(nodename)
+	return mesecon:is_effector_on(nodename) or mesecon:is_effector_off(nodename)
+end
+
 function mesecon:effector_get_input_rules(node)
 	local i = 1
 	while(mesecon.effectors[i] ~= nil) do
@@ -60,7 +88,7 @@ function mesecon:effector_get_input_rules(node)
 		or mesecon.effectors[i].offstate == node.name then
 			if mesecon.effectors[i].get_input_rules ~= nil then
 				return mesecon.effectors[i].get_input_rules(node.param2)
-			elseif mesecon.receptors[i].input_rules ~=nil then
+			elseif mesecon.effectors[i].input_rules ~=nil then
 				return mesecon.effectors[i].input_rules
 			else
 				return mesecon:get_rules("default")
@@ -89,16 +117,16 @@ function mesecon:receptor_outputs (cpos, rpos) --cpos = conductor pos, rpos = re
 	return false
 end
 
-function mesecon:effector_inputs (cpos, rpos) --cpos = conductor pos, rpos = receptor pos
-	local rnode = minetest.env:get_node (rpos)
-	local rules = mesecon:effector_get_input_rules (rnode)
+function mesecon:effector_inputs (srcpos, destpos)
+	local destnode = minetest.env:get_node (destpos)
+	local rules = mesecon:effector_get_input_rules (destnode)
 	if rules == nil then return false end
 
 	local i = 1
 	while rules[i] ~= nil do
-		if  rpos.x + rules[i].x == cpos.x
-		and rpos.y + rules[i].y == cpos.y
-		and rpos.z + rules[i].z == cpos.z then
+		if  destpos.x + rules[i].x == srcpos.x
+		and destpos.y + rules[i].y == srcpos.y
+		and destpos.z + rules[i].z == srcpos.z then
 			return true
 		end
 		i = i + 1
@@ -214,59 +242,6 @@ function mesecon:is_conductor_off(name)
 	return false
 end
 
---Rules rotation Functions:
-function mesecon:rotate_rules_right(rules)
-	local i=1
-	local nr={};
-	while rules[i]~=nil do
-		nr[i]={}
-		nr[i].z=rules[i].x
-		nr[i].x=-rules[i].z
-		nr[i].y=rules[i].y
-		i=i+1
-	end
-	return nr
-end
-
-function mesecon:rotate_rules_left(rules)
-	local i=1
-	local nr={};
-	while rules[i]~=nil do
-		nr[i]={}
-		nr[i].z=-rules[i].x
-		nr[i].x=rules[i].z
-		nr[i].y=rules[i].y
-		i=i+1
-	end
-	return nr
-end
-
-function mesecon:rotate_rules_down(rules)
-	local i=1
-	local nr={};
-	while rules[i]~=nil do
-		nr[i]={}
-		nr[i].y=rules[i].x
-		nr[i].x=-rules[i].y
-		nr[i].z=rules[i].z
-		i=i+1
-	end
-	return nr
-end
-
-function mesecon:rotate_rules_up(rules)
-	local i=1
-	local nr={};
-	while rules[i]~=nil do
-		nr[i]={}
-		nr[i].y=-rules[i].x
-		nr[i].x=rules[i].y
-		nr[i].z=rules[i].z
-		i=i+1
-	end
-	return nr
-end
-
 function mesecon:is_power_on(pos)
 	local node = minetest.env:get_node(pos)
 	if mesecon:is_conductor_on(node.name) or mesecon:is_receptor_node(node.name) then
@@ -278,60 +253,62 @@ end
 function mesecon:is_power_off(pos)
 	local node = minetest.env:get_node(pos)
 	if mesecon:is_conductor_off(node.name) or mesecon:is_receptor_node_off(node.name) then
-		return 1
+		return true
 	end
-	return 0
+	return false
 end
 
-function mesecon:turnon(pos)
+function mesecon:turnon(pos, sourcepos)
 	local node = minetest.env:get_node(pos)
+	local rules = mesecon:get_rules("default") --TODO: Use rules of conductor
+	local i = 1
 
 	if mesecon:is_conductor_off(node.name) then
 		minetest.env:add_node(pos, {name=mesecon:get_conductor_on(node.name)})
-		nodeupdate(pos)
 
-		rules = mesecon:get_rules("default") --TODO: Use rules of conductor
-		local i=1
 		while rules[i]~=nil do
 			local np = {}
 			np.x = pos.x + rules[i].x
 			np.y = pos.y + rules[i].y
 			np.z = pos.z + rules[i].z
-			mesecon:turnon(np)
+	
+			mesecon:turnon(np, pos)
 			i=i+1
 		end
 	end
 
-	mesecon:changesignal(pos)
-	if minetest.get_item_group(node.name, "mesecon_effector_off") == 1 then
-		mesecon:activate(pos)
+	if mesecon:is_effector(node.name) then
+		if mesecon:effector_inputs(sourcepos, pos) then
+			mesecon:changesignal(pos)
+			if mesecon:is_effector_off(node.name) then mesecon:activate(pos) end
+		end
 	end
 end
 
-function mesecon:turnoff(pos)
+function mesecon:turnoff(pos, sourcepos)
 	local node = minetest.env:get_node(pos)
+	rules = mesecon:get_rules("default") --TODO: Use rules of conductor
+	local i = 1
 
 	if mesecon:is_conductor_on(node.name) then
 		minetest.env:add_node(pos, {name=mesecon:get_conductor_off(node.name)})
-		nodeupdate(pos)
 
-		rules = mesecon:get_rules("default") --TODO: Use ruels of conductor
-		local i = 1
 		while rules[i]~=nil do
 			local np = {}
 			np.x = pos.x + rules[i].x
 			np.y = pos.y + rules[i].y
 			np.z = pos.z + rules[i].z
-			mesecon:turnoff(np)
-			i=i+1
+
+			mesecon:turnoff(np, pos)
+			i = i + 1
 		end
 	end
 
-	mesecon:changesignal(pos) --Changesignal is always thrown because nodes can be both receptors and effectors
-	if minetest.get_item_group(node.name, "mesecon_effector_on") == 1 and
-	not mesecon:is_powered(pos) then --Check if the signal comes from another source
-		--Send Signals to effectors:
-		mesecon:deactivate(pos)
+	if mesecon:is_effector(node.name) then
+		if mesecon:effector_inputs(sourcepos, pos) then
+			mesecon:changesignal(pos)
+			if mesecon:is_effector_on(node.name) then mesecon:deactivate(pos) end
+		end
 	end
 end
 
@@ -455,4 +432,57 @@ end
 
 function compare_pos(pos1, pos2)
 	return pos1.x == pos2.x and pos1.y == pos2.y and pos1.z == pos2.z
+end
+
+--Rules rotation Functions:
+function mesecon:rotate_rules_right(rules)
+	local i=1
+	local nr={};
+	while rules[i]~=nil do
+		nr[i]={}
+		nr[i].z=rules[i].x
+		nr[i].x=-rules[i].z
+		nr[i].y=rules[i].y
+		i=i+1
+	end
+	return nr
+end
+
+function mesecon:rotate_rules_left(rules)
+	local i=1
+	local nr={};
+	while rules[i]~=nil do
+		nr[i]={}
+		nr[i].z=-rules[i].x
+		nr[i].x=rules[i].z
+		nr[i].y=rules[i].y
+		i=i+1
+	end
+	return nr
+end
+
+function mesecon:rotate_rules_down(rules)
+	local i=1
+	local nr={};
+	while rules[i]~=nil do
+		nr[i]={}
+		nr[i].y=rules[i].x
+		nr[i].x=-rules[i].y
+		nr[i].z=rules[i].z
+		i=i+1
+	end
+	return nr
+end
+
+function mesecon:rotate_rules_up(rules)
+	local i=1
+	local nr={};
+	while rules[i]~=nil do
+		nr[i]={}
+		nr[i].y=-rules[i].x
+		nr[i].x=rules[i].y
+		nr[i].z=rules[i].z
+		i=i+1
+	end
+	return nr
 end

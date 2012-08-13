@@ -115,55 +115,45 @@ end)
 
 mesecon.delayer_update = function(pos, node)
 	if string.find(node.name, "mesecons_delayer:delayer_off")~=nil then
-		local input_rules = mesecon.delayer_get_input_rules(node.param2)[1]
-		np = {x = pos.x + input_rules.x, y = pos.y + input_rules.y, z = pos.z + input_rules.z}
-
-		if mesecon:is_power_on(np) then
-			local time = 0
-			if node.name=="mesecons_delayer:delayer_off_1" then
-				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_1", param2=node.param2})
-				time=0.1
-			end
-			if node.name=="mesecons_delayer:delayer_off_2" then
-				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_2", param2=node.param2})
-				time=0.3
-			end
-			if node.name=="mesecons_delayer:delayer_off_3" then
-				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_3", param2=node.param2})
-				time=0.5
-			end
-			if node.name=="mesecons_delayer:delayer_off_4" then
-				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_4", param2=node.param2})
-				time=1
-			end
-			minetest.after(time, mesecon.delayer_turnon, {pos=pos, param2=node.param2})
+		local time = 0
+		if node.name=="mesecons_delayer:delayer_off_1" then
+			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_1", param2=node.param2})
+			time=0.1
 		end
+		if node.name=="mesecons_delayer:delayer_off_2" then
+			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_2", param2=node.param2})
+			time=0.3
+		end
+		if node.name=="mesecons_delayer:delayer_off_3" then
+			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_3", param2=node.param2})
+			time=0.5
+		end
+		if node.name=="mesecons_delayer:delayer_off_4" then
+			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_4", param2=node.param2})
+			time=1
+		end
+		minetest.after(time, mesecon.delayer_turnon, {pos=pos, param2=node.param2})
 	end
 
 	if string.find(node.name, "mesecons_delayer:delayer_on")~=nil then
-		local input_rules = mesecon.delayer_get_input_rules(node.param2)[1]
-		np = {x = pos.x + input_rules.x, y = pos.y + input_rules.y, z = pos.z + input_rules.z}
-
-		if not mesecon:is_power_on(np) then
-			local time = 0
-			if node.name=="mesecons_delayer:delayer_on_1" then
-				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_1", param2=node.param2})
-				time=0.1
-			end
-			if node.name=="mesecons_delayer:delayer_on_2" then
-				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_2", param2=node.param2})
-				time=0.3
-			end
-			if node.name=="mesecons_delayer:delayer_on_3" then
-				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_3", param2=node.param2})
-				time=0.5
-			end
-			if node.name=="mesecons_delayer:delayer_on_4" then
-				minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_4", param2=node.param2})
-				time=1
-			end
-			minetest.after(time, mesecon.delayer_turnoff, {pos=pos, param2=node.param2})
+		local time = 0
+		if node.name=="mesecons_delayer:delayer_on_1" then
+			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_1", param2=node.param2})
+			time=0.1
 		end
+		if node.name=="mesecons_delayer:delayer_on_2" then
+			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_2", param2=node.param2})
+			time=0.3
+		end
+		if node.name=="mesecons_delayer:delayer_on_3" then
+			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_3", param2=node.param2})
+			time=0.5
+		end
+		if node.name=="mesecons_delayer:delayer_on_4" then
+			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_4", param2=node.param2})
+			time=1
+		end
+		minetest.after(time, mesecon.delayer_turnoff, {pos=pos, param2=node.param2})
 	end
 end
 

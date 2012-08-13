@@ -1,7 +1,7 @@
 minetest.register_node("mesecons_noteblock:noteblock", {
 	description = "Noteblock",
 	tile_images = {"mesecons_noteblock.png"},
-	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2, mesecon_effector_off = 1, mesecon = 2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2, mesecon = 2},
 	drawtype = "allfaces_optional",
 	visual_scale = 1.3,
 	paramtype="light",
@@ -9,6 +9,7 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 		minetest.env:add_node(pos, {name="mesecons_noteblock:noteblock", param2=0})
 	end
 })
+mesecon:register_effector("mesecons_noteblock:noteblock", "mesecons_noteblock:noteblock")
 
 minetest.register_craft({
 	output = '"mesecons_noteblock:noteblock" 1',

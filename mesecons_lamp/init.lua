@@ -71,3 +71,5 @@ mesecon:register_on_signal_off(function(pos, node)
 		nodeupdate(pos)
 	end
 end)
+
+mesecon:register_effector("mesecons_lamp:lamp_on", "mesecons_lamp:lamp_off")

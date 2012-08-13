@@ -1,7 +1,7 @@
 minetest.register_on_dignode(
 	function(pos, oldnode, digger)
 		if mesecon:is_conductor_on(oldnode.name) then
-			local i = 1
+			print("receptor_off")
 			mesecon:receptor_off(pos)
 		end	
 
@@ -19,7 +19,7 @@ minetest.register_on_placenode(
 
 		if mesecon:is_powered(pos) then
 			if mesecon:is_conductor_off(node.name) then
-				mesecon:turnon(pos)		
+				mesecon:turnon(pos) -- in this case we don't need a source as the destination certainly is a conductor and not a receptor
 			else
 				mesecon:changesignal(pos)
 				mesecon:activate(pos)

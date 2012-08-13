@@ -100,6 +100,7 @@ for i = 1, 4 do
             },
             on_punch = mesecons_door_transform
         })
+	mesecon:register_effector("mesecons_door:door_"..i.."_"..j, "mesecons_door:door_"..i.."_"..j)
     end
 end
 
@@ -125,6 +126,7 @@ minetest.register_node("mesecons_door:door", {
         minetest.env:add_node(node_pos, {name = "mesecons_door:door_"..best_number.."_1"})
     end
 })
+mesecon:register_effector("mesecons_door:door")
 
 minetest.register_on_placenode(function(pos, newnode, placer)
     local b_pos = {x = pos.x, y = pos.y - 1, z = pos.z}

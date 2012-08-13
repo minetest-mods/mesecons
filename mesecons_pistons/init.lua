@@ -3,7 +3,7 @@
 minetest.register_node("mesecons_pistons:piston_normal", {
 	description = "Piston",
 	tiles = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png"},
-	groups = {cracky=3, mesecon_effector_on = 1, mesecon_effector_off = 1, mesecon = 2},
+	groups = {cracky=3, mesecon = 2},
 	paramtype2 = "facedir",
 	after_dig_node = function(pos, oldnode)
 		local dir = mesecon:piston_get_direction(oldnode)
@@ -18,12 +18,13 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 		end
 	end,
 })
+mesecon:register_effector("mesecons_pistons:piston_normal", "mesecons_pistons:piston_normal")
 
 --registration sticky one:
 minetest.register_node("mesecons_pistons:piston_sticky", {
 	description = "Sticky Piston",
 	tiles = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png"},
-	groups = {cracky=3, mesecon_effector_on = 1, mesecon_effector_off = 1, mesecon = 2},
+	groups = {cracky=3, mesecon = 2},
 	paramtype2 = "facedir",
 	after_dig_node = function(pos, oldnode)
 		local dir = mesecon:piston_get_direction(oldnode)
@@ -38,6 +39,7 @@ minetest.register_node("mesecons_pistons:piston_sticky", {
 		end
 	end,
 })
+mesecon:register_effector("mesecons_pistons:piston_sticky", "mesecons_pistons:piston_sticky")
 
 minetest.register_craft({
 	output = '"mesecons_pistons:piston_normal" 2',

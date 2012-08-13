@@ -4,9 +4,11 @@ minetest.register_node("mesecons_random:removestone", {
 	tile_images = {"jeija_removestone.png"},
 	inventory_image = minetest.inventorycube("jeija_removestone_inv.png"),
 	material = minetest.digprop_stonelike(1.0),
-	groups = {cracky=3, mesecon_effector_off = 1, mesecon = 2},
+	groups = {cracky=3, mesecon = 2},
 	description="Removestone",
 })
+
+mesecon:register_effector(nil, "mesecons_random:removestone")
 
 minetest.register_craft({
 	output = '"mesecons_random:removestone" 4',

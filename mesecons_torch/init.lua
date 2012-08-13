@@ -53,22 +53,8 @@ minetest.register_abm({
     interval = 1,
     chance = 1,
     action = function(pos, node, active_object_count, active_object_count_wider)
-        local pa = {x=0, y=0, z=0}
 	local rules=mesecon.torch_get_rules(minetest.env:get_node(pos).param2)
-
-	if node.param2 == 4 then
-		pa.z = -2
-	elseif node.param2 == 2 then
-		pa.x = -2
-	elseif node.param2 == 5 then
-		pa.z = 2
-	elseif node.param2 == 3 then
-		 pa.x = 2
-	elseif node.param2 == 1 then
-		pa.y = 2
-	elseif node.param2 == 0 then
-		pa.y = -2
-        end
+	local pa = mesecon.torch_get_input_rules(node.param2)
 
         local postc = {x=pos.x-pa.x, y=pos.y-pa.y, z=pos.z-pa.z}
         if mesecon:is_power_on(postc) then
@@ -101,6 +87,25 @@ mesecon.torch_get_rules = function(param2)
 	return rules
 end
 
+mesecon.torch_get_input_rules = function(param2)
+        local rules = {x=0, y=0, z=0}
+
+	if param2 == 4 then
+		rules.z = -2
+	elseif param2 == 2 then
+		rules.x = -2
+	elseif param2 == 5 then
+		rules.z = 2
+	elseif param2 == 3 then
+		 rules.x = 2
+	elseif param2 == 1 then
+		rules.y = 2
+	elseif param2 == 0 then
+		rules.y = -2
+        end
+	return rules
+end
+
 mesecon:add_rules("mesecontorch", 
 {{x=1,  y=0,  z=0},
 {x=0,  y=0,  z=1},
@@ -110,6 +115,7 @@ mesecon:add_rules("mesecontorch",
 
 mesecon:add_receptor_node("mesecons_torch:mesecon_torch_on", nil, mesecon.torch_get_rules)
 mesecon:add_receptor_node_off("mesecons_torch:mesecon_torch_off", nil, mesecon.torch_get_rules)
+mesecon:register_effector("mesecons_torch:mesecon_torch_on","mesecons_torch:mesecon_torch_off", nil,mesecon.torch_get_input_rules)
 
 -- Param2 Table (Block Attached To)
 -- 5 = z-1
