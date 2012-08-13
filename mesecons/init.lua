@@ -98,7 +98,6 @@ dofile(minetest.get_modpath("mesecons").."/settings.lua")
 --Internal API
 dofile(minetest.get_modpath("mesecons").."/internal_api.lua");
 
-
 -- API API API API API API API API API API API API API API API API API API
 
 function mesecon:add_receptor_node(nodename, rules, get_rules) --rules table is optional; if rules depend on param2 pass (nodename, nil, function get_rules)
@@ -152,13 +151,16 @@ function mesecon:receptor_off(pos, rules)
 		rules = mesecon:get_rules("default")
 	end
 
+	local checked = {}
+	local connected = false
 	local i = 1
 	while rules[i]~=nil do
 		local np = {}
 		np.x = pos.x + rules[i].x
 		np.y = pos.y + rules[i].y
 		np.z = pos.z + rules[i].z
-		if not mesecon:connected_to_pw_src(np, {}) then
+		connected, checked = mesecon:connected_to_pw_src(np, checked)
+		if not connected then
 			mesecon:turnoff(np)
 		end
 		i=i+1
@@ -220,3 +222,6 @@ print("[MESEcons] Main mod Loaded!")
 
 --The actual wires
 dofile(minetest.get_modpath("mesecons").."/wires.lua");
+
+--Services like turnoff receptor on dignode and so on
+dofile(minetest.get_modpath("mesecons").."/services.lua");
