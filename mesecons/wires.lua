@@ -315,12 +315,12 @@ minetest.register_craft({
 	}
 })
 
---minetest.register_abm(
---	{nodenames = {"mesecons:mesecon_off", "mesecons:mesecon_on"},
---	interval = 2,
---	chance = 1,
---	action = function(pos, node, active_object_count, active_object_count_wider)
---		mesecon:update_autoconnect(pos, false, true)
---	end,
---})
+minetest.register_abm(
+	{nodenames = {"mesecons:mesecon_off", "mesecons:mesecon_on"},
+	interval = 2,
+	chance = 1,
+	action = function(pos, node, active_object_count, active_object_count_wider)
+		mesecon:update_autoconnect(pos, false, true)
+	end,
+})
 end
