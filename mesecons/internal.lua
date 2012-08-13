@@ -37,6 +37,7 @@ function mesecon:receptor_get_rules(node)
 		i = i + 1
 	end
 
+	local i = 1
 	while(mesecon.receptors_off[i] ~= nil) do
 		if mesecon.receptors_off[i].name == node.name then
 			if mesecon.receptors_off[i].get_rules ~= nil then
@@ -50,6 +51,64 @@ function mesecon:receptor_get_rules(node)
 		i = i + 1
 	end
 	return nil
+end
+
+function mesecon:effector_get_input_rules(node)
+	local i = 1
+	while(mesecon.effectors[i] ~= nil) do
+		if mesecon.effectors[i].onstate  == node.name 
+		or mesecon.effectors[i].offstate == node.name then
+			if mesecon.effectors[i].get_input_rules ~= nil then
+				return mesecon.effectors[i].get_input_rules(node.param2)
+			elseif mesecon.receptors[i].input_rules ~=nil then
+				return mesecon.effectors[i].input_rules
+			else
+				return mesecon:get_rules("default")
+			end
+		end
+		i = i + 1
+	end
+end
+
+-- Helpers for nodeboxlike mesecons
+function mesecon:receptor_outputs (cpos, rpos) --cpos = conductor pos, rpos = receptor pos
+	local rnode = minetest.env:get_node (rpos)
+	local rules = mesecon:receptor_get_rules (rnode)
+	if rules == nil then return false end
+
+	local i = 1
+	while rules[i] ~= nil do
+		if  rpos.x + rules[i].x == cpos.x
+		and rpos.y + rules[i].y == cpos.y
+		and rpos.z + rules[i].z == cpos.z then
+			return true
+		end
+		i = i + 1
+	end
+	
+	return false
+end
+
+function mesecon:effector_inputs (cpos, rpos) --cpos = conductor pos, rpos = receptor pos
+	local rnode = minetest.env:get_node (rpos)
+	local rules = mesecon:effector_get_input_rules (rnode)
+	if rules == nil then return false end
+
+	local i = 1
+	while rules[i] ~= nil do
+		if  rpos.x + rules[i].x == cpos.x
+		and rpos.y + rules[i].y == cpos.y
+		and rpos.z + rules[i].z == cpos.z then
+			return true
+		end
+		i = i + 1
+	end
+	
+	return false
+end
+
+function mesecon:node_connects(cpos, rpos) --cpos = conductor pos, rpos = receptor pos
+	return mesecon:receptor_outputs (cpos, rpos) or mesecon:effector_inputs (cpos, rpos)
 end
 
 --Signals

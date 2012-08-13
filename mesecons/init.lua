@@ -107,9 +107,9 @@ function mesecon:add_receptor_node(nodename, rules, get_rules) --rules table is 
 		rules=mesecon:get_rules("default")
 	end
 	mesecon.receptors[i]={}
-	mesecon.receptors[i].name=nodename
-	mesecon.receptors[i].rules=rules
-	mesecon.receptors[i].get_rules=get_rules
+	mesecon.receptors[i].name = 		nodename
+	mesecon.receptors[i].rules = 		rules
+	mesecon.receptors[i].get_rules = 	get_rules
 end
 
 function mesecon:add_receptor_node_off(nodename, rules, get_rules)
@@ -122,9 +122,25 @@ function mesecon:add_receptor_node_off(nodename, rules, get_rules)
 		rules=mesecon:get_rules("default")
 	end
 	mesecon.receptors_off[i]={}
-	mesecon.receptors_off[i].name=nodename
-	mesecon.receptors_off[i].rules=rules
-	mesecon.receptors_off[i].get_rules=get_rules
+	mesecon.receptors_off[i].name = 		nodename
+	mesecon.receptors_off[i].rules = 		rules
+	mesecon.receptors_off[i].get_rules = 		get_rules
+end
+
+function mesecon:register_effector(onstate, offstate, input_rules, get_input_rules)
+	local i=1
+	repeat
+		if mesecon.effectors[i]==nil then break end
+		i=i+1
+	until false
+	if get_input_rules==nil and input_rules==nil then
+		rules=mesecon:get_rules("default")
+	end
+	mesecon.effectors[i]={}
+	mesecon.effectors[i].onstate = 		onstate
+	mesecon.effectors[i].offstate = 	offstate
+	mesecon.effectors[i].input_rules = 	input_rules
+	mesecon.effectors[i].get_input_rules = 	get_input_rules
 end
 
 function mesecon:receptor_on(pos, rules)

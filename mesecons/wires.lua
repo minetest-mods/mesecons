@@ -232,24 +232,51 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 	nodename = minetest.env:get_node(pos).name
 	if string.find(nodename, "mesecons:wire_") == nil and not replace_old then return nil end
 
+
 	--if the groups mesecon == 1 then wires won't connect to it
-	xp = 	(minetest.get_item_group(minetest.env:get_node(xppos).name, "mesecon") > 1 or
-		minetest.get_item_group(minetest.env:get_node(xpympos).name, "mesecon") > 1) and 1 or 0
-	zp = 	(minetest.get_item_group(minetest.env:get_node(zppos).name, "mesecon")  > 1 or
-		minetest.get_item_group(minetest.env:get_node(zpympos).name, "mesecon") > 1) and 1 or 0
-	xm = 	(minetest.get_item_group(minetest.env:get_node(xmpos).name, "mesecon") > 1 or
-		minetest.get_item_group(minetest.env:get_node(xmympos).name, "mesecon") > 1) and 1 or 0
-	zm = 	(minetest.get_item_group(minetest.env:get_node(zmpos).name, "mesecon") > 1 or 
-		minetest.get_item_group(minetest.env:get_node(zmympos).name, "mesecon") > 1) and 1 or 0
+	local zmg = 	minetest.get_item_group(minetest.env:get_node(zmpos  ).name, "mesecon")
+	local zmymg = 	minetest.get_item_group(minetest.env:get_node(zmympos).name, "mesecon")
+	local xmg = 	minetest.get_item_group(minetest.env:get_node(xmpos  ).name, "mesecon")
+	local xmymg = 	minetest.get_item_group(minetest.env:get_node(xmympos).name, "mesecon")
+	local zpg = 	minetest.get_item_group(minetest.env:get_node(zppos  ).name, "mesecon")
+	local zpymg = 	minetest.get_item_group(minetest.env:get_node(zpympos).name, "mesecon")
+	local xpg = 	minetest.get_item_group(minetest.env:get_node(xppos  ).name, "mesecon")
+	local xpymg = 	minetest.get_item_group(minetest.env:get_node(xpympos).name, "mesecon")
 
 
-	xpy = (minetest.get_item_group(minetest.env:get_node(xpypos).name, "mesecon") > 1) and 1 or 0
-	zpy = (minetest.get_item_group(minetest.env:get_node(zpypos).name, "mesecon") > 1) and 1 or 0
-	xmy = (minetest.get_item_group(minetest.env:get_node(xmypos).name, "mesecon") > 1) and 1 or 0
-	zmy = (minetest.get_item_group(minetest.env:get_node(zmypos).name, "mesecon") > 1) and 1 or 0
+	local xpyg = minetest.get_item_group(minetest.env:get_node(xpypos).name, "mesecon")
+	local zpyg = minetest.get_item_group(minetest.env:get_node(zpypos).name, "mesecon")
+	local xmyg = minetest.get_item_group(minetest.env:get_node(xmypos).name, "mesecon")
+	local zmyg = minetest.get_item_group(minetest.env:get_node(zmypos).name, "mesecon")
 
+	if ((zmg == 2) or (zmymg == 2)) == true then zm = 1 else zm = 0 end
+	if ((xmg == 2) or (xmymg == 2)) == true then xm = 1 else xm = 0 end
+	if ((zpg == 2) or (zpymg == 2)) == true then zp = 1 else zp = 0 end
+	if ((xpg == 2) or (xpymg == 2)) == true then xp = 1 else xp = 0 end
+
+	if xpyg == 2 then xpy = 1 else xpy = 0 end
+	if zpyg == 2 then zpy = 1 else zpy = 0 end
+	if xmyg == 2 then xmy = 1 else xmy = 0 end
+	if zmyg == 2 then zmy = 1 else zmy = 0 end
+
+	-- If group == 3 then the mesecon only connects to input and output ports
+	if xpg == 3 and mesecon:node_connects(pos, xppos) then xp = 1 end
+	if xmg == 3 and mesecon:node_connects(pos, xmpos) then xm = 1 end
+	if zpg == 3 and mesecon:node_connects(pos, zppos) then zp = 1 end
+	if zmg == 3 and mesecon:node_connects(pos, zmpos) then zm = 1 end
+
+	if xpymg == 3 and mesecon:node_connects(pos, xpympos) then xp = 1 end
+	if xmymg == 3 and mesecon:node_connects(pos, xmympos) then xm = 1 end
+	if zpymg == 3 and mesecon:node_connects(pos, zpympos) then zp = 1 end
+	if zmymg == 3 and mesecon:node_connects(pos, zmympos) then zm = 1 end
+
+	if xpyg == 3 then if mesecon:node_connects(pos, xpypos) then xpy = 1 end end
+	if zpyg == 3 then if mesecon:node_connects(pos, zpypos) then zpy = 1 end end
+	if xmyg == 3 then if mesecon:node_connects(pos, xmypos) then xmy = 1 end end
+	if zmyg == 3 then if mesecon:node_connects(pos, zmypos) then zmy = 1 end end
+
+	-- Backward compatibility
 	if replace_old then
-		print ("replacing")
 		xp = 	(xp == 1 or	(string.find(minetest.env:get_node(xppos  ).name, "mesecons:mesecon_") ~= nil or
 					 string.find(minetest.env:get_node(xpympos).name, "mesecons:mesecon_") ~= nil)) and 1 or 0
 		zp = 	(zp == 1 or	(string.find(minetest.env:get_node(zppos  ).name, "mesecons:mesecon_") ~= nil or
@@ -273,6 +300,7 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 	local nodeid = 	tostring(xp )..tostring(zp )..tostring(xm )..tostring(zm )..
 			tostring(xpy)..tostring(zpy)..tostring(xmy)..tostring(zmy)
 
+	
 	if string.find(nodename, "_off") ~= nil then
 		minetest.env:set_node(pos, {name = "mesecons:wire_"..nodeid.."_off"})
 	else
@@ -287,12 +315,12 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_abm(
-	{nodenames = {"mesecons:mesecon_off", "mesecons:mesecon_on"},
-	interval = 2,
-	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		mesecon:update_autoconnect(pos, false, true)
-	end,
-})
+--minetest.register_abm(
+--	{nodenames = {"mesecons:mesecon_off", "mesecons:mesecon_on"},
+--	interval = 2,
+--	chance = 1,
+--	action = function(pos, node, active_object_count, active_object_count_wider)
+--		mesecon:update_autoconnect(pos, false, true)
+--	end,
+--})
 end

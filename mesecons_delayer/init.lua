@@ -1,9 +1,9 @@
 for i = 1, 4 do
 local groups = {}
 if i == 1 then 
-	groups = {bendy=2,snappy=1,dig_immediate=2, mesecon = 2}
+	groups = {bendy=2,snappy=1,dig_immediate=2, mesecon = 3}
 else
-	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1, mesecon = 2}
+	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
 end
 
 boxes = {{ -6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },		-- the main slab
@@ -69,7 +69,7 @@ minetest.register_node("mesecons_delayer:delayer_on_"..tostring(i), {
 		type = "fixed",
 		fixed = boxes
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2,not_in_creative_inventory=1, mesecon = 2},
+	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1, mesecon = 3},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
@@ -218,3 +218,8 @@ mesecon:add_receptor_node_off("mesecons_delayer:delayer_off_1", all_rules, mesec
 mesecon:add_receptor_node_off("mesecons_delayer:delayer_off_2", all_rules, mesecon.delayer_get_output_rules)
 mesecon:add_receptor_node_off("mesecons_delayer:delayer_off_3", all_rules, mesecon.delayer_get_output_rules)
 mesecon:add_receptor_node_off("mesecons_delayer:delayer_off_4", all_rules, mesecon.delayer_get_output_rules)
+
+mesecon:register_effector("mesecons_delayer:delayer_on_1", "mesecons_delayer:delayer_off_1", all_rules, mesecon.delayer_get_input_rules)
+mesecon:register_effector("mesecons_delayer:delayer_on_2", "mesecons_delayer:delayer_off_2", all_rules, mesecon.delayer_get_input_rules)
+mesecon:register_effector("mesecons_delayer:delayer_on_3", "mesecons_delayer:delayer_off_3", all_rules, mesecon.delayer_get_input_rules)
+mesecon:register_effector("mesecons_delayer:delayer_on_4", "mesecons_delayer:delayer_off_4", all_rules, mesecon.delayer_get_input_rules)
