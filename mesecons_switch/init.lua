@@ -13,9 +13,6 @@ minetest.register_node("mesecons_switch:mesecon_switch_on", {
 	groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 2},
 	drop='"mesecons_switch:mesecon_switch_off" 1',
 	description="Switch",
-	after_dig_node = function(pos)
-		mesecon:receptor_off(pos)
-	end
 })
 
 mesecon:add_receptor_node("mesecons_switch:mesecon_switch_on")

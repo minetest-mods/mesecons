@@ -23,9 +23,6 @@ minetest.register_node("mesecons_solarpanel:solar_panel", {
 	furnace_burntime = 5,
 	groups = {dig_immediate=3, mesecon = 2},
     	description="Solar Panel",
-	after_dig_node = function(pos, node, digger)
-		mesecon:receptor_off(pos)
-	end,
 })
 
 minetest.register_craft({

@@ -10,12 +10,6 @@ minetest.register_node("mesecons_powerplant:power_plant", {
 	groups = {dig_immediate=3, mesecon = 2},
 	light_source = LIGHT_MAX-9,
     	description="Power Plant",
-	after_place_node = function(pos)
-		mesecon:receptor_on(pos)
-	end,
-	after_dig_node = function(pos)
-		mesecon:receptor_off(pos)
-	end,
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.1, -0.5, -0.1, 0.1, -0.5+0.6, 0.1},

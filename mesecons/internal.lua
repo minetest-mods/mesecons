@@ -325,14 +325,15 @@ function mesecon:is_powered_by_receptor(pos)
 	local i = 1
 	local j = 1
 	local k = 1
+	local rules
 	local pos_checked = false
 
 	while mesecon.rules[i]~=nil do
-		j=1
+		local j=1
 		while mesecon.rules[i].rules[j]~=nil do
 			rcpt_pos = {
-			x = pos.x-mesecon.rules[i].rules[j].x, 
-			y = pos.y-mesecon.rules[i].rules[j].y, 
+			x = pos.x-mesecon.rules[i].rules[j].x,
+			y = pos.y-mesecon.rules[i].rules[j].y,
 			z = pos.z-mesecon.rules[i].rules[j].z}
 
 			k = 1
@@ -350,14 +351,15 @@ function mesecon:is_powered_by_receptor(pos)
 
 				if mesecon:is_receptor_node(rcpt.name) then 
 					rules = mesecon:receptor_get_rules(rcpt)
+					j = 1
 					while rules[j] ~= nil do
-					if pos.x + rules[j].x == rcpt_pos.x
-					and pos.y + rules[j].y == rcpt_pos.y
-					and pos.z + rules[j].z == rcpt_pos.z then
-						return true
+						if rcpt_pos.x + rules[j].x == pos.x
+						and rcpt_pos.y + rules[j].y == pos.y
+						and rcpt_pos.z + rules[j].z == pos.z then
+							return true
+						end
+						j=j+1
 					end
-					j=j+1
-				end
 				end
 			end
 			j=j+1

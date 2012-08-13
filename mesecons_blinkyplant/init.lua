@@ -26,9 +26,6 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	drop='"mesecons_blinkyplant:blinky_plant_off" 1',
 	light_source = LIGHT_MAX-7,
 	description = "Blinky Plant",
-	after_dig_node = function(pos)
-		mesecon:receptor_off(pos)
-	end,
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.1, -0.5, -0.1, 0.1, -0.5+0.6, 0.1},

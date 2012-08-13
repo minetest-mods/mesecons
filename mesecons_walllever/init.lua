@@ -59,9 +59,6 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 	groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 1},
 	drop = '"mesecons_walllever:wall_lever_off" 1',
 	description="Lever",
-	after_dig_node = function(pos, oldnode)
-		mesecon:receptor_off(pos, mesecon.button_get_rules(oldnode.param2))
-	end
 })
 
 minetest.register_on_punchnode(function(pos, node, puncher)

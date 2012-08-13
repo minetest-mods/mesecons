@@ -191,14 +191,15 @@ function mesecon:register_on_signal_change(action)
 	mesecon.actions_change[i]=action
 end
 
-function mesecon:register_conductor (onstate, offstate)
+function mesecon:register_conductor (onstate, offstate, rules)
 	local i=0
 	while mesecon.conductors[i]~=nil do
 		i=i+1
 	end
 	mesecon.conductors[i]={}
-	mesecon.conductors[i].on=onstate
-	mesecon.conductors[i].off=offstate
+	mesecon.conductors[i].on = onstate
+	mesecon.conductors[i].off = offstate
+	mesecon.conductors[i].rules = offstate
 end
 
 mesecon:add_rules("default", 

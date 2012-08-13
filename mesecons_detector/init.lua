@@ -14,9 +14,6 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	groups = {cracky=3,not_in_creative_inventory=1, mesecon = 2},
 	drop = 'mesecons_detector:object_detector_off',
 	description="Player Detector",
-	after_dig_node = function(pos)
-		mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
-	end
 })
 
 minetest.register_craft({
@@ -76,5 +73,5 @@ minetest.register_abm(
 	end,
 })
 
-mesecon:add_receptor_node("mesecons_detector:object_detector_on")
-mesecon:add_receptor_node_off("mesecons_detector:object_detector_off")
+mesecon:add_receptor_node("mesecons_detector:object_detector_on", mesecon:get_rules("pressureplate"))
+mesecon:add_receptor_node_off("mesecons_detector:object_detector_off", mesecon:get_rules("pressureplate"))

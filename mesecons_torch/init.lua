@@ -46,13 +46,6 @@ minetest.register_node("mesecons_torch:mesecon_torch_on", {
 	groups = {dig_immediate=3, mesecon = 2},
 	light_source = LIGHT_MAX-5,
 	description="Mesecon Torch",
-	after_place_node = function(pos)
-		local rules = mesecon.torch_get_rules(minetest.env:get_node(pos).param2)
-		mesecon:receptor_on(pos, rules)
-	end,
-	after_dig_node = function(pos)
-		mesecon:receptor_off(pos)
-	end
 })
 
 minetest.register_abm({
