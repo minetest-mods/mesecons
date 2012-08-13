@@ -307,7 +307,7 @@ function mesecon:turnoff(pos, sourcepos)
 	if mesecon:is_effector(node.name) then
 		if mesecon:effector_inputs(sourcepos, pos) then
 			mesecon:changesignal(pos)
-			if mesecon:is_effector_on(node.name) then mesecon:deactivate(pos) end
+			if mesecon:is_effector_on(node.name) and not mesecon:is_powered(pos) then mesecon:deactivate(pos) end
 		end
 	end
 end
