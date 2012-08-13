@@ -41,9 +41,6 @@
 --rules=mesecon:rotate_rules_right/left/up/down(rules)
 --
 --
---!! If a receptor node is removed, the circuit should be recalculated. This means you have to
---send an mesecon:receptor_off signal to the api when the node is dug, using the
---after_dig_node node property.
 --
 --EFFECTORS
 --
@@ -96,7 +93,7 @@ mesecon.conductors={}
 dofile(minetest.get_modpath("mesecons").."/settings.lua")
 
 --Internal API
-dofile(minetest.get_modpath("mesecons").."/internal_api.lua");
+dofile(minetest.get_modpath("mesecons").."/internal.lua");
 
 -- API API API API API API API API API API API API API API API API API API
 
