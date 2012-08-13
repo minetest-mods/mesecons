@@ -92,16 +92,16 @@ for zmy=0, 1 do
 		table.insert(nodebox, box_bump1)
 		table.insert(nodebox, box_bump2)
 		tiles_off = {
-			"wires_off.png",
-			"wires_off.png",
+			"wires_bump_off.png",
+			"wires_bump_off.png",
 			"wires_vertical_off.png",
 			"wires_vertical_off.png",
 			"wires_vertical_off.png",
 			"wires_vertical_off.png"
 		}
 		tiles_on = {
-			"wires_on.png",
-			"wires_on.png",
+			"wires_bump_on.png",
+			"wires_bump_on.png",
 			"wires_vertical_on.png",
 			"wires_vertical_on.png",
 			"wires_vertical_on.png",
@@ -110,16 +110,16 @@ for zmy=0, 1 do
 	else
 		table.insert(nodebox, box_center)
 		tiles_off = {
-			"wires_vertical_off.png",
-			"wires_vertical_off.png",
+			"wires_off.png",
+			"wires_off.png",
 			"wires_vertical_off.png",
 			"wires_vertical_off.png",
 			"wires_vertical_off.png",
 			"wires_vertical_off.png"
 		}
 		tiles_on = {
-			"wires_vertical_on.png",
-			"wires_vertical_on.png",
+			"wires_on.png",
+			"wires_on.png",
 			"wires_vertical_on.png",
 			"wires_vertical_on.png",
 			"wires_vertical_on.png",
