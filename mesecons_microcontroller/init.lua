@@ -141,7 +141,7 @@ function update_yc(pos)
 	code = yc_code_remove_commentary(code)
 	code = string.gsub(code, " ", "")	--Remove all spaces
 	code = string.gsub(code, "	", "")	--Remove all tabs
-	if parse_yccode(code, pos) == nil then
+	if yc_parsecode(code, pos) == nil then
 		meta:set_string("infotext", "Code not valid!")
 	else
 		meta:set_string("infotext", "Working Microcontroller")
@@ -163,7 +163,7 @@ function yc_code_remove_commentary(code)
 	return code
 end
 
-function parse_yccode(code, pos)
+function yc_parsecode(code, pos)
 	local endi = 1
 	local Lreal = yc_get_real_portstates(pos)
 	local Lvirtual = yc_get_virtual_portstates(pos)
@@ -196,8 +196,11 @@ function parse_yccode(code, pos)
 		elseif command == "off" then
 			L = yc_command_off(params, Lvirtual)
 		elseif command == "print" then
-			su = yc_command_print(params, eeprom, yc_merge_portstates(Lreal, Lvirtual))
+			local su = yc_command_print(params, eeprom, yc_merge_portstates(Lreal, Lvirtual))
 			if su ~= true then return nil end
+		elseif command == "after" then
+			local su = yc_command_after(params, pos)
+			if su == nil then return nil end
 		elseif command == "sbi" then
 			new_eeprom, Lvirtual = yc_command_sbi (params, eeprom, yc_merge_portstates(Lreal, Lvirtual), Lvirtual)
 			if new_eeprom == nil then return nil
@@ -377,6 +380,30 @@ function yc_command_sbi(params, eeprom, L, Lv)
 		end
 	end
 	return new_eeprom, Lv
+end
+
+-- after (delay)
+function yc_command_after(params, pos)
+	if params[1] == nil or params[2] == nil or params[3] ~= nil then return nil end
+
+	--get time (maximum time is 200)
+	local time = tonumber(params[1])
+	if time == nil or time > 200 then
+		return nil
+	end
+
+	--get code in quotes "code"
+	if string.sub(params[2], 1, 1) ~= '"' or string.sub(params[2], #params[2], #params[2]) ~= '"' then return nil end
+	local code = string.sub(params[2], 2, #params[2] - 1)
+
+	minetest.after(time, yc_command_after_execute, {pos = pos, code = code})
+	return true
+end
+
+function yc_command_after_execute(params)
+	if string.find(minetest.env:get_node(params.pos).name, "mesecons_microcontroller:microcontroller") ~= nil then --make sure the node has not been dug
+		yc_parsecode(params.code, params.pos)
+	end
 end
 
 --If

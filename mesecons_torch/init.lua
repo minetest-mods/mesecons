@@ -115,7 +115,7 @@ mesecon:add_rules("mesecontorch",
 
 mesecon:add_receptor_node("mesecons_torch:mesecon_torch_on", nil, mesecon.torch_get_rules)
 mesecon:add_receptor_node_off("mesecons_torch:mesecon_torch_off", nil, mesecon.torch_get_rules)
-mesecon:register_effector("mesecons_torch:mesecon_torch_on","mesecons_torch:mesecon_torch_off", nil,mesecon.torch_get_input_rules)
+mesecon:register_effector("mesecons_torch:mesecon_torch_on","mesecons_torch:mesecon_torch_off", nil, mesecon.torch_get_input_rules)
 
 -- Param2 Table (Block Attached To)
 -- 5 = z-1
