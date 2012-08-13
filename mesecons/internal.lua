@@ -2,8 +2,8 @@
 
 function mesecon:is_receptor_node(nodename)
 	local i = 1
-	while mesecon.pwr_srcs[i] ~= nil do
-		if mesecon.pwr_srcs[i].name == nodename then
+	while mesecon.receptors[i] ~= nil do
+		if mesecon.receptors[i].name == nodename then
 			return true
 		end
 		i = i + 1
@@ -13,8 +13,8 @@ end
 
 function mesecon:is_receptor_node_off(nodename, pos, ownpos)
 	local i = 1
-	while mesecon.pwr_srcs_off[i] ~= nil do
-		if mesecon.pwr_srcs_off[i].name == nodename then
+	while mesecon.receptors_off[i] ~= nil do
+		if mesecon.receptors_off[i].name == nodename then
 			return true
 		end
 		i = i + 1
@@ -24,12 +24,12 @@ end
 
 function mesecon:receptor_get_rules(node)
 	local i = 1
-	while(mesecon.pwr_srcs[i] ~= nil) do
-		if mesecon.pwr_srcs[i].name == node.name then
-			if mesecon.pwr_srcs[i].get_rules ~= nil then
-				return mesecon.pwr_srcs[i].get_rules(node.param2)
-			elseif mesecon.pwr_srcs[i].rules ~=nil then
-				return mesecon.pwr_srcs[i].rules
+	while(mesecon.receptors[i] ~= nil) do
+		if mesecon.receptors[i].name == node.name then
+			if mesecon.receptors[i].get_rules ~= nil then
+				return mesecon.receptors[i].get_rules(node.param2)
+			elseif mesecon.receptors[i].rules ~=nil then
+				return mesecon.receptors[i].rules
 			else
 				return mesecon:get_rules("default")
 			end
@@ -37,12 +37,12 @@ function mesecon:receptor_get_rules(node)
 		i = i + 1
 	end
 
-	while(mesecon.pwr_srcs_off[i] ~= nil) do
-		if mesecon.pwr_srcs_off[i].name == node.name then
-			if mesecon.pwr_srcs_off[i].get_rules ~= nil then
-				return mesecon.pwr_srcs_off[i].get_rules(node.param2)
-			elseif mesecon.pwr_srcs_off[i].rules ~=nil then
-				return mesecon.pwr_srcs_off[i].rules
+	while(mesecon.receptors_off[i] ~= nil) do
+		if mesecon.receptors_off[i].name == node.name then
+			if mesecon.receptors_off[i].get_rules ~= nil then
+				return mesecon.receptors_off[i].get_rules(node.param2)
+			elseif mesecon.receptors_off[i].rules ~=nil then
+				return mesecon.receptors_off[i].rules
 			else
 				return mesecon:get_rules("default")
 			end

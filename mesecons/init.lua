@@ -83,8 +83,8 @@ mesecon={} -- contains all functions and all global variables
 mesecon.actions_on={} -- Saves registered function callbacks for mesecon on
 mesecon.actions_off={} -- Saves registered function callbacks for mesecon off
 mesecon.actions_change={} -- Saves registered function callbacks for mesecon change
-mesecon.pwr_srcs={}
-mesecon.pwr_srcs_off={}
+mesecon.receptors={}
+mesecon.receptors_off={}
 mesecon.effectors={}
 mesecon.rules={}
 mesecon.conductors={}
@@ -100,31 +100,31 @@ dofile(minetest.get_modpath("mesecons").."/internal.lua");
 function mesecon:add_receptor_node(nodename, rules, get_rules) --rules table is optional; if rules depend on param2 pass (nodename, nil, function get_rules)
 	local i=1
 	repeat
-		if mesecon.pwr_srcs[i]==nil then break end
+		if mesecon.receptors[i]==nil then break end
 		i=i+1
 	until false
 	if get_rules==nil and rules==nil then
 		rules=mesecon:get_rules("default")
 	end
-	mesecon.pwr_srcs[i]={}
-	mesecon.pwr_srcs[i].name=nodename
-	mesecon.pwr_srcs[i].rules=rules
-	mesecon.pwr_srcs[i].get_rules=get_rules
+	mesecon.receptors[i]={}
+	mesecon.receptors[i].name=nodename
+	mesecon.receptors[i].rules=rules
+	mesecon.receptors[i].get_rules=get_rules
 end
 
 function mesecon:add_receptor_node_off(nodename, rules, get_rules)
 	local i=1
 	repeat
-		if mesecon.pwr_srcs_off[i]==nil then break end
+		if mesecon.receptors_off[i]==nil then break end
 		i=i+1
 	until false
 	if get_rules==nil and rules==nil then
 		rules=mesecon:get_rules("default")
 	end
-	mesecon.pwr_srcs_off[i]={}
-	mesecon.pwr_srcs_off[i].name=nodename
-	mesecon.pwr_srcs_off[i].rules=rules
-	mesecon.pwr_srcs_off[i].get_rules=get_rules
+	mesecon.receptors_off[i]={}
+	mesecon.receptors_off[i].name=nodename
+	mesecon.receptors_off[i].rules=rules
+	mesecon.receptors_off[i].get_rules=get_rules
 end
 
 function mesecon:receptor_on(pos, rules)
