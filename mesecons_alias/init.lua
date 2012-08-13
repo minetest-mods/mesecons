@@ -25,6 +25,7 @@ minetest.register_alias("mesecons:sticky_movestone", "mesecons_movestones:sticky
 minetest.register_alias("mesecons:noteblock", "mesecons_noteblock:noteblock")
 minetest.register_alias("mesecons:microcontroller", "mesecons_microcontroller:microcontroller")
 minetest.register_alias("mesecons:delayer", "mesecons_delayer:delayer_off_1")
+minetest.register_alias("mesecons:solarpanel", "mesecons_solarpanel:solar_panel_off")
 
 
 --Backwards compatibility
