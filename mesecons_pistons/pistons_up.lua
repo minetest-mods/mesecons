@@ -18,6 +18,8 @@ minetest.register_node("mesecons_pistons:piston_up_normal", {
 	end,
 })
 
+mesecon:register_effector("mesecons_pistons:piston_up_normal", "mesecons_pistons:piston_up_normal")
+
 --registration sticky one:
 minetest.register_node("mesecons_pistons:piston_up_sticky", {
 	description = "Sticky Piston UP",
@@ -36,6 +38,8 @@ minetest.register_node("mesecons_pistons:piston_up_sticky", {
 		end
 	end,
 })
+
+mesecon:register_effector("mesecons_pistons:piston_up_sticky", "mesecons_pistons:piston_up_sticky")
 
 minetest.register_craft({
 	output = "mesecons_pistons:piston_up_normal",
