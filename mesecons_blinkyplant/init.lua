@@ -37,7 +37,7 @@ minetest.register_craft({
 	recipe = {
 	{'','"group:mesecon_conductor_craftable"',''},
 	{'','"group:mesecon_conductor_craftable"',''},
-	{'"default:junglegrass"','"default:junglegrass"','"default:junglegrass"'},
+	{'"default:sapling"','"default:sapling"','"default:sapling"'},
 	}
 })
 

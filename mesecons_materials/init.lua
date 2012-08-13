@@ -7,10 +7,9 @@ minetest.register_craftitem("mesecons_materials:glue", {
 
 minetest.register_craft({
 	output = '"mesecons_materials:glue" 2',
-	recipe = {
-		{'"default:junglegrass"', '"default:junglegrass"'},
-		{'"default:junglegrass"', '"default:junglegrass"'},
-	}
+	type = "cooking",
+	recipe = "default:sapling",
+	cooktime = 2
 })
 
 -- Silicon
