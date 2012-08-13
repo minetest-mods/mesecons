@@ -288,21 +288,27 @@ end
 
 
 function mesecon:connected_to_pw_src(pos, checked)
+	if checked == nil then
+		checked = {}
+	end
+	local connected
 	local i = 1
+
 	while checked[i] ~= nil do --find out if node has already been checked
 		if  checked[i].x == pos.x and checked[i].y == pos.y and checked[i].z == pos.z then 
-			return false
+			return false, checked
 		end
 		i = i + 1
 	end
+
 	checked[i] = {x=pos.x, y=pos.y, z=pos.z} --add current node to checked
 
 	local node = minetest.env:get_node_or_nil(pos)
-	if node == nil then return false end
+	if node == nil then return false, checked end
 
 	if mesecon:is_conductor_on(node.name) or mesecon:is_conductor_off(node.name) then
-		if mesecon:is_powered_from_receptor(pos) then --return if conductor is powered
-			return true
+		if mesecon:is_powered_by_receptor(pos) then --return if conductor is powered
+			return true, checked
 		end
 
 		local rules = mesecon:get_rules("default") --TODO: Use conductor specific rules
@@ -312,16 +318,17 @@ function mesecon:connected_to_pw_src(pos, checked)
 			np.x = pos.x + rules[i].x
 			np.y = pos.y + rules[i].y
 			np.z = pos.z + rules[i].z
-			if mesecon:connected_to_pw_src(np, checked) == true then 
-				return true 
+			connected, checked = mesecon:connected_to_pw_src(np, checked)
+			if connected then 
+				return true
 			end
 			i=i+1
 		end
 	end
-	return false
+	return false, checked
 end
 
-function mesecon:is_powered_from_receptor(pos)
+function mesecon:is_powered_by_receptor(pos)
 	local rcpt
 	local rcpt_pos = {}
 	local rcpt_checked = {} --using a checked array speeds this up
@@ -361,7 +368,7 @@ function mesecon:is_powered_from_receptor(pos)
 	return false
 end
 
-function mesecon:is_powered_from_conductor(pos)
+function mesecon:is_powered_by_conductor(pos)
 	local k=1
 
 	rules=mesecon:get_rules("default") --TODO: use conductor specific rules
@@ -375,11 +382,11 @@ function mesecon:is_powered_from_conductor(pos)
 end
 
 function mesecon:is_powered(pos)
-	return mesecon:is_powered_from_conductor(pos) or mesecon:is_powered_from_receptor(pos)
+	return mesecon:is_powered_by_conductor(pos) or mesecon:is_powered_by_receptor(pos)
 end
 
 function mesecon:updatenode(pos)
-    if mesecon:connected_to_pw_src(pos, {}) then
+    if mesecon:connected_to_pw_src(pos) then
         mesecon:turnon(pos)
     else
 	mesecon:turnoff(pos)

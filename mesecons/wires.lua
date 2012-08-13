@@ -87,8 +87,8 @@ for zmy=0, 1 do
 	if zpy == 1 then table.insert(nodebox, box_zpy) end
 	if xmy == 1 then table.insert(nodebox, box_xmy) end
 	if zmy == 1 then table.insert(nodebox, box_zmy) end
-	nobump = xp+zp+xm+zm
-	if adjx and adjz and (nobump > 2) then
+
+	if adjx and adjz and (xp + zp + xm + zm > 2) then
 		table.insert(nodebox, box_bump1)
 		table.insert(nodebox, box_bump2)
 		tiles_off = {
