@@ -88,7 +88,6 @@ minetest.register_node(nodename, {
 		"button[7.5,0.2;1.5,3;brsflop;RS-Flop]"..
 		"button_exit[3.5,1;2,3;program;Program]")
 		meta:set_string("infotext", "Programmed Microcontroller")
-		meta:set_int("heat", 0)
 		yc_reset (pos)
 		update_yc(pos)
 	end,
@@ -122,6 +121,8 @@ minetest.register_craft({
 function yc_reset(pos)
 	yc_action(pos, {a=false, b=false, c=false, d=false})
 	local meta = minetest.env:get_meta(pos)
+	meta:set_int("heat", 0)
+	meta:set_int("afterid", 0)
 	local r = ""
 	for i=1, EEPROM_SIZE+1 do r=r.."0" end --Generate a string with EEPROM_SIZE*"0"
 	meta:set_string("eeprom", r)
@@ -396,12 +397,16 @@ function yc_command_after(params, pos)
 	if string.sub(params[2], 1, 1) ~= '"' or string.sub(params[2], #params[2], #params[2]) ~= '"' then return nil end
 	local code = string.sub(params[2], 2, #params[2] - 1)
 
-	minetest.after(time, yc_command_after_execute, {pos = pos, code = code})
+	local afterid = math.random(10000)
+	local meta = minetest.env:get_meta(pos)
+	meta:set_int("afterid", afterid)
+	minetest.after(time, yc_command_after_execute, {pos = pos, code = code, afterid = afterid})
 	return true
 end
 
 function yc_command_after_execute(params)
-	if string.find(minetest.env:get_node(params.pos).name, "mesecons_microcontroller:microcontroller") ~= nil then --make sure the node has not been dug
+	local meta = minetest.env:get_meta(params.pos)
+	if meta:get_int("afterid") == params.afterid then --make sure the node has not been changed
 		yc_parsecode(params.code, params.pos)
 	end
 end
@@ -542,6 +547,7 @@ function yc_action(pos, L) --L-->Lvirtual
 	Lv = yc_get_virtual_portstates(pos)
 	local meta = minetest.env:get_meta(pos)
 	local code = meta:get_string("code")
+	local afterid = meta:get_int("afterid")
 	local heat = meta:get_int("heat")
 	local eeprom = meta:get_string("eeprom")
 	local infotext   = meta:get_string("infotext")
@@ -555,6 +561,7 @@ function yc_action(pos, L) --L-->Lvirtual
 	local meta = minetest.env:get_meta(pos)
 	meta:set_string("code", code)
 	meta:set_int("heat", heat)
+	meta:set_int("afterid", afterid)
 	meta:set_string("eeprom", eeprom)
 	meta:set_string("infotext", infotext)
 	meta:set_string("formspec", formspec)
