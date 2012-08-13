@@ -407,7 +407,11 @@ end
 function yc_command_after_execute(params)
 	local meta = minetest.env:get_meta(params.pos)
 	if meta:get_int("afterid") == params.afterid then --make sure the node has not been changed
-		yc_parsecode(params.code, params.pos)
+		if yc_parsecode(params.code, params.pos) == nil then
+			meta:set_string("infotext", "Code in after() not valid!")
+		else
+			meta:set_string("infotext", "Working Microcontroller")
+		end
 	end
 end
 
