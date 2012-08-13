@@ -151,13 +151,16 @@ function mesecon:receptor_off(pos, rules)
 		rules = mesecon:get_rules("default")
 	end
 
+	local checked = {}
+	local connected = false
 	local i = 1
 	while rules[i]~=nil do
 		local np = {}
 		np.x = pos.x + rules[i].x
 		np.y = pos.y + rules[i].y
 		np.z = pos.z + rules[i].z
-		if not mesecon:connected_to_pw_src(np) then
+		connected, checked = mesecon:connected_to_pw_src(np, checked)
+		if not connected then
 			mesecon:turnoff(np)
 		end
 		i=i+1
