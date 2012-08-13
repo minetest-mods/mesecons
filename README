@@ -15,6 +15,10 @@ minerd247: Some textures
 ...other contributors
 
 This is a mod for minetest-c55.
-Copy the mesecons_* directories into minetest/data/mods/ to install it.
+Copy the minetest-mod-mesecons directory into you game's mod folder 
+(e.g. games/minetest_game/mods/minetest-mod-mesecons)
 
-VERSION: 0.9 DEV
+You can remove modules of this mod by deleting the mesecons_*
+folders in the minetest-mod-mesecons directory.
+
+Mod dependencies: none
