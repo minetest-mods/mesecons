@@ -260,20 +260,20 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 	if zmyg == 2 then zmy = 1 else zmy = 0 end
 
 	-- If group == 3 then the mesecon only connects to input and output ports
-	if xpg == 3 and mesecon:node_connects(pos, xppos) then xp = 1 end
-	if xmg == 3 and mesecon:node_connects(pos, xmpos) then xm = 1 end
-	if zpg == 3 and mesecon:node_connects(pos, zppos) then zp = 1 end
-	if zmg == 3 and mesecon:node_connects(pos, zmpos) then zm = 1 end
+	if xpg == 3 and mesecon:rules_link_bothdir(pos, xppos) then xp = 1 end
+	if xmg == 3 and mesecon:rules_link_bothdir(pos, xmpos) then xm = 1 end
+	if zpg == 3 and mesecon:rules_link_bothdir(pos, zppos) then zp = 1 end
+	if zmg == 3 and mesecon:rules_link_bothdir(pos, zmpos) then zm = 1 end
 
-	if xpymg == 3 and mesecon:node_connects(pos, xpympos) then xp = 1 end
-	if xmymg == 3 and mesecon:node_connects(pos, xmympos) then xm = 1 end
-	if zpymg == 3 and mesecon:node_connects(pos, zpympos) then zp = 1 end
-	if zmymg == 3 and mesecon:node_connects(pos, zmympos) then zm = 1 end
+	if xpymg == 3 and mesecon:rules_link_bothdir(pos, xpympos) then xp = 1 end
+	if xmymg == 3 and mesecon:rules_link_bothdir(pos, xmympos) then xm = 1 end
+	if zpymg == 3 and mesecon:rules_link_bothdir(pos, zpympos) then zp = 1 end
+	if zmymg == 3 and mesecon:rules_link_bothdir(pos, zmympos) then zm = 1 end
 
-	if xpyg == 3 then if mesecon:node_connects(pos, xpypos) then xpy = 1 end end
-	if zpyg == 3 then if mesecon:node_connects(pos, zpypos) then zpy = 1 end end
-	if xmyg == 3 then if mesecon:node_connects(pos, xmypos) then xmy = 1 end end
-	if zmyg == 3 then if mesecon:node_connects(pos, zmypos) then zmy = 1 end end
+	if xpyg == 3 then if mesecon:rules_link(pos, xpypos) then xpy = 1 end end
+	if zpyg == 3 then if mesecon:rules_link(pos, zpypos) then zpy = 1 end end
+	if xmyg == 3 then if mesecon:rules_link(pos, xmypos) then xmy = 1 end end
+	if zmyg == 3 then if mesecon:rules_link(pos, zmypos) then zmy = 1 end end
 
 	-- Backward compatibility
 	if replace_old then

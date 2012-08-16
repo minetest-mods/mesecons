@@ -154,7 +154,9 @@ function mesecon:receptor_on(pos, rules)
 		np.x = pos.x + rules[i].x
 		np.y = pos.y + rules[i].y
 		np.z = pos.z + rules[i].z
-		mesecon:turnon(np, pos)
+		if mesecon:rules_link(pos, np, rules) then
+			mesecon:turnon(np, pos)
+		end
 		i=i+1
 	end
 end
@@ -171,8 +173,7 @@ function mesecon:receptor_off(pos, rules)
 		np.x = pos.x + rules[i].x
 		np.y = pos.y + rules[i].y
 		np.z = pos.z + rules[i].z
-		connected = mesecon:connected_to_pw_src(np)
-		if connected == false then
+		if mesecon:rules_link(pos, np, rules) and mesecon:connected_to_pw_src(np) == false then
 			mesecon:turnoff(np, pos)
 		end
 		i=i+1
@@ -206,15 +207,19 @@ function mesecon:register_on_signal_change(action)
 	mesecon.actions_change[i]=action
 end
 
-function mesecon:register_conductor (onstate, offstate, rules)
-	local i=0
+function mesecon:register_conductor (onstate, offstate, rules, get_rules)
+	local i = 1
 	while mesecon.conductors[i]~=nil do
-		i=i+1
+		i = i + 1
+	end
+	if rules == nil then
+		rules = mesecon:get_rules("default")
 	end
 	mesecon.conductors[i]={}
-	mesecon.conductors[i].on = onstate
-	mesecon.conductors[i].off = offstate
-	mesecon.conductors[i].rules = offstate
+	mesecon.conductors[i].onstate = onstate
+	mesecon.conductors[i].offstate = offstate
+	mesecon.conductors[i].rules = rules
+	mesecon.conductors[i].get_rules = get_rules
 end
 
 mesecon:add_rules("default", 
