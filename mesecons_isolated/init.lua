@@ -14,7 +14,7 @@ minetest.register_node("mesecons_isolated:isolated_on", {
 	stack_max = 99,
 	selection_box = {
 		type = "fixed",
-		fixed = { -16/32-0.001, -19/32, -5/32, 16/32+0.001, -11/32, 5/32 }
+		fixed = { -16/32-0.001, -18/32, -7/32, 16/32+0.001, -12/32, 7/32 }
 	},
 	node_box = {
 		type = "fixed",
@@ -41,7 +41,7 @@ minetest.register_node("mesecons_isolated:isolated_off", {
 	stack_max = 99,
 	selection_box = {
 		type = "fixed",
-		fixed = { -16/32-0.001, -19/32, -5/32, 16/32+0.001, -11/32, 5/32 }
+		fixed = { -16/32-0.001, -18/32, -7/32, 16/32+0.001, -12/32, 7/32 }
 	},
 	node_box = {
 		type = "fixed",
