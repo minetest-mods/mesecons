@@ -28,9 +28,6 @@ minetest.register_node("mesecons_walllever:wall_lever_off", {
 	},
 	groups = {dig_immediate=2, mesecon = 3, mesecon_needs_receiver = 1},
 	description="Lever",
-    	after_place_node = function(pos, placer)
-		
-	end,
 })
 minetest.register_node("mesecons_walllever:wall_lever_on", {
 	drawtype = "nodebox",
