@@ -52,6 +52,15 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 	groups = {dig_immediate = 3, mesecon = 3, mesecon_conductor_craftable=1},
 })
 
+minetest.register_craft({
+	output = '"mesecons_insulated:insulated_off" 3',
+	recipe = {
+		{"mesecons_materials:fiber", "mesecons_materials:fiber", "mesecons_materials:fiber"},
+		{"mesecons:wire_00000000_off", "mesecons:wire_00000000_off", "mesecons:wire_00000000_off"},
+		{"mesecons_materials:fiber", "mesecons_materials:fiber", "mesecons_materials:fiber"},
+	}
+})
+
 mesecon:add_rules("insulated_all", { --all possible rules
 {x = 1,  y = 0,  z = 0},
 {x =-1,  y = 0,  z = 0},
