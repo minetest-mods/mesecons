@@ -1,2 +1,2 @@
 mesecons
-mesecons_button
+mesecons_receiver

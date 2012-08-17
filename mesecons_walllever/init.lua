@@ -26,8 +26,11 @@ minetest.register_node("mesecons_walllever:wall_lever_off", {
 			 { -2/16, -1/16, 3/16, 2/16,  1/16, 4/16 },	-- the lever "hinge"
 			 { -1/16, -8/16, 4/16, 1/16,  0,    6/16 }}	-- the lever itself.
 	},
-	groups = {dig_immediate=2, mesecon = 3},
+	groups = {dig_immediate=2, mesecon = 3, mesecon_needs_receiver = 1},
 	description="Lever",
+    	after_place_node = function(pos, placer)
+		
+	end,
 })
 minetest.register_node("mesecons_walllever:wall_lever_on", {
 	drawtype = "nodebox",
@@ -56,7 +59,7 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 			 { -2/16, -1/16,  3/16, 2/16, 1/16,  4/16 },	-- the lever "hinge"
 			 { -1/16,  0,     4/16, 1/16, 8/16,  6/16 }}	-- the lever itself.
 	},
-	groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 3},
+	groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 3, mesecon_needs_receiver = 1},
 	drop = '"mesecons_walllever:wall_lever_off" 1',
 	description="Lever",
 })
