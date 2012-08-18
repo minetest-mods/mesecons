@@ -1,12 +1,56 @@
+rcvboxes = {
+	{ -3/16, -3/16,  -8/16, 3/16, 3/16, -13/32 },
+	{ -5/32, -5/32, -13/32, 5/32, 5/32, -12/32 },
+	{-1/16, -.5, -8/16, 1/16, -.5+1/16, 8/16},
+	{-1/16, -.5+1/16, -.5, 1/16, 0, -.5+1/16}
+}
+
 minetest.register_node("mesecons_receiver:receiver_on", {
-	tiles = {"default_wood.png"},
+	drawtype = "nodebox",
+	tiles = {
+		"wires_on.png",
+		"wires_on.png",
+		"wires_vertical_on.png",
+		"wires_vertical_on.png",
+		"wires_bump_on.png",
+		"wires_bump_on.png",
+	},
+	paramtype = "light",
+	paramtype2 = "facedir",
+	selection_box = {
+             	type = "fixed",
+		fixed = { -3/16, -8/16, -8/16, 3/16, 2/16, 8/16 }
+	},
+	node_box = {
+		type = "fixed",
+		fixed = rcvboxes
+	},
 	groups = {dig_immediate = 3, mesecon = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
+
 })
 
 minetest.register_node("mesecons_receiver:receiver_off", {
+	drawtype = "nodebox",
 	description = "You hacker you",
-	tiles = {"default_stone.png"},
+	tiles = {
+		"wires_off.png",
+		"wires_off.png",
+		"wires_vertical_off.png",
+		"wires_vertical_off.png",
+		"wires_bump_off.png",
+		"wires_bump_off.png",
+	},
+	paramtype = "light",
+	paramtype2 = "facedir",
+	selection_box = {
+             	type = "fixed",
+		fixed = { -3/16, -8/16, -8/16, 3/16, 2/16, 8/16 }
+	},
+	node_box = {
+		type = "fixed",
+		fixed = rcvboxes
+	},
 	groups = {dig_immediate = 3, mesecon = 3},
 	drop = "mesecons:wire_00000000_off",
 })
