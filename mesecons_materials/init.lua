@@ -6,7 +6,7 @@ minetest.register_craftitem("mesecons_materials:glue", {
 })
 
 minetest.register_craftitem("mesecons_materials:fiber", {
-	image = "jeija_glue.png",
+	image = "jeija_fiber.png",
 	on_place_on_ground = minetest.craftitem_place_item,
     	description="Fiber",
 })
