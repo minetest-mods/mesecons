@@ -570,7 +570,7 @@ function yc_action(pos, L) --L-->Lvirtual
 	meta:set_string("infotext", infotext)
 	meta:set_string("formspec", formspec)
 
-	yc_action_setports(pos, L, Lv)
+	yc_action_setports(pos, L, Lv, rules)
 end
 
 function yc_action_setports(pos, L, Lv)
@@ -613,10 +613,10 @@ function yc_get_real_portstates(pos)
 	rulesC = mesecon:get_rules("mesecons_microcontroller:microcontroller0100")
 	rulesD = mesecon:get_rules("mesecons_microcontroller:microcontroller1000")
 	L = {
-		a = mesecon:is_power_on({x=pos.x+rulesA[1].x, y=pos.y+rulesA[1].y, z=pos.z+rulesA[1].z}),
-		b = mesecon:is_power_on({x=pos.x+rulesB[1].x, y=pos.y+rulesB[1].y, z=pos.z+rulesB[1].z}),
-		c = mesecon:is_power_on({x=pos.x+rulesC[1].x, y=pos.y+rulesC[1].y, z=pos.z+rulesC[1].z}),
-		d = mesecon:is_power_on({x=pos.x+rulesD[1].x, y=pos.y+rulesD[1].y, z=pos.z+rulesD[1].z})
+		a = mesecon:is_power_on({x=pos.x+rulesA[1].x, y=pos.y+rulesA[1].y, z=pos.z+rulesA[1].z}) and mesecon:rules_link({x=pos.x+rulesA[1].x, y=pos.y+rulesA[1].y, z=pos.z+rulesA[1].z}, pos),
+		b = mesecon:is_power_on({x=pos.x+rulesB[1].x, y=pos.y+rulesB[1].y, z=pos.z+rulesB[1].z}) and mesecon:rules_link({x=pos.x+rulesB[1].x, y=pos.y+rulesB[1].y, z=pos.z+rulesB[1].z}, pos),
+		c = mesecon:is_power_on({x=pos.x+rulesC[1].x, y=pos.y+rulesC[1].y, z=pos.z+rulesC[1].z}) and mesecon:rules_link({x=pos.x+rulesC[1].x, y=pos.y+rulesC[1].y, z=pos.z+rulesC[1].z}, pos),
+		d = mesecon:is_power_on({x=pos.x+rulesD[1].x, y=pos.y+rulesD[1].y, z=pos.z+rulesD[1].z}) and mesecon:rules_link({x=pos.x+rulesD[1].x, y=pos.y+rulesD[1].y, z=pos.z+rulesD[1].z}, pos)
 	}
 	return L
 end
