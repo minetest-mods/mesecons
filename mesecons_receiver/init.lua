@@ -115,7 +115,12 @@ function mesecon:receiver_place(rcpt_pos)
 
 	if string.find(nn.name, "mesecons:wire_") ~= nil then
 		minetest.env:dig_node(pos)
-		minetest.env:add_node(pos, {name = "mesecons_receiver:receiver_off", param2 = node.param2})
+		if mesecon:is_power_on(rcpt_pos) then
+			minetest.env:add_node(pos, {name = "mesecons_receiver:receiver_on", param2 = node.param2})
+			mesecon:receptor_on(pos, receiver_get_rules(node.param2))
+		else
+			minetest.env:add_node(pos, {name = "mesecons_receiver:receiver_off", param2 = node.param2})
+		end
 		mesecon:update_autoconnect(pos)
 	end
 end
@@ -123,7 +128,6 @@ end
 function mesecon:receiver_remove(rcpt_pos, dugnode)
 	local pos = mesecon:receiver_get_pos_from_rcpt(rcpt_pos, dugnode.param2)
 	local nn = minetest.env:get_node(pos)
-	print(nn.name)
 	if string.find(nn.name, "mesecons_receiver:receiver_") ~=nil then
 		minetest.env:dig_node(pos)
 		minetest.env:place_node(pos, {name = "mesecons:wire_00000000_off"})
