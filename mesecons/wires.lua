@@ -3,7 +3,7 @@
 if NEW_STYLE_WIRES == false then --old wires
 minetest.register_node("mesecons:mesecon_off", {
 	drawtype = "raillike",
-	tile_images = {"jeija_mesecon_off.png", "jeija_mesecon_curved_off.png", "jeija_mesecon_t_junction_off.png", "jeija_mesecon_crossing_off.png"},
+	tiles = {"jeija_mesecon_off.png", "jeija_mesecon_curved_off.png", "jeija_mesecon_t_junction_off.png", "jeija_mesecon_crossing_off.png"},
 	inventory_image = "jeija_mesecon_off.png",
 	wield_image = "jeija_mesecon_off.png",
 	paramtype = "light",
@@ -19,7 +19,7 @@ minetest.register_node("mesecons:mesecon_off", {
 
 minetest.register_node("mesecons:mesecon_on", {
 	drawtype = "raillike",
-	tile_images = {"jeija_mesecon_on.png", "jeija_mesecon_curved_on.png", "jeija_mesecon_t_junction_on.png", "jeija_mesecon_crossing_on.png"},
+	tiles = {"jeija_mesecon_on.png", "jeija_mesecon_curved_on.png", "jeija_mesecon_t_junction_on.png", "jeija_mesecon_crossing_on.png"},
 	paramtype = "light",
 	is_ground_content = true,
 	walkable = false,
