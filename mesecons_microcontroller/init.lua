@@ -28,7 +28,6 @@ minetest.register_node(nodename, {
 	paramtype = "light",
 	walkable = true,
 	groups = groups,
-	material = minetest.digprop_constanttime(1.0),
 	drop = '"mesecons_microcontroller:microcontroller0000" 1',
 	selection_box = {
 		type = "fixed",
