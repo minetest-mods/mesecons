@@ -142,9 +142,9 @@ function update_yc(pos)
 	code = string.gsub(code, " ", "")	--Remove all spaces
 	code = string.gsub(code, "	", "")	--Remove all tabs
 	if yc_parsecode(code, pos) == nil then
-		meta:set_string("infotext", "Code not valid!")
+		meta:set_string("infotext", "Code not valid!\n"..code)
 	else
-		meta:set_string("infotext", "Working Microcontroller")
+		meta:set_string("infotext", "Working Microcontroller\n"..code)
 	end
 end
 
