@@ -39,5 +39,6 @@ end
 
 mesecon:lightstone_add("red", "craft default:clay_brick 1", "jeija_lightstone_red_off.png", "jeija_lightstone_red_on.png")
 mesecon:lightstone_add("green", "node default:cactus 1", "jeija_lightstone_green_off.png", "jeija_lightstone_green_on.png")
+mesecon:lightstone_add("blue", "node mesecons_materials:fiber 1", "jeija_lightstone_blue_off.png", "jeija_lightstone_blue_on.png")
 mesecon:lightstone_add("gray", "node default:cobble 1", "jeija_lightstone_gray_off.png", "jeija_lightstone_gray_on.png")
 mesecon:lightstone_add("darkgray", "node default:gravel 1", "jeija_lightstone_darkgray_off.png", "jeija_lightstone_darkgray_on.png")
