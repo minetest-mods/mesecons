@@ -73,7 +73,7 @@ minetest.register_node(nodename, {
 			fields.code = "if(A)sbi(1,1); if(!A&#1&B)off(B)sbi(1,0); if(!A&#1&!B)on(B)sbi(1,0); :A is input, B is output (Q), toggles with falling edge"
 		elseif fields.brsflop then
 			fields.code = "if(A)on(C);if(B)off(C); :A is S (Set), B is R (Reset), C is output (R dominates)"
-		elseif fields.program then --nothing
+		elseif fields.program or fields.code then --nothing
 		else return nil end
 
 		meta:set_string("code", fields.code)
