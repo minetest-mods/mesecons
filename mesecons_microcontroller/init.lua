@@ -11,6 +11,19 @@ for b = 0, 1 do
 for c = 0, 1 do
 for d = 0, 1 do
 local nodename = "mesecons_microcontroller:microcontroller"..tostring(d)..tostring(c)..tostring(b)..tostring(a)
+local top = "jeija_microcontroller_top.png"
+if tostring(a) == "1" then
+	top = top.."^jeija_microcontroller_LED_A.png"
+end
+if tostring(b) == "1" then
+	top = top.."^jeija_microcontroller_LED_B.png"
+end
+if tostring(c) == "1" then
+	top = top.."^jeija_microcontroller_LED_C.png"
+end
+if tostring(d) == "1" then
+	top = top.."^jeija_microcontroller_LED_D.png"
+end
 if tostring(d)..tostring(c)..tostring(b)..tostring(a) ~= "0000" then
 	groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
 else
@@ -20,7 +33,7 @@ minetest.register_node(nodename, {
 	description = "Microcontroller",
 	drawtype = "nodebox",
 	tiles = {
-		"jeija_microcontroller_top_"..tostring(d)..tostring(c)..tostring(b)..tostring(a)..".png",
+		top,
 		"jeija_microcontroller_bottom.png",
 		"jeija_microcontroller_sides.png",
 		"jeija_microcontroller_sides.png",
