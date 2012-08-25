@@ -21,7 +21,11 @@ minetest.register_node(nodename, {
 	drawtype = "nodebox",
 	tiles = {
 		"jeija_microcontroller_top_"..tostring(d)..tostring(c)..tostring(b)..tostring(a)..".png",
+		"jeija_microcontroller_bottom.png",
 		"jeija_microcontroller_sides.png",
+		"jeija_microcontroller_sides.png",
+		"jeija_microcontroller_sides.png",
+		"jeija_microcontroller_sides.png"
 		},
 
 	sunlight_propagates = true,
