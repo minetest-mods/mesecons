@@ -8,18 +8,18 @@ rcvboxes = {
 minetest.register_node("mesecons_receiver:receiver_on", {
 	drawtype = "nodebox",
 	tiles = {
-		"wires_on.png",
-		"wires_on.png",
-		"wires_vertical_on.png",
-		"wires_vertical_on.png",
-		"wires_bump_on.png",
-		"wires_bump_on.png",
+		"receiver_tb_on.png",
+		"receiver_tb_on.png",
+		"receiver_lr_on.png",
+		"receiver_lr_on.png",
+		"receiver_fb_on.png",
+		"receiver_fb_on.png",
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	selection_box = {
              	type = "fixed",
-		fixed = { -3/16, -8/16, -8/16, 3/16, 2/16, 8/16 }
+		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }
 	},
 	node_box = {
 		type = "fixed",
@@ -34,18 +34,18 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 	drawtype = "nodebox",
 	description = "You hacker you",
 	tiles = {
-		"wires_off.png",
-		"wires_off.png",
-		"wires_vertical_off.png",
-		"wires_vertical_off.png",
-		"wires_bump_off.png",
-		"wires_bump_off.png",
+		"receiver_tb_off.png",
+		"receiver_tb_off.png",
+		"receiver_lr_off.png",
+		"receiver_lr_off.png",
+		"receiver_fb_off.png",
+		"receiver_fb_off.png",
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	selection_box = {
              	type = "fixed",
-		fixed = { -3/16, -8/16, -8/16, 3/16, 2/16, 8/16 }
+		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }
 	},
 	node_box = {
 		type = "fixed",
