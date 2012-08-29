@@ -130,7 +130,7 @@ mesecon:register_on_signal_on(function(pos, node)
 		if checknode.name == "air"
 		or checknode.name == "ignore"
 		or string.find(checknode.name, "_source")
-		or string.find(checknode.name, "_flowing")  then
+		or string.find(checknode.name, "_flowing") then
 			break
 		end
 

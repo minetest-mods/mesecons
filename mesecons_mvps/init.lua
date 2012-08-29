@@ -29,7 +29,7 @@ function mesecon:mvps_push(pos, direction) -- pos: pos of mvps; direction: direc
 		local lnode = minetest.env:get_node(lpos)
 		local newnode
 		minetest.env:remove_node(lpos)
-		while not(lnode.name == "ignore" or lnode.name == "air" or string.find(lnode.name, "_source") or string.find(lnode.name, "_flowing") do
+		while not(lnode.name == "ignore" or lnode.name == "air" or string.find(lnode.name, "_source") or string.find(lnode.name, "_flowing")) do
 			lpos.x=lpos.x+direction.x
 			lpos.y=lpos.y+direction.y
 			lpos.z=lpos.z+direction.z
