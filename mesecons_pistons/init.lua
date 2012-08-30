@@ -135,10 +135,7 @@ mesecon:register_on_signal_on(function(pos, node)
 		--check for column end
 		if checknode.name == "air"
 		or checknode.name == "ignore"
-		or checknode.name == "default:water_source"
-		or checknode.name == "default:water_flowing"
-		or checknode.name == "default:lava_source"
-		or checknode.name == "default:lava_flowing" then
+		or not(minetest.registered_nodes[checknode.name].liquidtype == "none") then
 			break
 		end
 
@@ -203,10 +200,7 @@ mesecon:register_on_signal_off(function(pos, node)
 		checknode = minetest.env:get_node(checkpos)
 		if checknode.name ~= "air"
 		and checknode.name ~= "ignore"
-		and checknode.name ~= "default:water_source"
-		and checknode.name ~= "default:water_flowing"
-		and checknode.name ~= "default:lava_source"
-		and checknode.name ~= "default:lava_flowing"
+		and minetest.registered_nodes[checknode.name].liquidtype == "none"
 		and not mesecon:is_mvps_stopper(checknode.name) then
 		    minetest.env:set_node(pos, checknode)
 		    minetest.env:remove_node(checkpos)
