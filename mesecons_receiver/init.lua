@@ -1,15 +1,15 @@
 rcvboxes = {
-	{ -3/16, -3/16,  -8/16, 3/16, 3/16, -13/32 },
-	{ -5/32, -5/32, -13/32, 5/32, 5/32, -12/32 },
-	{-1/16, -.5, -8/16, 1/16, -.5+1/16, 8/16},
-	{-1/16, -.5+1/16, -.5, 1/16, 0, -.5+1/16}
+	{ -3/16, -3/16   , -8/16       , 3/16,     3/16, -13/32       }, -- the smaller bump	
+	{ -5/32, -5/32   , -13/32      , 5/32,     5/32, -12/32       }, -- the receiver itself
+	{ -3/32, -.5-1/32, -.5         , 3/32,    0    , -.5002+3/32  }, -- the vertical wire bit
+	{ -3/32, -17/32  , -7/16+0.002 , 3/32,   -13/32,  16/32+0.001 }  -- the horizontal wire
 }
 
 minetest.register_node("mesecons_receiver:receiver_on", {
 	drawtype = "nodebox",
 	tiles = {
-		"receiver_tb_on.png",
-		"receiver_tb_on.png",
+		"receiver_top_on.png",
+		"receiver_bottom_on.png",
 		"receiver_lr_on.png",
 		"receiver_lr_on.png",
 		"receiver_fb_on.png",
@@ -34,8 +34,8 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 	drawtype = "nodebox",
 	description = "You hacker you",
 	tiles = {
-		"receiver_tb_off.png",
-		"receiver_tb_off.png",
+		"receiver_top_off.png",
+		"receiver_bottom_off.png",
 		"receiver_lr_off.png",
 		"receiver_lr_off.png",
 		"receiver_fb_off.png",
