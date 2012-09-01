@@ -1,33 +1,30 @@
 gates = {"diode", "not", "nand", "and", "xor"}
+out = {x=1, y=0, z=0}
+inonerules = {{x=-1, y=0, z=0}}
+intworules = {{x=0, y=0, z=1},{x=0, y=0, z=-1}}
+onerules = inonerules
+table.insert(onerules, out)
+tworules = intworules
+table.insert(tworules, out)
+outrules = {}
+outrules = table.insert(outrules, out)
 for g in ipairs(gates) do gate = gates[g]
-
-	inrules = {}
-	outrules = {}
-	rules = {}
-	table.insert(outrules, {x=1, y=0, z=0})
-	table.insert(rules, {x=1, y=0, z=0})
 	if g < 3 then
-		table.insert(inrules, {x=-1, y=0, z=0})
-		table.insert(rules, {x=-1, y=0, z=0})
+		inrules = inonerules
+		rules = onerules
 	else
-		table.insert(inrules, {x=0, y=0, z=1})
-		table.insert(rules, {x=0, y=0, z=1})
-		table.insert(inrules, {x=0, y=0, z=-1})
-		table.insert(rules, {x=0, y=0, z=-1})
+		inrules = intworules
+		rules = tworules
 	end
-	--table.insert(rules, inrules)
-	--table.insert(rules, outrules)
-
 	for on=0,1 do
 		if on == 1 then
 			onoff = "on"
+			groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
+			drop = "mesecons_gates:"..gate.."_off"
 		else
 			onoff = "off"
-		end
-		if on == 1 then
-			groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
-		else
 			groups = {dig_immediate=2, mesecon = 3}
+			drop = nodename
 		end
 
 		nodename = "mesecons_gates:"..gate.."_"..onoff
@@ -44,16 +41,11 @@ for g in ipairs(gates) do gate = gates[g]
 				update_gate(pos)
 			end,
 			groups = groups,
+			drop = drop,
 
 		})
 
-		mesecon:add_rules(gate,outrules)
-		mesecon:register_effector(nodename, nodename, rules)
-		--if on then
-		--	mesecon:add_receptor_node(nodename, outrules)
-		--end
-		--mesecon:add_receptor_node("mesecons_gates:and_off", 
-		--mesecon:add_receptor_node("mesecons_gates:and_on", 
+		mesecon:register_effector(nodename, nodename, inrules)
 	end
 end
 
@@ -74,27 +66,19 @@ function gate_state(pos)
 		return true
 	end
 end
---[[
-function gate_on(pos)
-	if !gate_state(pos) then
-		minetest.env:add_node("mesecons_gates:"..get_gate(pos).."_on")
-	end
-end
 
-function gate_off(pos)
-	if gate_state(pos) then
-		minetest.env:add_node("mesecons_gates:"..get_gate(pos).."_off")
-	end
-end
---]]
-function set_gate(pos, open)
-	if open then
+function set_gate(pos, on)
+	gate = get_gate(pos)
+	local rules = {{x=1, y=0, z=0}}
+	if on then
 		if not gate_state(pos) then
-			minetest.env:add_node(pos, {name="mesecons_gates:"..get_gate(pos).."_on"})
+			minetest.env:add_node(pos, {name="mesecons_gates:"..gate.."_on"})
+		mesecon:receptor_on(pos, rules)
 		end
 	else
 		if gate_state(pos) then
-			minetest.env:add_node(pos, {name="mesecons_gates:"..get_gate(pos).."_off"})
+			minetest.env:add_node(pos, {name="mesecons_gates:"..gate.."_off"})
+			mesecon:receptor_off(pos, rules)
 		end
 	end
 end
@@ -120,5 +104,4 @@ mesecon:register_on_signal_change(function(pos,node)
 		update_gate(pos)
 	end
 end)
-
 
