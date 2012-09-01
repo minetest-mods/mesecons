@@ -505,6 +505,7 @@ function yc_command_parsecondition(cond, L, eeprom)
 		if cond:sub(i+1, i+1) == nil then break end
 		if s == "=" then
 			if a==nil then return nil end
+			if b==nil then return nil end
 			if a == b  then buf = "1" end
 			if a ~= b then buf = "0" end
 			cond = string.gsub(cond, b..s..a, buf)
