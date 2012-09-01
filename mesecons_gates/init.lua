@@ -29,13 +29,22 @@ for g in ipairs(gates) do gate = gates[g]
 
 		nodename = "mesecons_gates:"..gate.."_"..onoff
 
+		node_box = {
+			type = "fixed",
+			fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
+		}
+
 		minetest.register_node(nodename, {
 			description = gate.." Gate",
-			drawtype = "normal",
+			paramtype = "light",
+			drawtype = "nodebox",
 			tiles = {
+				"jeija_microcontroller_bottom.png^"..
 				"jeija_gate_"..onoff..".png^"..
 				"jeija_gate_"..gate..".png",
 			},
+			selection_box = node_box,
+			node_box = node_box,
 			walkable = true,
 			on_construct = function(pos)
 				update_gate(pos)
