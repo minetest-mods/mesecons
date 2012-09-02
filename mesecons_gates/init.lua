@@ -37,15 +37,16 @@ for g in ipairs(gates) do gate = gates[g]
 			fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 		}
 
+		tiles = "jeija_microcontroller_bottom.png^"..
+			"jeija_gate_"..onoff..".png^"..
+			"jeija_gate_"..gate..".png"
+
 		minetest.register_node(nodename, {
 			description = description,
 			paramtype = "light",
 			drawtype = "nodebox",
-			tiles = {
-				"jeija_microcontroller_bottom.png^"..
-				"jeija_gate_"..onoff..".png^"..
-				"jeija_gate_"..gate..".png",
-			},
+			tiles = {tiles},
+			inventory_image = tiles,
 			selection_box = node_box,
 			node_box = node_box,
 			walkable = true,
