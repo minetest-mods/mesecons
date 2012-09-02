@@ -87,31 +87,24 @@ function set_gate(pos, on)
 	gate = get_gate(pos)
 	local meta = minetest.env:get_meta(pos)
 	local rules = {{x=1, y=0, z=0}}
-	if on then
-		if not gate_state(pos) then
-			yc_heat(meta)
-			minetest.after(0.5, yc_cool, meta)
-			if yc_overheat(meta) then
-				pop_gate(pos)
+	if on ~= gate_state(pos) then
+		yc_heat(meta)
+		minetest.after(0.5, yc_cool, meta)
+		if yc_overheat(meta) then
+			pop_gate(pos)
+		else
+			heat = meta:get_int("heat")
+			if on then
+				onoff = "_on"
 			else
-				heat = meta:get_int("heat")
-				minetest.env:add_node(pos, {name="mesecons_gates:"..gate.."_on"})
-				local meta2 = minetest.env:get_meta(pos)
-				meta2:set_int("heat", heat)
-				mesecon:receptor_on(pos, rules)
+				onoff = "_off"
 			end
-		end
-	else
-		if gate_state(pos) then
-			yc_heat(meta)
-			minetest.after(0.5, yc_cool, meta)
-			if yc_overheat(meta) then
-				pop_gate(pos)
+			minetest.env:add_node(pos, {name="mesecons_gates:"..gate..onoff})
+			local meta2 = minetest.env:get_meta(pos)
+			meta2:set_int("heat", heat)
+			if on then
+				mesecon:receptor_on(pos, rules)
 			else
-				heat = meta:get_int("heat")
-				minetest.env:add_node(pos, {name="mesecons_gates:"..gate.."_off"})
-				local meta2 = minetest.env:get_meta(pos)
-				meta2:set_int("heat", heat)
 				mesecon:receptor_off(pos, rules)
 			end
 		end
