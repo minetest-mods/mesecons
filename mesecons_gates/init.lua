@@ -1,3 +1,6 @@
+outrules = {
+	{x=1, y=0, z=0},
+}
 gates = {"diode", "not", "nand", "and", "xor"}
 for g in ipairs(gates) do gate = gates[g]
 	if g < 3 then
@@ -13,19 +16,21 @@ for g in ipairs(gates) do gate = gates[g]
 		}
 	end
 	for on=0,1 do
+		nodename = "mesecons_gates:"..gate
 		if on == 1 then
 			onoff = "on"
+			drop = nodename.."_off"
 			groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
-			drop = "mesecons_gates:"..gate.."_off"
 			description = "You hacker you!"
+			nodename = nodename.."_"..onoff
+			mesecon:add_receptor_node(nodename, outrules)
 		else
 			onoff = "off"
 			groups = {dig_immediate=2, mesecon = 3}
-			drop = nodename
 			description = gate.." Gate"
+			nodename = nodename.."_"..onoff
+			--mesecon:add_receptor_node_off(nodename, rules)
 		end
-
-		nodename = "mesecons_gates:"..gate.."_"..onoff
 
 		node_box = {
 			type = "fixed",
