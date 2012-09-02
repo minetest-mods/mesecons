@@ -140,3 +140,48 @@ mesecon:register_on_signal_change(function(pos,node)
 	end
 end)
 
+minetest.register_craft({
+	output = 'mesecons_gates:diode_off',
+	recipe = {
+		{'', '', ''},
+		{'mesecons:mesecon', 'mesecons_torch:mesecon_torch_on', 'mesecons_torch:mesecon_torch_on'},
+		{'', '', ''},
+	},
+})
+
+minetest.register_craft({
+	output = 'mesecons_gates:not_off',
+	recipe = {
+		{'', '', ''},
+		{'mesecons:mesecon', 'mesecons_torch:mesecon_torch_on', 'mesecons:mesecon'},
+		{'', '', ''},
+	},
+})
+
+minetest.register_craft({
+	output = 'mesecons_gates:and_off',
+	recipe = {
+		{'mesecons:mesecon', '', ''},
+		{'', 'mesecons_materials:silicon', 'mesecons:mesecon'},
+		{'mesecons:mesecon', '', ''},
+	},
+})
+
+minetest.register_craft({
+	output = 'mesecons_gates:nand_off',
+	recipe = {
+		{'mesecons:mesecon', '', ''},
+		{'', 'mesecons_materials:silicon', 'mesecons_torch:mesecon_torch_on'},
+		{'mesecons:mesecon', '', ''},
+	},
+})
+
+minetest.register_craft({
+	output = 'mesecons_gates:xor_off',
+	recipe = {
+		{'mesecons:mesecon', '', ''},
+		{'', 'mesecons_materials:silicon', 'mesecons_materials:silicon'},
+		{'mesecons:mesecon', '', ''},
+	},
+})
+

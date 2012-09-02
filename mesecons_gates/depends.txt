@@ -1,2 +1,4 @@
 mesecons
 mesecons_microcontroller
+mesecons_torch
+mesecons_materials
