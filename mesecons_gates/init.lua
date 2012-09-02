@@ -3,11 +3,13 @@ for g in ipairs(gates) do gate = gates[g]
 	if g < 3 then
 		rules = {
 			{x=-1, y=0, z=0},
+			{x=1, y=0, z=0},
 		}
 	else
 		rules = {
 			{x=0, y=0, z=1},
 			{x=0, y=0, z=-1},
+			{x=1, y=0, z=0},
 		}
 	end
 	for on=0,1 do
