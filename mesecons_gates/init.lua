@@ -1,20 +1,14 @@
 gates = {"diode", "not", "nand", "and", "xor"}
-out = {x=1, y=0, z=0}
-inonerules = {{x=-1, y=0, z=0}}
-intworules = {{x=0, y=0, z=1},{x=0, y=0, z=-1}}
-onerules = inonerules
-table.insert(onerules, out)
-tworules = intworules
-table.insert(tworules, out)
-outrules = {}
-outrules = table.insert(outrules, out)
 for g in ipairs(gates) do gate = gates[g]
 	if g < 3 then
-		inrules = inonerules
-		rules = onerules
+		rules = {
+			{x=-1, y=0, z=0},
+		}
 	else
-		inrules = intworules
-		rules = tworules
+		rules = {
+			{x=0, y=0, z=1},
+			{x=0, y=0, z=-1},
+		}
 	end
 	for on=0,1 do
 		if on == 1 then
@@ -58,7 +52,7 @@ for g in ipairs(gates) do gate = gates[g]
 
 		})
 
-		mesecon:register_effector(nodename, nodename, inrules)
+		mesecon:register_effector(nodename, nodename, rules)
 	end
 end
 
