@@ -8,11 +8,28 @@ for g in ipairs(gates) do gate = gates[g]
 			{x=-1, y=0, z=0},
 			{x=1, y=0, z=0},
 		}
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },
+				{6/16, -8/16, -2/16, 8/16, -7/16, 2/16 },
+				{-8/16, -8/16, -2/16, -6/16, -7/16, 2/16 },
+			},
+		}
 	else
 		rules = {
 			{x=0, y=0, z=1},
 			{x=0, y=0, z=-1},
 			{x=1, y=0, z=0},
+		}
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },
+				{6/16, -8/16, -2/16, 8/16, -7/16, 2/16 },
+				{-2/16, -8/16, 6/16, 2/16, -7/16, 8/16 },
+				{-2/16, -8/16, -8/16, 2/16, -7/16, -6/16 },
+			},
 		}
 	end
 	for on=0,1 do
@@ -31,11 +48,6 @@ for g in ipairs(gates) do gate = gates[g]
 			nodename = nodename.."_"..onoff
 			--mesecon:add_receptor_node_off(nodename, rules)
 		end
-
-		node_box = {
-			type = "fixed",
-			fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
-		}
 
 		tiles = "jeija_microcontroller_bottom.png^"..
 			"jeija_gate_"..onoff..".png^"..
@@ -88,7 +100,6 @@ end
 function set_gate(pos, on)
 	gate = get_gate(pos)
 	local meta = minetest.env:get_meta(pos)
-	local rules = {{x=1, y=0, z=0}}
 	if on ~= gate_state(pos) then
 		yc_heat(meta)
 		minetest.after(0.5, yc_cool, meta)
@@ -105,9 +116,9 @@ function set_gate(pos, on)
 			local meta2 = minetest.env:get_meta(pos)
 			meta2:set_int("heat", heat)
 			if on then
-				mesecon:receptor_on(pos, rules)
+				mesecon:receptor_on(pos, outrules)
 			else
-				mesecon:receptor_off(pos, rules)
+				mesecon:receptor_off(pos, outrules)
 			end
 		end
 	end
