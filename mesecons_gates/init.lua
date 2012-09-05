@@ -85,7 +85,7 @@ for g in ipairs(gates) do gate = gates[g]
 
 		})
 
-		mesecon:register_effector(nodename, nodename, mesecon:get_rules("insulated_all"), get_rules)
+		mesecon:register_effector(nodename, nodename, all_rules, get_rules)
 	end
 end
 
@@ -137,7 +137,7 @@ function set_gate(pos, on)
 			if on then
 				mesecon:receptor_on(pos, get_gate_rules(param2, true))
 			else
-				mesecon:receptor_off(pos, mesecon:get_rules("insulated_all"))
+				mesecon:receptor_off(pos, all_rules)
 			end
 		end
 	end
