@@ -3,8 +3,8 @@
 --Receptors
 function mesecon:is_receptor_node(nodename)
 	local i = 1
-	while mesecon.receptors[i] ~= nil do
-		if mesecon.receptors[i].name == nodename then
+	for i, receptor in ipairs(mesecon.receptors) do
+		if receptor.name == nodename then
 			return true
 		end
 		i = i + 1
@@ -14,8 +14,8 @@ end
 
 function mesecon:is_receptor_node_off(nodename, pos, ownpos)
 	local i = 1
-	while mesecon.receptors_off[i] ~= nil do
-		if mesecon.receptors_off[i].name == nodename then
+	for i, receptor in ipairs(mesecon.receptors_off) do
+		if receptor.name == nodename then
 			return true
 		end
 		i = i + 1
@@ -24,55 +24,47 @@ function mesecon:is_receptor_node_off(nodename, pos, ownpos)
 end
 
 function mesecon:receptor_get_rules(node)
-	local i = 1
-	while(mesecon.receptors[i] ~= nil) do
-		if mesecon.receptors[i].name == node.name then
-			if mesecon.receptors[i].get_rules ~= nil then
-				return mesecon.receptors[i].get_rules(node.param2)
+	for i, receptor in ipairs(mesecon.receptors) do
+		if receptor.name == node.name then
+			if receptor.get_rules ~= nil then
+				return receptor.get_rules(node.param2)
 			elseif mesecon.receptors[i].rules ~=nil then
-				return mesecon.receptors[i].rules
+				return receptor.rules
 			else
 				return mesecon:get_rules("default")
 			end
 		end
-		i = i + 1
 	end
 
-	local i = 1
-	while(mesecon.receptors_off[i] ~= nil) do
-		if mesecon.receptors_off[i].name == node.name then
-			if mesecon.receptors_off[i].get_rules ~= nil then
-				return mesecon.receptors_off[i].get_rules(node.param2)
+	for i, receptor in ipairs(mesecon.receptors_off) do
+		if receptor.name == node.name then
+			if receptor.get_rules ~= nil then
+				return receptor.get_rules(node.param2)
 			elseif mesecon.receptors_off[i].rules ~=nil then
-				return mesecon.receptors_off[i].rules
+				return receptor.rules
 			else
 				return mesecon:get_rules("default")
 			end
 		end
-		i = i + 1
 	end
 	return nil
 end
 
 -- Effectors
 function mesecon:is_effector_on(nodename)
-	local i = 1
-	while mesecon.effectors[i] ~= nil do
-		if mesecon.effectors[i].onstate == nodename then
+	for i, effector in ipairs(mesecon.effectors) do
+		if effector.onstate == nodename then
 			return true
 		end
-		i = i + 1
 	end
 	return false
 end
 
 function mesecon:is_effector_off(nodename)
-	local i = 1
-	while mesecon.effectors[i] ~= nil do
-		if mesecon.effectors[i].offstate == nodename then
+	for i, effector in ipairs(mesecon.effectors) do
+		if effector.offstate == nodename then
 			return true
 		end
-		i = i + 1
 	end
 	return false
 end
@@ -82,19 +74,17 @@ function mesecon:is_effector(nodename)
 end
 
 function mesecon:effector_get_input_rules(node)
-	local i = 1
-	while(mesecon.effectors[i] ~= nil) do
-		if mesecon.effectors[i].onstate  == node.name 
-		or mesecon.effectors[i].offstate == node.name then
-			if mesecon.effectors[i].get_input_rules ~= nil then
-				return mesecon.effectors[i].get_input_rules(node.param2)
+	for i, effector in ipairs(mesecon.effectors) do
+		if effector.onstate  == node.name 
+		or effector.offstate == node.name then
+			if effector.get_input_rules ~= nil then
+				return effector.get_input_rules(node.param2)
 			elseif mesecon.effectors[i].input_rules ~=nil then
-				return mesecon.effectors[i].input_rules
+				return effector.input_rules
 			else
 				return mesecon:get_rules("default")
 			end
 		end
-		i = i + 1
 	end
 end
 
@@ -102,101 +92,75 @@ end
 
 function mesecon:activate(pos)
 	local node = minetest.env:get_node(pos)	
-	local i = 1
-	repeat
-		i=i+1
-		if mesecon.actions_on[i]~=nil then mesecon.actions_on[i](pos, node) 
-		else break			
-		end
-	until false
+	for i, action in ipairs(mesecon.actions_on) do
+		action(pos, node) 
+	end
 end
 
 function mesecon:deactivate(pos)
 	local node = minetest.env:get_node(pos)	
 	local i = 1
-	repeat
-		i=i+1
-		if mesecon.actions_off[i]~=nil then mesecon.actions_off[i](pos, node) 
-		else break			
-		end
-	until false
+	for i, action in ipairs(mesecon.actions_off) do
+		action(pos, node) 
+	end
 end
 
 function mesecon:changesignal(pos)
 	local node = minetest.env:get_node(pos)	
 	local i = 1
-	repeat
-		i=i+1
-		if mesecon.actions_change[i]~=nil then mesecon.actions_change[i](pos, node) 
-		else break			
-		end
-	until false
+	for i, action in ipairs(mesecon.actions_change) do
+		action(pos, node) 
+	end
 end
 
 --Rules
 
 function mesecon:add_rules(name, rules)
-	local i = 1
-	while mesecon.rules[i]~=nil do
-		i=i+1
-	end
-	mesecon.rules[i]={}
-	mesecon.rules[i].name=name
-	mesecon.rules[i].rules=rules
+	table.insert(mesecon.rules, {name = name, rules = rules})
 end
 
 function mesecon:get_rules(name)
-	local i = 1
-	while mesecon.rules[i]~=nil do
-		if mesecon.rules[i].name==name then
-			return mesecon.rules[i].rules
+	for i, rule in ipairs(mesecon.rules) do
+		if rule.name==name then
+			return rule.rules
 		end
-		i=i+1
 	end
 end
 
 --Conductor system stuff
 
 function mesecon:get_conductor_on(offstate)
-	local i = 1
-	while mesecon.conductors[i]~=nil do
-		if mesecon.conductors[i].offstate == offstate then
-			return mesecon.conductors[i].onstate
+	for i, conductor in ipairs(mesecon.conductors) do
+		if conductor.offstate == offstate then
+			return conductor.onstate
 		end
-		i=i+1
 	end
 	return false
 end
 
 function mesecon:get_conductor_off(onstate)
-	local i = 1
-	while mesecon.conductors[i]~=nil do
-		if mesecon.conductors[i].onstate == onstate then
-			return mesecon.conductors[i].offstate
+	for i, conductor in ipairs(mesecon.conductors) do
+		if conductor.onstate == onstate then
+			return conductor.offstate
 		end
-		i=i+1
 	end
 	return false
 end
 
 function mesecon:is_conductor_on(name)
-	local i = 1
-	while mesecon.conductors[i]~=nil do
-		if mesecon.conductors[i].onstate == name then
+	for i, conductor in ipairs(mesecon.conductors) do
+		if conductor.onstate == name then
 			return true
 		end
-		i=i+1
 	end
 	return false
 end
 
 function mesecon:is_conductor_off(name)
-	local i = 1
-	while mesecon.conductors[i]~=nil do
-		if mesecon.conductors[i].offstate == name then
+	for i, conductor in ipairs(mesecon.conductors) do
+		if conductor.offstate == name then
 			return true
 		end
-		i=i+1
 	end
 	return false
 end
@@ -206,17 +170,15 @@ function mesecon:is_conductor(name)
 end
 
 function mesecon:conductor_get_rules(node)
-	local i = 1
-	while mesecon.conductors[i] ~= nil do
-		if mesecon.conductors[i].onstate  == node.name 
-		or mesecon.conductors[i].offstate == node.name then
-			if mesecon.conductors[i].get_rules ~= nil then
-				return mesecon.conductors[i].get_rules(node.param2)
+	for i, conductor in ipairs(mesecon.conductors) do
+		if conductor.onstate  == node.name 
+		or conductor.offstate == node.name then
+			if conductor.get_rules ~= nil then
+				return conductor.get_rules(node.param2)
 			else
-				return mesecon.conductors[i].rules
+				return conductor.rules
 			end
 		end
-		i = i + 1
 	end
 end
 
@@ -245,16 +207,15 @@ function mesecon:turnon(pos)
 		local rules = mesecon:conductor_get_rules(node)
 		minetest.env:add_node(pos, {name=mesecon:get_conductor_on(node.name), param2 = node.param2})
 
-		while rules[i]~=nil do
+		for i, rule in ipairs(rules) do
 			local np = {}
-			np.x = pos.x + rules[i].x
-			np.y = pos.y + rules[i].y
-			np.z = pos.z + rules[i].z
+			np.x = pos.x + rule.x
+			np.y = pos.y + rule.y
+			np.z = pos.z + rule.z
 
 			if mesecon:rules_link(pos, np) then
 				mesecon:turnon(np)
 			end
-			i=i+1
 		end
 	end
 
@@ -274,17 +235,15 @@ function mesecon:turnoff(pos) --receptor rules used because output could have be
 
 		minetest.env:add_node(pos, {name=mesecon:get_conductor_off(node.name), param2 = node.param2})
 
-		while rules[i]~=nil do
+		for i, rule in ipairs(rules) do
 			local np = {
-			x = pos.x + rules[i].x,
-			y = pos.y + rules[i].y,
-			z = pos.z + rules[i].z,}
+			x = pos.x + rule.x,
+			y = pos.y + rule.y,
+			z = pos.z + rule.z,}
 
 			if mesecon:rules_link(pos, np) then
 				mesecon:turnoff(np)
 			end
-
-			i = i + 1
 		end
 	end
 
@@ -319,18 +278,17 @@ function mesecon:connected_to_pw_src(pos, checked)
 	local rules = mesecon:conductor_get_rules(node)
 
 	local i = 1
-	while rules[i] ~= nil do
+	for i, rule in ipairs(rules) do
 		local np = {}
-		np.x = pos.x + rules[i].x
-		np.y = pos.y + rules[i].y
-		np.z = pos.z + rules[i].z
+		np.x = pos.x + rule.x
+		np.y = pos.y + rule.y
+		np.z = pos.z + rule.z
 		if mesecon:rules_link(pos, np) then
 			connected, checked = mesecon:connected_to_pw_src(np, checked)
 			if connected then 
 				return true
 			end
 		end
-		i=i+1
 	end
 	return false, checked
 end
@@ -364,21 +322,19 @@ function mesecon:rules_link(output, input, dug_outputrules) --output/input are p
 	end
 
 
-	while outputrules[k] ~= nil do
-		if  outputrules[k].x + output.x == input.x
-		and outputrules[k].y + output.y == input.y
-		and outputrules[k].z + output.z == input.z then -- Check if output sends to input
+	for k, outputrule in ipairs(outputrules) do
+		if  outputrule.x + output.x == input.x
+		and outputrule.y + output.y == input.y
+		and outputrule.z + output.z == input.z then -- Check if output sends to input
 			l = 1
-			while inputrules[l] ~= nil do
-				if  inputrules[l].x + input.x == output.x
-				and inputrules[l].y + input.y == output.y
-				and inputrules[l].z + input.z == output.z then --Check if input accepts from output
+			for k, inputrule in ipairs(inputrules) do
+				if  inputrule.x + input.x == output.x
+				and inputrule.y + input.y == output.y
+				and inputrule.z + input.z == output.z then --Check if input accepts from output
 					return true
 				end
-				l = l + 1
 			end
 		end
-		k = k + 1
 	end
 	return false
 end
@@ -405,18 +361,17 @@ function mesecon:is_powered_by_conductor(pos)
 		return false
 	end
 
-	while rules[j] ~= nil do
+	for i, rule in ipairs(rules) do
 		local con_pos = {
-		x = pos.x + rules[j].x,
-		y = pos.y + rules[j].y,
-		z = pos.z + rules[j].z}
+		x = pos.x + rule.x,
+		y = pos.y + rule.y,
+		z = pos.z + rule.z}
 
 		con_node = minetest.env:get_node(con_pos)
 
 		if mesecon:is_conductor_on(con_node.name) and mesecon:rules_link(con_pos, pos) then 
 			return true
 		end
-		j = j + 1
 	end
 	
 	return false
@@ -440,18 +395,17 @@ function mesecon:is_powered_by_receptor(pos)
 		return false
 	end
 
-	while rules[j] ~= nil do
+	for i, rule in ipairs(rules) do
 		local rcpt_pos = {
-		x = pos.x + rules[j].x,
-		y = pos.y + rules[j].y,
-		z = pos.z + rules[j].z}
+		x = pos.x + rule.x,
+		y = pos.y + rule.y,
+		z = pos.z + rule.z}
 
 		rcpt_node = minetest.env:get_node(rcpt_pos)
 
 		if mesecon:is_receptor_node(rcpt_node.name) and mesecon:rules_link(rcpt_pos, pos) then
 			return true
 		end
-		j = j + 1
 	end
 	
 	return false
@@ -477,12 +431,11 @@ end
 function mesecon:rotate_rules_right(rules)
 	local i=1
 	local nr={};
-	while rules[i]~=nil do
+	for i, rule in ipairs(rules) do
 		nr[i]={}
-		nr[i].z=rules[i].x
-		nr[i].x=-rules[i].z
-		nr[i].y=rules[i].y
-		i=i+1
+		nr[i].z=rule.x
+		nr[i].x=-rule.z
+		nr[i].y=rule.y
 	end
 	return nr
 end
@@ -490,12 +443,11 @@ end
 function mesecon:rotate_rules_left(rules)
 	local i=1
 	local nr={};
-	while rules[i]~=nil do
+	for i, rule in ipairs(rules) do
 		nr[i]={}
 		nr[i].z=-rules[i].x
 		nr[i].x=rules[i].z
 		nr[i].y=rules[i].y
-		i=i+1
 	end
 	return nr
 end
@@ -503,12 +455,11 @@ end
 function mesecon:rotate_rules_down(rules)
 	local i=1
 	local nr={};
-	while rules[i]~=nil do
+	for i, rule in ipairs(rules) do
 		nr[i]={}
-		nr[i].y=rules[i].x
-		nr[i].x=-rules[i].y
-		nr[i].z=rules[i].z
-		i=i+1
+		nr[i].y=rule.x
+		nr[i].x=-rule.y
+		nr[i].z=rule.z
 	end
 	return nr
 end
@@ -516,14 +467,11 @@ end
 function mesecon:rotate_rules_up(rules)
 	local i=1
 	local nr={};
-	while rules[i]~=nil do
+	for i, rule in ipairs(rules) do
 		nr[i]={}
-		nr[i].y=-rules[i].x
-		nr[i].x=rules[i].y
-		nr[i].z=rules[i].z
-		i=i+1
+		nr[i].y=-rule.x
+		nr[i].x=rule.y
+		nr[i].z=rule.z
 	end
 	return nr
 end
-
---TODO: is_powered returns the position (see services.lua!!!)
