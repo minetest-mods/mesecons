@@ -33,25 +33,8 @@ gates = {"diode", "not", "nand", "and", "xor"}
 for g in ipairs(gates) do gate = gates[g]
 	if g < 3 then
 		get_rules = get_gate_rules_one
-		node_box = {
-			type = "fixed",
-			fixed = {
-				{-6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },
-				{6/16, -8/16, -2/16, 8/16, -7/16, 2/16 },
-				{-8/16, -8/16, -2/16, -6/16, -7/16, 2/16 },
-			},
-		}
 	else
 		get_rules = get_gate_rules_two
-		node_box = {
-			type = "fixed",
-			fixed = {
-				{-6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },
-				{6/16, -8/16, -2/16, 8/16, -7/16, 2/16 },
-				{-2/16, -8/16, 6/16, 2/16, -7/16, 8/16 },
-				{-2/16, -8/16, -8/16, 2/16, -7/16, -6/16 },
-			},
-		}
 	end
 	for on=0,1 do
 		nodename = "mesecons_gates:"..gate
@@ -74,6 +57,13 @@ for g in ipairs(gates) do gate = gates[g]
 		tiles = "jeija_microcontroller_bottom.png^"..
 			"jeija_gate_"..onoff..".png^"..
 			"jeija_gate_"..gate..".png"
+
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
+			},
+		}
 
 		minetest.register_node(nodename, {
 			description = description,
