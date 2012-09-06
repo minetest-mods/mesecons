@@ -15,8 +15,7 @@ minetest.register_node("mesecons_switch:mesecon_switch_on", {
 	description="Switch",
 })
 
-mesecon:add_receptor_node("mesecons_switch:mesecon_switch_on")
-mesecon:add_receptor_node_off("mesecons_switch:mesecon_switch_off")
+mesecon:register_receptor("mesecons_switch:mesecon_switch_on", "mesecons_switch:mesecon_switch_off")
 
 minetest.register_on_punchnode(function(pos, node, puncher)
 	if node.name == "mesecons_switch:mesecon_switch_on" then
