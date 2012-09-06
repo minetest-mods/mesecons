@@ -4,7 +4,7 @@
 function mesecon:is_receptor_node(nodename)
 	local i = 1
 	for i, receptor in ipairs(mesecon.receptors) do
-		if receptor.name == nodename then
+		if receptor.onstate == nodename then
 			return true
 		end
 		i = i + 1
@@ -14,8 +14,8 @@ end
 
 function mesecon:is_receptor_node_off(nodename, pos, ownpos)
 	local i = 1
-	for i, receptor in ipairs(mesecon.receptors_off) do
-		if receptor.name == nodename then
+	for i, receptor in ipairs(mesecon.receptors) do
+		if receptor.offstate == nodename then
 			return true
 		end
 		i = i + 1
@@ -25,22 +25,10 @@ end
 
 function mesecon:receptor_get_rules(node)
 	for i, receptor in ipairs(mesecon.receptors) do
-		if receptor.name == node.name then
+		if receptor.onstate == node.name or receptor.offstate == node.name then
 			if receptor.get_rules ~= nil then
 				return receptor.get_rules(node.param2)
 			elseif mesecon.receptors[i].rules ~=nil then
-				return receptor.rules
-			else
-				return mesecon:get_rules("default")
-			end
-		end
-	end
-
-	for i, receptor in ipairs(mesecon.receptors_off) do
-		if receptor.name == node.name then
-			if receptor.get_rules ~= nil then
-				return receptor.get_rules(node.param2)
-			elseif mesecon.receptors_off[i].rules ~=nil then
 				return receptor.rules
 			else
 				return mesecon:get_rules("default")
