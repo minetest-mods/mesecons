@@ -12,7 +12,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	walkable = false,
-	stack_max = 99,
+	sunlight_propagates = true,
 	selection_box = {
 		type = "fixed",
 		fixed = { -16/32-0.001, -18/32, -7/32, 16/32+0.001, -12/32, 7/32 }
@@ -40,7 +40,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	walkable = false,
-	stack_max = 99,
+	sunlight_propagates = true,
 	selection_box = {
 		type = "fixed",
 		fixed = { -16/32-0.001, -18/32, -7/32, 16/32+0.001, -12/32, 7/32 }

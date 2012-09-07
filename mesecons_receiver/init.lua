@@ -17,6 +17,7 @@ minetest.register_node("mesecons_receiver:receiver_on", {
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
+	sunlight_propagates = true,
 	selection_box = {
              	type = "fixed",
 		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }
@@ -43,6 +44,7 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
+	sunlight_propagates = true,
 	selection_box = {
              	type = "fixed",
 		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }

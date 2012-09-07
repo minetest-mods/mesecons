@@ -13,6 +13,7 @@ minetest.register_node("mesecons_walllever:wall_lever_off", {
 	wield_image = "jeija_wall_lever_off.png",
 	paramtype = "light",
 	paramtype2 = "facedir",
+	sunlight_propagates = true,
 	walkable = false,
 	selection_box = {
 		type = "fixed",
@@ -42,6 +43,7 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 	inventory_image = "jeija_wall_lever_on.png",
 	paramtype = "light",
 	paramtype2 = "facedir",
+	sunlight_propagates = true,
 	walkable = false,
 	light_source = LIGHT_MAX-7,
 	selection_box = {

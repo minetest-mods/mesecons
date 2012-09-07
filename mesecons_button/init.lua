@@ -13,6 +13,7 @@ minetest.register_node("mesecons_button:button_off", {
     paramtype2 = "facedir",
     legacy_wallmounted = true,
     walkable = false,
+    sunlight_propagates = true,
     selection_box = {
         type = "fixed",
 	fixed = { -6/16, -6/16, 5/16, 6/16, 6/16, 8/16 }
@@ -42,6 +43,7 @@ minetest.register_node("mesecons_button:button_on", {
 	legacy_wallmounted = true,
 	walkable = false,
 	light_source = LIGHT_MAX-7,
+	sunlight_propagates = true,
     selection_box = {
         type = "fixed",
 	fixed = { -6/16, -6/16, 5/16, 6/16, 6/16, 8/16 }
