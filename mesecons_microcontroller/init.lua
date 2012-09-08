@@ -72,6 +72,7 @@ minetest.register_node(nodename, {
 			"button_exit[3.5,1;2,3;program;Program]")
 		meta:set_string("infotext", "Unprogrammed Microcontroller")
 		meta:set_int("heat", 0)
+		meta:set_int("working", 0)
 		local r = ""
 		for i=1, EEPROM_SIZE+1 do r=r.."0" end --Generate a string with EEPROM_SIZE*"0"
 		meta:set_string("eeprom", r)
@@ -181,12 +182,15 @@ function yc_code_remove_commentary(code)
 end
 
 function yc_parsecode(code, pos)
+	local meta = minetest.env:get_meta(pos)
+	if meta:get_int("working") == 1 then return false end
+	meta:set_int("working", 1)
 	local endi = 1
 	local Lreal = yc_get_real_portstates(pos)
 	local Lvirtual = yc_get_virtual_portstates(pos)
 	if Lvirtual == nil then return nil end
 	local c
-	local eeprom = minetest.env:get_meta(pos):get_string("eeprom")
+	local eeprom = meta:get_string("eeprom")
 	while true do
 		command, endi = parse_get_command(code, endi)
 		if command == nil then return nil end
@@ -231,6 +235,7 @@ function yc_parsecode(code, pos)
 		minetest.env:get_meta(pos):set_string("eeprom", eeprom) end
 	end
 	yc_action(pos, Lvirtual)
+	minetest.env:get_meta(pos):set_int("working", 0)
 	return true
 end
 
@@ -569,29 +574,17 @@ end
 
 --Real I/O functions
 function yc_action(pos, L) --L-->Lvirtual
-	Lv = yc_get_virtual_portstates(pos)
-	local meta = minetest.env:get_meta(pos)
-	local code = meta:get_string("code")
-	local afterid = meta:get_int("afterid")
-	local heat = meta:get_int("heat")
-	local eeprom = meta:get_string("eeprom")
-	local infotext   = meta:get_string("infotext")
-	local formspec = meta:get_string("formspec")
+	local Lv = yc_get_virtual_portstates(pos)
+	local metatable = minetest.env:get_meta(pos):to_table()
 	local name = "mesecons_microcontroller:microcontroller"
 		..tonumber(L.d and 1 or 0)
 		..tonumber(L.c and 1 or 0)
 		..tonumber(L.b and 1 or 0)
 		..tonumber(L.a and 1 or 0)
 	minetest.env:add_node(pos, {name=name})
-	local meta = minetest.env:get_meta(pos)
-	meta:set_string("code", code)
-	meta:set_int("heat", heat)
-	meta:set_int("afterid", afterid)
-	meta:set_string("eeprom", eeprom)
-	meta:set_string("infotext", infotext)
-	meta:set_string("formspec", formspec)
+	minetest.env:get_meta(pos):from_table(metatable)
 
-	yc_action_setports(pos, L, Lv, rules)
+	yc_action_setports(pos, L, Lv)
 end
 
 function yc_action_setports(pos, L, Lv)
@@ -602,7 +595,7 @@ function yc_action_setports(pos, L, Lv)
 		if L.a == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
 	end
-	if Lv.b ~= L.b then 
+	if Lv.b ~= L.b then
 		rules = mesecon:get_rules(name.."0010")
 		if L.b == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
@@ -692,7 +685,7 @@ end
 
 function yc_overheat_off(pos)
 	rules = mesecon:get_rules("mesecons_microcontroller:microcontroller1111")
-	mesecon:receptor_off(pos, rules);
+	mesecon:receptor_off(pos, rules)
 end
 
 mesecon:register_on_signal_change(function(pos, node)

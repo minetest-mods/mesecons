@@ -2,23 +2,19 @@
 
 --Receptors
 function mesecon:is_receptor_node(nodename)
-	local i = 1
 	for i, receptor in ipairs(mesecon.receptors) do
 		if receptor.onstate == nodename then
 			return true
 		end
-		i = i + 1
 	end
 	return false
 end
 
 function mesecon:is_receptor_node_off(nodename, pos, ownpos)
-	local i = 1
 	for i, receptor in ipairs(mesecon.receptors) do
 		if receptor.offstate == nodename then
 			return true
 		end
-		i = i + 1
 	end
 	return false
 end
@@ -87,7 +83,6 @@ end
 
 function mesecon:deactivate(pos)
 	local node = minetest.env:get_node(pos)	
-	local i = 1
 	for i, action in ipairs(mesecon.actions_off) do
 		action(pos, node) 
 	end
@@ -95,7 +90,6 @@ end
 
 function mesecon:changesignal(pos)
 	local node = minetest.env:get_node(pos)	
-	local i = 1
 	for i, action in ipairs(mesecon.actions_change) do
 		action(pos, node) 
 	end
@@ -189,7 +183,6 @@ end
 
 function mesecon:turnon(pos)
 	local node = minetest.env:get_node(pos)
-	local i = 1
 
 	if mesecon:is_conductor_off(node.name) then
 		local rules = mesecon:conductor_get_rules(node)
@@ -215,7 +208,6 @@ end
 
 function mesecon:turnoff(pos) --receptor rules used because output could have been dug
 	local node = minetest.env:get_node(pos)
-	local i = 1
 	local rules
 
 	if mesecon:is_conductor_on(node.name) then
@@ -246,7 +238,7 @@ function mesecon:connected_to_pw_src(pos, checked)
 	local c = 1
 	if checked == nil then checked = {} end
 	while checked[c] ~= nil do --find out if node has already been checked (to prevent from endless loop)
-		if  compare_pos(checked[c], pos) then 
+		if  compare_pos(checked[c], pos) then
 			return false, checked
 		end
 		c = c + 1
@@ -265,7 +257,6 @@ function mesecon:connected_to_pw_src(pos, checked)
 	local connected
 	local rules = mesecon:conductor_get_rules(node)
 
-	local i = 1
 	for i, rule in ipairs(rules) do
 		local np = {}
 		np.x = pos.x + rule.x
@@ -417,7 +408,6 @@ end
 
 --Rules rotation Functions:
 function mesecon:rotate_rules_right(rules)
-	local i=1
 	local nr={};
 	for i, rule in ipairs(rules) do
 		nr[i]={}
@@ -429,7 +419,6 @@ function mesecon:rotate_rules_right(rules)
 end
 
 function mesecon:rotate_rules_left(rules)
-	local i=1
 	local nr={};
 	for i, rule in ipairs(rules) do
 		nr[i]={}
@@ -441,7 +430,6 @@ function mesecon:rotate_rules_left(rules)
 end
 
 function mesecon:rotate_rules_down(rules)
-	local i=1
 	local nr={};
 	for i, rule in ipairs(rules) do
 		nr[i]={}
@@ -453,7 +441,6 @@ function mesecon:rotate_rules_down(rules)
 end
 
 function mesecon:rotate_rules_up(rules)
-	local i=1
 	local nr={};
 	for i, rule in ipairs(rules) do
 		nr[i]={}
