@@ -1,9 +1,3 @@
-mesecon:add_rules("microcontroller_all", { --flat rules (looks better with nodebox wires connection)
-{x = 1, y = 0, z = 0 },
-{x = 0, y = 0, z = 1 },
-{x = -1, y = 0, z = 0},
-{x = 0, y = 0, z = -1}})
-
 EEPROM_SIZE = 255
 
 for a = 0, 1 do
@@ -72,7 +66,6 @@ minetest.register_node(nodename, {
 			"button_exit[3.5,1;2,3;program;Program]")
 		meta:set_string("infotext", "Unprogrammed Microcontroller")
 		meta:set_int("heat", 0)
-		meta:set_int("working", 0)
 		local r = ""
 		for i=1, EEPROM_SIZE+1 do r=r.."0" end --Generate a string with EEPROM_SIZE*"0"
 		meta:set_string("eeprom", r)
@@ -115,9 +108,15 @@ if (a == 1) then table.insert(rules, {x = -1, y = 0, z =  0}) end
 if (b == 1) then table.insert(rules, {x =  0, y = 0, z =  1}) end
 if (c == 1) then table.insert(rules, {x =  1, y = 0, z =  0}) end
 if (d == 1) then table.insert(rules, {x =  0, y = 0, z = -1}) end
+
+local input_rules={}
+if (a == 0) then table.insert(input_rules, {x = -1, y = 0, z =  0}) end
+if (b == 0) then table.insert(input_rules, {x =  0, y = 0, z =  1}) end
+if (c == 0) then table.insert(input_rules, {x =  1, y = 0, z =  0}) end
+if (d == 0) then table.insert(input_rules, {x =  0, y = 0, z = -1}) end
 mesecon:add_rules(nodename, rules)
 
-mesecon:register_effector(nodename, nodename, mesecon:get_rules("microcontroller_all"))
+mesecon:register_effector(nodename, nodename, input_rules)
 if nodename ~= "mesecons_microcontroller:microcontroller0000" then
 	mesecon:add_receptor_node(nodename, rules)
 end
@@ -183,8 +182,6 @@ end
 
 function yc_parsecode(code, pos)
 	local meta = minetest.env:get_meta(pos)
-	if meta:get_int("working") == 1 then return false end
-	meta:set_int("working", 1)
 	local endi = 1
 	local Lreal = yc_get_real_portstates(pos)
 	local Lvirtual = yc_get_virtual_portstates(pos)
@@ -235,7 +232,6 @@ function yc_parsecode(code, pos)
 		minetest.env:get_meta(pos):set_string("eeprom", eeprom) end
 	end
 	yc_action(pos, Lvirtual)
-	minetest.env:get_meta(pos):set_int("working", 0)
 	return true
 end
 
