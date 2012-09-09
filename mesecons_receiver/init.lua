@@ -53,7 +53,7 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 		type = "fixed",
 		fixed = rcvboxes
 	},
-	groups = {dig_immediate = 3, mesecon = 3},
+	groups = {dig_immediate = 3, mesecon = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
 })
 
