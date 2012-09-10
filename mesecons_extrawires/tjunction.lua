@@ -6,8 +6,8 @@ local tjunction_nodebox = {
 
 local tjunction_selectionbox = {
 		type = "fixed",
-		fixed = { -16/32-0.001, -18/32, -16/32, 16/32+0.001, -12/32, 7/32 }
-},
+		fixed = { -16/32-0.001, -18/32, -16/32, 16/32+0.001, -12/32, 7/32 },
+}
 
 minetest.register_node("mesecons_extrawires:tjunction_on", {
 	drawtype = "nodebox",
