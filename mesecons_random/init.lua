@@ -24,7 +24,7 @@ mesecon:register_on_signal_on(function(pos, node)
 	end
 end)
 
--- ghoststone
+-- GHOSTSTONE
 
 minetest.register_node("mesecons_random:ghoststone", {
 	description="ghoststone",
