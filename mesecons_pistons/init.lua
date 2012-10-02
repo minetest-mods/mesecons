@@ -5,7 +5,7 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 	tiles = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png"},
 	groups = {cracky=3, mesecon = 2},
 	paramtype2 = "facedir",
-	after_dig_node = function(pos, oldnode)
+	after_destruct = function(pos, oldnode)
 		local dir = mesecon:piston_get_direction(oldnode)
 		pos.x, pos.y, pos.z = pos.x + dir.x, pos.y + dir.y, pos.z + dir.z --move to first node to check
 
@@ -17,6 +17,10 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 			end
 		end
 	end,
+	on_timer = function(pos, elapsed)
+		mesecon:piston_push(pos, minetest.env:get_node(pos))
+		return false
+	end,
 })
 mesecon:register_effector("mesecons_pistons:piston_normal", "mesecons_pistons:piston_normal")
 
@@ -26,7 +30,7 @@ minetest.register_node("mesecons_pistons:piston_sticky", {
 	tiles = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_sticky_side.png"},
 	groups = {cracky=3, mesecon = 2},
 	paramtype2 = "facedir",
-	after_dig_node = function(pos, oldnode)
+	after_destruct = function(pos, oldnode)
 		local dir = mesecon:piston_get_direction(oldnode)
 		pos.x, pos.y, pos.z = pos.x + dir.x, pos.y + dir.y, pos.z + dir.z --move to first node to check
 
@@ -37,6 +41,10 @@ minetest.register_node("mesecons_pistons:piston_sticky", {
 				minetest.env:remove_node(pos) --remove the pusher
 			end
 		end
+	end,
+	on_timer = function(pos, elapsed)
+		mesecon:piston_push(pos, minetest.env:get_node(pos))
+		return false
 	end,
 })
 mesecon:register_effector("mesecons_pistons:piston_sticky", "mesecons_pistons:piston_sticky")
@@ -80,9 +88,6 @@ minetest.register_node("mesecons_pistons:piston_pusher_normal", {
 	},
 })
 
-mesecon:register_mvps_stopper("mesecons_pistons:piston_pusher_normal")
-mesecon:register_mvps_stopper("mesecons_pistons:piston_pusher_sticky")
-
 minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 	drawtype = "nodebox",
 	tiles = {
@@ -112,12 +117,55 @@ minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 	},
 })
 
+mesecon:register_mvps_stopper("mesecons_pistons:piston_pusher_normal")
+mesecon:register_mvps_stopper("mesecons_pistons:piston_pusher_sticky")
+
 -- Push action
 mesecon:register_on_signal_on(function(pos, node)
 	if node.name ~= "mesecons_pistons:piston_normal" and node.name ~= "mesecons_pistons:piston_sticky" then
 		return
 	end
 
+	local timer = minetest.env:get_node_timer(pos)
+	timer:set(1.0, 0)
+end)
+
+--Pull action
+mesecon:register_on_signal_off(function(pos, node)
+	if node.name ~= "mesecons_pistons:piston_normal" and node.name ~= "mesecons_pistons:piston_sticky" then
+		return
+	end
+
+	local dir = mesecon:piston_get_direction(node)
+	pos.x, pos.y, pos.z = pos.x + dir.x, pos.y + dir.y, pos.z + dir.z --move to the node to be replaced
+
+	--ensure piston is extended
+	local checknode = minetest.env:get_node(pos)
+	if checknode.name ~= "mesecons_pistons:piston_pusher_normal" and checknode.name ~= "mesecons_pistons:piston_pusher_sticky" then
+		return
+	end
+	if checknode.param2 ~= node.param2 then --pusher is not facing the same direction as the piston
+		return --piston is not extended
+	end
+
+	--retract piston
+	minetest.env:remove_node(pos) --remove pusher
+	if node.name == "mesecons_pistons:piston_sticky" then --retract block
+		local checkpos = {x=pos.x + dir.x, y=pos.y + dir.y, z=pos.z + dir.z} --move to the node to be retracted
+		checknode = minetest.env:get_node(checkpos)
+		if checknode.name ~= "air"
+		and checknode.name ~= "ignore"
+		and minetest.registered_nodes[checknode.name].liquidtype == "none"
+		and not mesecon:is_mvps_stopper(checknode.name) then
+			minetest.env:set_node(pos, checknode)
+			minetest.env:remove_node(checkpos)
+			mesecon:updatenode(checkpos)
+		end
+	end
+	nodeupdate(pos)
+end)
+
+function mesecon:piston_push(pos, node)
 	local dir = mesecon:piston_get_direction(node)
 	pos.x, pos.y, pos.z = pos.x + dir.x, pos.y + dir.y, pos.z + dir.z --move to first node being pushed
 
@@ -170,49 +218,9 @@ mesecon:register_on_signal_on(function(pos, node)
 		mesecon:updatenode(pos)
 		checknode = nextnode
 	end
-end)
+end
 
---Pull action
-mesecon:register_on_signal_off(function(pos, node)
-	if node.name ~= "mesecons_pistons:piston_normal" and node.name ~= "mesecons_pistons:piston_sticky" then
-		return
-	end
-
-	local dir = mesecon:piston_get_direction(node)
-	pos.x, pos.y, pos.z = pos.x + dir.x, pos.y + dir.y, pos.z + dir.z --move to the node to be replaced
-
-	--ensure piston is extended
-	local checknode = minetest.env:get_node(pos)
-	if checknode.name ~= "mesecons_pistons:piston_pusher_normal" and checknode.name ~= "mesecons_pistons:piston_pusher_sticky" then
-		return
-	end
-	if checknode.param2 ~= node.param2 then --pusher is not facing the same direction as the piston
-		return --piston is not extended
-	end
-
-	--retract piston
-	minetest.env:remove_node(pos) --remove pusher
-	if node.name ~= "mesecons_pistons:piston_sticky" then
-	    nodeupdate(pos)
-	end
-	if node.name == "mesecons_pistons:piston_sticky" then --retract block
-		local checkpos = {x=pos.x + dir.x, y=pos.y + dir.y, z=pos.z + dir.z} --move to the node to be retracted
-		checknode = minetest.env:get_node(checkpos)
-		if checknode.name ~= "air"
-		and checknode.name ~= "ignore"
-		and minetest.registered_nodes[checknode.name].liquidtype == "none"
-		and not mesecon:is_mvps_stopper(checknode.name) then
-		    minetest.env:set_node(pos, checknode)
-		    minetest.env:remove_node(checkpos)
-		    mesecon:updatenode(checkpos)
-		end
-	end
-	if node.name == "mesecons_pistons:piston_sticky" then
-	    nodeupdate(pos)
-	end
-end)
-
--- get push direction
+-- get piston direction
 function mesecon:piston_get_direction(node)
 	if node.param2 == 3 then
 		return {x=1, y=0, z=0}
