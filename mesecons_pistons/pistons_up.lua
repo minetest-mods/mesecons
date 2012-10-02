@@ -186,9 +186,6 @@ mesecon:register_on_signal_off(function(pos, node)
 
 	--retract piston
 	minetest.env:remove_node(pos) --remove pusher
-	if node.name ~= "mesecons_pistons:piston_up_sticky" then
-	    nodeupdate(pos)
-	end
 	if node.name == "mesecons_pistons:piston_up_sticky" then --retract block
 		local checkpos = {x=pos.x + dir.x, y=pos.y + dir.y, z=pos.z + dir.z} --move to the node to be retracted
 		checknode = minetest.env:get_node(checkpos)
@@ -197,12 +194,10 @@ mesecon:register_on_signal_off(function(pos, node)
 		and minetest.registered_nodes[checknode.name].liquidtype == "none"
 		and not mesecon:is_mvps_stopper(checknode.name) then
 			minetest.env:remove_node(checkpos)
-		    mesecon:updatenode(checkpos)
-		    minetest.env:set_node(pos, checknode)
-		    mesecon:updatenode(pos)
+			mesecon:updatenode(checkpos)
+			minetest.env:set_node(pos, checknode)
+			mesecon:updatenode(pos)
 		end
 	end
-	if node.name == "mesecons_pistons:piston_up_sticky" then
-	    nodeupdate(pos)
-	end
+	nodeupdate(pos)
 end)
