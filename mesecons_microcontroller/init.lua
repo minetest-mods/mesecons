@@ -81,7 +81,7 @@ minetest.register_node(nodename, {
 		elseif fields.bnand then
 			fields.code = "sbi(C, !A|!B) :A and B are inputs, C is output"
 		elseif fields.btflop then
-			fields.code = "if(A)sbi(1,1); if(!A&#1&B)off(B)sbi(1,0); if(!A&#1&!B)on(B)sbi(1,0); :A is input, B is output (Q), toggles with falling edge"
+			fields.code = "if(A)sbi(1,1);if(!A&#1)sbi(B,!B)sbi(1,0); if(C)off(B,1); :A is input, B is output (Q), C is reset, toggles with falling edge"
 		elseif fields.brsflop then
 			fields.code = "if(A)on(C);if(B)off(C); :A is S (Set), B is R (Reset), C is output (R dominates)"
 		elseif fields.program or fields.code then --nothing
@@ -171,9 +171,8 @@ function yc_code_remove_commentary(code)
 	is_string = false
 	for i = 1, #code do
 		if code:sub(i, i) == '"' then
-			is_string = (is_string==false) --toggle is_string
-		end
-		if code:sub(i, i) == ":" and is_string==false then
+			is_string = not is_string --toggle is_string
+		elseif code:sub(i, i) == ":" and not is_string then
 			return code:sub(1, i-1)
 		end
 	end
