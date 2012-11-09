@@ -3,7 +3,7 @@
 minetest.register_node("mesecons_powerplant:power_plant", {
 	drawtype = "plantlike",
 	visual_scale = 1,
-	tile_images = {"jeija_power_plant.png"},
+	tiles = {"jeija_power_plant.png"},
 	inventory_image = "jeija_power_plant.png",
 	paramtype = "light",
 	walkable = false,

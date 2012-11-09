@@ -1,7 +1,7 @@
 -- WALL LEVER
 minetest.register_node("mesecons_walllever:wall_lever_off", {
 	drawtype = "nodebox",
-	tile_images = {
+	tiles = {
 		"jeija_wall_lever_tb.png",
 		"jeija_wall_lever_bottom.png",
 		"jeija_wall_lever_sides.png",
@@ -32,7 +32,7 @@ minetest.register_node("mesecons_walllever:wall_lever_off", {
 })
 minetest.register_node("mesecons_walllever:wall_lever_on", {
 	drawtype = "nodebox",
-	tile_images = {
+	tiles = {
 		"jeija_wall_lever_top.png",
 		"jeija_wall_lever_tb.png",
 		"jeija_wall_lever_sides.png",
