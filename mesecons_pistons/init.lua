@@ -195,6 +195,7 @@ function mesecon:piston_push(pos)
 		minetest.env:dig_node(checkpos)
 		minetest.env:add_node(pos, checknode)
 		mesecon:updatenode(pos)
+		nodeupdate(pos)
 		checknode = nextnode
 	end
 end
@@ -224,8 +225,10 @@ function mesecon:piston_pull(pos)
 		and not mesecon:is_mvps_stopper(checknode.name) then
 			minetest.env:add_node(pos, checknode)
 			mesecon:updatenode(pos)
+			nodeupdate(pos)
 			minetest.env:dig_node(checkpos)
 			mesecon:updatenode(checkpos)
+			nodeupdate(checkpos)
 		end
 	end
 	nodeupdate(pos)
