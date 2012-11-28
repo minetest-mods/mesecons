@@ -121,14 +121,13 @@ mesecon:register_on_signal_on(function(pos, node)
 	while true do
 		local checknode = minetest.env:get_node(checkpos)
 
-		--check for collision with stopper
-		if mesecon:is_mvps_stopper(checknode.name) then 
+		--check for collision with stopper or bounds
+		if mesecon:is_mvps_stopper(checknode.name) or checknode.name == "ignore" then
 			return
 		end
 
 		--check for column end
 		if checknode.name == "air"
-		or checknode.name == "ignore"
 		or not(minetest.registered_nodes[checknode.name].liquidtype == "none") then
 			break
 		end
