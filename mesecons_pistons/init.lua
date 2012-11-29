@@ -173,7 +173,6 @@ function mesecon:piston_push(pos)
 	local checknode = minetest.env:get_node(pos)
 
 	--add pusher
-	minetest.env:dig_node(pos) --remove the first node
 	if node.name == "mesecons_pistons:piston_normal" then
 		minetest.env:add_node(pos, {name="mesecons_pistons:piston_pusher_normal", param2=node.param2})
 	else
@@ -191,11 +190,16 @@ function mesecon:piston_push(pos)
 
 		--move the node forward
 		local nextnode = minetest.env:get_node(pos)
-		minetest.env:dig_node(checkpos)
 		minetest.env:add_node(pos, checknode)
+		checknode = nextnode
+	end
+
+	--update nodes
+	for i = 1, count do
 		mesecon:updatenode(pos)
 		nodeupdate(pos)
-		checknode = nextnode
+
+		pos.x, pos.y, pos.z = pos.x - dir.x, pos.y - dir.y, pos.z - dir.z --move to the previous node
 	end
 end
 
@@ -223,13 +227,12 @@ function mesecon:piston_pull(pos)
 		and minetest.registered_nodes[checknode.name].liquidtype == "none"
 		and not mesecon:is_mvps_stopper(checknode.name) then
 			minetest.env:add_node(pos, checknode)
-			mesecon:updatenode(pos)
-			nodeupdate(pos)
-			minetest.env:dig_node(checkpos)
+			minetest.env:remove_node(checkpos)
 			mesecon:updatenode(checkpos)
 			nodeupdate(checkpos)
 		end
 	end
+	mesecon:updatenode(pos)
 	nodeupdate(pos)
 end
 
