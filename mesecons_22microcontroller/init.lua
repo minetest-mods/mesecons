@@ -921,7 +921,13 @@ function yc22_cool(meta)
 end
 
 function yc22_overheat(meta)
-	return false
+	h = meta:get_int("heat")
+	if h == nil then return true end -- if nil the overheat
+	if h>30 then 
+		return true
+	else 
+		return false 
+	end
 end
 
 function yc22_overheat_off(pos)
@@ -962,58 +968,3 @@ minetest.register_on_dignode(function(pos, node)
 	end
 end)
 
-
-if 0 then
-
-minetest.register_craft({
-	output = 'craft "mesecons_22microcontroller:microcontroller0000" 2',
-	recipe = {
-		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'group:mesecon_conductor_craftable'},
-		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'group:mesecon_conductor_craftable'},
-		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable', ''},
-	}
-})
---"Overheat" protection
-function yc22_heat(meta)
-	h = meta:get_int("heat")
-	if h ~= nil then
-		meta:set_int("heat", h + 1)
-	end
-end
-
-function yc22_cool(meta)
-	h = meta:get_int("heat")
-	if h ~= nil then
-		meta:set_int("heat", h - 1)
-	end
-end
-
-function yc22_overheat(meta)
-	h = meta:get_int("heat")
-	if h == nil then return true end -- if nil the overheat
-	if h>30 then 
-		return true
-	else 
-		return false 
-	end
-end
-
-function yc22_overheat_off(pos)
-	rules = mesecon:get_rules("mesecons_22microcontroller:microcontroller1111")
-	mesecon:receptor_off(pos, rules)
-end
-
-mesecon:register_on_signal_change(function(pos, node)
-	if string.find(node.name, "mesecons_22microcontroller:microcontroller")~=nil then
-		update_yc22(pos)
-	end
-end)
-
-minetest.register_on_dignode(function(pos, node)
-	if string.find(node.name, "mesecons_22microcontroller:microcontroller") then
-		rules = mesecon:get_rules(node.name)
-		mesecon:receptor_off(pos, rules)
-	end
-end)
-
-end
