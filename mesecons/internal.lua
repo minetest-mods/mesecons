@@ -247,7 +247,7 @@ function mesecon:connected_to_pw_src(pos, checked)
 
 	local node = minetest.env:get_node_or_nil(pos)
 	if node == nil then return false, checked end
-	if not mesecon:is_conductor(node.name) then return false, checked end
+	if not( mesecon:is_conductor(node.name) or mesecon:is_receptor_node(node.name) or mesecon:is_effector(node.name) )  then return false, checked end
 
 	if mesecon:is_powered_by_receptor(pos) then --return if conductor is powered
 		return true, checked
