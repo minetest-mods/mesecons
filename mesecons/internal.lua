@@ -236,7 +236,7 @@ end
 
 function mesecon:connected_to_pw_src(pos, checked)
 	local c = 1
-	if checked == nil then checked = {} end
+	checked = checked or {}
 	while checked[c] ~= nil do --find out if node has already been checked (to prevent from endless loop)
 		if  compare_pos(checked[c], pos) then
 			return false, checked
@@ -246,16 +246,26 @@ function mesecon:connected_to_pw_src(pos, checked)
 	checked[c] = {x=pos.x, y=pos.y, z=pos.z} --add current node to checked
 
 	local node = minetest.env:get_node_or_nil(pos)
-	if node == nil then return false, checked end
-	if not mesecon:is_conductor(node.name) then return false, checked end
 
+	if node == nil then return false, checked end
+	if mesecon:is_receptor_node(node.name) then
+		return true, checked
+	end
+	if mesecon:is_receptor_node_off(node.name) then
+		return true, checked
+	end
 	if mesecon:is_powered_by_receptor(pos) then --return if conductor is powered
 		return true, checked
 	end
 
 	--Check if conductors around are connected
-	local connected
-	local rules = mesecon:conductor_get_rules(node)
+	if mesecon:is_conductor(node.name) then
+		rules = mesecon:conductor_get_rules(node)
+	elseif mesecon:is_effector(node.name) then
+		rules = mesecon:effector_get_input_rules(node)
+	else
+		return false, checked
+	end
 
 	for i, rule in ipairs(rules) do
 		local np = {}
