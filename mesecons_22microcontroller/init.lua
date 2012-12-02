@@ -3,7 +3,7 @@ EEPROM_SIZE = 255
 for a = 0,1 do
 for b = 0,1 do
 local nodename = "mesecons_22microcontroller:microcontroller_topleft"..tostring(b)..tostring(a)
-local top = "jeija_microcontroller_top.png"
+local top = "jeija_microcontroller22_top_tl.png"
 if tostring(a) == "1" then
 	top = top.."^jeija_microcontroller_LED_A.png"
 end
@@ -46,6 +46,7 @@ minetest.register_node(nodename, {
 	},
 	on_construct = function(pos)
 		local meta = minetest.env:get_meta(pos)
+		meta:set_int("destruct",0)
 		meta:set_string("code", "")
 		meta:set_string("formspec", "size[9,2.5]"..
 			"field[0.256,-0.2;9,2;code;Code:;]"..
@@ -74,6 +75,11 @@ minetest.register_node(nodename, {
 		pos.z=pos.z+1
 	end,
 	on_destruct = function(pos)
+		local meta = minetest.env:get_meta(pos)
+		local des=meta:get_int("destruct")
+		if des==0 then
+		print("Destruction")
+		meta:set_int("destruct",1)
 		local node = minetest.env:get_node(pos)
 		pos.x = pos.x+1
 		minetest.env:remove_node(pos)
@@ -82,6 +88,7 @@ minetest.register_node(nodename, {
 		pos.x = pos.x-1
 		minetest.env:remove_node(pos)	
 		pos.z=pos.z+1
+		end
 	end,
 	on_receive_fields = function(pos, formanme, fields, sender)
 		local meta = minetest.env:get_meta(pos)
@@ -133,7 +140,7 @@ end
 for c = 0,1 do
 for d = 0,1 do
 local nodename = "mesecons_22microcontroller:microcontroller_topright"..tostring(d)..tostring(c)
-local top = "jeija_microcontroller_top.png"
+local top = "jeija_microcontroller22_top_tr.png"
 if tostring(c) == "1" then
 	top = top.."^jeija_microcontroller_LED_B.png"
 end
@@ -165,6 +172,25 @@ minetest.register_node(nodename, {
 			{ -3/16, -6/16, -3/16, 3/16, -5/16, 3/16 }, -- IC
 		}
 	},
+	on_construct=function(pos)
+		local meta = minetest.env:get_meta(pos)
+		meta:set_int("destruct",0)
+	end,
+	on_destruct = function(pos)
+		local meta = minetest.env:get_meta(pos)
+		local des=meta:get_int("destruct")
+		if des==0 then
+		meta:set_int("destruct",1)
+		local node = minetest.env:get_node(pos)
+		pos.z = pos.z-1
+		minetest.env:remove_node(pos)
+		pos.x = pos.x-1
+		minetest.env:remove_node(pos)
+		pos.z = pos.z+1
+		minetest.env:remove_node(pos)	
+		pos.x=pos.x+1
+		end
+	end,
 	selection_box = {
 		type = "fixed",
 		fixed = { 0,0,0,0,0,0 },
@@ -188,7 +214,7 @@ end
 for e = 0,1 do
 for f = 0,1 do
 local nodename = "mesecons_22microcontroller:microcontroller_bottomright"..tostring(f)..tostring(e)
-local top = "jeija_microcontroller_top.png"
+local top = "jeija_microcontroller22_top_br.png"
 if tostring(e) == "1" then
 	top = top.."^jeija_microcontroller_LED_C.png"
 end
@@ -220,6 +246,25 @@ minetest.register_node(nodename, {
 			{ -3/16, -6/16, -3/16, 3/16, -5/16, 3/16 }, -- IC
 		}
 	},
+	on_construct=function(pos)
+		local meta = minetest.env:get_meta(pos)
+		meta:set_int("destruct",0)
+	end,
+	on_destruct = function(pos)
+		local meta = minetest.env:get_meta(pos)
+		local des=meta:get_int("destruct")
+		if des==0 then
+		meta:set_int("destruct",1)
+		local node = minetest.env:get_node(pos)
+		pos.x = pos.x-1
+		minetest.env:remove_node(pos)
+		pos.z = pos.z+1
+		minetest.env:remove_node(pos)
+		pos.x = pos.x+1
+		minetest.env:remove_node(pos)	
+		pos.z=pos.z-1
+		end
+	end,
 	selection_box = {
 		type = "fixed",
 		fixed = { 0,0,0,0,0,0 },
@@ -243,7 +288,7 @@ end
 for g = 0,1 do
 for h = 0,1 do
 local nodename = "mesecons_22microcontroller:microcontroller_bottomleft"..tostring(h)..tostring(g)
-local top = "jeija_microcontroller_top.png"
+local top = "jeija_microcontroller22_top_bl.png"
 if tostring(g) == "1" then
 	top = top.."^jeija_microcontroller_LED_D.png"
 end
@@ -275,6 +320,25 @@ minetest.register_node(nodename, {
 			{ -3/16, -6/16, -3/16, 3/16, -5/16, 3/16 }, -- IC
 		}
 	},
+	on_construct=function(pos)
+		local meta = minetest.env:get_meta(pos)
+		meta:set_int("destruct",0)
+	end,
+	on_destruct = function(pos)
+		local meta = minetest.env:get_meta(pos)
+		local des=meta:get_int("destruct")
+		if des==0 then
+		meta:set_int("destruct",1)
+		local node = minetest.env:get_node(pos)
+		pos.z = pos.z+1
+		minetest.env:remove_node(pos)
+		pos.x = pos.x+1
+		minetest.env:remove_node(pos)
+		pos.z = pos.z-1
+		minetest.env:remove_node(pos)	
+		pos.x=pos.x-1
+		end
+	end,
 	selection_box = {
 		type = "fixed",
 		fixed = { 0,0,0,0,0,0 },
@@ -733,27 +797,43 @@ end
 --Real I/O functions
 function yc22_action(pos, L) --L-->Lvirtual
 	local Lv = yc22_get_virtual_portstates(pos)
-	local metatable = minetest.env:get_meta(pos):to_table()
-	local name = "mesecons_22microcontroller:microcontroller_topleft"
+	local meta = minetest.env:get_meta(pos)
+	local metatable = meta:to_table()
+	local node=minetest.env:get_node(pos)
+	node.name = "mesecons_22microcontroller:microcontroller_topleft"
 		..tonumber(L.b and 1 or 0)
 		..tonumber(L.a and 1 or 0)
-	minetest.env:add_node(pos, {name=name})
+	minetest.env:set_node(pos, node)
 	minetest.env:get_meta(pos):from_table(metatable)
+	meta = minetest.env:get_meta(pos)
+	meta:set_int("destruct",0)
 	name = "mesecons_22microcontroller:microcontroller_topright"
 		..tonumber(L.d and 1 or 0)
 		..tonumber(L.c and 1 or 0)
 	pos.x=pos.x+1
+	meta = minetest.env:get_meta(pos)
+	meta:set_int("destruct",1)
 	minetest.env:add_node(pos, {name=name})
 	name = "mesecons_22microcontroller:microcontroller_bottomright"
 		..tonumber(L.f and 1 or 0)
 		..tonumber(L.e and 1 or 0)
+	meta = minetest.env:get_meta(pos)
+	meta:set_int("destruct",0)
 	pos.z=pos.z-1
+	meta = minetest.env:get_meta(pos)
+	meta:set_int("destruct",1)
 	minetest.env:add_node(pos, {name=name})
 	name = "mesecons_22microcontroller:microcontroller_bottomleft"
 		..tonumber(L.h and 1 or 0)
 		..tonumber(L.g and 1 or 0)
+	meta = minetest.env:get_meta(pos)
+	meta:set_int("destruct",0)
 	pos.x=pos.x-1
+	meta = minetest.env:get_meta(pos)
+	meta:set_int("destruct",1)
 	minetest.env:add_node(pos, {name=name})
+	meta = minetest.env:get_meta(pos)
+	meta:set_int("destruct",0)
 	pos.z=pos.z+1
 
 	yc22_action_setports(pos, L, Lv)
