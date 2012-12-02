@@ -5,10 +5,10 @@ for b = 0,1 do
 local nodename = "mesecons_22microcontroller:microcontroller_topleft"..tostring(b)..tostring(a)
 local top = "jeija_microcontroller22_top_tl.png"
 if tostring(a) == "1" then
-	top = top.."^jeija_microcontroller_LED_A.png"
+	top = top.."^jeija_microcontroller22_LED_A.png"
 end
 if tostring(b) == "1" then
-	top = top.."^jeija_microcontroller_LED_B.png"
+	top = top.."^jeija_microcontroller22_LED_B.png"
 end
 if tostring(b)..tostring(a) ~= "00" then
 	groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
@@ -78,7 +78,6 @@ minetest.register_node(nodename, {
 		local meta = minetest.env:get_meta(pos)
 		local des=meta:get_int("destruct")
 		if des==0 then
-		print("Destruction")
 		meta:set_int("destruct",1)
 		local node = minetest.env:get_node(pos)
 		pos.x = pos.x+1
@@ -142,10 +141,10 @@ for d = 0,1 do
 local nodename = "mesecons_22microcontroller:microcontroller_topright"..tostring(d)..tostring(c)
 local top = "jeija_microcontroller22_top_tr.png"
 if tostring(c) == "1" then
-	top = top.."^jeija_microcontroller_LED_B.png"
+	top = top.."^jeija_microcontroller22_LED_C.png"
 end
 if tostring(d) == "1" then
-	top = top.."^jeija_microcontroller_LED_C.png"
+	top = top.."^jeija_microcontroller22_LED_D.png"
 end
 groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
 minetest.register_node(nodename, {
@@ -216,10 +215,10 @@ for f = 0,1 do
 local nodename = "mesecons_22microcontroller:microcontroller_bottomright"..tostring(f)..tostring(e)
 local top = "jeija_microcontroller22_top_br.png"
 if tostring(e) == "1" then
-	top = top.."^jeija_microcontroller_LED_C.png"
+	top = top.."^jeija_microcontroller22_LED_E.png"
 end
 if tostring(f) == "1" then
-	top = top.."^jeija_microcontroller_LED_D.png"
+	top = top.."^jeija_microcontroller22_LED_F.png"
 end
 groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
 minetest.register_node(nodename, {
@@ -290,10 +289,10 @@ for h = 0,1 do
 local nodename = "mesecons_22microcontroller:microcontroller_bottomleft"..tostring(h)..tostring(g)
 local top = "jeija_microcontroller22_top_bl.png"
 if tostring(g) == "1" then
-	top = top.."^jeija_microcontroller_LED_D.png"
+	top = top.."^jeija_microcontroller22_LED_G.png"
 end
 if tostring(h) == "1" then
-	top = top.."^jeija_microcontroller_LED_A.png"
+	top = top.."^jeija_microcontroller22_LED_H.png"
 end
 groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
 minetest.register_node(nodename, {
