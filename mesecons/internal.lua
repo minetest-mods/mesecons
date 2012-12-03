@@ -2,7 +2,7 @@
 
 --Receptors
 function mesecon:is_receptor_node(nodename)
-	for i, receptor in ipairs(mesecon.receptors) do
+	for _, receptor in ipairs(mesecon.receptors) do
 		if receptor.onstate == nodename then
 			return true
 		end
@@ -11,7 +11,7 @@ function mesecon:is_receptor_node(nodename)
 end
 
 function mesecon:is_receptor_node_off(nodename, pos, ownpos)
-	for i, receptor in ipairs(mesecon.receptors) do
+	for _, receptor in ipairs(mesecon.receptors) do
 		if receptor.offstate == nodename then
 			return true
 		end
@@ -248,12 +248,6 @@ function mesecon:connected_to_pw_src(pos, checked)
 	local node = minetest.env:get_node_or_nil(pos)
 
 	if node == nil then return false, checked end
-	if mesecon:is_receptor_node(node.name) then
-		return true, checked
-	end
-	if mesecon:is_receptor_node_off(node.name) then
-		return true, checked
-	end
 	if mesecon:is_powered_by_receptor(pos) then --return if conductor is powered
 		return true, checked
 	end
