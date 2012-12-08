@@ -246,22 +246,17 @@ function mesecon:connected_to_pw_src(pos, checked)
 	checked[c] = {x=pos.x, y=pos.y, z=pos.z} --add current node to checked
 
 	local node = minetest.env:get_node_or_nil(pos)
-
 	if node == nil then return false, checked end
+	if not mesecon:is_conductor(node.name) then return false, checked end
 	if mesecon:is_powered_by_receptor(pos) then --return if conductor is powered
 		return true, checked
 	end
 
 	--Check if conductors around are connected
-	if mesecon:is_conductor(node.name) then
-		rules = mesecon:conductor_get_rules(node)
-	elseif mesecon:is_effector(node.name) then
-		rules = mesecon:effector_get_input_rules(node)
-	else
-		return false, checked
-	end
+	local connected
+	local rules = mesecon:conductor_get_rules(node)
 
-	for i, rule in ipairs(rules) do
+	for _, rule in ipairs(rules) do
 		local np = {}
 		np.x = pos.x + rule.x
 		np.y = pos.y + rule.y
