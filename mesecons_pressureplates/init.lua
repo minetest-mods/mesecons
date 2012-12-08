@@ -150,23 +150,6 @@ minetest.register_craft({
 	}
 })
 
-mesecon:add_rules("pressureplate", 
-{{x=0,  y=1,  z=-1},
-{x=0,  y=0,  z=-1},
-{x=0,  y=-1, z=-1},
-{x=0,  y=1,  z=1},
-{x=0,  y=-1, z=1},
-{x=0,  y=0,  z=1},
-{x=1,  y=0,  z=0},
-{x=1,  y=1,  z=0},
-{x=1,  y=-1, z=0},
-{x=-1, y=1,  z=0},
-{x=-1, y=-1, z=0},
-{x=-1, y=0,  z=0},
-{x=0, y=-1,  z=0},
-{x=0, y=-2,  z=0},
-{x=0, y=1,  z=0}})
-
 mesecon:add_receptor_node("mesecons_pressureplates:pressure_plate_wood_on", mesecon:get_rules("pressureplate"))
 mesecon:add_receptor_node_off("mesecons_pressureplates:pressure_plate_wood_off", mesecon:get_rules("pressureplate"))
 

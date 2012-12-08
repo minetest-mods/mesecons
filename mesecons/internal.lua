@@ -290,7 +290,7 @@ function mesecon:turnon(pos)
 
 	if mesecon:is_conductor_off(node.name) then
 		local rules = mesecon:conductor_get_rules(node)
-		minetest.env:add_node(pos, {name=mesecon:get_conductor_on(node.name), param2 = node.param2})
+		mesecon:swap_node(pos, mesecon:get_conductor_on(node.name))
 
 		for _, rule in ipairs(rules) do
 			local np = mesecon:addPosRule(pos, rule)
@@ -314,7 +314,7 @@ function mesecon:turnoff(pos) --receptor rules used because output could have be
 
 	if mesecon:is_conductor_on(node.name) then
 		local rules = mesecon:conductor_get_rules(node)
-		minetest.env:add_node(pos, {name=mesecon:get_conductor_off(node.name), param2 = node.param2})
+		mesecon:swap_node(pos, mesecon:get_conductor_off(node.name))
 
 		for _, rule in ipairs(rules) do
 			local np = mesecon:addPosRule(pos, rule)

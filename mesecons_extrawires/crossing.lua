@@ -1,3 +1,5 @@
+-- CODE NOT ACTIVE
+
 for x=-1, 1 do for z=-1, 1 do
 	rules = {}
 	nodename = "mesecons_extrawires:crossing"
