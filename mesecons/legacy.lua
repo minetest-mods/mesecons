@@ -38,38 +38,6 @@ function mesecon:register_effector(onstate, offstate, input_rules, get_input_rul
 		 get_input_rules = get_input_rules})
 end
 
-function mesecon:receptor_on(pos, rules)
-	if rules == nil then
-		rules = mesecon:get_rules("default")
-	end
-
-	for i, rule in ipairs(rules) do
-		local np = {
-		x = pos.x + rule.x,
-		y = pos.y + rule.y,
-		z = pos.z + rule.z}
-		if mesecon:rules_link(pos, np, rules) then
-			mesecon:turnon(np, pos)
-		end
-	end
-end
-
-function mesecon:receptor_off(pos, rules)
-	if rules == nil then
-		rules = mesecon:get_rules("default")
-	end
-
-	for i, rule in ipairs(rules) do
-		local np = {
-		x = pos.x + rule.x,
-		y = pos.y + rule.y,
-		z = pos.z + rule.z}
-		if mesecon:rules_link(pos, np, rules) and not mesecon:connected_to_pw_src(np) then
-			mesecon:turnoff(np, pos)
-		end
-	end
-end
-
 function mesecon:register_on_signal_on(action)
 	table.insert(mesecon.actions_on, action)
 end

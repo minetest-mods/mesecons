@@ -87,50 +87,12 @@ local resolve_player = function(name, pos)
 	return name
 end
 
-minetest.register_node("mesecons_commandblock:commandblock_off", {
-	description = "Command Block",
-	tiles = {"jeija_commandblock_off.png"},
-	inventory_image = minetest.inventorycube("jeija_commandblock_off.png"),
-	groups = {cracky=2, mesecon_effector_off=1, mesecon=2},
-	on_construct = construct,
-	after_place_node = after_place,
-	on_receive_fields = receive_fields,
-	can_dig = function(pos,player)
-		local owner = minetest.env:get_meta(pos):get_string("owner")
-		return owner == "" or owner == player:get_player_name()
-	end,
-})
-
-minetest.register_node("mesecons_commandblock:commandblock_on", {
-	tiles = {"jeija_commandblock_on.png"},
-	groups = {cracky=2, mesecon_effector_on=1, mesecon=2, not_in_creative_inventory=1},
-	light_source = 10,
-	drop = "mesecons_commandblock:commandblock_off",
-	on_construct = construct,
-	after_place_node = after_place,
-	on_receive_fields = receive_fields,
-	can_dig = function(pos,player)
-		local owner = minetest.env:get_meta(pos):get_string("owner")
-		return owner == "" or owner == player:get_player_name()
-	end,
-})
-
-mesecon:register_effector("mesecons_commandblock:commandblock_on", "mesecons_commandblock:commandblock_off")
-
-local swap_node = function(pos, name)
-	local node = minetest.env:get_node(pos)
-	local data = minetest.env:get_meta(pos):to_table()
-	node.name = name
-	minetest.env:add_node(pos, node)
-	minetest.env:get_meta(pos):from_table(data)
-end
-
-mesecon:register_on_signal_on(function(pos, node)
+local commandblock_action_on = function(pos, node)
 	if node.name ~= "mesecons_commandblock:commandblock_off" then
 		return
 	end
 
-	swap_node(pos, "mesecons_commandblock:commandblock_on")
+	mesecon:swap_node(pos, "mesecons_commandblock:commandblock_on")
 
 	local meta = minetest.env:get_meta(pos)
 	local command = minetest.chatcommands[meta:get_string("command")]
@@ -148,10 +110,44 @@ mesecon:register_on_signal_on(function(pos, node)
 	end
 	local player = resolve_player(meta:get_string("player"), pos)
 	command.func(player, meta:get_string("param"))
-end)
+end
 
-mesecon:register_on_signal_off(function(pos, node)
+local commandblock_action_off = function(pos, node)
 	if node.name == "mesecons_commandblock:commandblock_on" then
-		swap_node(pos, "mesecons_commandblock:commandblock_off")
+		mesecon:swap_node(pos, "mesecons_commandblock:commandblock_off")
 	end
-end)
+end
+
+minetest.register_node("mesecons_commandblock:commandblock_off", {
+	description = "Command Block",
+	tiles = {"jeija_commandblock_off.png"},
+	inventory_image = minetest.inventorycube("jeija_commandblock_off.png"),
+	groups = {cracky=2, mesecon_effector_off=1},
+	on_construct = construct,
+	after_place_node = after_place,
+	on_receive_fields = receive_fields,
+	can_dig = function(pos,player)
+		local owner = minetest.env:get_meta(pos):get_string("owner")
+		return owner == "" or owner == player:get_player_name()
+	end,
+	mesecons = {effector = {
+		action_on = commandblock_action_on
+	}}
+})
+
+minetest.register_node("mesecons_commandblock:commandblock_on", {
+	tiles = {"jeija_commandblock_on.png"},
+	groups = {cracky=2, mesecon_effector_on=1, not_in_creative_inventory=1},
+	light_source = 10,
+	drop = "mesecons_commandblock:commandblock_off",
+	on_construct = construct,
+	after_place_node = after_place,
+	on_receive_fields = receive_fields,
+	can_dig = function(pos,player)
+		local owner = minetest.env:get_meta(pos):get_string("owner")
+		return owner == "" or owner == player:get_player_name()
+	end,
+	mesecons = {effector = {
+		action_off = commandblock_action_off
+	}}
+})
