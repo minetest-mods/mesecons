@@ -1,30 +1,32 @@
 function mesecon:lightstone_add(name, base_item, texture_off, texture_on)
-    minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_off", {
-	    tiles = {texture_off},
-	    inventory_image = minetest.inventorycube(texture_off),
-	    groups = {cracky=2, mesecon_effector_off = 1, mesecon = 2},
-    	    description=name.." Lightstone",
+	minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_off", {
+	tiles = {texture_off},
+	inventory_image = minetest.inventorycube(texture_off),
+	groups = {cracky=2, mesecon_effector_off = 1, mesecon = 2},
+	description=name.." Lightstone",
+	mesecons = {effector = {
+		state = mesecon.state.off,
+		action_on = function (pos, node)
+			minetest.env:add_node(pos, {name="mesecons_lightstone:lightstone_" .. name .. "_on"})
+			mesecon:receptor_on(pos)
+		end
+	}}
     })
-    minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_on", {
-	    tiles = {texture_on},
-	    inventory_image = minetest.inventorycube(texture_on),
-	    groups = {cracky=2,not_in_creative_inventory=1, mesecon = 2},
-	    drop = "node mesecons_lightstone:lightstone_" .. name .. "_off 1",
-	    light_source = LIGHT_MAX-2,
-    	    description=name.." Lightstone",
+	minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_on", {
+	tiles = {texture_on},
+	inventory_image = minetest.inventorycube(texture_on),
+	groups = {cracky=2,not_in_creative_inventory=1, mesecon = 2},
+	drop = "node mesecons_lightstone:lightstone_" .. name .. "_off 1",
+	light_source = LIGHT_MAX-2,
+	mesecons = {effector = {
+		state = mesecon.state.on,
+		action_off = function (pos, node)
+			minetest.env:add_node(pos, {name="mesecons_lightstone:lightstone_" .. name .. "_off"})
+			mesecon:receptor_off(pos)
+		end
+	}}
     })
-    assert(loadstring('mesecon:register_on_signal_on(function(pos, node) \n \
-                    if node.name == "mesecons_lightstone:lightstone_' .. name .. '_off" then \n \
-                        minetest.env:add_node(pos, {name="mesecons_lightstone:lightstone_' .. name .. '_on"}) \n \
-                        nodeupdate(pos) \n \
-                    end \n \
-                end)'))()
-    assert(loadstring('mesecon:register_on_signal_off(function(pos, node) \n \
-                    if node.name == "mesecons_lightstone:lightstone_' .. name .. '_on" then \n \
-                        minetest.env:add_node(pos, {name="mesecons_lightstone:lightstone_' .. name .. '_off"}) \n \
-                        nodeupdate(pos) \n \
-                    end \n \
-                end)'))()
+
     minetest.register_craft({
 	    output = "node mesecons_lightstone:lightstone_" .. name .. "_off 1",
 	    recipe = {
@@ -33,7 +35,6 @@ function mesecon:lightstone_add(name, base_item, texture_off, texture_on)
 		    {'','group:mesecon_conductor_craftable',''},
 	    }
     })
-    mesecon:register_effector("mesecons_lightstone:lightstone_" .. name .. "_on", "mesecons_lightstone:lightstone_" .. name .. "_off")
 end
 
 

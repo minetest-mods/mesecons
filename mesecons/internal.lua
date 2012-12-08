@@ -2,7 +2,7 @@
 
 --Receptors
 function mesecon:is_receptor_node(nodename)
-	if minetest.registered_nodes[nodename]
+	if  minetest.registered_nodes[nodename]
 	and minetest.registered_nodes[nodename].mesecons
 	and minetest.registered_nodes[nodename].mesecons.receptor
 	and minetest.registered_nodes[nodename].mesecons.receptor.state == mesecon.state.on then
@@ -43,7 +43,7 @@ function mesecon:receptor_get_rules(node)
 			return rules
 		end
 	end
-	for i, receptor in ipairs(mesecon.receptors) do --TODO
+	for _, receptor in ipairs(mesecon.receptors) do --TODO
 		if receptor.onstate == node.name or receptor.offstate == node.name then
 			if receptor.get_rules ~= nil then
 				return receptor.get_rules(node.param2)
@@ -59,38 +59,38 @@ end
 
 -- Effectors
 function mesecon:is_effector_on(nodename)
-	for i, effector in ipairs(mesecon.effectors) do --TODO
-		if effector.onstate == nodename then
-			return true
-		end
-	end
 	if  minetest.registered_nodes[nodename]
 	and minetest.registered_nodes[nodename].mesecons
 	and minetest.registered_nodes[nodename].mesecons.effector
 	and minetest.registered_nodes[nodename].mesecons.effector.state == mesecon.state.on then
 		return true
 	end
+	for i, effector in ipairs(mesecon.effectors) do --TODO
+		if effector.onstate == nodename then
+			return true
+		end
+	end
 	return false
 end
 
 function mesecon:is_effector_off(nodename)
-	for i, effector in ipairs(mesecon.effectors) do --TODO
-		if effector.offstate == nodename then
-			return true
-		end
-	end
 	if  minetest.registered_nodes[nodename]
 	and minetest.registered_nodes[nodename].mesecons
 	and minetest.registered_nodes[nodename].mesecons.effector
 	and minetest.registered_nodes[nodename].mesecons.effector.state == mesecon.state.off then
 		return true
 	end
+	for i, effector in ipairs(mesecon.effectors) do --TODO
+		if effector.offstate == nodename then
+			return true
+		end
+	end
 	return false
 end
 
 function mesecon:is_effector(nodename)
-	if minetest.registered_nodes[nodename]
-	and  minetest.registered_nodes[nodename].mesecons
+	if  minetest.registered_nodes[nodename]
+	and minetest.registered_nodes[nodename].mesecons
 	and minetest.registered_nodes[nodename].mesecons.effector then
 		return true
 	end
@@ -125,22 +125,40 @@ end
 
 --Signals
 
-function mesecon:activate(pos) --TODO
+function mesecon:activate(pos)
 	local node = minetest.env:get_node(pos)
-	for i, action in ipairs(mesecon.actions_on) do
+	if  minetest.registered_nodes[node.name]
+	and minetest.registered_nodes[node.name].mesecons
+	and minetest.registered_nodes[node.name].mesecons.effector
+	and minetest.registered_nodes[node.name].mesecons.effector.action_on then
+		minetest.registered_nodes[node.name].mesecons.effector.action_on (pos, node)
+	end
+	for _, action in ipairs(mesecon.actions_on) do --TODO
 		action(pos, node) 
 	end
 end
 
 function mesecon:deactivate(pos) --TODO
-	local node = minetest.env:get_node(pos)	
-	for i, action in ipairs(mesecon.actions_off) do
+	local node = minetest.env:get_node(pos)
+	if  minetest.registered_nodes[node.name]
+	and minetest.registered_nodes[node.name].mesecons
+	and minetest.registered_nodes[node.name].mesecons.effector
+	and minetest.registered_nodes[node.name].mesecons.effector.action_off then
+		minetest.registered_nodes[node.name].mesecons.effector.action_off(pos, node)
+	end
+	for _, action in ipairs(mesecon.actions_off) do
 		action(pos, node) 
 	end
 end
 
 function mesecon:changesignal(pos) --TODO
-	local node = minetest.env:get_node(pos)	
+	local node = minetest.env:get_node(pos)
+	if  minetest.registered_nodes[nodename]
+	and minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.effector
+	and minetest.registered_nodes[nodename].mesecons.effector.action_change then
+		minetest.registered_nodes[nodename].mesecons.action_change(pos, node)
+	end
 	for i, action in ipairs(mesecon.actions_change) do
 		action(pos, node) 
 	end
@@ -221,7 +239,7 @@ function mesecon:is_conductor_off(nodename)
 end
 
 function mesecon:is_conductor(nodename)
-	--TODO: simplify
+	--TODO
 	return mesecon:is_conductor_on(nodename) or mesecon:is_conductor_off(nodename)
 end
 
