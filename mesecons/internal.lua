@@ -2,6 +2,11 @@
 
 --Receptors
 function mesecon:is_receptor_node(nodename)
+	if  minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.receptor
+	and minetest.registered_nodes[nodename].mesecons.receptor.state == mesecon.state.on then
+		return true
+	end
 	for _, receptor in ipairs(mesecon.receptors) do
 		if receptor.onstate == nodename then
 			return true
@@ -11,6 +16,11 @@ function mesecon:is_receptor_node(nodename)
 end
 
 function mesecon:is_receptor_node_off(nodename, pos, ownpos)
+	if  minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.receptor
+	and minetest.registered_nodes[nodename].mesecons.receptor.state == mesecon.state.off then
+		return true
+	end
 	for _, receptor in ipairs(mesecon.receptors) do
 		if receptor.offstate == nodename then
 			return true
@@ -20,7 +30,16 @@ function mesecon:is_receptor_node_off(nodename, pos, ownpos)
 end
 
 function mesecon:receptor_get_rules(node)
-	for i, receptor in ipairs(mesecon.receptors) do
+	if  minetest.registered_nodes[node.name].mesecons
+	and minetest.registered_nodes[node.name].mesecons.receptor then
+		local rules = minetest.registered_nodes[node.name].mesecons.receptor.rules
+		if type(rules) == 'function' then
+			return rules(node)
+		else
+			return rules
+		end
+	end
+	for i, receptor in ipairs(mesecon.receptors) do --TODO
 		if receptor.onstate == node.name or receptor.offstate == node.name then
 			if receptor.get_rules ~= nil then
 				return receptor.get_rules(node.param2)
@@ -36,28 +55,51 @@ end
 
 -- Effectors
 function mesecon:is_effector_on(nodename)
-	for i, effector in ipairs(mesecon.effectors) do
+	for i, effector in ipairs(mesecon.effectors) do --TODO
 		if effector.onstate == nodename then
 			return true
 		end
+	end
+	if  minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.effector
+	and minetest.registered_nodes[nodename].mesecons.effector.state == mesecon.state.on then
+		return true
 	end
 	return false
 end
 
 function mesecon:is_effector_off(nodename)
-	for i, effector in ipairs(mesecon.effectors) do
+	for i, effector in ipairs(mesecon.effectors) do --TODO
 		if effector.offstate == nodename then
 			return true
 		end
+	end
+	if  minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.effector
+	and minetest.registered_nodes[nodename].mesecons.effector.state == mesecon.state.off then
+		return true
 	end
 	return false
 end
 
 function mesecon:is_effector(nodename)
-	return mesecon:is_effector_on(nodename) or mesecon:is_effector_off(nodename)
+	if  minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.effector then
+		return true
+	end
+	return mesecon:is_effector_on(nodename) or mesecon:is_effector_off(nodename) --TODO
 end
 
 function mesecon:effector_get_input_rules(node)
+	if  minetest.registered_nodes[node.name].mesecons
+	and minetest.registered_nodes[node.name].mesecons.effector then
+		local rules = minetest.registered_nodes[node.name].mesecons.effector.rules
+		if type(rules) == 'function' then
+			return rules(node)
+		else
+			return rules
+		end
+	end
 	for i, effector in ipairs(mesecon.effectors) do
 		if effector.onstate  == node.name 
 		or effector.offstate == node.name then
@@ -74,21 +116,21 @@ end
 
 --Signals
 
-function mesecon:activate(pos)
+function mesecon:activate(pos) --TODO
 	local node = minetest.env:get_node(pos)	
 	for i, action in ipairs(mesecon.actions_on) do
 		action(pos, node) 
 	end
 end
 
-function mesecon:deactivate(pos)
+function mesecon:deactivate(pos) --TODO
 	local node = minetest.env:get_node(pos)	
 	for i, action in ipairs(mesecon.actions_off) do
 		action(pos, node) 
 	end
 end
 
-function mesecon:changesignal(pos)
+function mesecon:changesignal(pos) --TODO
 	local node = minetest.env:get_node(pos)	
 	for i, action in ipairs(mesecon.actions_change) do
 		action(pos, node) 
@@ -112,7 +154,11 @@ end
 --Conductor system stuff
 
 function mesecon:get_conductor_on(offstate)
-	for i, conductor in ipairs(mesecon.conductors) do
+	if  minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.condcutor then
+		return minetest.registered_nodes[nodename].mesecons.conductor.onstate
+	end
+	for i, conductor in ipairs(mesecon.conductors) do --TODO
 		if conductor.offstate == offstate then
 			return conductor.onstate
 		end
@@ -121,7 +167,11 @@ function mesecon:get_conductor_on(offstate)
 end
 
 function mesecon:get_conductor_off(onstate)
-	for i, conductor in ipairs(mesecon.conductors) do
+	if  minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.condcutor then
+		return minetest.registered_nodes[nodename].mesecons.conductor.offstate
+	end
+	for i, conductor in ipairs(mesecon.conductors) do --TODO
 		if conductor.onstate == onstate then
 			return conductor.offstate
 		end
@@ -130,7 +180,12 @@ function mesecon:get_conductor_off(onstate)
 end
 
 function mesecon:is_conductor_on(name)
-	for i, conductor in ipairs(mesecon.conductors) do
+	if  minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.condcutor
+	and minetest.registered_nodes[nodename].mesecons.condcutor.state == mesecon.state.on then
+		return true
+	end
+	for i, conductor in ipairs(mesecon.conductors) do --TODO
 		if conductor.onstate == name then
 			return true
 		end
@@ -139,7 +194,12 @@ function mesecon:is_conductor_on(name)
 end
 
 function mesecon:is_conductor_off(name)
-	for i, conductor in ipairs(mesecon.conductors) do
+	if  minetest.registered_nodes[nodename].mesecons
+	and minetest.registered_nodes[nodename].mesecons.condcutor
+	and minetest.registered_nodes[nodename].mesecons.condcutor.state == mesecon.state.off then
+		return true
+	end
+	for i, conductor in ipairs(mesecon.conductors) do --TODO
 		if conductor.offstate == name then
 			return true
 		end
@@ -148,11 +208,21 @@ function mesecon:is_conductor_off(name)
 end
 
 function mesecon:is_conductor(name)
+	--TODO: simplify
 	return mesecon:is_conductor_on(name) or mesecon:is_conductor_off(name)
 end
 
 function mesecon:conductor_get_rules(node)
-	for i, conductor in ipairs(mesecon.conductors) do
+	if  minetest.registered_nodes[node.name].mesecons
+	and minetest.registered_nodes[node.name].mesecons.condcutor then
+		local rules = minetest.registered_nodes[node.name].mesecons.condcutor.rules
+		if type(rules) == 'function' then
+			return rules(node)
+		else
+			return rules
+		end
+	end
+	for i, conductor in ipairs(mesecon.conductors) do --TODO
 		if conductor.onstate  == node.name 
 		or conductor.offstate == node.name then
 			if conductor.get_rules ~= nil then
