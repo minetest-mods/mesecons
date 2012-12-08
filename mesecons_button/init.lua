@@ -28,6 +28,7 @@ minetest.register_node("mesecons_button:button_off", {
     groups = {dig_immediate=2, mesecon = 3, mesecon_needs_receiver = 1},
     description = "Button",
 })
+
 minetest.register_node("mesecons_button:button_on", {
 	drawtype = "nodebox",
 	tiles = {
@@ -108,4 +109,3 @@ mesecon:add_rules("button", {
 
 mesecon:add_receptor_node_off("mesecons_button:button_off", nil, mesecon.button_get_rules)
 mesecon:add_receptor_node("mesecons_button:button_on", nil, mesecon.button_get_rules)
-

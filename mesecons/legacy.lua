@@ -18,13 +18,12 @@ end
 
 function mesecon:register_receptor(onstate, offstate, rules, get_rules)
 	if get_rules == nil and rules == nil then
-		rules = mesecon:get_rules("default")
+		rules=mesecon:get_rules("default")
 	end
-
 	table.insert(mesecon.receptors, 
 		{onstate = onstate, 
 		 offstate = offstate, 
-		 rules = rules,
+		 rules = input_rules, 
 		 get_rules = get_rules})
 end
 
