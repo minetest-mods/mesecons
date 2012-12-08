@@ -32,7 +32,7 @@ minetest.register_node("mesecons_button:button_off", {
 	description = "Button",
 	on_punch = function (pos, node)
 		mesecon:swap_node(pos, "mesecons_button:button_on")
-		local rules=mesecon.button_get_rules(node.param2)
+		local rules=mesecon.button_get_rules(node)
       	 	mesecon:receptor_on(pos, rules)
 		minetest.after(1, mesecon.button_turnoff, {pos=pos, param2=node.param2})
 	end,
@@ -81,7 +81,7 @@ minetest.register_node("mesecons_button:button_on", {
 mesecon.button_turnoff = function (params)
 	if minetest.env:get_node(params.pos).name=="mesecons_button:button_on" then
 		mesecon:swap_node(params.pos, "mesecons_button:button_off")
-		local rules=mesecon.button_get_rules(params.param2)
+		local rules=mesecon.button_get_rules(params)
 		mesecon:receptor_off(params.pos, rules)
 	end
 end

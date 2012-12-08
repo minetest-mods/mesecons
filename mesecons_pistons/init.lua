@@ -1,5 +1,11 @@
 --PISTONS
 
+local update = function(pos, node)
+	local timer = minetest.env:get_node_timer(pos)
+	timer:stop()
+	timer:start(0)
+end
+
 minetest.register_node("mesecons_pistons:piston_normal", {
 	description = "Piston",
 	tiles = {"jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_tb.png", "jeija_piston_side.png"},
@@ -25,8 +31,10 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 		end
 		return false
 	end,
+	mesecons = {effector={
+		action_change  = update
+	}}
 })
-mesecon:register_effector("mesecons_pistons:piston_normal", "mesecons_pistons:piston_normal")
 
 minetest.register_node("mesecons_pistons:piston_sticky", {
 	description = "Sticky Piston",
@@ -53,8 +61,10 @@ minetest.register_node("mesecons_pistons:piston_sticky", {
 		end
 		return false
 	end,
+	mesecons = {effector={
+		action_change  = update
+	}}
 })
-mesecon:register_effector("mesecons_pistons:piston_sticky", "mesecons_pistons:piston_sticky")
 
 minetest.register_craft({
 	output = '"mesecons_pistons:piston_normal" 2',
@@ -126,18 +136,6 @@ minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 
 mesecon:register_mvps_stopper("mesecons_pistons:piston_pusher_normal")
 mesecon:register_mvps_stopper("mesecons_pistons:piston_pusher_sticky")
-
-local update = function(pos, node)
-	if node.name ~= "mesecons_pistons:piston_normal" and node.name ~= "mesecons_pistons:piston_sticky" then
-		return
-	end
-
-	local timer = minetest.env:get_node_timer(pos)
-	timer:stop()
-	timer:start(0)
-end
-mesecon:register_on_signal_on(update) --push action
-mesecon:register_on_signal_off(update) --pull action
 
 function mesecon:piston_push(pos)
 	local node = minetest.env:get_node(pos)

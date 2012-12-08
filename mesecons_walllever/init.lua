@@ -1,4 +1,22 @@
 -- WALL LEVER
+local walllever_get_rules = function(node)
+	local rules = {
+		{x = 1,  y = 0, z = 0},
+		{x = 1,  y = 1, z = 0},
+		{x = 1,  y =-1, z = 0},
+		{x = 1,  y =-1, z = 1},
+		{x = 1,  y =-1, z =-1},
+		{x = 2,  y = 0, z = 0}}
+	if node.param2 == 2 then
+		rules=mesecon:rotate_rules_left(rules)
+	elseif node.param2 == 3 then
+		rules=mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
+	elseif node.param2 == 0 then
+		rules=mesecon:rotate_rules_right(rules)
+	end
+	return rules
+end
+
 minetest.register_node("mesecons_walllever:wall_lever_off", {
 	drawtype = "nodebox",
 	tiles = {
@@ -27,8 +45,16 @@ minetest.register_node("mesecons_walllever:wall_lever_off", {
 			 { -2/16, -1/16, 3/16, 2/16,  1/16, 4/16 },	-- the lever "hinge"
 			 { -1/16, -8/16, 4/16, 1/16,  0,    6/16 }}	-- the lever itself.
 	},
-	groups = {dig_immediate=2, mesecon = 3, mesecon_needs_receiver = 1},
+	groups = {dig_immediate=2, mesecon_needs_receiver = 1},
 	description="Lever",
+	on_punch = function (pos, node)
+		mesecon:swap_node(pos, "mesecons_walllever:wall_lever_on")
+		mesecon:receptor_on(pos, walllever_get_rules(node))
+	end,
+	mesecon = {receptor = {
+		rules = walllever_get_rules,
+		state = mesecon.state.off
+	}}
 })
 minetest.register_node("mesecons_walllever:wall_lever_on", {
 	drawtype = "nodebox",
@@ -61,18 +87,15 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 	groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 3, mesecon_needs_receiver = 1},
 	drop = '"mesecons_walllever:wall_lever_off" 1',
 	description="Lever",
+	on_punch = function (pos, node)
+		mesecon:swap_node(pos, "mesecons_walllever:wall_lever_off")
+		mesecon:receptor_off(pos, walllever_get_rules(node))
+	end,
+	mesecon = {receptor = {
+		rules = walllever_get_rules,
+		state = mesecon.state.on
+	}}
 })
-
-minetest.register_on_punchnode(function(pos, node, puncher)
-	if node.name == "mesecons_walllever:wall_lever_off" then
-		minetest.env:add_node(pos, {name="mesecons_walllever:wall_lever_on",param2=node.param2})
-		mesecon:receptor_on(pos, mesecon.walllever_get_rules(node.param2))
-	end
-	if node.name == "mesecons_walllever:wall_lever_on" then
-		minetest.env:add_node(pos, {name="mesecons_walllever:wall_lever_off",param2=node.param2})
-		mesecon:receptor_off(pos, mesecon.walllever_get_rules(node.param2))
-	end
-end)
 
 minetest.register_craft({
 	output = '"mesecons_walllever:wall_lever_off" 2',
@@ -82,29 +105,3 @@ minetest.register_craft({
 		{'"default:stick"'},
 	}
 })
-
-mesecon:add_rules("walllever", {
-{x = 1,  y = 0, z = 0},
-{x = 1,  y = 1, z = 0},
-{x = 1,  y =-1, z = 0},
-{x = 1,  y =-1, z = 1},
-{x = 1,  y =-1, z =-1},
-{x = 2,  y = 0, z = 0},})
-
-
-mesecon.walllever_get_rules = function(param2)
-	local rules=mesecon:get_rules("walllever")
-	if param2 == 2 then
-		rules=mesecon:rotate_rules_left(rules)
-	end
-	if param2 == 3 then
-		rules=mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
-	end
-	if param2 == 0 then
-		rules=mesecon:rotate_rules_right(rules)
-	end
-	return rules
-end
-
-mesecon:add_receptor_node("mesecons_walllever:wall_lever_on", nil, mesecon.walllever_get_rules)
-mesecon:add_receptor_node_off("mesecons_walllever:wall_lever_off", nil, mesecon.walllever_get_rules)

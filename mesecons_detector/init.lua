@@ -9,8 +9,7 @@ minetest.register_node("mesecons_detector:object_detector_off", {
 	groups = {cracky=3},
 	description="Player Detector",
 	mesecons = {receptor = {
-		state = mesecon.state.off,
-		rules = mesecon.rules.pressurplatelike
+		state = mesecon.state.off
 	}}
 })
 
@@ -21,8 +20,7 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	groups = {cracky=3,not_in_creative_inventory=1},
 	drop = 'mesecons_detector:object_detector_off',
 	mesecons = {receptor = {
-		state = mesecon.state.on,
-		rules = mesecon.rules.pressurplatelike
+		state = mesecon.state.on
 	}}
 })
 
@@ -50,7 +48,7 @@ minetest.register_abm(
 				end
 				local objpos=obj:getpos()
 				minetest.env:add_node(pos, {name="mesecons_detector:object_detector_on"})
-				mesecon:receptor_on(pos, mesecon:get_rules("pressureplate"))
+				mesecon:receptor_on(pos)
 			end
 		end
 	end,
@@ -78,7 +76,7 @@ minetest.register_abm(
 		end
 		if objectfound==0 then
 			minetest.env:add_node(pos, {name="mesecons_detector:object_detector_off"})
-			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
+			mesecon:receptor_off(pos)
 		end
 	end,
 })

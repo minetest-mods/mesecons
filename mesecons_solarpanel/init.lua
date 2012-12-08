@@ -21,8 +21,10 @@ minetest.register_node("mesecons_solarpanel:solar_panel_on", {
 		wall_side   = { -8/16, -7/16, -7/16, -7/16,  7/16, 7/16 },
 	},
 	drop = "mesecons_solarpanel:solar_panel_off",
-	groups = {dig_immediate=3, mesecon = 2, not_in_creative_inventory = 1},
-    	description="Solar Panel",
+	groups = {dig_immediate=3, not_in_creative_inventory = 1},
+	mesecons = {receptor = {
+		state = mesecon.state.on
+	}}
 })
 
 -- Solar Panel
@@ -47,8 +49,11 @@ minetest.register_node("mesecons_solarpanel:solar_panel_off", {
 		wall_top    = { -7/16,  7/16, -7/16,  7/16,  8/16, 7/16 },
 		wall_side   = { -8/16, -7/16, -7/16, -7/16,  7/16, 7/16 },
 	},
-	groups = {dig_immediate=3, mesecon = 2},
+	groups = {dig_immediate=3},
     	description="Solar Panel",
+	mesecons = {receptor = {
+		state = mesecon.state.off
+	}}
 })
 
 minetest.register_craft({
@@ -86,6 +91,3 @@ minetest.register_abm(
 		end
 	end,
 })
-
-mesecon:add_receptor_node("mesecons_solarpanel:solar_panel_on")
-mesecon:add_receptor_node_off("mesecons_solarpanel:solar_panel_off")

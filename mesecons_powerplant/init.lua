@@ -1,4 +1,5 @@
- -- The POWER_PLANT
+-- The POWER_PLANT
+-- Just emits power. always.
 
 minetest.register_node("mesecons_powerplant:power_plant", {
 	drawtype = "plantlike",
@@ -14,6 +15,9 @@ minetest.register_node("mesecons_powerplant:power_plant", {
 		type = "fixed",
 		fixed = {-0.1, -0.5, -0.1, 0.1, -0.5+0.6, 0.1},
 	},
+	mesecons = {receptor = {
+		state = mesecon.state.on
+	}}
 })
 
 minetest.register_craft({
@@ -24,5 +28,3 @@ minetest.register_craft({
 		{'"default:sapling"'},
 	}
 })
-
-mesecon:add_receptor_node("mesecons_powerplant:power_plant")

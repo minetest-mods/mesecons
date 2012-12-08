@@ -1,15 +1,25 @@
 minetest.register_node("mesecons_noteblock:noteblock", {
 	description = "Noteblock",
 	tiles = {"mesecons_noteblock.png"},
-	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2, mesecon = 2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2},
 	drawtype = "allfaces_optional",
 	visual_scale = 1.3,
 	paramtype="light",
 	after_place_node = function(pos)
 		minetest.env:add_node(pos, {name="mesecons_noteblock:noteblock", param2=0})
-	end
+	end,
+	on_punch = function (pos, node) -- change sound when punched
+		local param2 = node.param2+1
+		if param2==12 then param2=0 end
+		minetest.env:add_node(pos, {name = node.name, param2 = param2})
+		mesecon.noteblock_play(pos, param2)
+	end,
+	mesecons = {effector = { -- play sound when activated
+		action_on = function (pos, node)
+			mesecon.noteblock_play(pos, node.param2)
+		end
+	}}
 })
-mesecon:register_effector("mesecons_noteblock:noteblock", "mesecons_noteblock:noteblock")
 
 minetest.register_craft({
 	output = '"mesecons_noteblock:noteblock" 1',
@@ -19,15 +29,6 @@ minetest.register_craft({
 		{"default:wood", "default:wood", "default:wood"},
 	}
 })
-
-minetest.register_on_punchnode(function (pos, node)
-	if node.name=="mesecons_noteblock:noteblock" then
-		local param2 = node.param2+1
-		if param2==12 then param2=0 end
-		minetest.env:add_node(pos, {name=node.name, param2=param2})
-		mesecon.noteblock_play(pos, param2)
-	end
-end)
 
 mesecon.noteblock_play = function (pos, param2)
 	local soundname
@@ -75,9 +76,3 @@ mesecon.noteblock_play = function (pos, param2)
 	minetest.sound_play(soundname,
 	{pos = pos, gain = 1.0, max_hear_distance = 32,})
 end
-
-mesecon:register_on_signal_on(function(pos, node)
-	if node.name=="mesecons_noteblock:noteblock" then
-		mesecon.noteblock_play(pos, node.param2)
-	end
-end)

@@ -25,7 +25,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_off", {
 			local objpos=obj:getpos()
 			if objpos.y>pos.y-1 and objpos.y<pos.y then
 				minetest.env:add_node(pos, {name="mesecons_pressureplates:pressure_plate_wood_on"})
-				mesecon:receptor_on(pos, mesecon:get_rules("pressureplate"))
+				mesecon:receptor_on(pos)
 			end
 		end
 		return true
@@ -57,7 +57,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 		local objs = minetest.env:get_objects_inside_radius(pos, 1)
 		if objs[1]==nil then
 			minetest.env:add_node(pos, {name="mesecons_pressureplates:pressure_plate_wood_off"})
-			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
+			mesecon:receptor_off(pos)
 		end
 		return true
 	end,
@@ -92,7 +92,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_off", {
 		type = "fixed",
 		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
-	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3, mesecon = 2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
     	description="Stone Pressure Plate",
 	
 	on_timer = function(pos, elapsed)
@@ -101,7 +101,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_off", {
 			local objpos=obj:getpos()
 			if objpos.y>pos.y-1 and objpos.y<pos.y then
 				minetest.env:add_node(pos, {name="mesecons_pressureplates:pressure_plate_stone_on"})
-				mesecon:receptor_on(pos, mesecon:get_rules("pressureplate"))
+				mesecon:receptor_on(pos)
 			end
 		end
 		return true
@@ -110,6 +110,10 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_off", {
 	on_construct = function(pos)
 		minetest.env:get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 	end,
+
+	mesecons = {receptor = {
+		state = mesecon.state.off
+	}}
 })
 
 minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
@@ -126,14 +130,14 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
 		type = "fixed",
 		fixed = { -7/16, -8/16, -7/16, 7/16, -31/64, 7/16 },
 	},
-	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1, mesecon = 2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1},
 	drop='"mesecons_pressureplates:pressure_plate_stone_off" 1',
 	
 	on_timer = function(pos, elapsed)
 		local objs = minetest.env:get_objects_inside_radius(pos, 1)
 		if objs[1]==nil then
 			minetest.env:add_node(pos, {name="mesecons_pressureplates:pressure_plate_stone_off"})
-			mesecon:receptor_off(pos, mesecon:get_rules("pressureplate"))
+			mesecon:receptor_off(pos)
 		end
 		return true
 	end,
@@ -141,6 +145,10 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
 	on_construct = function(pos)
 		minetest.env:get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 	end,
+
+	mesecons = {receptor = {
+		state = mesecon.state.off
+	}}
 })
 
 minetest.register_craft({
@@ -149,9 +157,3 @@ minetest.register_craft({
 		{'"default:cobble"', '"default:cobble"'},
 	}
 })
-
-mesecon:add_receptor_node("mesecons_pressureplates:pressure_plate_wood_on", mesecon:get_rules("pressureplate"))
-mesecon:add_receptor_node_off("mesecons_pressureplates:pressure_plate_wood_off", mesecon:get_rules("pressureplate"))
-
-mesecon:add_receptor_node("mesecons_pressureplates:pressure_plate_stone_on", mesecon:get_rules("pressureplate"))
-mesecon:add_receptor_node_off("mesecons_pressureplates:pressure_plate_stone_off", mesecon:get_rules("pressureplate"))

@@ -40,7 +40,6 @@ local delayer_turnoff = function(params)
 end
 
 local delayer_update = function(pos, node)
-	print("update")
 	if string.find(node.name, "mesecons_delayer:delayer_off")~=nil then
 		local time = 0
 		if node.name=="mesecons_delayer:delayer_off_1" then
