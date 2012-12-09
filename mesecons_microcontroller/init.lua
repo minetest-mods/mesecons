@@ -129,7 +129,7 @@ minetest.register_node(nodename, {
 		update_yc(pos)
 	end,
 	mesecons = mesecons,
-	on_dig = function (pos, node)
+	after_dig_node = function (pos, node)
 		rules = mesecon:get_rules(node.name)
 		mesecon:receptor_off(pos, rules)
 	end,
