@@ -2,6 +2,15 @@
 -- A button that when pressed emits power for 1 second
 -- and then turns off again
 
+mesecon.button_turnoff = function (pos)
+	local node = minetest.env:get_node(pos)
+	if node.name=="mesecons_button:button_on" then --has not been dug
+		mesecon:swap_node(pos, "mesecons_button:button_off")
+		local rules = mesecon.rules.buttonlike_get(node)
+		mesecon:receptor_off(pos, rules)
+	end
+end
+
 minetest.register_node("mesecons_button:button_off", {
 	drawtype = "nodebox",
 	tiles = {
@@ -32,13 +41,12 @@ minetest.register_node("mesecons_button:button_off", {
 	description = "Button",
 	on_punch = function (pos, node)
 		mesecon:swap_node(pos, "mesecons_button:button_on")
-		local rules=mesecon.button_get_rules(node)
-      	 	mesecon:receptor_on(pos, rules)
-		minetest.after(1, mesecon.button_turnoff, {pos=pos, param2=node.param2})
+      	 	mesecon:receptor_on(pos, mesecon.rules.buttonlike_get(node))
+		minetest.after(1, mesecon.button_turnoff, pos)
 	end,
 	mesecons = {receptor = {
 		state = mesecon.state.off,
-		rules = button_get_rules
+		rules = mesecon.rules.buttonlike_get
 	}}
 })
 
@@ -74,29 +82,9 @@ minetest.register_node("mesecons_button:button_on", {
 	description = "Button",
 	mesecons = {receptor = {
 		state = mesecon.state.on,
-		rules = button_get_rules
+		rules = mesecon.rules.buttonlike_get
 	}}
 })
-
-mesecon.button_turnoff = function (params)
-	if minetest.env:get_node(params.pos).name=="mesecons_button:button_on" then
-		mesecon:swap_node(params.pos, "mesecons_button:button_off")
-		local rules=mesecon.button_get_rules(params)
-		mesecon:receptor_off(params.pos, rules)
-	end
-end
-
-mesecon.button_get_rules = function(node)
-	local rules = mesecon.rules.buttonlike
-	if node.param2 == 2 then
-		rules=mesecon:rotate_rules_left(rules)
-	elseif node.param2 == 3 then
-		rules=mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
-	elseif node.param2 == 0 then
-		rules=mesecon:rotate_rules_right(rules)
-	end
-	return rules
-end
 
 minetest.register_craft({
 	output = '"mesecons_button:button_off" 2',

@@ -1,8 +1,8 @@
 rcvboxes = {
 	{ -3/16, -3/16   , -8/16       , 3/16,     3/16, -13/32       }, -- the smaller bump	
-	{ -5/32, -5/32   , -13/32      , 5/32,     5/32, -12/32       }, -- the receiver itself
-	{ -3/32, -.5-1/32, -.5         , 3/32,    0    , -.5002+3/32  }, -- the vertical wire bit
-	{ -3/32, -17/32  , -7/16+0.002 , 3/32,   -13/32,  16/32+0.001 }  -- the horizontal wire
+	{ -1/32, -1/32   , -3/2        , 1/32,     1/32, -1/2         }, -- the wire through the block
+	{ -2/32, -.5-1/32, -.5         , 2/32,    0    , -.5002+3/32  }, -- the vertical wire bit
+	{ -2/32, -17/32  , -7/16+0.002 , 2/32,   -14/32,  16/32+0.001 }  -- the horizontal wire
 }
 
 local receiver_get_rules = function (node)
@@ -31,6 +31,7 @@ minetest.register_node("mesecons_receiver:receiver_on", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
+	walkable = false,
 	selection_box = {
              	type = "fixed",
 		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }
@@ -62,6 +63,7 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
+	walkable = false,
 	selection_box = {
              	type = "fixed",
 		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }
@@ -113,7 +115,7 @@ function mesecon:receiver_place(rcpt_pos)
 		minetest.env:dig_node(pos)
 		if mesecon:is_power_on(rcpt_pos) then
 			minetest.env:add_node(pos, {name = "mesecons_receiver:receiver_on", param2 = node.param2})
-			mesecon:receptor_on(pos, receiver_get_rules(node.param2))
+			mesecon:receptor_on(pos, receiver_get_rules(node))
 		else
 			minetest.env:add_node(pos, {name = "mesecons_receiver:receiver_off", param2 = node.param2})
 		end
