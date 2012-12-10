@@ -1,57 +1,111 @@
-local outrules = {
-	{x=1, y=0, z=0},
-}
-
-local oneinput = {
-	{x=-1, y=0, z=0},
-	{x=1, y=0, z=0},
-}
-
-local twoinputs = {
-	{x=0, y=0, z=1},
-	{x=0, y=0, z=-1},
-	{x=1, y=0, z=0},
-}
-
-function get_gate_rules(param2, onlyout, singleinput)
-	if not param2 then return end
-	if onlyout then
-		rules = outrules
-	else
-		if singleinput then
-			rules = oneinput
-		else
-			rules = twoinputs
-		end
-	end
-	for rotations = 0, param2 - 1 do
+function gate_rotate_rules(node)
+	for rotations = 0, node.param2 - 1 do
 		rules = mesecon:rotate_rules_left(rules)
 	end
 	return rules
 end
 
-function get_gate_rules_one(node)
-	print("gettin"..dump(node).." | PARAM2: "..node.param2)
-	return get_gate_rules(node.param2, false, true)
+function gate_get_output_rules(node)
+	rules = {{x=1, y=0, z=0}}
+	return gate_rotate_rules(node)
 end
 
-function get_gate_rules_two(node)
-	return get_gate_rules(node.param2, false, false)
+function gate_get_input_rules_oneinput(node)
+	rules = {{x=-1, y=0, z=0}, {x=1, y=0, z=0}}
+	return gate_rotate_rules(node)
 end
 
-function get_gate_rules_out(node)
-	return get_gate_rules(node.param2, true)
+function gate_get_input_rules_twoinputs(node)
+	rules = {
+	{x=0, y=0, z=1},
+	{x=0, y=0, z=-1},
+	{x=1, y=0, z=0}}
+	return gate_rotate_rules(node)
 end
 
-gates = {"diode", "not", "nand", "and", "xor"}
-for g in ipairs(gates) do gate = gates[g]
-	if g < 3 then
-		get_rules = get_gate_rules_one
-	else
-		get_rules = get_gate_rules_two
+function update_gate(pos)
+	gate = get_gate(pos)
+	L = rotate_ports(
+		yc_get_real_portstates(pos),
+		minetest.env:get_node(pos).param2
+	)
+	if gate == "diode" then
+		set_gate(pos, L.a)
+	elseif gate == "not" then
+		set_gate(pos, not L.a)
+	elseif gate == "nand" then
+		set_gate(pos, not(L.b and L.d))
+	elseif gate == "and" then
+		set_gate(pos, L.b and L.d)
+	elseif gate == "xor" then
+		set_gate(pos, (L.b and not L.d) or (not L.b and L.d))
 	end
-	for on=0,1 do
-		nodename = "mesecons_gates:"..gate
+end
+
+function set_gate(pos, on)
+	gate = get_gate(pos)
+	local meta = minetest.env:get_meta(pos)
+	if on ~= gate_state(pos) then
+		yc_heat(meta)
+		minetest.after(0.5, yc_cool, meta)
+		if yc_overheat(meta) then
+			pop_gate(pos)
+		else
+			if on then
+				mesecon:swap_node(pos, "mesecons_gates:"..gate.."_on")
+				mesecon:receptor_on(pos,
+				gate_get_output_rules(minetest.env:get_node(pos)))
+			else
+				mesecon:swap_node(pos, "mesecons_gates:"..gate.."_off")
+				mesecon:receptor_off(pos,
+				gate_get_output_rules(minetest.env:get_node(pos)))
+			end
+		end
+	end
+end
+
+function get_gate(pos)
+	return minetest.registered_nodes[minetest.env:get_node(pos).name].mesecons_gate
+end
+
+function gate_state(pos)
+	name = minetest.env:get_node(pos).name
+	return string.find(name, "_on") ~= nil
+end
+
+function pop_gate(pos)
+	gate = get_gate(pos)
+	minetest.env:remove_node(pos)
+	minetest.after(0.2, yc_overheat_off, pos)
+	minetest.env:add_item(pos, "mesecons_gates:"..gate.."_off")
+end
+
+function rotate_ports(L, param2)
+	for rotations=0, param2-1 do
+		port = L.a
+		L.a = L.b
+		L.b = L.c
+		L.c = L.d
+		L.d = port
+	end
+	return L
+end
+
+gates = {
+{name = "diode", inputnumber = 1}, 
+{name = "not"  , inputnumber = 1}, 
+{name = "nand" , inputnumber = 2},
+{name = "and"  , inputnumber = 2},
+{name = "xor"  , inputnumber = 2}}
+
+for i, gate in ipairs(gates) do
+	if gate.inputnumber == 1 then
+		get_rules = gate_get_input_rules_oneinput
+	elseif gate.inputnumber == 2 then
+		get_rules = gate_get_input_rules_twoinputs
+	end
+	for on = 0, 1 do
+		nodename = "mesecons_gates:"..gate.name
 		if on == 1 then
 			onoff = "on"
 			drop = nodename.."_off"
@@ -61,13 +115,13 @@ for g in ipairs(gates) do gate = gates[g]
 		else
 			onoff = "off"
 			nodename = nodename.."_"..onoff
-			description = gate.." Gate"
+			description = gate.name.." Gate"
 			groups = {dig_immediate=2}
 		end
 
 		tiles = "jeija_microcontroller_bottom.png^"..
 			"jeija_gate_"..onoff..".png^"..
-			"jeija_gate_"..gate..".png"
+			"jeija_gate_"..gate.name..".png"
 
 		node_box = {
 			type = "fixed",
@@ -100,95 +154,21 @@ for g in ipairs(gates) do gate = gates[g]
 			end,
 			groups = groups,
 			drop = drop,
+			mesecons_gate = gate.name,
 			mesecons =
 			{
 				receptor =
 				{
 					state = mesecon_state,
-					rules = get_gate_rules_out
+					rules = gate_get_output_rules
 				},
 				effector =
 				{
 					rules = get_rules,
-					action_change = function (pos, node)
-						update_gate(pos)
-					end
+					action_change = update_gate
 				}
 			}
 		})
-	end
-end
-
-function get_gate(pos)
-	return
-	string.gsub( 
-	string.gsub(
-	string.gsub(
-	minetest.env:get_node(pos).name
-	, "mesecons_gates:", "") --gate
-	,"_on", "")
-	,"_off", "")
-end
-
-function gate_state(pos)
-	name = minetest.env:get_node(pos).name
-	return string.find(name, "_on") ~= nil
-end
-
-function pop_gate(pos)
-	gate = get_gate(pos)
-	minetest.env:remove_node(pos)
-	minetest.after(0.2, yc_overheat_off, pos)
-	minetest.env:add_item(pos, "mesecons_gates:"..gate.."_off")
-end
-
-function set_gate(pos, on)
-	gate = get_gate(pos)
-	local meta = minetest.env:get_meta(pos)
-	if on ~= gate_state(pos) then
-		yc_heat(meta)
-		minetest.after(0.5, yc_cool, meta)
-		if yc_overheat(meta) then
-			pop_gate(pos)
-		else
-			if on then
-				mesecon:swap_node(pos, "mesecons_gates:"..gate.."_on")
-				mesecon:receptor_on(pos, get_gate_rules(param2, true))
-			else
-				mesecon:swap_node(pos, "mesecons_gates:"..gate.."_off")
-				mesecon:receptor_off(pos, all_rules)
-			end
-		end
-	end
-end
-
-function rotate_ports(L, param2)
-	for rotations=0, param2-1 do
-		port = L.a
-		L.a = L.b
-		L.b = L.c
-		L.c = L.d
-		L.d = port
-	end
-	return L
-end
-
-function update_gate(pos)
-	gate = get_gate(pos)
-	L = rotate_ports(
-		yc_get_real_portstates(pos),
-		minetest.env:get_node(pos).param2
-	)
-	if gate == "diode" then
-		set_gate(pos, L.a)	
-	elseif gate == "not" then
-		set_gate(pos, not L.a)
-	elseif gate == "nand" then
-		set_gate(pos, not(L.b and L.d))
-	elseif gate == "and" then
-		set_gate(pos, L.b and L.d)
-	elseif gate == "xor" then
-		set_gate(pos, (L.b and not L.d) or (not L.b and L.d))
 	end
 end
 
