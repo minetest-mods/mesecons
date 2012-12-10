@@ -70,6 +70,3 @@ minetest.register_abm({
 		mesecon:receptor_off(pos)
 	end,
 })
-
-mesecon:add_receptor_node("mesecons_blinkyplant:blinky_plant_on")
-mesecon:add_receptor_node_off("mesecons_blinkyplant:blinky_plant_off")
