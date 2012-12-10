@@ -1,16 +1,20 @@
-outrules = {
+local outrules = {
 	{x=1, y=0, z=0},
 }
-oneinput = {
+
+local oneinput = {
 	{x=-1, y=0, z=0},
 	{x=1, y=0, z=0},
 }
-twoinputs = {
+
+local twoinputs = {
 	{x=0, y=0, z=1},
 	{x=0, y=0, z=-1},
 	{x=1, y=0, z=0},
 }
+
 function get_gate_rules(param2, onlyout, singleinput)
+	if not param2 then return end
 	if onlyout then
 		rules = outrules
 	else
@@ -20,15 +24,25 @@ function get_gate_rules(param2, onlyout, singleinput)
 			rules = twoinputs
 		end
 	end
-	for rotations=0, param2-1 do
+	for rotations = 0, param2 - 1 do
 		rules = mesecon:rotate_rules_left(rules)
 	end
 	return rules
 end
 
-function get_gate_rules_one(param2) return get_gate_rules(param2, false, true) end
-function get_gate_rules_two(param2) return get_gate_rules(param2, false, false) end
-function get_gate_rules_out(param2) return get_gate_rules(param2, true) end
+function get_gate_rules_one(node)
+	print("gettin"..dump(node).." | PARAM2: "..node.param2)
+	return get_gate_rules(node.param2, false, true)
+end
+
+function get_gate_rules_two(node)
+	return get_gate_rules(node.param2, false, false)
+end
+
+function get_gate_rules_out(node)
+	return get_gate_rules(node.param2, true)
+end
+
 gates = {"diode", "not", "nand", "and", "xor"}
 for g in ipairs(gates) do gate = gates[g]
 	if g < 3 then
@@ -43,15 +57,12 @@ for g in ipairs(gates) do gate = gates[g]
 			drop = nodename.."_off"
 			nodename = nodename.."_"..onoff
 			description = "You hacker you!"
-			groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
-			mesecon:add_receptor_node(nodename, get_rules, get_gate_rules_out)
-			--mesecon:add_receptor_node(nodename, mesecon:get_rules("insulated_all"))
+			groups = {dig_immediate=2, not_in_creative_inventory=1}
 		else
 			onoff = "off"
 			nodename = nodename.."_"..onoff
 			description = gate.." Gate"
-			groups = {dig_immediate=2, mesecon = 3}
-			--mesecon:add_receptor_node_off(nodename, get_gate_rules_out)
+			groups = {dig_immediate=2}
 		end
 
 		tiles = "jeija_microcontroller_bottom.png^"..
@@ -64,6 +75,13 @@ for g in ipairs(gates) do gate = gates[g]
 				{-8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 			},
 		}
+
+		local mesecon_state
+		if on == 1 then
+			mesecon_state = mesecon.state.on
+		else
+			mesecon_state = mesecon.state.off
+		end
 
 		minetest.register_node(nodename, {
 			description = description,
@@ -82,10 +100,22 @@ for g in ipairs(gates) do gate = gates[g]
 			end,
 			groups = groups,
 			drop = drop,
-
+			mesecons =
+			{
+				receptor =
+				{
+					state = mesecon_state,
+					rules = get_gate_rules_out
+				},
+				effector =
+				{
+					rules = get_rules,
+					action_change = function (pos, node)
+						update_gate(pos)
+					end
+				}
+			}
 		})
-
-		mesecon:register_effector(nodename, nodename, all_rules, get_rules)
 	end
 end
 
@@ -121,22 +151,11 @@ function set_gate(pos, on)
 		if yc_overheat(meta) then
 			pop_gate(pos)
 		else
-			heat = meta:get_int("heat")
 			if on then
-				onoff = "_on"
-			else
-				onoff = "_off"
-			end
-			param2 = minetest.env:get_node(pos).param2
-			minetest.env:add_node(pos, {
-				name = "mesecons_gates:"..gate..onoff,
-				param2 = param2,
-			})
-			local meta2 = minetest.env:get_meta(pos)
-			meta2:set_int("heat", heat)
-			if on then
+				mesecon:swap_node(pos, "mesecons_gates:"..gate.."_on")
 				mesecon:receptor_on(pos, get_gate_rules(param2, true))
 			else
+				mesecon:swap_node(pos, "mesecons_gates:"..gate.."_off")
 				mesecon:receptor_off(pos, all_rules)
 			end
 		end
@@ -168,16 +187,10 @@ function update_gate(pos)
 		set_gate(pos, not(L.b and L.d))
 	elseif gate == "and" then
 		set_gate(pos, L.b and L.d)
-	else--if gate == "xor" then
+	elseif gate == "xor" then
 		set_gate(pos, (L.b and not L.d) or (not L.b and L.d))
 	end
 end
-
-mesecon:register_on_signal_change(function(pos,node)
-	if string.find(node.name, "mesecons_gates:")~=nil then
-		update_gate(pos)
-	end
-end)
 
 minetest.register_craft({
 	output = 'mesecons_gates:diode_off',
