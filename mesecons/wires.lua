@@ -41,7 +41,6 @@ else  -- NEW STYLE WIRES
 
 box_center = {-1/16, -.5, -1/16, 1/16, -.5+1/16, 1/16}
 box_bump1 =  { -2/16, -8/16,  -2/16, 2/16, -13/32, 2/16 }
-box_bump2 =  { -3/32, -13/32, -3/32, 3/32, -12/32, 3/32 }
 
 box_xp = {1/16, -.5, -1/16, 8/16, -.5+1/16, 1/16}
 box_zp = {-1/16, -.5, 1/16, 1/16, -.5+1/16, 8/16}
@@ -90,7 +89,6 @@ for zmy=0, 1 do
 
 	if adjx and adjz and (xp + zp + xm + zm > 2) then
 		table.insert(nodebox, box_bump1)
-		table.insert(nodebox, box_bump2)
 		tiles_off = {
 			"wires_bump_off.png",
 			"wires_bump_off.png",
