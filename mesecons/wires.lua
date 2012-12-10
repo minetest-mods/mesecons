@@ -191,17 +191,15 @@ end
 end
 end
 
-minetest.register_on_placenode(function(pos, node)
-	if minetest.registered_nodes[node.name].mesecons then
+local update_on_place_dig = function (pos, node)
+	if minetest.registered_nodes[node.name]
+	and minetest.registered_nodes[node.name].mesecons then
 		mesecon:update_autoconnect(pos)
 	end
-end)
+end
 
-minetest.register_on_dignode(function(pos, node)
-	if minetest.registered_nodes[node.name].mesecons then
-		mesecon:update_autoconnect(pos)
-	end
-end)
+minetest.register_on_placenode(update_on_place_dig)
+minetest.register_on_dignode(update_on_place_dig)
 
 function mesecon:update_autoconnect(pos, secondcall, replace_old)
 	local xppos = {x=pos.x+1, y=pos.y, z=pos.z}
