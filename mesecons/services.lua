@@ -18,10 +18,10 @@ minetest.register_on_placenode(
 
 		if mesecon:is_powered(pos) then
 			if mesecon:is_conductor_off(node.name) then
-				mesecon:turnon(pos)
+				mesecon:turnon(pos, node)
 			else
-				mesecon:changesignal(pos)
-				mesecon:activate(pos)
+				mesecon:changesignal(pos, node)
+				mesecon:activate(pos, node)
 			end
 		end
 	end
