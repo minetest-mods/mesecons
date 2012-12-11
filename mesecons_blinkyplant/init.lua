@@ -13,6 +13,9 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_off", {
 		type = "fixed",
 		fixed = {-0.1, -0.5, -0.1, 0.1, -0.5+0.6, 0.1},
 	},
+	mesecons = {receptor = {
+		state = mesecon.state.off
+	}}
 })
 
 minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
@@ -30,6 +33,9 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 		type = "fixed",
 		fixed = {-0.1, -0.5, -0.1, 0.1, -0.5+0.6, 0.1},
 	},
+	mesecons = {receptor = {
+		state = mesecon.state.on
+	}}
 })
 
 minetest.register_craft({
@@ -64,6 +70,3 @@ minetest.register_abm({
 		mesecon:receptor_off(pos)
 	end,
 })
-
-mesecon:add_receptor_node("mesecons_blinkyplant:blinky_plant_on")
-mesecon:add_receptor_node_off("mesecons_blinkyplant:blinky_plant_off")

@@ -3,32 +3,30 @@
 minetest.register_node("mesecons_switch:mesecon_switch_off", {
 	tiles = {"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_off.png"},
 	paramtype2="facedir",
-	groups = {dig_immediate=2, mesecon = 2},
-    	description="Switch",
+	groups = {dig_immediate=2},
+	description="Switch",
+	mesecons = {receptor = {
+		state = mesecon.state.off
+	}},
+	on_punch = function(pos, node)
+		mesecon:swap_node(pos, "mesecons_switch:mesecon_switch_on")
+		mesecon:receptor_on(pos)
+	end
 })
 
 minetest.register_node("mesecons_switch:mesecon_switch_on", {
 	tiles = {"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png", "jeija_mesecon_switch_on.png"},
 	paramtype2="facedir",
-	groups = {dig_immediate=2,not_in_creative_inventory=1, mesecon = 2},
+	groups = {dig_immediate=2,not_in_creative_inventory=1},
 	drop='"mesecons_switch:mesecon_switch_off" 1',
-	description="Switch",
-})
-
-mesecon:register_receptor("mesecons_switch:mesecon_switch_on", "mesecons_switch:mesecon_switch_off")
-
-minetest.register_on_punchnode(function(pos, node, puncher)
-	if node.name == "mesecons_switch:mesecon_switch_on" then
-		minetest.env:add_node(pos, {name="mesecons_switch:mesecon_switch_off", param2=node.param2})
-		nodeupdate(pos)
+	mesecons = {receptor = {
+		state = mesecon.state.on
+	}},
+	on_punch = function(pos, node)
+		mesecon:swap_node(pos, "mesecons_switch:mesecon_switch_off")
 		mesecon:receptor_off(pos)
 	end
-	if node.name == "mesecons_switch:mesecon_switch_off" then
-		minetest.env:add_node(pos, {name="mesecons_switch:mesecon_switch_on", param2=node.param2})
-		nodeupdate(pos)
-		mesecon:receptor_on(pos)
-	end
-end)
+})
 
 minetest.register_craft({
 	output = '"mesecons_switch:mesecon_switch_off" 2',

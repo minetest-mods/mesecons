@@ -1,4 +1,7 @@
 -- MESELAMPS
+-- A lamp is "is an electrical device used to create artificial light" (wikipedia)
+-- guess what?
+
 minetest.register_node("mesecons_lamp:lamp_on", {
 	drawtype = "nodebox",
 	tiles = {"jeija_meselamp_on.png"},
@@ -20,8 +23,13 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 		wall_bottom = {-0.3125,-0.5,-0.3125,0.3125,-0.375,0.3125},
 		wall_side = {-0.375,-0.3125,-0.3125,-0.5,0.3125,0.3125},
 	},
-	groups = {dig_immediate=3,not_in_creative_inventory=1, mesecon_effector_on = 1, mesecon = 2},
+	groups = {dig_immediate=3,not_in_creative_inventory=1, mesecon_effector_on = 1},
 	drop='"mesecons_lamp:lamp_off" 1',
+	mesecons = {effector = {
+		action_off = function (pos, node)
+			mesecon:swap_node(pos, "mesecons_lamp:lamp_off")
+		end
+	}}
 })
 
 minetest.register_node("mesecons_lamp:lamp_off", {
@@ -45,8 +53,13 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 		wall_bottom = {-0.3125,-0.5,-0.3125,0.3125,-0.375,0.3125},
 		wall_side = {-0.375,-0.3125,-0.3125,-0.5,0.3125,0.3125},
 	},
-	groups = {dig_immediate=3, mesecon_receptor_off = 1, mesecon_effector_off = 1, mesecon = 2},
+	groups = {dig_immediate=3, mesecon_receptor_off = 1, mesecon_effector_off = 1},
     	description="Meselamp",
+	mesecons = {effector = {
+		action_on = function (pos, node)
+			mesecon:swap_node(pos, "mesecons_lamp:lamp_on")
+		end
+	}}
 })
 
 minetest.register_craft({
@@ -57,19 +70,3 @@ minetest.register_craft({
 		{'', '"default:glass"', ''},
 	}
 })
-
-mesecon:register_on_signal_on(function(pos, node)
-	if node.name == "mesecons_lamp:lamp_off" then
-		minetest.env:add_node(pos, {name="mesecons_lamp:lamp_on", param2 = node.param2})
-		nodeupdate(pos)
-	end
-end)
-
-mesecon:register_on_signal_off(function(pos, node)
-	if node.name == "mesecons_lamp:lamp_on" then
-		minetest.env:add_node(pos, {name="mesecons_lamp:lamp_off", param2 = node.param2})
-		nodeupdate(pos)
-	end
-end)
-
-mesecon:register_effector("mesecons_lamp:lamp_on", "mesecons_lamp:lamp_off")

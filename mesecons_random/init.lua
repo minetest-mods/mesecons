@@ -3,11 +3,15 @@
 minetest.register_node("mesecons_random:removestone", {
 	tiles = {"jeija_removestone.png"},
 	inventory_image = minetest.inventorycube("jeija_removestone_inv.png"),
-	groups = {cracky=3, mesecon=2},
+	groups = {cracky=3},
 	description="Removestone",
+	mesecons = {effector = {
+		action_on = function (pos, node)
+			minetest.env:remove_node(pos)
+			mesecon:update_autoconnect(pos)
+		end
+	}}
 })
-
-mesecon:register_effector(nil, "mesecons_random:removestone")
 
 minetest.register_craft({
 	output = 'mesecons_random:removestone 4',
@@ -18,12 +22,6 @@ minetest.register_craft({
 	}
 })
 
-mesecon:register_on_signal_on(function(pos, node)
-	if node.name == "mesecons_random:removestone" then
-		minetest.env:remove_node(pos)
-	end
-end)
-
 -- GHOSTSTONE
 
 minetest.register_node("mesecons_random:ghoststone", {
@@ -31,8 +29,13 @@ minetest.register_node("mesecons_random:ghoststone", {
 	tiles = {"jeija_ghoststone.png"},
 	is_ground_content = true,
 	inventory_image = minetest.inventorycube("jeija_ghoststone_inv.png"),
-	groups = {cracky=3, mesecon=2},
+	groups = {cracky=3},
 	sounds = default.node_sound_stone_defaults(),
+	mesecons = {effector = {
+		action_on = function (pos, node)
+			minetest.env:add_node(pos, {name="mesecons_random:ghoststone_active"})
+		end
+	}}
 })
 
 minetest.register_node("mesecons_random:ghoststone_active", {
@@ -41,10 +44,13 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 	walkable = false,
 	diggable = false,
 	sunlight_propagates = true,
-	groups = {mesecon=2},
+	mesecons = {effector = {
+		action_off = function (pos, node)
+			minetest.env:add_node(pos, {name="mesecons_random:ghoststone"})
+		end
+	}}
 })
 
-mesecon:register_effector("mesecons_random:ghoststone_active", "mesecons_random:ghoststone")
 
 minetest.register_craft({
 	output = 'mesecons_random:ghoststone 4',
@@ -54,17 +60,3 @@ minetest.register_craft({
 		{"default:steel_ingot", "default:cobble", "default:steel_ingot"},
 	}
 })
-
-mesecon:register_on_signal_on(function(pos, node)
-	if node.name == "mesecons_random:ghoststone" then
-		minetest.env:add_node(pos, {name="mesecons_random:ghoststone_active"})
-		nodeupdate(pos)
-	end
-end)
-
-mesecon:register_on_signal_off(function(pos, node)
-	if node.name == "mesecons_random:ghoststone_active" then
-		minetest.env:add_node(pos, {name="mesecons_random:ghoststone"})
-		nodeupdate(pos)
-	end
-end)

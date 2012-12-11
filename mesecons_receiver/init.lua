@@ -1,9 +1,22 @@
 rcvboxes = {
 	{ -3/16, -3/16   , -8/16       , 3/16,     3/16, -13/32       }, -- the smaller bump	
-	{ -5/32, -5/32   , -13/32      , 5/32,     5/32, -12/32       }, -- the receiver itself
-	{ -3/32, -.5-1/32, -.5         , 3/32,    0    , -.5002+3/32  }, -- the vertical wire bit
-	{ -3/32, -17/32  , -7/16+0.002 , 3/32,   -13/32,  16/32+0.001 }  -- the horizontal wire
+	{ -1/32, -1/32   , -3/2        , 1/32,     1/32, -1/2         }, -- the wire through the block
+	{ -2/32, -.5-1/32, -.5         , 2/32,    0    , -.5002+3/32  }, -- the vertical wire bit
+	{ -2/32, -17/32  , -7/16+0.002 , 2/32,   -14/32,  16/32+0.001 }  -- the horizontal wire
 }
+
+local receiver_get_rules = function (node)
+	local rules = {	{x =  1, y = 0, z = 0},
+			{x = -2, y = 0, z = 0}}
+	if node.param2 == 2 then
+		rules = mesecon:rotate_rules_left(rules)
+	elseif node.param2 == 3 then
+		rules = mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
+	elseif node.param2 == 0 then
+		rules = mesecon:rotate_rules_right(rules)
+	end
+	return rules
+end
 
 minetest.register_node("mesecons_receiver:receiver_on", {
 	drawtype = "nodebox",
@@ -18,6 +31,7 @@ minetest.register_node("mesecons_receiver:receiver_on", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
+	walkable = false,
 	selection_box = {
              	type = "fixed",
 		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }
@@ -26,9 +40,13 @@ minetest.register_node("mesecons_receiver:receiver_on", {
 		type = "fixed",
 		fixed = rcvboxes
 	},
-	groups = {dig_immediate = 3, mesecon = 3, not_in_creative_inventory = 1},
+	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
-
+	mesecons = {conductor = {
+		state = mesecon.state.on,
+		rules = receiver_get_rules,
+		offstate = "mesecons_receiver:receiver_off"
+	}}
 })
 
 minetest.register_node("mesecons_receiver:receiver_off", {
@@ -45,6 +63,7 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
+	walkable = false,
 	selection_box = {
              	type = "fixed",
 		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }
@@ -53,8 +72,13 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 		type = "fixed",
 		fixed = rcvboxes
 	},
-	groups = {dig_immediate = 3, mesecon = 3, not_in_creative_inventory = 1},
+	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
+	mesecons = {conductor = {
+		state = mesecon.state.off,
+		rules = receiver_get_rules,
+		onstate = "mesecons_receiver:receiver_on"
+	}}
 })
 
 mesecon:add_rules("receiver_pos", {{x = 2,  y = 0, z = 0}})
@@ -64,34 +88,6 @@ mesecon:add_rules("receiver_pos_all", {
 {x =-2,  y = 0, z = 0},
 {x = 0,  y = 0, z = 2},
 {x = 0,  y = 0, z =-2}})
-
-mesecon:add_rules("mesecon_receiver", {
-{x = 1, y = 0, z = 0},
-{x = -2, y = 0, z = 0},})
-
-mesecon:add_rules("mesecon_receiver_all", {
-{x = 1, y = 0, z = 0},
-{x =-2, y = 0, z = 0},
-{x =-1, y = 0, z = 0},
-{x = 2, y = 0, z = 0},
-{x = 0, y = 0, z = 1},
-{x = 0, y = 0, z =-2},
-{x = 1, y = 0, z =-1},
-{x =-2, y = 0, z = 2},})
-
-function receiver_get_rules(param2)
-	local rules = mesecon:get_rules("mesecon_receiver")
-	if param2 == 2 then
-		rules = mesecon:rotate_rules_left(rules)
-	elseif param2 == 3 then
-		rules = mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
-	elseif param2 == 0 then
-		rules = mesecon:rotate_rules_right(rules)
-	end
-	return rules
-end
-
-mesecon:register_conductor("mesecons_receiver:receiver_on", "mesecons_receiver:receiver_off", mesecon:get_rules("mesecon_receiver_all"), receiver_get_rules)
 
 function mesecon:receiver_get_pos_from_rcpt(pos, param2)
 	local rules = mesecon:get_rules("receiver_pos")
@@ -119,7 +115,7 @@ function mesecon:receiver_place(rcpt_pos)
 		minetest.env:dig_node(pos)
 		if mesecon:is_power_on(rcpt_pos) then
 			minetest.env:add_node(pos, {name = "mesecons_receiver:receiver_on", param2 = node.param2})
-			mesecon:receptor_on(pos, receiver_get_rules(node.param2))
+			mesecon:receptor_on(pos, receiver_get_rules(node))
 		else
 			minetest.env:add_node(pos, {name = "mesecons_receiver:receiver_off", param2 = node.param2})
 		end

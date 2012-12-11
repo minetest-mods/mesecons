@@ -1,9 +1,90 @@
+-- Function that get the input/output rules of the delayer
+local delayer_get_output_rules = function(node)
+	local rules = {}
+	if node.param2 == 0 then
+		table.insert(rules, {x = 1, y = 0, z = 0})
+	elseif node.param2 == 2 then
+		table.insert(rules, {x =-1, y = 0, z = 0})
+	elseif node.param2 == 1 then
+		table.insert(rules, {x = 0, y = 0, z =-1})
+	elseif node.param2 == 3 then
+		table.insert(rules, {x = 0, y = 0, z = 1})
+	end
+	return rules
+end
+
+local delayer_get_input_rules = function(node)
+	local rules = {}
+	if node.param2 == 0 then
+		table.insert(rules, {x =-1, y = 0, z = 0})
+	elseif node.param2 == 2 then
+		table.insert(rules, {x = 1, y = 0, z = 0})
+	elseif node.param2 == 1 then
+		table.insert(rules, {x = 0, y = 0, z = 1})
+	elseif node.param2 == 3 then
+		table.insert(rules, {x = 0, y = 0, z =-1})
+	end
+	return rules
+end
+
+-- Functions that are called after the delay time
+
+local delayer_turnon = function(params)
+	local rules = delayer_get_output_rules(params)
+	mesecon:receptor_on(params.pos, rules)
+end
+
+local delayer_turnoff = function(params)
+	local rules = delayer_get_output_rules(params)
+	mesecon:receptor_off(params.pos, rules)
+end
+
+local delayer_update = function(pos, node)
+	if string.find(node.name, "mesecons_delayer:delayer_off")~=nil then
+		local time = 0
+		if node.name=="mesecons_delayer:delayer_off_1" then
+			mesecon:swap_node(pos, "mesecons_delayer:delayer_on_1")
+			time=0.1
+		elseif node.name=="mesecons_delayer:delayer_off_2" then
+			mesecon:swap_node(pos, "mesecons_delayer:delayer_on_2")
+			time=0.3
+		elseif node.name=="mesecons_delayer:delayer_off_3" then
+			mesecon:swap_node(pos, "mesecons_delayer:delayer_on_3")
+			time=0.5
+		elseif node.name=="mesecons_delayer:delayer_off_4" then
+			mesecon:swap_node(pos, "mesecons_delayer:delayer_on_4")
+			time=1
+		end
+		minetest.after(time, delayer_turnon, {pos=pos, param2=node.param2})
+	end
+
+	if string.find(node.name, "mesecons_delayer:delayer_on")~=nil then
+		local time = 0
+		if node.name=="mesecons_delayer:delayer_on_1" then
+			mesecon:swap_node(pos, "mesecons_delayer:delayer_off_1")
+			time=0.1
+		elseif node.name=="mesecons_delayer:delayer_on_2" then
+			mesecon:swap_node(pos, "mesecons_delayer:delayer_off_2")
+			time=0.3
+		elseif node.name=="mesecons_delayer:delayer_on_3" then
+			mesecon:swap_node(pos, "mesecons_delayer:delayer_off_3")
+			time=0.5
+		elseif node.name=="mesecons_delayer:delayer_on_4" then
+			mesecon:swap_node(pos, "mesecons_delayer:delayer_off_4")
+			time=1
+		end
+		minetest.after(time, delayer_turnoff, {pos=pos, param2=node.param2})
+	end
+end
+
+--Actually register the 2 (states) x 4 (delay times) delayers
+
 for i = 1, 4 do
 local groups = {}
 if i == 1 then 
-	groups = {bendy=2,snappy=1,dig_immediate=2, mesecon = 3}
+	groups = {bendy=2,snappy=1,dig_immediate=2}
 else
-	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
+	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1}
 end
 
 boxes = {{ -6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },		-- the main slab
@@ -46,6 +127,29 @@ minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), {
 	sunlight_propagates = true,
 	is_ground_content = true,
 	drop = 'mesecons_delayer:delayer_off_1',
+	on_punch = function (pos, node)
+		if node.name=="mesecons_delayer:delayer_off_1" then
+			mesecon:swap_node(pos,"mesecons_delayer:delayer_off_2")
+		elseif node.name=="mesecons_delayer:delayer_off_2" then
+			mesecon:swap_node(pos,"mesecons_delayer:delayer_off_3")
+		elseif node.name=="mesecons_delayer:delayer_off_3" then
+			mesecon:swap_node(pos,"mesecons_delayer:delayer_off_4")
+		elseif node.name=="mesecons_delayer:delayer_off_4" then
+			mesecon:swap_node(pos,"mesecons_delayer:delayer_off_1")
+		end
+	end,
+	mesecons = {
+		receptor =
+		{
+			state = mesecon.state.off,
+			rules = delayer_get_output_rules
+		},
+		effector =
+		{
+			rules = delayer_get_input_rules,
+			action_change = delayer_update
+		}
+	}
 })
 
 
@@ -69,147 +173,34 @@ minetest.register_node("mesecons_delayer:delayer_on_"..tostring(i), {
 		type = "fixed",
 		fixed = boxes
 	},
-	groups = {bendy=2,snappy=1,dig_immediate=2, not_in_creative_inventory=1, mesecon = 3},
+	groups = {bendy = 2, snappy = 1, dig_immediate = 2, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
 	is_ground_content = true,
 	drop = 'mesecons_delayer:delayer_off_1',
+	on_punch = function (pos, node)
+		if node.name=="mesecons_delayer:delayer_on_1" then
+			mesecon:swap_node(pos,"mesecons_delayer:delayer_on_2")
+		elseif node.name=="mesecons_delayer:delayer_on_2" then
+			mesecon:swap_node(pos,"mesecons_delayer:delayer_on_3")
+		elseif node.name=="mesecons_delayer:delayer_on_3" then
+			mesecon:swap_node(pos,"mesecons_delayer:delayer_on_4")
+		elseif node.name=="mesecons_delayer:delayer_on_4" then
+			mesecon:swap_node(pos,"mesecons_delayer:delayer_on_1")
+		end
+	end,
+	mesecons = {
+		receptor =
+		{
+			state = mesecon.state.on,
+			rules = delayer_get_output_rules
+		},
+		effector =
+		{
+			rules = delayer_get_input_rules,
+			action_change = delayer_update
+		}
+	}
 })
 end
-
-
-
-
-minetest.register_on_punchnode(function (pos, node)
-	mesecon.delayer_get_output_rules(node.param2)
-	if node.name=="mesecons_delayer:delayer_off_1" then
-		minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_2", param2=node.param2})
-	end
-	if node.name=="mesecons_delayer:delayer_off_2" then
-		minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_3", param2=node.param2})
-	end
-	if node.name=="mesecons_delayer:delayer_off_3" then
-		minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_4", param2=node.param2})
-	end
-	if node.name=="mesecons_delayer:delayer_off_4" then
-		minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_1", param2=node.param2})
-	end
-end)
-
-minetest.register_on_punchnode(function (pos, node)
-	mesecon.delayer_get_output_rules(node.param2)
-	if node.name=="mesecons_delayer:delayer_on_1" then
-		minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_2", param2=node.param2})
-	end
-	if node.name=="mesecons_delayer:delayer_on_2" then
-		minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_3", param2=node.param2})
-	end
-	if node.name=="mesecons_delayer:delayer_on_3" then
-		minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_4", param2=node.param2})
-	end
-	if node.name=="mesecons_delayer:delayer_on_4" then
-		minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_1", param2=node.param2})
-	end
-end)
-
-mesecon.delayer_update = function(pos, node)
-	if string.find(node.name, "mesecons_delayer:delayer_off")~=nil then
-		local time = 0
-		if node.name=="mesecons_delayer:delayer_off_1" then
-			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_1", param2=node.param2})
-			time=0.1
-		end
-		if node.name=="mesecons_delayer:delayer_off_2" then
-			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_2", param2=node.param2})
-			time=0.3
-		end
-		if node.name=="mesecons_delayer:delayer_off_3" then
-			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_3", param2=node.param2})
-			time=0.5
-		end
-		if node.name=="mesecons_delayer:delayer_off_4" then
-			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_on_4", param2=node.param2})
-			time=1
-		end
-		minetest.after(time, mesecon.delayer_turnon, {pos=pos, param2=node.param2})
-	end
-
-	if string.find(node.name, "mesecons_delayer:delayer_on")~=nil then
-		local time = 0
-		if node.name=="mesecons_delayer:delayer_on_1" then
-			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_1", param2=node.param2})
-			time=0.1
-		end
-		if node.name=="mesecons_delayer:delayer_on_2" then
-			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_2", param2=node.param2})
-			time=0.3
-		end
-		if node.name=="mesecons_delayer:delayer_on_3" then
-			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_3", param2=node.param2})
-			time=0.5
-		end
-		if node.name=="mesecons_delayer:delayer_on_4" then
-			minetest.env:add_node(pos, {name="mesecons_delayer:delayer_off_4", param2=node.param2})
-			time=1
-		end
-		minetest.after(time, mesecon.delayer_turnoff, {pos=pos, param2=node.param2})
-	end
-end
-
-mesecon:register_on_signal_change(mesecon.delayer_update)
-
-mesecon.delayer_turnon=function(params)
-	local rules = mesecon.delayer_get_output_rules(params.param2)
-	mesecon:receptor_on(params.pos, rules)
-end
-
-mesecon.delayer_turnoff=function(params)
-	local rules = mesecon.delayer_get_output_rules(params.param2)
-	mesecon:receptor_off(params.pos, rules)
-end
-
-mesecon.delayer_get_output_rules = function(param2)
-	local rules = {}
-	if param2 == 0 then
-		table.insert(rules, {x = 1, y = 0, z = 0})
-	elseif param2 == 2 then
-		table.insert(rules, {x =-1, y = 0, z = 0})
-	elseif param2 == 1 then
-		table.insert(rules, {x = 0, y = 0, z =-1})
-	elseif param2 == 3 then
-		table.insert(rules, {x = 0, y = 0, z = 1})
-	end
-	return rules
-end
-
-mesecon.delayer_get_input_rules = function(param2)
-	local rules = {}
-	if param2 == 0 then
-		table.insert(rules, {x =-1, y = 0, z = 0})
-	elseif param2 == 2 then
-		table.insert(rules, {x = 1, y = 0, z = 0})
-	elseif param2 == 1 then
-		table.insert(rules, {x = 0, y = 0, z = 1})
-	elseif param2 == 3 then
-		table.insert(rules, {x = 0, y = 0, z =-1})
-	end
-	return rules
-end
-
-all_rules = {{x = 1, y = 0, z = 0}, {x =-1, y = 0, z = 0}, {x = 0, y = 0, z =-1}, {x = 0, y = 0, z = 1}} --required to check if a newly placed should be turned on
-
-mesecon:add_receptor_node("mesecons_delayer:delayer_on_1", all_rules, mesecon.delayer_get_output_rules)
-mesecon:add_receptor_node("mesecons_delayer:delayer_on_2", all_rules, mesecon.delayer_get_output_rules)
-mesecon:add_receptor_node("mesecons_delayer:delayer_on_3", all_rules, mesecon.delayer_get_output_rules)
-mesecon:add_receptor_node("mesecons_delayer:delayer_on_4", all_rules, mesecon.delayer_get_output_rules)
-
-mesecon:add_receptor_node_off("mesecons_delayer:delayer_off_1", all_rules, mesecon.delayer_get_output_rules)
-mesecon:add_receptor_node_off("mesecons_delayer:delayer_off_2", all_rules, mesecon.delayer_get_output_rules)
-mesecon:add_receptor_node_off("mesecons_delayer:delayer_off_3", all_rules, mesecon.delayer_get_output_rules)
-mesecon:add_receptor_node_off("mesecons_delayer:delayer_off_4", all_rules, mesecon.delayer_get_output_rules)
-
-mesecon:register_effector("mesecons_delayer:delayer_on_1", "mesecons_delayer:delayer_off_1", all_rules, mesecon.delayer_get_input_rules)
-mesecon:register_effector("mesecons_delayer:delayer_on_2", "mesecons_delayer:delayer_off_2", all_rules, mesecon.delayer_get_input_rules)
-mesecon:register_effector("mesecons_delayer:delayer_on_3", "mesecons_delayer:delayer_off_3", all_rules, mesecon.delayer_get_input_rules)
-mesecon:register_effector("mesecons_delayer:delayer_on_4", "mesecons_delayer:delayer_off_4", all_rules, mesecon.delayer_get_input_rules)

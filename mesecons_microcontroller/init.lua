@@ -23,6 +23,33 @@ if tostring(d)..tostring(c)..tostring(b)..tostring(a) ~= "0000" then
 else
 	groups = {dig_immediate=2, mesecon = 3}
 end
+local rules={}
+if (a == 1) then table.insert(rules, {x = -1, y = 0, z =  0}) end
+if (b == 1) then table.insert(rules, {x =  0, y = 0, z =  1}) end
+if (c == 1) then table.insert(rules, {x =  1, y = 0, z =  0}) end
+if (d == 1) then table.insert(rules, {x =  0, y = 0, z = -1}) end
+
+local input_rules={}
+if (a == 0) then table.insert(input_rules, {x = -1, y = 0, z =  0}) end
+if (b == 0) then table.insert(input_rules, {x =  0, y = 0, z =  1}) end
+if (c == 0) then table.insert(input_rules, {x =  1, y = 0, z =  0}) end
+if (d == 0) then table.insert(input_rules, {x =  0, y = 0, z = -1}) end
+mesecon:add_rules(nodename, rules)
+
+local mesecons = {effector =
+{
+	rules = input_rules,
+	action_change = function (pos, node)
+		update_yc(pos)
+	end
+}}
+if nodename ~= "mesecons_microcontroller:microcontroller0000" then
+	mesecons.receptor = {
+		state = mesecon.state.on,
+		rules = rules
+	}
+end
+
 minetest.register_node(nodename, {
 	description = "Microcontroller",
 	drawtype = "nodebox",
@@ -101,25 +128,12 @@ minetest.register_node(nodename, {
 		yc_reset (pos)
 		update_yc(pos)
 	end,
+	mesecons = mesecons,
+	after_dig_node = function (pos, node)
+		rules = mesecon:get_rules(node.name)
+		mesecon:receptor_off(pos, rules)
+	end,
 })
-
-local rules={}
-if (a == 1) then table.insert(rules, {x = -1, y = 0, z =  0}) end
-if (b == 1) then table.insert(rules, {x =  0, y = 0, z =  1}) end
-if (c == 1) then table.insert(rules, {x =  1, y = 0, z =  0}) end
-if (d == 1) then table.insert(rules, {x =  0, y = 0, z = -1}) end
-
-local input_rules={}
-if (a == 0) then table.insert(input_rules, {x = -1, y = 0, z =  0}) end
-if (b == 0) then table.insert(input_rules, {x =  0, y = 0, z =  1}) end
-if (c == 0) then table.insert(input_rules, {x =  1, y = 0, z =  0}) end
-if (d == 0) then table.insert(input_rules, {x =  0, y = 0, z = -1}) end
-mesecon:add_rules(nodename, rules)
-
-mesecon:register_effector(nodename, nodename, input_rules)
-if nodename ~= "mesecons_microcontroller:microcontroller0000" then
-	mesecon:add_receptor_node(nodename, rules)
-end
 end
 end
 end
@@ -682,16 +696,3 @@ function yc_overheat_off(pos)
 	rules = mesecon:get_rules("mesecons_microcontroller:microcontroller1111")
 	mesecon:receptor_off(pos, rules)
 end
-
-mesecon:register_on_signal_change(function(pos, node)
-	if string.find(node.name, "mesecons_microcontroller:microcontroller")~=nil then
-		update_yc(pos)
-	end
-end)
-
-minetest.register_on_dignode(function(pos, node)
-	if string.find(node.name, "mesecons_microcontroller:microcontroller") then
-		rules = mesecon:get_rules(node.name)
-		mesecon:receptor_off(pos, rules)
-	end
-end)

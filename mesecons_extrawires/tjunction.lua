@@ -9,6 +9,22 @@ local tjunction_selectionbox = {
 		fixed = { -16/32-0.001, -18/32, -16/32, 16/32+0.001, -12/32, 7/32 },
 }
 
+local tjunction_get_rules = function (node)
+	local rules = 
+	{{x = 1,  y = 0,  z =  0},
+	{x =-1,  y = 0,  z =  0},
+	{x = 0,  y = 0,  z = -1}}
+
+	if node.param2 == 1 then
+		rules = mesecon:rotate_rules_left(rules)
+	elseif node.param2 == 2 then
+		rules = mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
+	elseif node.param2 == 3 then
+		rules = mesecon:rotate_rules_right(rules)
+	end
+	return rules
+end
+
 minetest.register_node("mesecons_extrawires:tjunction_on", {
 	drawtype = "nodebox",
 	tiles = {
@@ -27,7 +43,12 @@ minetest.register_node("mesecons_extrawires:tjunction_on", {
 	node_box = tjunction_nodebox,
 	groups = {dig_immediate = 3, mesecon = 3, mesecon_conductor_craftable=1, not_in_creative_inventory = 1},
 	drop = "mesecons_insulated:insulated_off",
-
+	mesecons = {conductor = 
+	{
+		state = mesecon.state.on,
+		rules = tjunction_get_rules,
+		offstate = "mesecons_extrawires:tjunction_off"
+	}}
 })
 
 minetest.register_node("mesecons_extrawires:tjunction_off", {
@@ -48,6 +69,12 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 	selection_box = tjunction_selectionbox,
 	node_box = tjunction_nodebox,
 	groups = {dig_immediate = 3, mesecon = 3, mesecon_conductor_craftable=1},
+	mesecons = {conductor = 
+	{
+		state = mesecon.state.off,
+		rules = tjunction_get_rules,
+		onstate = "mesecons_extrawires:tjunction_on"
+	}}
 })
 
 minetest.register_craft({
@@ -58,28 +85,3 @@ minetest.register_craft({
 		{"", "mesecons_insulated:insulated_off", ""},
 	}
 })
-
-mesecon:add_rules("tjunction_all", { --all possible rules
-{x = 1,  y = 0,  z = 0},
-{x =-1,  y = 0,  z = 0},
-{x = 0,  y = 0,  z = 1},
-{x = 0,  y = 0,  z =-1},})
-
-mesecon:add_rules("tjunction", {
-{x = 1,  y = 0,  z =  0},
-{x =-1,  y = 0,  z =  0},
-{x = 0,  y = 0,  z = -1},})
-
-function tjunction_get_rules(param2)
-	local rules = mesecon:get_rules("tjunction")
-	if param2 == 1 then
-		rules = mesecon:rotate_rules_left(mesecon:get_rules("tjunction"))
-	elseif param2 == 2 then
-		rules = mesecon:rotate_rules_right(mesecon:rotate_rules_right(mesecon:get_rules("tjunction")))
-	elseif param2 == 3 then
-		rules = mesecon:rotate_rules_right(mesecon:get_rules("tjunction"))
-	end
-	return rules
-end
-
-mesecon:register_conductor("mesecons_extrawires:tjunction_on", "mesecons_extrawires:tjunction_off", mesecon:get_rules("tjunction_all"), tjunction_get_rules)

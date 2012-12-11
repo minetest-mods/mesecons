@@ -3,63 +3,82 @@
 -- |  \/  | |___ ____  |___ |      |    | | \  | |____
 -- |      | |        | |    |      |    | |  \ |     |
 -- |      | |___ ____| |___ |____  |____| |   \| ____|
--- by Jeija and Minerd247
+-- by Jeija, Uberi (Temperest), sfan5, VanessaE
 --
 --
 --
 -- This mod adds mesecons[=minecraft redstone] and different receptors/effectors to minetest.
---
 -- See the documentation on the forum for additional information, especially about crafting
 --
--- For developer documentation see the Developers' section on mesecons.tk 
+--
+-- For developer documentation see the Developers' section on mesecons.TK
+--
+--
+--
+--Quick draft for the mesecons array in the node's definition
+--mesecons =
+--{
+--	receptor =
+--	{
+--		state = mesecon.state.on/off
+--		rules = rules/get_rules
+--	}
+--	effector =
+--	{
+--		action_on = function
+--		action_off = function
+--		action_change = function
+--		rules = rules/get_rules
+--	}
+--	conductor = 
+--	{
+--		state = mesecon.state.on/off
+--		offstate = opposite state (for state = on only)
+--		onstate = opposite state (for state = off only)
+--		rules = rules/get_rules
+--	}
+--}
 
 
 -- PUBLIC VARIABLES
 mesecon={} -- contains all functions and all global variables
-mesecon.actions_on={} -- Saves registered function callbacks for mesecon on
-mesecon.actions_off={} -- Saves registered function callbacks for mesecon off
-mesecon.actions_change={} -- Saves registered function callbacks for mesecon change
-mesecon.receptors={}
-mesecon.effectors={}
-mesecon.rules={}
-mesecon.conductors={}
+mesecon.actions_on={} -- Saves registered function callbacks for mesecon on | DEPRECATED
+mesecon.actions_off={} -- Saves registered function callbacks for mesecon off | DEPRECATED
+mesecon.actions_change={} -- Saves registered function callbacks for mesecon change | DEPRECATED
+mesecon.receptors={} --  saves all information about receptors  | DEPRECATED
+mesecon.effectors={} --  saves all information about effectors  | DEPRECATED
+mesecon.conductors={} -- saves all information about conductors | DEPRECATED
 
--- INCLUDE SETTINGS
+-- Settings
 dofile(minetest.get_modpath("mesecons").."/settings.lua")
 
---Internal API
+-- Presets (eg default rules)
+dofile(minetest.get_modpath("mesecons").."/presets.lua");
+
+
+-- Utilities like comparing positions,
+-- adding positions and rules,
+-- mostly things that make the source look cleaner
+dofile(minetest.get_modpath("mesecons").."/util.lua");
+
+-- Internal stuff
+-- This is the most important file
+-- it handles signal transmission and basically everything else
+-- It is also responsible for managing the nodedef things,
+-- like calling action_on/off/change
 dofile(minetest.get_modpath("mesecons").."/internal.lua");
 
--- API API API API API API API API API API API API API API API API API API
+-- Deprecated stuff
+-- To be removed in future releases
+dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 
-function mesecon:register_receptor(onstate, offstate, rules, get_rules)
-	if get_rules == nil and rules == nil then
-		rules = mesecon:get_rules("default")
-	end
-	table.insert(mesecon.receptors, 
-		{onstate = onstate, 
-		 offstate = offstate, 
-		 rules = rules,
-		 get_rules = get_rules})
-end
-
-function mesecon:register_effector(onstate, offstate, input_rules, get_input_rules)
-	if get_input_rules==nil and input_rules==nil then
-		rules=mesecon:get_rules("default")
-	end
-	table.insert(mesecon.effectors, 
-		{onstate = onstate, 
-		 offstate = offstate, 
-		 input_rules = input_rules, 
-		 get_input_rules = get_input_rules})
-end
+-- API
+-- these are the only functions you need to remember
 
 function mesecon:receptor_on(pos, rules)
-	if rules == nil then
-		rules = mesecon:get_rules("default")
-	end
+	rules = rules or mesecon.rules.default
 
-	for i, rule in ipairs(rules) do
+	for _, rule in ipairs(rules) do
 		local np = {
 		x = pos.x + rule.x,
 		y = pos.y + rule.y,
@@ -71,11 +90,9 @@ function mesecon:receptor_on(pos, rules)
 end
 
 function mesecon:receptor_off(pos, rules)
-	if rules == nil then
-		rules = mesecon:get_rules("default")
-	end
+	rules = rules or mesecon.rules.default
 
-	for i, rule in ipairs(rules) do
+	for _, rule in ipairs(rules) do
 		local np = {
 		x = pos.x + rule.x,
 		y = pos.y + rule.y,
@@ -86,45 +103,11 @@ function mesecon:receptor_off(pos, rules)
 	end
 end
 
-function mesecon:register_on_signal_on(action)
-	table.insert(mesecon.actions_on, action)
-end
 
-function mesecon:register_on_signal_off(action)
-	table.insert(mesecon.actions_off, action)
-end
-
-function mesecon:register_on_signal_change(action)
-	table.insert(mesecon.actions_change, action)
-end
-
-function mesecon:register_conductor (onstate, offstate, rules, get_rules)
-	if rules == nil then
-		rules = mesecon:get_rules("default")
-	end
-	table.insert(mesecon.conductors, {onstate = onstate, offstate = offstate, rules = rules, get_rules = get_rules})
-end
-
-mesecon:add_rules("default", 
-{{x=0,  y=0,  z=-1},
-{x=1,  y=0,  z=0},
-{x=-1, y=0,  z=0},
-{x=0,  y=0,  z=1},
-{x=1,  y=1,  z=0},
-{x=1,  y=-1, z=0},
-{x=-1, y=1,  z=0},
-{x=-1, y=-1, z=0},
-{x=0,  y=1,  z=1},
-{x=0,  y=-1, z=1},
-{x=0,  y=1,  z=-1},
-{x=0,  y=-1, z=-1}})
-
-print("[MESEcons] Main mod Loaded!")
+print("[OK] mesecons")
 
 --The actual wires
 dofile(minetest.get_modpath("mesecons").."/wires.lua");
 
 --Services like turnoff receptor on dignode and so on
 dofile(minetest.get_modpath("mesecons").."/services.lua");
---Deprecated stuff
-dofile(minetest.get_modpath("mesecons").."/legacy.lua");
