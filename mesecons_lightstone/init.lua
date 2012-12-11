@@ -6,8 +6,7 @@ function mesecon:lightstone_add(name, base_item, texture_off, texture_on)
 	description=name.." Lightstone",
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			minetest.env:add_node(pos, {name="mesecons_lightstone:lightstone_" .. name .. "_on"})
-			mesecon:receptor_on(pos)
+			mesecon:swap_node(pos, "mesecons_lightstone:lightstone_" .. name .. "_on")
 		end
 	}}
     })
@@ -19,8 +18,7 @@ function mesecon:lightstone_add(name, base_item, texture_off, texture_on)
 	light_source = LIGHT_MAX-2,
 	mesecons = {effector = {
 		action_off = function (pos, node)
-			minetest.env:add_node(pos, {name="mesecons_lightstone:lightstone_" .. name .. "_off"})
-			mesecon:receptor_off(pos)
+			mesecon:swap_node(pos, "mesecons_lightstone:lightstone_" .. name .. "_off")
 		end
 	}}
     })
