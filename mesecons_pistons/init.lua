@@ -216,6 +216,7 @@ minetest.register_node("mesecons_pistons:piston_sticky", {
 	paramtype2 = "facedir",
 	after_destruct = destruct,
 	on_timer = timer,
+	is_sticky_piston = true,
 	after_place_node = function(pos, placer)
 		if not placer then --not placed by player
 			return
