@@ -281,7 +281,7 @@ function mesecon:turnon(pos)
 
 	if mesecon:is_conductor_off(node.name) then
 		local rules = mesecon:conductor_get_rules(node)
-		mesecon:swap_node(pos, mesecon:get_conductor_on(node.name))
+		minetest.env:add_node(pos, {name = mesecon:get_conductor_on(node.name)})
 
 		for _, rule in ipairs(rules) do
 			local np = mesecon:addPosRule(pos, rule)
@@ -300,12 +300,12 @@ function mesecon:turnon(pos)
 	end
 end
 
-function mesecon:turnoff(pos) --receptor rules used because output could have been dug
+function mesecon:turnoff(pos)
 	local node = minetest.env:get_node(pos)
 
 	if mesecon:is_conductor_on(node.name) then
 		local rules = mesecon:conductor_get_rules(node)
-		mesecon:swap_node(pos, mesecon:get_conductor_off(node.name))
+		minetest.env:add_node(pos, {name = mesecon:get_conductor_off(node.name)})
 
 		for _, rule in ipairs(rules) do
 			local np = mesecon:addPosRule(pos, rule)
@@ -363,7 +363,6 @@ end
 function mesecon:rules_link(output, input, dug_outputrules) --output/input are positions (outputrules optional, used if node has been dug)
 	local outputnode = minetest.env:get_node(output)
 	local inputnode = minetest.env:get_node(input)
-
 	local outputrules = dug_outputrules
 	local inputrules
 

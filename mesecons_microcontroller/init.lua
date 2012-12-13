@@ -584,14 +584,12 @@ end
 --Real I/O functions
 function yc_action(pos, L) --L-->Lvirtual
 	local Lv = yc_get_virtual_portstates(pos)
-	local metatable = minetest.env:get_meta(pos):to_table()
 	local name = "mesecons_microcontroller:microcontroller"
 		..tonumber(L.d and 1 or 0)
 		..tonumber(L.c and 1 or 0)
 		..tonumber(L.b and 1 or 0)
 		..tonumber(L.a and 1 or 0)
-	minetest.env:add_node(pos, {name=name})
-	minetest.env:get_meta(pos):from_table(metatable)
+	mesecon:swap_node(pos, name)
 
 	yc_action_setports(pos, L, Lv)
 end
@@ -630,7 +628,7 @@ function yc_set_portstate(port, state, L)
 	return L
 end
 
-function yc_get_real_portstates(pos)
+function yc_get_real_portstates(pos) -- port powered or not (by itself or from outside)?
 	rulesA = mesecon:get_rules("mesecons_microcontroller:microcontroller0001")
 	rulesB = mesecon:get_rules("mesecons_microcontroller:microcontroller0010")
 	rulesC = mesecon:get_rules("mesecons_microcontroller:microcontroller0100")
@@ -644,7 +642,7 @@ function yc_get_real_portstates(pos)
 	return L
 end
 
-function yc_get_virtual_portstates(pos)
+function yc_get_virtual_portstates(pos) -- portstates according to the name
 	name = minetest.env:get_node(pos).name
 	b, a = string.find(name, ":microcontroller")
 	if a == nil then return nil end
