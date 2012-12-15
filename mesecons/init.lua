@@ -22,14 +22,14 @@
 --	{
 --		state = mesecon.state.on/off
 --		rules = rules/get_rules
---	}
+--	},
 --	effector =
 --	{
 --		action_on = function
 --		action_off = function
 --		action_change = function
 --		rules = rules/get_rules
---	}
+--	},
 --	conductor = 
 --	{
 --		state = mesecon.state.on/off
@@ -97,7 +97,7 @@ function mesecon:receptor_off(pos, rules)
 		x = pos.x + rule.x,
 		y = pos.y + rule.y,
 		z = pos.z + rule.z}
-		if mesecon:rules_link(pos, np, rules) and not mesecon:connected_to_pw_src(np) then
+		if mesecon:rules_link(pos, np, rules) and not mesecon:connected_to_receptor(np) then
 			mesecon:turnoff(np, pos)
 		end
 	end

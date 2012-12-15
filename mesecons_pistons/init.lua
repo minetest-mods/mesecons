@@ -247,5 +247,8 @@ function mesecon:piston_get_direction(node)
 	end
 end
 
-dofile(minetest.get_modpath("mesecons_pistons").."/pistons_down.lua")
-dofile(minetest.get_modpath("mesecons_pistons").."/pistons_up.lua")
+-- dofile(minetest.get_modpath("mesecons_pistons").."/pistons_down.lua")
+-- dofile(minetest.get_modpath("mesecons_pistons").."/pistons_up.lua")
+-- Dropped
+-- We need a better way to have these piston types
+-- There should be a facedir for vertical orientations
