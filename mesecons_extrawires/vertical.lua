@@ -64,10 +64,9 @@ local vertical_updatepos = function (pos)
 end
 
 local vertical_update = function (pos, node)
-	print("update")
 	vertical_updatepos(pos) -- this one
-	vertical_updatepos(addPosRule(pos, vrules[1])) -- above
-	vertical_updatepos(addPosRule(pos, vrules[2])) -- below
+	vertical_updatepos(mesecon:addPosRule(pos, vrules[1])) -- above
+	vertical_updatepos(mesecon:addPosRule(pos, vrules[2])) -- below
 end
 
 -- Vertical wire
