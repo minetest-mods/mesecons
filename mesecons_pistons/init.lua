@@ -192,7 +192,7 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 			return minetest.item_place(itemstack, placer, pointed_thing)
 		end
 		local dir = placer:get_look_dir()
-		if math.abs(dir.y) > math.abs(dir.x) and math.abs(dir.y) > math.abs(dir.z) then --vertical look direction is most significant
+		if math.abs(dir.y) > math.sqrt(dir.x ^ 2 + dir.z ^ 2) then --vertical look direction is most significant
 			local fakestack
 			if dir.y > 0 then
 				fakestack = ItemStack("mesecons_pistons:piston_down_normal")
@@ -227,7 +227,7 @@ minetest.register_node("mesecons_pistons:piston_sticky", {
 			return minetest.item_place(itemstack, placer, pointed_thing)
 		end
 		local dir = placer:get_look_dir()
-		if math.abs(dir.y) > math.abs(dir.x) and math.abs(dir.y) > math.abs(dir.z) then --vertical look direction is most significant
+		if math.abs(dir.y) > math.sqrt(dir.x ^ 2 + dir.z ^ 2) then --vertical look direction is most significant
 			local fakestack
 			if dir.y > 0 then
 				fakestack = ItemStack("mesecons_pistons:piston_down_sticky")
