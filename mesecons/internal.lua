@@ -47,7 +47,6 @@
 -- mesecon:rules_link(output, input, dug_outputrules) --> Returns true if outputposition + outputrules = inputposition and inputposition + inputrules = outputposition (if the two positions connect)
 -- mesecon:rules_link_anydir(outp., inp., d_outpr.)   --> Same as rules mesecon:rules_link but also returns true if output and input are swapped
 -- mesecon:is_powered(pos)              --> Returns true if pos is powered by a receptor or a conductor
--- mesecon:updatenode(pos) | deprecated --> Updates the state of pos and surroundings e.g. when newly placed by a piston
 
 -- RULES ROTATION helpsers
 -- mesecon:rotate_rules_right(rules)
@@ -408,14 +407,6 @@ function mesecon:is_powered(pos)
 	end
 	
 	return false
-end
-
-function mesecon:updatenode(pos)
-	if mesecon:is_powered(pos) then
-		mesecon:turnon(pos)
-	else
-		mesecon:turnoff(pos)
-	end
 end
 
 --Rules rotation Functions:
