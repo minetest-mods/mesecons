@@ -6,6 +6,15 @@ function mesecon:swap_node(pos, name)
 	minetest.env:get_meta(pos):from_table(data)
 end
 
+function mesecon:move_node(pos, newpos)
+	local node = minetest.env:get_node(pos)
+	local meta = minetest.env:get_meta(pos):to_table()
+	minetest.env:remove_node(pos)
+	minetest.env:add_node(newpos, node)
+	minetest.env:get_meta(pos):from_table(meta)
+end
+
+
 function mesecon:addPosRule(p, r)
 	return {x = p.x + r.x, y = p.y + r.y, z = p.z + r.z}
 end

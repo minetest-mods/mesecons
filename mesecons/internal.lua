@@ -297,9 +297,7 @@ function mesecon:turnon(pos)
 				mesecon:turnon(np)
 			end
 		end
-	end
-
-	if mesecon:is_effector(node.name) then
+	elseif mesecon:is_effector(node.name) then
 		mesecon:changesignal(pos, node)
 		if mesecon:is_effector_off(node.name) then
 			mesecon:activate(pos, node)
@@ -321,9 +319,7 @@ function mesecon:turnoff(pos)
 				mesecon:turnoff(np)
 			end
 		end
-	end
-
-	if mesecon:is_effector(node.name) then
+	elseif mesecon:is_effector(node.name) then
 		mesecon:changesignal(pos, node)
 		if mesecon:is_effector_on(node.name)
 		and not mesecon:is_powered(pos) then

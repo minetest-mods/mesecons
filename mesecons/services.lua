@@ -8,6 +8,10 @@ mesecon.on_placenode = function (pos, node)
 			mesecon:changesignal(pos, node)
 			mesecon:activate(pos, node)
 		end
+	elseif mesecon:is_conductor_on(node.name) then
+		mesecon:swap_node(pos, mesecon:get_conductor_off(node.name))
+	elseif mesecon:is_effector_on (node.name) then
+		mesecon:deactivate(pos, node)
 	end
 end
 

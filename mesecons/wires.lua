@@ -216,10 +216,10 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 	if mesecon:rules_link_anydir(pos, zpympos) then zp = 1 end
 	if mesecon:rules_link_anydir(pos, zmympos) then zm = 1 end
 
-	if mesecon:rules_link(pos, xpypos) then xpy = 1 else xpy = 0 end
-	if mesecon:rules_link(pos, zpypos) then zpy = 1 else zpy = 0 end
-	if mesecon:rules_link(pos, xmypos) then xmy = 1 else xmy = 0 end
-	if mesecon:rules_link(pos, zmypos) then zmy = 1 else zmy = 0 end
+	if mesecon:rules_link_anydir(pos, xpypos) then xpy = 1 else xpy = 0 end
+	if mesecon:rules_link_anydir(pos, zpypos) then zpy = 1 else zpy = 0 end
+	if mesecon:rules_link_anydir(pos, xmypos) then xmy = 1 else xmy = 0 end
+	if mesecon:rules_link_anydir(pos, zmypos) then zmy = 1 else zmy = 0 end
 
 	if xpy == 1 then xp = 1 end
 	if zpy == 1 then zp = 1 end
