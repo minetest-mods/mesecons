@@ -191,7 +191,7 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 		local pitch = placer:get_look_pitch() * (180 / math.pi) --placer pitch in degrees
 		if pitch > 45 then --looking upwards
 			minetest.env:add_node(pos, {name="mesecons_pistons:piston_down_normal"})
-		elseif pitch < 45 then --looking downwards
+		elseif pitch < -45 then --looking downwards
 			minetest.env:add_node(pos, {name="mesecons_pistons:piston_up_normal"})
 		end
 	end,
