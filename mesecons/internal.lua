@@ -46,7 +46,7 @@ function mesecon:receptor_get_rules(node)
 		if receptor.onstate == node.name or receptor.offstate == node.name then
 			if receptor.get_rules ~= nil then
 				return receptor.get_rules(node.param2)
-			elseif mesecon.receptors[i].rules ~=nil then
+			elseif receptor.rules ~=nil then
 				return receptor.rules
 			else
 				return mesecon:get_rules("default")
