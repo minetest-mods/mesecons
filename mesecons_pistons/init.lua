@@ -64,7 +64,7 @@ end
 function mesecon:piston_push(pos)
 	local node = minetest.env:get_node(pos)
 	local dir = mesecon:piston_get_direction(node)
-	pos = addPosRule(pos, dir) --move to first node being pushed
+	pos = mesecon:addPosRule(pos, dir) --move to first node being pushed
 
 	--determine the number of nodes that need to be pushed
 	local count = 0
@@ -90,7 +90,7 @@ function mesecon:piston_push(pos)
 			return
 		end
 
-		checkpos = addPosRule(checkpos, dir)
+		checkpos = mesecon:addPosRule(checkpos, dir)
 	end
 
 	local thisnode = minetest.env:get_node(pos)
@@ -115,7 +115,7 @@ function mesecon:piston_push(pos)
 
 	--move nodes forward
 	for i = 1, count do
-		pos = addPosRule(pos, dir)  --move to the next node
+		pos = mesecon:addPosRule(pos, dir)  --move to the next node
 
 		nextnode = minetest.env:get_node(pos)
 		minetest.env:remove_node(pos)
@@ -155,7 +155,7 @@ function mesecon:piston_pull(pos)
 	--retract piston
 	minetest.env:remove_node(pos) --remove pusher
 	if minetest.registered_nodes[node.name].is_sticky_piston then --retract block if piston is sticky
-		local retractpos  = addPosRule(pos, dir)  --move to the node to be retracted
+		local retractpos  = mesecon:addPosRule(pos, dir)  --move to the node to be retracted
 		local retractnode = minetest.env:get_node(retractpos)
 		if  minetest.registered_nodes[retractnode.name].liquidtype == "none"
 		and not mesecon:is_mvps_stopper(retractnode.name) then
