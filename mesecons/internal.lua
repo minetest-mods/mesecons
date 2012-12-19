@@ -41,8 +41,8 @@
 -- HIGH-LEVEL Internals
 -- mesecon:is_power_on(pos)             --> Returns true if pos emits power in any way
 -- mesecon:is_power_off(pos)            --> Returns true if pos does not emit power in any way
--- mesecon:turnon(pos)                  --> Returns true  whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive
--- mesecon:turnoff(pos)                 --> Turns off whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive
+-- mesecon:turnon(pos, rulename)        --> Returns true  whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnon
+-- mesecon:turnoff(pos, rulename)       --> Turns off whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnoff
 -- mesecon:connected_to_receptor(pos)   --> Returns true if pos is connected to a receptor directly or via conductors; calls itself if pos is a conductor --> recursive
 -- mesecon:rules_link(output, input, dug_outputrules) --> Returns true if outputposition + outputrules = inputposition and inputposition + inputrules = outputposition (if the two positions connect)
 -- mesecon:rules_link_anydir(outp., inp., d_outpr.)   --> Same as rules mesecon:rules_link but also returns true if output and input are swapped
@@ -178,24 +178,24 @@ end
 
 --Signals
 
-function mesecon:activate(pos, node)
+function mesecon:activate(pos, node, rulename)
 	local effector = mesecon:get_effector(node.name)
 	if effector and effector.action_on then
-		effector.action_on (pos, node)
+		effector.action_on (pos, node, rulename)
 	end
 end
 
-function mesecon:deactivate(pos, node)
+function mesecon:deactivate(pos, node, rulename)
 	local effector = mesecon:get_effector(node.name)
 	if effector and effector.action_off then
-		effector.action_off (pos, node)
+		effector.action_off (pos, node, rulename)
 	end
 end
 
-function mesecon:changesignal(pos, node)
+function mesecon:changesignal(pos, node, rulename)
 	local effector = mesecon:get_effector(node.name)
 	if effector and effector.action_change then
-		effector.action_change (pos, node)
+		effector.action_change (pos, node, rulename)
 	end
 end
 
@@ -282,7 +282,7 @@ function mesecon:is_power_off(pos)
 	return false
 end
 
-function mesecon:turnon(pos)
+function mesecon:turnon(pos, rulename)
 	local node = minetest.env:get_node(pos)
 
 	if mesecon:is_conductor_off(node.name) then
@@ -291,20 +291,21 @@ function mesecon:turnon(pos)
 
 		for _, rule in ipairs(rules) do
 			local np = mesecon:addPosRule(pos, rule)
+			local link, rulename = mesecon:rules_link(pos, np)
 
-			if mesecon:rules_link(pos, np) then
-				mesecon:turnon(np)
+			if link then
+				mesecon:turnon(np, rulename)
 			end
 		end
 	elseif mesecon:is_effector(node.name) then
-		mesecon:changesignal(pos, node)
+		mesecon:changesignal(pos, node, rulename)
 		if mesecon:is_effector_off(node.name) then
-			mesecon:activate(pos, node)
+			mesecon:activate(pos, node, rulename)
 		end
 	end
 end
 
-function mesecon:turnoff(pos)
+function mesecon:turnoff(pos, rulename)
 	local node = minetest.env:get_node(pos)
 
 	if mesecon:is_conductor_on(node.name) then
@@ -313,16 +314,17 @@ function mesecon:turnoff(pos)
 
 		for _, rule in ipairs(rules) do
 			local np = mesecon:addPosRule(pos, rule)
+			local link, rulename = mesecon:rules_link(pos, np)
 
-			if mesecon:rules_link(pos, np) then
-				mesecon:turnoff(np)
+			if link then
+				mesecon:turnoff(np, rulename)
 			end
 		end
 	elseif mesecon:is_effector(node.name) then
-		mesecon:changesignal(pos, node)
+		mesecon:changesignal(pos, node, rulename)
 		if mesecon:is_effector_on(node.name)
 		and not mesecon:is_powered(pos) then
-			mesecon:deactivate(pos, node)
+			mesecon:deactivate(pos, node, rulename)
 		end
 	end
 end
@@ -363,12 +365,11 @@ function mesecon:connected_to_receptor(pos, checked)
 	return false, checked
 end
 
-function mesecon:rules_link(output, input, dug_outputrules) --output/input are positions (outputrules optional, used if node has been dug)
+function mesecon:rules_link(output, input, dug_outputrules) --output/input are positions (outputrules optional, used if node has been dug), second return value: the name of the affected input rule
 	local outputnode = minetest.env:get_node(output)
 	local inputnode = minetest.env:get_node(input)
 	local outputrules = dug_outputrules or mesecon:get_any_outputrules (outputnode)
 	local inputrules = mesecon:get_any_inputrules (inputnode)
-
 	if not outputrules or not inputrules then
 		return
 	end
@@ -379,7 +380,7 @@ function mesecon:rules_link(output, input, dug_outputrules) --output/input are p
 			for _, inputrule in ipairs(inputrules) do
 				-- Check if input accepts from output
 				if  mesecon:cmpPos(mesecon:addPosRule(input, inputrule), output) then
-					return true
+					return true, inputrule.name
 				end
 			end
 		end

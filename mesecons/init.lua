@@ -80,8 +80,9 @@ function mesecon:receptor_on(pos, rules)
 
 	for _, rule in ipairs(rules) do
 		local np = mesecon:addPosRule(pos, rule)
-		if mesecon:rules_link(pos, np, rules) then
-			mesecon:turnon(np, pos)
+		local link, rulename = mesecon:rules_link(pos, np, rules)
+		if link then
+			mesecon:turnon(np, rulename)
 		end
 	end
 end
@@ -91,8 +92,9 @@ function mesecon:receptor_off(pos, rules)
 
 	for _, rule in ipairs(rules) do
 		local np = mesecon:addPosRule(pos, rule)
-		if mesecon:rules_link(pos, np, rules) and not mesecon:connected_to_receptor(np) then
-			mesecon:turnoff(np, pos)
+		local link, rulename = mesecon:rules_link(pos, np, rules)
+		if link then
+			mesecon:turnoff(np, rulename)
 		end
 	end
 end

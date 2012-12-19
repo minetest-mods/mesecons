@@ -30,16 +30,16 @@ if (c == 1) then table.insert(rules, {x =  1, y = 0, z =  0}) end
 if (d == 1) then table.insert(rules, {x =  0, y = 0, z = -1}) end
 
 local input_rules={}
-if (a == 0) then table.insert(input_rules, {x = -1, y = 0, z =  0}) end
-if (b == 0) then table.insert(input_rules, {x =  0, y = 0, z =  1}) end
-if (c == 0) then table.insert(input_rules, {x =  1, y = 0, z =  0}) end
-if (d == 0) then table.insert(input_rules, {x =  0, y = 0, z = -1}) end
+if (a == 0) then table.insert(input_rules, {x = -1, y = 0, z =  0, name = "A"}) end
+if (b == 0) then table.insert(input_rules, {x =  0, y = 0, z =  1, name = "B"}) end
+if (c == 0) then table.insert(input_rules, {x =  1, y = 0, z =  0, name = "C"}) end
+if (d == 0) then table.insert(input_rules, {x =  0, y = 0, z = -1, name = "D"}) end
 mesecon:add_rules(nodename, rules)
 
 local mesecons = {effector =
 {
 	rules = input_rules,
-	action_change = function (pos, node)
+	action_change = function (pos, node, rulename)
 		update_yc(pos)
 	end
 }}
