@@ -134,6 +134,7 @@ function mesecon:receptor_get_rules(node)
 			return rules
 		end
 	end
+
 	return mesecon.rules.default
 end
 

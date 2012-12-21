@@ -192,28 +192,16 @@ minetest.register_node("mesecons_pistons:piston_normal", {
 	paramtype2 = "facedir",
 	after_destruct = destruct,
 	on_timer = timer,
-	on_place = function(itemstack, placer, pointed_thing)
-		if pointed_thing.type ~= "node" then --can be placed only on nodes
-			return itemstack
+	after_place_node = function(pos, placer)
+		if not placer then --not placed by player
+			return
 		end
-		if not placer then
-			return minetest.item_place(itemstack, placer, pointed_thing)
+		local pitch = placer:get_look_pitch() * (180 / math.pi) --placer pitch in degrees
+		if pitch > 45 then --looking upwards
+			minetest.env:add_node(pos, {name="mesecons_pistons:piston_down_normal"})
+		elseif pitch < -45 then --looking downwards
+			minetest.env:add_node(pos, {name="mesecons_pistons:piston_up_normal"})
 		end
-		local dir = placer:get_look_dir()
-		if math.abs(dir.y) > math.sqrt(dir.x ^ 2 + dir.z ^ 2) then --vertical look direction is most significant
-			local fakestack
-			if dir.y > 0 then
-				fakestack = ItemStack("mesecons_pistons:piston_down_normal")
-			else
-				fakestack = ItemStack("mesecons_pistons:piston_up_normal")
-			end
-			local ret = minetest.item_place(fakestack, placer, pointed_thing)
-			if ret:is_empty() then
-				itemstack:take_item()
-				return itemstack
-			end
-		end
-		return minetest.item_place(itemstack, placer, pointed_thing) --place piston normally
 	end,
 	mesecons = {effector={
 		action_change = update,
@@ -228,29 +216,16 @@ minetest.register_node("mesecons_pistons:piston_sticky", {
 	paramtype2 = "facedir",
 	after_destruct = destruct,
 	on_timer = timer,
-	is_sticky_piston = true,
-	on_place = function(itemstack, placer, pointed_thing)
-		if pointed_thing.type ~= "node" then --can be placed only on nodes
-			return itemstack
+	after_place_node = function(pos, placer)
+		if not placer then --not placed by player
+			return
 		end
-		if not placer then
-			return minetest.item_place(itemstack, placer, pointed_thing)
+		local pitch = placer:get_look_pitch() * (180 / math.pi) --placer pitch in degrees
+		if pitch > 45 then --looking upwards
+			minetest.env:add_node(pos, {name="mesecons_pistons:piston_down_sticky"})
+		elseif pitch < -45 then --looking downwards
+			minetest.env:add_node(pos, {name="mesecons_pistons:piston_up_sticky"})
 		end
-		local dir = placer:get_look_dir()
-		if math.abs(dir.y) > math.sqrt(dir.x ^ 2 + dir.z ^ 2) then --vertical look direction is most significant
-			local fakestack
-			if dir.y > 0 then
-				fakestack = ItemStack("mesecons_pistons:piston_down_sticky")
-			else
-				fakestack = ItemStack("mesecons_pistons:piston_up_sticky")
-			end
-			local ret = minetest.item_place(fakestack, placer, pointed_thing)
-			if ret:is_empty() then
-				itemstack:take_item()
-				return itemstack
-			end
-		end
-		return minetest.item_place(itemstack, placer, pointed_thing) --place piston normally
 	end,
 	mesecons = {effector={
 		action_change = update,
