@@ -292,6 +292,12 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+	type = "cooking",
+	output = '"mesecons:wire_00000000_off" 16',
+	recipe = "default:mese_crystal",
+})
+
 minetest.register_abm(
 	{nodenames = {"mesecons:mesecon_off", "mesecons:mesecon_on"},
 	interval = 2,
