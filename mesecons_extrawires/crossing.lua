@@ -6,7 +6,7 @@ end
 
 minetest.register_node("mesecons_extrawires:crossing_on", {
 	drawtype = "nodebox",
-	tiles = {"jeija_insulated_wire_sides.png"},
+	tiles = {"jeija_insulated_wire_sides_on.png"},
 	paramtype = "light",
 	walkable = false,
 	stack_max = 99,
