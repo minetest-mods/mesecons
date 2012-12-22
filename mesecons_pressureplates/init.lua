@@ -16,7 +16,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_off", {
 		type = "fixed",
 		fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
 	},
-	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3, mesecon = 2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3},
     	description="Wood Pressure Plate",
 	
 	on_timer = function(pos, elapsed)
@@ -30,7 +30,9 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_off", {
 		end
 		return true
 	end,
-	
+	mesecons = {receptor = {
+		state = mesecon.state.off
+	}},
 	on_construct = function(pos)
 		minetest.env:get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 	end,
@@ -50,7 +52,7 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 		type = "fixed",
 		fixed = { -7/16, -8/16, -7/16, 7/16, -31/64, 7/16 },
 	},
-	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1, mesecon = 2},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,not_in_creative_inventory=1},
 	drop='"mesecons_pressureplates:pressure_plate_wood_off" 1',
 	
 	on_timer = function(pos, elapsed)
@@ -61,7 +63,9 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_wood_on", {
 		end
 		return true
 	end,
-	
+	mesecons = {receptor = {
+		state = mesecon.state.on
+	}},
 	on_construct = function(pos)
 		minetest.env:get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 	end,
@@ -106,14 +110,12 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_off", {
 		end
 		return true
 	end,
-	
+	mesecons = {receptor = {
+		state = mesecon.state.off
+	}},
 	on_construct = function(pos)
 		minetest.env:get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 	end,
-
-	mesecons = {receptor = {
-		state = mesecon.state.off
-	}}
 })
 
 minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
@@ -141,14 +143,12 @@ minetest.register_node("mesecons_pressureplates:pressure_plate_stone_on", {
 		end
 		return true
 	end,
-	
+	mesecons = {receptor = {
+		state = mesecon.state.on
+	}},
 	on_construct = function(pos)
 		minetest.env:get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 	end,
-
-	mesecons = {receptor = {
-		state = mesecon.state.off
-	}}
 })
 
 minetest.register_craft({
