@@ -294,7 +294,6 @@ minetest.register_node("mesecons_pistons:piston_up_normal", {
 	groups = {cracky=3, mesecon=2},
 	after_destruct = destruct,
 	on_timer = timer,
-	is_sticky_piston = true,
 	mesecons = {effector={
 		action_change = update
 	}},
@@ -306,6 +305,7 @@ minetest.register_node("mesecons_pistons:piston_up_sticky", {
 	groups = {cracky=3, mesecon=2},
 	after_destruct = destruct,
 	on_timer = timer,
+	is_sticky_piston = true,
 	mesecons = {effector={
 		action_change = update
 	}},
