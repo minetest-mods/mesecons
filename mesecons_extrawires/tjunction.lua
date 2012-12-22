@@ -28,11 +28,11 @@ end
 minetest.register_node("mesecons_extrawires:tjunction_on", {
 	drawtype = "nodebox",
 	tiles = {
-		"jeija_insulated_wire_sides.png",
-		"jeija_insulated_wire_sides.png",
+		"jeija_insulated_wire_sides_on.png",
+		"jeija_insulated_wire_sides_on.png",
 		"jeija_insulated_wire_ends_on.png",
 		"jeija_insulated_wire_ends_on.png",
-		"jeija_insulated_wire_sides.png",
+		"jeija_insulated_wire_sides_on.png",
 		"jeija_insulated_wire_ends_on.png"
 	},
 	paramtype = "light",
@@ -55,11 +55,11 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 	drawtype = "nodebox",
 	description = "T-junction",
 	tiles = {
-		"jeija_insulated_wire_sides.png",
-		"jeija_insulated_wire_sides.png",
+		"jeija_insulated_wire_sides_off.png",
+		"jeija_insulated_wire_sides_off.png",
 		"jeija_insulated_wire_ends_off.png",
 		"jeija_insulated_wire_ends_off.png",
-		"jeija_insulated_wire_sides.png",
+		"jeija_insulated_wire_sides_off.png",
 		"jeija_insulated_wire_ends_off.png"
 	},
 	paramtype = "light",
