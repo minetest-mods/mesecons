@@ -1,3 +1,25 @@
+minetest.register_chatcommand("say", {
+	params = "<text>",
+	description = "Say <text> as the server",
+	privs = {server=true},
+	func = function(name, param)
+		minetest.chat_send_all(param)
+	end
+})
+
+minetest.register_chatcommand("tell", {
+	params = "<name> <text>",
+	description = "Say <text> to <name> privately",
+	func = function(name, param)
+		local found, _, target, message = param:find("^([^%s]+)%s+(.*)$")
+		if found == nil then
+			minetest.chat_send_player(name, "Invalid usage: " .. param)
+			return
+		end
+		minetest.chat_send_player(target, name .. " whispers: " .. message)
+	end
+})
+
 local initialize_data = function(meta, player, command, param)
 	meta:set_string("formspec",
 		"invsize[9,6;]" ..
