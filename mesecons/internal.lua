@@ -413,45 +413,45 @@ end
 
 --Rules rotation Functions:
 function mesecon:rotate_rules_right(rules)
-	local nr={};
+	local nr = {}
 	for i, rule in ipairs(rules) do
-		nr[i]={}
-		nr[i].z=rule.x
-		nr[i].x=-rule.z
-		nr[i].y=rule.y
+		table.insert(nr, {
+			x = -rule.z, 
+			y =  rule.y, 
+			z =  rule.x})
 	end
 	return nr
 end
 
 function mesecon:rotate_rules_left(rules)
-	local nr={};
+	local nr = {}
 	for i, rule in ipairs(rules) do
-		nr[i]={}
-		nr[i].z=-rules[i].x
-		nr[i].x=rules[i].z
-		nr[i].y=rules[i].y
+		table.insert(nr, {
+			x =  rule.z, 
+			y =  rule.y, 
+			z = -rule.x})
 	end
 	return nr
 end
 
 function mesecon:rotate_rules_down(rules)
-	local nr={};
+	local nr = {}
 	for i, rule in ipairs(rules) do
-		nr[i]={}
-		nr[i].y=rule.x
-		nr[i].x=-rule.y
-		nr[i].z=rule.z
+		table.insert(nr, {
+			x = -rule.y, 
+			y =  rule.x, 
+			z =  rule.z})
 	end
 	return nr
 end
 
 function mesecon:rotate_rules_up(rules)
-	local nr={};
+	local nr = {}
 	for i, rule in ipairs(rules) do
-		nr[i]={}
-		nr[i].y=-rule.x
-		nr[i].x=rule.y
-		nr[i].z=rule.z
+		table.insert(nr, {
+			x =  rule.y, 
+			y = -rule.x, 
+			z =  rule.z})
 	end
 	return nr
 end

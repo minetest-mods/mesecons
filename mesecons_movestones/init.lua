@@ -70,7 +70,7 @@ minetest.register_node("mesecons_movestones:movestone", {
 			repeat -- Check if it collides with a stopper
 				collpos = mesecon:addPosRule(collpos, direction)
 				checknode=minetest.env:get_node(collpos)
-				if mesecon:is_mvps_stopper(checknode.name) then 
+				if mesecon:is_mvps_stopper(checknode.name, direction) then 
 					return
 				end
 			until checknode.name=="air"
@@ -97,7 +97,7 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 
 	on_step = function(self, dtime)
 		local pos = self.object:getpos()
-		local direction=mesecon:get_movestone_direction(pos)
+		local direction = mesecon:get_movestone_direction(pos)
 
 		if not direction then
 			minetest.env:add_node(pos, {name="mesecons_movestones:movestone"})
@@ -105,9 +105,9 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 			return
 		end
 
-		self.object:setvelocity({x=direction.x*3, y=direction.y*3, z=direction.z*3})
+		self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
 
-		mesecon:mvps_push(pos, direction)
+		mesecon:mvps_push(pos, direction, 100)
 	end,
 })
 
@@ -140,7 +140,7 @@ minetest.register_node("mesecons_movestones:sticky_movestone", {
 			repeat -- Check if it collides with a stopper
 				collpos = mesecon:addPosRule(collpos, direction)
 				checknode=minetest.env:get_node(collpos)
-				if mesecon:is_mvps_stopper(checknode.name) then 
+				if mesecon:is_mvps_stopper(checknode.name, direction) then 
 					return 
 				end
 			until checknode.name=="air"
@@ -149,7 +149,7 @@ minetest.register_node("mesecons_movestones:sticky_movestone", {
 			repeat -- Check if it collides with a stopper (pull direction)
 				collpos={x=collpos.x-direction.x, y=collpos.y-direction.y, z=collpos.z-direction.z}
 				checknode=minetest.env:get_node(collpos)
-				if mesecon:is_mvps_stopper(checknode.name) then
+				if mesecon:is_mvps_stopper(checknode.name, direction) then
 					return 
 				end
 			until checknode.name=="air"
@@ -192,9 +192,9 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 			return
 		end
 
-		self.object:setvelocity({x=direction.x*3, y=direction.y*3, z=direction.z*3})
+		self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
 
-		mesecon:mvps_push(pos, direction)
+		mesecon:mvps_push(pos, direction, 100)
 
 		--STICKY
 		mesecon:mvps_pull_all(pos, direction)
