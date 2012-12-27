@@ -24,9 +24,9 @@ end
 minetest.register_node("mesecons_extrawires:corner_on", {
 	drawtype = "nodebox",
 	tiles = {
+		"jeija_insulated_wire_curved_tb_on.png",
+		"jeija_insulated_wire_curved_tb_on.png^[transformR270",
 		"jeija_insulated_wire_sides_on.png",
-		"jeija_insulated_wire_sides_on.png",
-		"jeija_insulated_wire_ends_on.png",
 		"jeija_insulated_wire_ends_on.png",
 		"jeija_insulated_wire_sides_on.png",
 		"jeija_insulated_wire_ends_on.png"
@@ -51,9 +51,9 @@ minetest.register_node("mesecons_extrawires:corner_off", {
 	drawtype = "nodebox",
 	description = "Mesecon Corner",
 	tiles = {
+		"jeija_insulated_wire_curved_tb_off.png",
+		"jeija_insulated_wire_curved_tb_off.png^[transformR270",
 		"jeija_insulated_wire_sides_off.png",
-		"jeija_insulated_wire_sides_off.png",
-		"jeija_insulated_wire_ends_off.png",
 		"jeija_insulated_wire_ends_off.png",
 		"jeija_insulated_wire_sides_off.png",
 		"jeija_insulated_wire_ends_off.png"
