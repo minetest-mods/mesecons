@@ -1,8 +1,3 @@
---
---
---
---
-
 -- Get mesecon rules of pistons
 piston_rules =
 {{x=0,  y=0,  z=1}, --everything apart from z- (pusher side)
@@ -44,8 +39,12 @@ local piston_remove_pusher = function (pos, node)
 
 	dir = piston_get_direction(pistonspec.dir, node)
 	local pusherpos = mesecon:addPosRule(pos, dir)
-	minetest.env:remove_node(pusherpos)
-	nodeupdate(pusherpos)
+	local pushername = minetest.env:get_node(pusherpos).name
+
+	if pushername == pistonspec.pusher then --make sure there actually is a pusher (for compatibility reasons mainly)
+		minetest.env:remove_node(pusherpos)
+		nodeupdate(pusherpos)
+	end
 end
 
 local piston_on = function (pos, node)
@@ -252,7 +251,7 @@ local piston_up_on_box = {
 
 -- Normal
 
-local pistonspec_normal_down = {
+local pistonspec_normal_up = {
 	offname = "mesecons_pistons:piston_up_normal_off",
 	onname = "mesecons_pistons:piston_up_normal_on",
 	dir = {x = 0, y = 1, z = 0},
@@ -265,7 +264,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal_off", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype2 = "facedir",
 	drop = {"mesecons_pistons:piston_normal_off"},
-	mesecons_piston = pistonspec_normal_down,
+	mesecons_piston = pistonspec_normal_up,
 	mesecons = {effector={
 		action_on = piston_on,
 	}}
@@ -282,7 +281,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal_on", {
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_up_on_box,
 	selection_box = piston_up_on_box,
-	mesecons_piston = pistonspec_normal_down,
+	mesecons_piston = pistonspec_normal_up,
 	mesecons = {effector={
 		action_off = piston_off,
 	}}
