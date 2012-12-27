@@ -70,6 +70,7 @@ dofile(minetest.get_modpath("mesecons").."/internal.lua");
 
 -- Deprecated stuff
 -- To be removed in future releases
+-- Currently there is nothing here
 dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 
 -- API
@@ -100,7 +101,7 @@ function mesecon:receptor_off(pos, rules)
 end
 
 
-print("[OK] mesecons")
+print("[OK] Mesecons")
 
 --The actual wires
 dofile(minetest.get_modpath("mesecons").."/wires.lua");

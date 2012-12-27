@@ -20,7 +20,7 @@ end
 function mesecon:mvps_process_stack(stack)
 	-- update mesecons for placed nodes ( has to be done after all nodes have been added )
 	for _, n in ipairs(stack) do
-		mesecon.on_placenode(n.pos, n.node)
+		mesecon.on_placenode(n.pos, minetest.env:get_node(n.pos))
 		mesecon:update_autoconnect(n.pos)
 	end
 end

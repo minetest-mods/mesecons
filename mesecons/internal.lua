@@ -331,9 +331,26 @@ function mesecon:turnoff(pos, rulename)
 end
 
 
-function mesecon:connected_to_receptor(pos, checked)
-	checked = checked or {}
+function mesecon:connected_to_receptor(pos)
+	local node = minetest.env:get_node(pos)
 
+	-- Check if conductors around are connected
+	local rules = mesecon:get_any_inputrules(node)
+	if not rules then return false end
+
+	for _, rule in ipairs(rules) do
+		local np = mesecon:addPosRule(pos, rule)
+		if mesecon:rules_link(np, pos) then
+			if mesecon:find_receptor_on(np, {}) then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+function mesecon:find_receptor_on(pos, checked)
 	-- find out if node has already been checked (to prevent from endless loop)
 	for _, cp in ipairs(checked) do
 		if mesecon:cmpPos(cp, pos) then
@@ -343,27 +360,25 @@ function mesecon:connected_to_receptor(pos, checked)
 
 	-- add current position to checked
 	table.insert(checked, {x=pos.x, y=pos.y, z=pos.z})
-
 	local node = minetest.env:get_node(pos)
 
-	if mesecon:is_conductor(node.name) then
-		-- Check if conductors around are connected
-		local rules = mesecon:conductor_get_rules(node)
+	if mesecon:is_receptor_on(node.name) then
+		return true
+	end
 
+	if mesecon:is_conductor(node.name) then
+		local rules = mesecon:conductor_get_rules(node)
 		for _, rule in ipairs(rules) do
 			local np = mesecon:addPosRule(pos, rule)
 			if mesecon:rules_link(np, pos) then
-				connected, checked = mesecon:connected_to_receptor(np, checked)
-				if connected then
+				if mesecon:find_receptor_on(np, checked) then
 					return true
 				end
 			end
 		end
-	elseif mesecon:is_receptor_on(node.name) then
-		return true
 	end
 
-	return false, checked
+	return false
 end
 
 function mesecon:rules_link(output, input, dug_outputrules) --output/input are positions (outputrules optional, used if node has been dug), second return value: the name of the affected input rule
