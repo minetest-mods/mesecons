@@ -660,7 +660,7 @@ local piston_get_stopper = function (node, dir, stack, stackid)
 end
 
 mesecon:register_mvps_stopper("mesecons_pistons:piston_normal_on", piston_get_stopper)
-mesecon:register_mvps_stopper("mesecons_pistons:piston_sticky_on", piston_pusher_get_stopper)
+mesecon:register_mvps_stopper("mesecons_pistons:piston_sticky_on", piston_get_stopper)
 
 mesecon:register_mvps_stopper("mesecons_pistons:piston_up_normal_on", piston_up_down_get_stopper)
 mesecon:register_mvps_stopper("mesecons_pistons:piston_up_sticky_on", piston_up_down_get_stopper)

@@ -94,7 +94,7 @@ function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: dire
 		mesecon.on_dignode(np, nn)
 		mesecon:update_autoconnect(np)
 	end
-	return {{pos = np, node = nn}}
+	return {{pos = np, node = {param2 = 0, name = "air"}}, {pos = pos, node = nn}}
 end
 
 function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: direction of pull
