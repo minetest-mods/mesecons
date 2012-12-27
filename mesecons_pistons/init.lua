@@ -643,13 +643,18 @@ local piston_up_down_get_stopper = function (node, dir, stack, stackid)
 end
 
 local piston_get_stopper = function (node, dir, stack, stackid)
-	if (stack[stackid + 1]
-	and stack[stackid + 1].node.name   == minetest.registered_nodes[node.name].mesecons_piston.pusher
-	and stack[stackid + 1].node.param2 == node.param2)
-	or (stack[stackid - 1]
-	and stack[stackid - 1].node.name   == minetest.registered_nodes[node.name].mesecons_piston.pusher
-	and stack[stackid + 1].node.param2 == node.param2) then
-		return false
+	pistonspec = minetest.registered_nodes[node.name].mesecons_piston
+	dir = piston_get_direction(pistonspec.dir, node)
+	local pusherpos  = mesecon:addPosRule(stack[stackid].pos, dir)
+	local pushernode = minetest.env:get_node(pusherpos)
+
+	if minetest.registered_nodes[node.name].mesecons_piston.pusher == pushernode.name then
+		for _, s in ipairs(stack) do
+			if  mesecon:cmpPos(s.pos, pusherpos) -- pusher is also to be pushed
+			and s.node.param2 == node.param2 then
+				return false
+			end
+		end
 	end
 	return true
 end
@@ -657,11 +662,11 @@ end
 mesecon:register_mvps_stopper("mesecons_pistons:piston_normal_on", piston_get_stopper)
 mesecon:register_mvps_stopper("mesecons_pistons:piston_sticky_on", piston_pusher_get_stopper)
 
-mesecon:register_mvps_stopper("mesecons_pistons:piston_normal_on", piston_up_down_get_stopper)
-mesecon:register_mvps_stopper("mesecons_pistons:piston_sticky_on", piston_up_down_get_stopper)
+mesecon:register_mvps_stopper("mesecons_pistons:piston_up_normal_on", piston_up_down_get_stopper)
+mesecon:register_mvps_stopper("mesecons_pistons:piston_up_sticky_on", piston_up_down_get_stopper)
 
-mesecon:register_mvps_stopper("mesecons_pistons:piston_normal_on", piston_up_down_get_stopper)
-mesecon:register_mvps_stopper("mesecons_pistons:piston_sticky_on", piston_up_down_get_stopper)
+mesecon:register_mvps_stopper("mesecons_pistons:piston_down_normal_on", piston_up_down_get_stopper)
+mesecon:register_mvps_stopper("mesecons_pistons:piston_down_sticky_on", piston_up_down_get_stopper)
 
 --craft recipes
 minetest.register_craft({
