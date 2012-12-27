@@ -68,7 +68,7 @@ minetest.register_node("mesecons_movestones:movestone", {
 			local checknode={}
 			local collpos={x=pos.x, y=pos.y, z=pos.z}
 			repeat -- Check if it collides with a stopper
-				collpos = addPosRule(collpos, direction)
+				collpos = mesecon:addPosRule(collpos, direction)
 				checknode=minetest.env:get_node(collpos)
 				if mesecon:is_mvps_stopper(checknode.name) then 
 					return
@@ -138,7 +138,7 @@ minetest.register_node("mesecons_movestones:sticky_movestone", {
 			local checknode={}
 			local collpos={x=pos.x, y=pos.y, z=pos.z}
 			repeat -- Check if it collides with a stopper
-				collpos = addPosRule(collpos, direction)
+				collpos = mesecon:addPosRule(collpos, direction)
 				checknode=minetest.env:get_node(collpos)
 				if mesecon:is_mvps_stopper(checknode.name) then 
 					return 
