@@ -285,18 +285,39 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 	end
 end
 
-minetest.register_craft({
-	output = '"mesecons:wire_00000000_off" 16',
-	recipe = {
-		{'"default:mese"'},
-	}
-})
+if minetest.registered_nodes["default:stone_with_mese"] == nil then
 
-minetest.register_craft({
-	type = "cooking",
-	output = '"mesecons:wire_00000000_off" 16',
-	recipe = "default:mese_crystal",
-})
+	minetest.register_craft({
+		output = "mesecons:wire_00000000_off 18",
+		recipe = {
+			{"default:mese"},
+		}
+	})
+else
+
+	minetest.register_craft({
+		type = "cooking",
+		output = "mesecons:wire_00000000_off 2",
+		recipe = "default:mese_crystal_fragment",
+		cooktime = 3,
+	})
+
+	minetest.register_craft({
+		type = "cooking",
+		output = "mesecons:wire_00000000_off 18",
+		recipe = "default:mese_crystal",
+		cooktime = 15,
+	})
+
+	minetest.register_craft({
+		type = "cooking",
+		output = "mesecons:wire_00000000_off 162",
+		recipe = "default:mese",
+		cooktime = 30,
+	})
+
+end
+
 
 minetest.register_abm(
 	{nodenames = {"mesecons:mesecon_off", "mesecons:mesecon_on"},
