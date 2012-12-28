@@ -428,7 +428,7 @@ end
 
 --Rules rotation Functions:
 function mesecon:rotate_rules_right(rules)
-	nr = {}
+	local nr = {}
 	for i, rule in ipairs(rules) do
 		table.insert(nr, {
 			x = -rule.z, 
@@ -439,7 +439,7 @@ function mesecon:rotate_rules_right(rules)
 end
 
 function mesecon:rotate_rules_left(rules)
-	nr = {}
+	local nr = {}
 	for i, rule in ipairs(rules) do
 		table.insert(nr, {
 			x =  rule.z, 
@@ -450,7 +450,7 @@ function mesecon:rotate_rules_left(rules)
 end
 
 function mesecon:rotate_rules_down(rules)
-	nr = {}
+	local nr = {}
 	for i, rule in ipairs(rules) do
 		table.insert(nr, {
 			x = -rule.y, 
@@ -461,7 +461,7 @@ function mesecon:rotate_rules_down(rules)
 end
 
 function mesecon:rotate_rules_up(rules)
-	nr = {}
+	local nr = {}
 	for i, rule in ipairs(rules) do
 		table.insert(nr, {
 			x =  rule.y, 
