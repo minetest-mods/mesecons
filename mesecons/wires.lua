@@ -1,39 +1,3 @@
--- Oldstyle wires:
-
-if NEW_STYLE_WIRES == false then --old wires
-minetest.register_node("mesecons:mesecon_off", {
-	drawtype = "raillike",
-	tiles = {"jeija_mesecon_off.png", "jeija_mesecon_curved_off.png", "jeija_mesecon_t_junction_off.png", "jeija_mesecon_crossing_off.png"},
-	inventory_image = "jeija_mesecon_off.png",
-	wield_image = "jeija_mesecon_off.png",
-	paramtype = "light",
-	is_ground_content = true,
-	walkable = false,
-	selection_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
-	},
-	groups = {dig_immediate=3, mesecon=1, mesecon_conductor_craftable=1},
-    	description="Mesecons",
-})
-
-minetest.register_node("mesecons:mesecon_on", {
-	drawtype = "raillike",
-	tiles = {"jeija_mesecon_on.png", "jeija_mesecon_curved_on.png", "jeija_mesecon_t_junction_on.png", "jeija_mesecon_crossing_on.png"},
-	paramtype = "light",
-	is_ground_content = true,
-	walkable = false,
-	selection_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
-	},
-	groups = {dig_immediate=3, not_in_creaive_inventory=1, mesecon=1},
-	drop = '"mesecons:mesecon_off" 1',
-	light_source = LIGHT_MAX-11,
-})
-mesecon:register_conductor("mesecons:mesecon_on", "mesecons:mesecon_off")
-else  -- NEW STYLE WIRES
-
 -- naming scheme: wire:(xp)(zp)(xm)(zm)_on/off
 -- The conditions in brackets define whether there is a mesecon at that place or not
 -- 1 = there is one; 0 = there is none
@@ -51,6 +15,8 @@ box_xpy = {.5-1/16, -.5+1/16, -1/16, .5, .4999+1/16, 1/16}
 box_zpy = {-1/16, -.5+1/16, .5-1/16, 1/16, .4999+1/16, .5}
 box_xmy = {-.5, -.5+1/16, -1/16, -.5+1/16, .4999+1/16, 1/16}
 box_zmy = {-1/16, -.5+1/16, -.5, 1/16, .4999+1/16, -.5+1/16}
+
+-- Registering the wires
 
 for xp=0, 1 do
 for zp=0, 1 do
@@ -191,6 +157,9 @@ end
 end
 end
 
+-- Updating the wires:
+-- Place the right connection wire
+
 local update_on_place_dig = function (pos, node)
 	if minetest.registered_nodes[node.name]
 	and minetest.registered_nodes[node.name].mesecons then
@@ -237,37 +206,20 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 	nodename = minetest.env:get_node(pos).name
 	if string.find(nodename, "mesecons:wire_") == nil and not replace_old then return nil end
 
-	if mesecon:rules_link_bothdir(pos, xppos) then xp = 1 else xp = 0 end
-	if mesecon:rules_link_bothdir(pos, xmpos) then xm = 1 else xm = 0 end
-	if mesecon:rules_link_bothdir(pos, zppos) then zp = 1 else zp = 0 end
-	if mesecon:rules_link_bothdir(pos, zmpos) then zm = 1 else zm = 0 end
+	if mesecon:rules_link_anydir(pos, xppos) then xp = 1 else xp = 0 end
+	if mesecon:rules_link_anydir(pos, xmpos) then xm = 1 else xm = 0 end
+	if mesecon:rules_link_anydir(pos, zppos) then zp = 1 else zp = 0 end
+	if mesecon:rules_link_anydir(pos, zmpos) then zm = 1 else zm = 0 end
 
-	if mesecon:rules_link_bothdir(pos, xpympos) then xp = 1 end
-	if mesecon:rules_link_bothdir(pos, xmympos) then xm = 1 end
-	if mesecon:rules_link_bothdir(pos, zpympos) then zp = 1 end
-	if mesecon:rules_link_bothdir(pos, zmympos) then zm = 1 end
+	if mesecon:rules_link_anydir(pos, xpympos) then xp = 1 end
+	if mesecon:rules_link_anydir(pos, xmympos) then xm = 1 end
+	if mesecon:rules_link_anydir(pos, zpympos) then zp = 1 end
+	if mesecon:rules_link_anydir(pos, zmympos) then zm = 1 end
 
-	if mesecon:rules_link(pos, xpypos) then xpy = 1 else xpy = 0 end
-	if mesecon:rules_link(pos, zpypos) then zpy = 1 else zpy = 0 end
-	if mesecon:rules_link(pos, xmypos) then xmy = 1 else xmy = 0 end
-	if mesecon:rules_link(pos, zmypos) then zmy = 1 else zmy = 0 end
-
-	-- Backward compatibility
-	if replace_old then
-		xp = 	(xp == 1 or	(string.find(minetest.env:get_node(xppos  ).name, "mesecons:mesecon_") ~= nil or
-					 string.find(minetest.env:get_node(xpympos).name, "mesecons:mesecon_") ~= nil)) and 1 or 0
-		zp = 	(zp == 1 or	(string.find(minetest.env:get_node(zppos  ).name, "mesecons:mesecon_") ~= nil or
-			 		 string.find(minetest.env:get_node(zpympos).name, "mesecons:mesecon_") ~= nil)) and 1 or 0
-		xm = 	(xm == 1 or	(string.find(minetest.env:get_node(xmpos  ).name, "mesecons:mesecon_") ~= nil or
-					 string.find(minetest.env:get_node(xmympos).name, "mesecons:mesecon_") ~= nil)) and 1 or 0
-		zm = 	(zm == 1 or 	(string.find(minetest.env:get_node(zmpos  ).name, "mesecons:mesecon_") ~= nil or
-					 string.find(minetest.env:get_node(zmympos).name, "mesecons:mesecon_") ~= nil)) and 1 or 0
-
-		xpy = (xpy == 1 or string.find(minetest.env:get_node(xpypos).name, "mesecons:mesecon_") ~=nil) and 1 or 0
-		zpy = (zpy == 1 or string.find(minetest.env:get_node(zpypos).name, "mesecons:mesecon_") ~=nil) and 1 or 0
-		xmy = (xmy == 1 or string.find(minetest.env:get_node(xmypos).name, "mesecons:mesecon_") ~=nil) and 1 or 0
-		zmy = (zmy == 1 or string.find(minetest.env:get_node(zmypos).name, "mesecons:mesecon_") ~=nil) and 1 or 0
-	end
+	if mesecon:rules_link_anydir(pos, xpypos) then xpy = 1 else xpy = 0 end
+	if mesecon:rules_link_anydir(pos, zpypos) then zpy = 1 else zpy = 0 end
+	if mesecon:rules_link_anydir(pos, xmypos) then xmy = 1 else xmy = 0 end
+	if mesecon:rules_link_anydir(pos, zmypos) then zmy = 1 else zmy = 0 end
 
 	if xpy == 1 then xp = 1 end
 	if zpy == 1 then zp = 1 end
@@ -318,13 +270,8 @@ else
 
 end
 
-
-minetest.register_abm(
-	{nodenames = {"mesecons:mesecon_off", "mesecons:mesecon_on"},
-	interval = 2,
-	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		mesecon:update_autoconnect(pos, false, true)
-	end,
+minetest.register_craft({
+	type = "cooking",
+	output = '"mesecons:wire_00000000_off" 16',
+	recipe = "default:mese_crystal",
 })
-end

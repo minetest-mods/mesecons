@@ -22,14 +22,14 @@
 --	{
 --		state = mesecon.state.on/off
 --		rules = rules/get_rules
---	}
+--	},
 --	effector =
 --	{
 --		action_on = function
 --		action_off = function
 --		action_change = function
 --		rules = rules/get_rules
---	}
+--	},
 --	conductor = 
 --	{
 --		state = mesecon.state.on/off
@@ -70,6 +70,7 @@ dofile(minetest.get_modpath("mesecons").."/internal.lua");
 
 -- Deprecated stuff
 -- To be removed in future releases
+-- Currently there is nothing here
 dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 
 -- API
@@ -79,12 +80,10 @@ function mesecon:receptor_on(pos, rules)
 	rules = rules or mesecon.rules.default
 
 	for _, rule in ipairs(rules) do
-		local np = {
-		x = pos.x + rule.x,
-		y = pos.y + rule.y,
-		z = pos.z + rule.z}
-		if mesecon:rules_link(pos, np, rules) then
-			mesecon:turnon(np, pos)
+		local np = mesecon:addPosRule(pos, rule)
+		local link, rulename = mesecon:rules_link(pos, np, rules)
+		if link then
+			mesecon:turnon(np, rulename)
 		end
 	end
 end
@@ -93,18 +92,16 @@ function mesecon:receptor_off(pos, rules)
 	rules = rules or mesecon.rules.default
 
 	for _, rule in ipairs(rules) do
-		local np = {
-		x = pos.x + rule.x,
-		y = pos.y + rule.y,
-		z = pos.z + rule.z}
-		if mesecon:rules_link(pos, np, rules) and not mesecon:connected_to_pw_src(np) then
-			mesecon:turnoff(np, pos)
+		local np = mesecon:addPosRule(pos, rule)
+		local link, rulename = mesecon:rules_link(pos, np, rules)
+		if link and not mesecon:connected_to_receptor(np) then
+			mesecon:turnoff(np, rulename)
 		end
 	end
 end
 
 
-print("[OK] mesecons")
+print("[OK] Mesecons")
 
 --The actual wires
 dofile(minetest.get_modpath("mesecons").."/wires.lua");

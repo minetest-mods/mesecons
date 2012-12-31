@@ -11,7 +11,7 @@ minetest.register_alias("mesecons:wireless_receiver", "mesecons_wireless:wireles
 minetest.register_alias("mesecons:wireless_transmitter", "mesecons_wireless:wireless_transmitter_off")
 minetest.register_alias("mesecons:switch", "mesecons_switch:mesecon_switch_off")
 minetest.register_alias("mesecons:button", "mesecons_button:button_off")
-minetest.register_alias("mesecons:piston", "mesecons_pistons:piston_normal")
+minetest.register_alias("mesecons:piston", "mesecons_pistons:piston_normal_off")
 minetest.register_alias("mesecons:blinky_plant", "mesecons_blinkyplant:blinky_plant_off")
 minetest.register_alias("mesecons:mesecon_torch", "mesecons_torch:mesecon_torch_on")
 minetest.register_alias("mesecons:torch", "mesecons_torch:mesecon_torch_on")
@@ -30,3 +30,9 @@ minetest.register_alias("mesecons:solarpanel", "mesecons_solarpanel:solar_panel_
 
 --Backwards compatibility
 minetest.register_alias("mesecons:mesecon_off", "mesecons:wire_00000000_off")
+minetest.register_alias("mesecons_pistons:piston_sticky", "mesecons_pistons:piston_sticky_on")
+minetest.register_alias("mesecons_pistons:piston_normal", "mesecons_pistons:piston_normal_on")
+minetest.register_alias("mesecons_pistons:piston_up_normal", "mesecons_pistons:piston_up_normal_on")
+minetest.register_alias("mesecons_pistons:piston_down_normal", "mesecons_pistons:piston_down_normal_on")
+minetest.register_alias("mesecons_pistons:piston_up_sticky", "mesecons_pistons:piston_up_sticky_on")
+minetest.register_alias("mesecons_pistons:piston_down_sticky", "mesecons_pistons:piston_down_sticky_on")

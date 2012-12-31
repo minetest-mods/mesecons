@@ -9,14 +9,14 @@ end
 
 minetest.register_node("mesecons_insulated:insulated_on", {
 	drawtype = "nodebox",
-	description = "insulated mesecons",
+	description = "Insulated Mesecon",
 	tiles = {
-		"jeija_insulated_wire_sides.png",
-		"jeija_insulated_wire_sides.png",
+		"jeija_insulated_wire_sides_on.png",
+		"jeija_insulated_wire_sides_on.png",
 		"jeija_insulated_wire_ends_on.png",
 		"jeija_insulated_wire_ends_on.png",
-		"jeija_insulated_wire_sides.png",
-		"jeija_insulated_wire_sides.png"
+		"jeija_insulated_wire_sides_on.png",
+		"jeija_insulated_wire_sides_on.png"
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -43,12 +43,12 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 	drawtype = "nodebox",
 	description = "insulated mesecons",
 	tiles = {
-		"jeija_insulated_wire_sides.png",
-		"jeija_insulated_wire_sides.png",
+		"jeija_insulated_wire_sides_off.png",
+		"jeija_insulated_wire_sides_off.png",
 		"jeija_insulated_wire_ends_off.png",
 		"jeija_insulated_wire_ends_off.png",
-		"jeija_insulated_wire_sides.png",
-		"jeija_insulated_wire_sides.png"
+		"jeija_insulated_wire_sides_off.png",
+		"jeija_insulated_wire_sides_off.png"
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
