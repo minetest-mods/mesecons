@@ -99,7 +99,7 @@ gates = {
 {name = "xor"  , inputnumber = 2}}
 
 local onoff, drop, nodename, description, groups
-for i, gate in ipairs(gates) do
+for _, gate in ipairs(gates) do
 	if gate.inputnumber == 1 then
 		get_rules = gate_get_input_rules_oneinput
 	elseif gate.inputnumber == 2 then
