@@ -26,6 +26,11 @@ rules.b = {x =  0, y = 0, z =  1}
 rules.c = {x =  1, y = 0, z =  0}
 rules.d = {x =  0, y = 0, z = -1}
 
+------------------
+-- Action stuff --
+------------------
+-- These helpers are required to set the portstates of the luacontroller
+
 local get_real_portstates = function(pos) -- determine if ports are powered (by itself or from outside)
 	ports = {
 		a = mesecon:is_power_on(mesecon:addPosRule(pos, rules.a))
@@ -80,7 +85,10 @@ local action = function (pos, ports)
 	action_setports (pos, ports, vports)
 end
 
--- Overheat Stuff
+--------------------
+-- Overheat stuff --
+--------------------
+
 local heat = function (meta) -- warm up
 	h = meta:get_int("heat")
 	if h ~= nil then
@@ -106,14 +114,14 @@ local overheat = function (meta) -- determine if too hot
 end
 
 local overheat_off = function(pos)
-	rules = mesecon:get_rules("mesecons_microcontroller:microcontroller1111")
-	mesecon:receptor_off(pos, rules)
+	mesecon:receptor_off(pos, mesecon.rules.flat)
 end
 
-local update = function (pos)
-	local meta = minetest.env:get_meta(pos)
-	code = meta:get_string("code")
+-------------------
+-- Parsing stuff --
+-------------------
 
+local code_prohibited = function(code)
 	-- Clean code
 	local prohibited = {"while", "for", "repeat", "until"}
 	for _, p in ipairs(prohibited) do
@@ -121,27 +129,36 @@ local update = function (pos)
 			return "Prohibited command: "..p
 		end
 	end
+end
 
+local safeprint = function(param)
+	print(dump(param))
+end
+
+local create_environment = function(pos, mem)
 	-- Gather variables for the environment
 	local vports = minetest.registered_nodes[minetest.env:get_node(pos).name].virtual_portstates
 	vports = {a = vports.a, b = vports.b, c = vports.c, d = vports.d}
 	local rports = get_real_portstates(pos)
 
-	local env = {	print = print,
-				selfpos = pos,
-				dump = dump,
-				pin = merge_portstates(vports, rports),
-				port = vports}
+	return {	print = safeprint,
+			pin = merge_portstates(vports, rports),
+			port = vports,
+			mem = mem}
+end
 
+local create_sandbox = function (code, env)
 	-- Create Sandbox
 	if code:byte(1) == 27 then
-		return "You Hacker You! Don't use binary code!"
+		return _, "You Hacker You! Don't use binary code!"
 	end
-	local f, msg = loadstring(code)
-	if not f then return msg end
+	f, msg = loadstring(code)
+	if not f then return _, msg end
 	setfenv(f, env)
-	success, msg = pcall(f)
+	return f
+end
 
+local do_overheat = function (pos, meta)
 	-- Overheat protection
 	heat(meta)
 	minetest.after(0.5, cool, meta)
@@ -151,13 +168,40 @@ local update = function (pos)
 		minetest.env:add_item(pos, BASENAME.."0000")
 		return
 	end
+end
+
+local load_memory = function(meta)
+	return minetest.deserialize(meta:get_string("lc_memory")) or {}
+end
+
+local save_memory = function(meta, mem)
+	meta:set_string("lc_memory", minetest.serialize(mem))
+end
+
+----------------------
+-- Parsing function --
+----------------------
+
+local update = function (pos)
+	local meta = minetest.env:get_meta(pos)
+
+	local mem  = load_memory(meta)
+	local code = meta:get_string("code")
+
+	local prohibited = code_prohibited(code)
+	if 	prohibited then return prohibited end
+	local env = create_environment(pos, mem)
+
+	local chunk, msg = create_sandbox (code, env)
+	if not chunk then return msg end
+	local success, msg = pcall(f)
+	if not success then return msg end
+
+	do_overheat(pos, meta)
+	save_memory(meta, mem)
 
 	-- Actually set the ports
-	if not success then
-		return msg
-	else
-		action(pos, env.port)
-	end
+	action(pos, env.port)
 end
 
 local reset_meta = function(pos, code, errmsg)
@@ -186,7 +230,10 @@ end
 -- |     |       |  | |\ |  |  |_| |  | |  |  |_ |_|
 -- |     |______ |__| | \|  |  | \ |__| |_ |_ |_ |\
 --
--- Actually register all the stuff:
+
+-----------------------
+-- Node Registration --
+-----------------------
 
 for a = 0, 1 do
 for b = 0, 1 do
@@ -293,6 +340,10 @@ end
 end
 end
 
+------------------------
+-- Craft Registration --
+------------------------
+
 minetest.register_craft({
 	output = BASENAME.."0000 2",
 	recipe = {
@@ -301,3 +352,4 @@ minetest.register_craft({
 		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable', ''},
 	}
 })
+
