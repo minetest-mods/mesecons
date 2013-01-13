@@ -3,7 +3,7 @@
 -- newport = merge_portstates(state1, state2): just does result = state1 or state2 for every port
 -- action_setports(pos, ports, vports): activates/deactivates the mesecons according to the portstates (helper for action)
 -- action(pos, ports): Applies new portstates to a luacontroller at pos
--- update(pos): updates the controller at pos by executing the code
+-- lc_update(pos): updates the controller at pos by executing the code
 -- reset_meta (pos, code, errmsg): performs a software-reset, installs new code and prints error messages
 -- reset (pos): performs a hardware reset, turns off all ports
 --
@@ -21,10 +21,10 @@
 local BASENAME = "mesecons_luacontroller:luacontroller"
 
 local rules = {}
-rules.a = {x = -1, y = 0, z =  0}
-rules.b = {x =  0, y = 0, z =  1}
-rules.c = {x =  1, y = 0, z =  0}
-rules.d = {x =  0, y = 0, z = -1}
+rules.a = {x = -1, y = 0, z =  0, name="A"}
+rules.b = {x =  0, y = 0, z =  1, name="B"}
+rules.c = {x =  1, y = 0, z =  0, name="C"}
+rules.d = {x =  0, y = 0, z = -1, name="D"}
 
 ------------------
 -- Action stuff --
@@ -54,35 +54,58 @@ local merge_portstates = function (ports, vports)
 	return npo
 end
 
-local action_setports = function (pos, ports, vports)
-	if vports.a ~= ports.a then
-		if ports.a then mesecon:receptor_on(pos, {rules.a})
-		else mesecon:receptor_off(pos, {rules.a}) end
+local action_setports_on = function (pos, ports, vports)
+	if vports.a ~= ports.a and ports.a then
+		mesecon:receptor_on(pos, {rules.a})
 	end
-	if vports.b ~= ports.b then
-		if ports.b then mesecon:receptor_on(pos, {rules.b})
-		else mesecon:receptor_off(pos, {rules.b}) end
+	if vports.b ~= ports.b and ports.b then
+		mesecon:receptor_on(pos, {rules.b})
 	end
-	if vports.c ~= ports.c then
-		if ports.c then mesecon:receptor_on(pos, {rules.c})
-		else mesecon:receptor_off(pos, {rules.c}) end
+	if vports.c ~= ports.c and ports.c then
+		mesecon:receptor_on(pos, {rules.c})
 	end
-	if vports.d ~= ports.d then
-		if ports.d then mesecon:receptor_on(pos, {rules.d})
-		else mesecon:receptor_off(pos, {rules.d}) end
+	if vports.d ~= ports.d and ports.d then
+		mesecon:receptor_on(pos, {rules.d})
+	end
+end
+
+local action_setports_off = function (pos, ports, vports)
+	local todo = {}
+	if vports.a ~= ports.a and not ports.a then
+		table.insert(todo, mesecon:addPosRule(pos, rules.a))
+	end
+	if vports.b ~= ports.b and not ports.b then
+		table.insert(todo, mesecon:addPosRule(pos, rules.b))
+	end
+	if vports.c ~= ports.c and not ports.c then
+		table.insert(todo, mesecon:addPosRule(pos, rules.c))
+	end
+	if vports.d ~= ports.d and not ports.d then
+		table.insert(todo, mesecon:addPosRule(pos, rules.d))
+	end
+
+	for _, t in ipairs(todo) do
+		local link, rulename = mesecon:rules_link(pos, t)
+		if link then
+			mesecon:turnoff(t, rulename)
+		end
 	end
 end
 
 local action = function (pos, ports)
-	local vports = minetest.registered_nodes[minetest.env:get_node(pos).name].virtual_portstates;
-	local name = BASENAME
+	local name = minetest.env:get_node(pos).name
+	local vports = minetest.registered_nodes[name].virtual_portstates
+	local newname = BASENAME
 		..tonumber(ports.d and 1 or 0)
 		..tonumber(ports.c and 1 or 0)
 		..tonumber(ports.b and 1 or 0)
 		..tonumber(ports.a and 1 or 0)
-	mesecon:swap_node(pos, name)
 
-	action_setports (pos, ports, vports)
+	if name ~= newname and vports then
+		action_setports_off (pos, ports, vports)
+		mesecon:swap_node(pos, newname)
+		action_setports_on (pos, ports, vports)
+	end
 end
 
 --------------------
@@ -106,7 +129,7 @@ end
 local overheat = function (meta) -- determine if too hot
 	h = meta:get_int("heat")
 	if h == nil then return true end -- if nil then overheat
-	if h > 30 then 
+	if h > 10 then 
 		return true
 	else 
 		return false 
@@ -135,7 +158,22 @@ local safeprint = function(param)
 	print(dump(param))
 end
 
-local create_environment = function(pos, mem)
+local interrupt = function(params)
+	lc_update(params.pos, {type="interrupt", iid = params.iid})
+end
+
+local getinterrupt = function(pos)
+	local interrupt = function (time, iid) -- iid = interrupt id
+		local meta = minetest.env:get_meta(pos)
+		local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
+		table.insert (interrupts, iid or 0)
+		meta:set_string("lc_interrupts", minetest.serialize(interrupts))
+		minetest.after(time, interrupt, {pos=pos, iid = iid})
+	end
+	return interrupt
+end
+
+local create_environment = function(pos, mem, event)
 	-- Gather variables for the environment
 	local vports = minetest.registered_nodes[minetest.env:get_node(pos).name].virtual_portstates
 	vports = {a = vports.a, b = vports.b, c = vports.c, d = vports.d}
@@ -144,7 +182,9 @@ local create_environment = function(pos, mem)
 	return {	print = safeprint,
 			pin = merge_portstates(vports, rports),
 			port = vports,
-			mem = mem}
+			interrupt = getinterrupt(pos),
+			mem = mem,
+			event = event}
 end
 
 local create_sandbox = function (code, env)
@@ -178,23 +218,40 @@ local save_memory = function(meta, mem)
 	meta:set_string("lc_memory", minetest.serialize(mem))
 end
 
+local interrupt_allow = function (meta, event)
+	if event.type ~= "interrupt" then return true end
+
+	local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
+	for _, i in ipairs(interrupts) do
+		if i == event.iid then
+			return true
+		end
+	end
+
+	return false
+end
+
 ----------------------
 -- Parsing function --
 ----------------------
 
-local update = function (pos)
+lc_update = function (pos, event)
 	local meta = minetest.env:get_meta(pos)
+	if not interrupt_allow(meta, event) then return end
 
+	-- load code & mem from memory
 	local mem  = load_memory(meta)
 	local code = meta:get_string("code")
 
+	-- make sure code is ok and create environment
 	local prohibited = code_prohibited(code)
 	if 	prohibited then return prohibited end
-	local env = create_environment(pos, mem)
+	local env = create_environment(pos, mem, event)
 
+	-- create the sandbox and execute code
 	local chunk, msg = create_sandbox (code, env)
 	if not chunk then return msg end
-	local success, msg = pcall(f)
+	local success, msg = pcall(f, port)
 	if not success then return msg end
 
 	do_overheat(pos, meta)
@@ -235,11 +292,15 @@ end
 -- Node Registration --
 -----------------------
 
+local output_rules={}
+local input_rules={}
+
 for a = 0, 1 do
 for b = 0, 1 do
 for c = 0, 1 do
 for d = 0, 1 do
-local nodename = BASENAME..tostring(d)..tostring(c)..tostring(b)..tostring(a)
+local cid = tostring(d)..tostring(c)..tostring(b)..tostring(a)
+local nodename = BASENAME..cid
 local top = "jeija_luacontroller_top.png"
 if a == 1 then
 	top = top.."^jeija_luacontroller_LED_A.png"
@@ -260,31 +321,35 @@ else
 	groups = {dig_immediate=2}
 end
 
-local output_rules={}
-if (a == 1) then table.insert(output_rules, rules.a) end
-if (b == 1) then table.insert(output_rules, rules.b) end
-if (c == 1) then table.insert(output_rules, rules.c) end
-if (d == 1) then table.insert(output_rules, rules.d) end
+output_rules[cid] = {}
+input_rules[cid] = {}
+if (a == 1) then table.insert(output_rules[cid], rules.a) end
+if (b == 1) then table.insert(output_rules[cid], rules.b) end
+if (c == 1) then table.insert(output_rules[cid], rules.c) end
+if (d == 1) then table.insert(output_rules[cid], rules.d) end
 
-local input_rules={}
-if (a == 0) then table.insert(input_rules, rules.a) end
-if (b == 0) then table.insert(input_rules, rules.b) end
-if (c == 0) then table.insert(input_rules, rules.c) end
-if (d == 0) then table.insert(input_rules, rules.d) end
+if (a == 0) then table.insert(input_rules[cid], rules.a) end
+if (b == 0) then table.insert(input_rules[cid], rules.b) end
+if (c == 0) then table.insert(input_rules[cid], rules.c) end
+if (d == 0) then table.insert(input_rules[cid], rules.d) end
 
-local mesecons = {effector =
-{
-	rules = input_rules,
-	action_change = function (pos)
-		update(pos)
-	end
-}}
-if nodename ~= BASENAME.."0000" then
-	mesecons.receptor = {
+local mesecons = {
+	effector =
+	{
+		rules = input_rules[cid],
+		action_on = function (pos, _, rulename)
+			lc_update(pos, {type="on",  pin=rulename})
+		end,
+		action_off = function (pos, _, rulename)
+			lc_update(pos, {type="off", pin=rulename})
+		end
+	},
+	receptor =
+	{
 		state = mesecon.state.on,
-		rules = output_rules
+		rules = output_rules[cid]
 	}
-end
+}
 
 local nodebox = {
 		type = "fixed",
@@ -322,11 +387,12 @@ minetest.register_node(nodename, {
 	on_receive_fields = function(pos, formname, fields)
 		reset(pos)
 		reset_meta(pos, fields.code)
-		local err = update(pos)
+		local err = lc_update(pos, {type="program"})
 		if err then print(err) end
 		reset_meta(pos, fields.code, err)
 	end,
 	mesecons = mesecons,
+	is_luacontroller = true,
 	virtual_portstates = {	a = a == 1, -- virtual portstates are
 					b = b == 1, -- the ports the the
 					c = c == 1, -- controller powers itself
