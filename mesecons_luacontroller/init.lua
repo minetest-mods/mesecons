@@ -72,23 +72,16 @@ end
 local action_setports_off = function (pos, ports, vports)
 	local todo = {}
 	if vports.a ~= ports.a and not ports.a then
-		table.insert(todo, mesecon:addPosRule(pos, rules.a))
+		mesecon:receptor_off(pos, {rules.a})
 	end
 	if vports.b ~= ports.b and not ports.b then
-		table.insert(todo, mesecon:addPosRule(pos, rules.b))
+		mesecon:receptor_off(pos, {rules.b})
 	end
 	if vports.c ~= ports.c and not ports.c then
-		table.insert(todo, mesecon:addPosRule(pos, rules.c))
+		mesecon:receptor_off(pos, {rules.c})
 	end
 	if vports.d ~= ports.d and not ports.d then
-		table.insert(todo, mesecon:addPosRule(pos, rules.d))
-	end
-
-	for _, t in ipairs(todo) do
-		local link, rulename = mesecon:rules_link(pos, t)
-		if link then
-			mesecon:turnoff(t, rulename)
-		end
+		mesecon:receptor_off(pos, {rules.d})
 	end
 end
 
@@ -102,6 +95,7 @@ local action = function (pos, ports)
 		..tonumber(ports.a and 1 or 0)
 
 	if name ~= newname and vports then
+		mesecon:swap_node(pos, "air")
 		action_setports_off (pos, ports, vports)
 		mesecon:swap_node(pos, newname)
 		action_setports_on (pos, ports, vports)
@@ -164,6 +158,7 @@ end
 
 local getinterrupt = function(pos)
 	local interrupt = function (time, iid) -- iid = interrupt id
+		if type(time) ~= "number" then return end
 		local meta = minetest.env:get_meta(pos)
 		local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
 		table.insert (interrupts, iid or 0)
@@ -223,12 +218,19 @@ local interrupt_allow = function (meta, event)
 
 	local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
 	for _, i in ipairs(interrupts) do
-		if i == event.iid then
+		if minetest.serialize(i) == minetest.serialize(event.iid) then
 			return true
 		end
 	end
 
 	return false
+end
+
+local ports_invalid = function (var)
+	if type(var) == "table" then
+		return false
+	end
+	return "The ports you set are invalid"
 end
 
 ----------------------
@@ -251,8 +253,9 @@ lc_update = function (pos, event)
 	-- create the sandbox and execute code
 	local chunk, msg = create_sandbox (code, env)
 	if not chunk then return msg end
-	local success, msg = pcall(f, port)
+	local success, msg = pcall(f)
 	if not success then return msg end
+	if ports_invalid(env.port) then return ports_invalid(env.port) end
 
 	do_overheat(pos, meta)
 	save_memory(meta, mem)
