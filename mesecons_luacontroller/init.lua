@@ -170,7 +170,7 @@ end
 local getdigiline_send = function (pos)
 	local digiline_send = function (channel, msg)
 		if digiline then
-			digiline:receptor_send(pos, digiline.rules.default, channel, minetest.serialize(msg))
+			digiline:receptor_send(pos, digiline.rules.default, channel, msg)
 		end
 	end
 	return digiline_send
@@ -325,7 +325,7 @@ local digiline = {
 	receptor = {},
 	effector = {
 		action = function (pos, node, channel, msg)
-			lc_update (pos, {type = "digiline", iid = {channel = channel, msg = minetest.deserialize(msg)}})
+			lc_update (pos, {type = "digiline", iid = {channel = channel, msg = msg}})
 		end
 	}
 }
@@ -372,12 +372,9 @@ local mesecons = {
 	effector =
 	{
 		rules = input_rules[cid],
-		action_on = function (pos, _, rulename)
-			lc_update(pos, {type="on",  pin=rulename})
+		action_change = function (pos, _, rulename, newstate)
+			lc_update(pos, {type=newstate,  pin=rulename})
 		end,
-		action_off = function (pos, _, rulename)
-			lc_update(pos, {type="off", pin=rulename})
-		end
 	},
 	receptor =
 	{

@@ -24,7 +24,7 @@
 -- SIGNALS
 -- mesecon:activate(pos, node)     --> Activates   the effector node at the specific pos (calls nodedef.mesecons.effector.action_on)
 -- mesecon:deactivate(pos, node)   --> Deactivates the effector node at the specific pos (calls nodedef.mesecons.effector.action_off)
--- mesecon:changesignal(pos, node) --> Changes     the effector node at the specific pos (calls nodedef.mesecons.effector.action_change)
+-- mesecon:changesignal(pos, node, rulename, newstate) --> Changes     the effector node at the specific pos (calls nodedef.mesecons.effector.action_change)
 
 -- RULES
 -- mesecon:add_rules(name, rules) | deprecated? --> Saves rules table by name
@@ -193,10 +193,10 @@ function mesecon:deactivate(pos, node, rulename)
 	end
 end
 
-function mesecon:changesignal(pos, node, rulename)
+function mesecon:changesignal(pos, node, rulename, newstate)
 	local effector = mesecon:get_effector(node.name)
 	if effector and effector.action_change then
-		effector.action_change (pos, node, rulename)
+		effector.action_change (pos, node, rulename, newstate)
 	end
 end
 
@@ -299,7 +299,7 @@ function mesecon:turnon(pos, rulename)
 			end
 		end
 	elseif mesecon:is_effector(node.name) then
-		mesecon:changesignal(pos, node, rulename)
+		mesecon:changesignal(pos, node, rulename, mesecon.state.on)
 		if mesecon:is_effector_off(node.name) then
 			mesecon:activate(pos, node, rulename)
 		end
@@ -322,7 +322,7 @@ function mesecon:turnoff(pos, rulename)
 			end
 		end
 	elseif mesecon:is_effector(node.name) then
-		mesecon:changesignal(pos, node, rulename)
+		mesecon:changesignal(pos, node, rulename, mesecon.state.off)
 		if mesecon:is_effector_on(node.name)
 		and not mesecon:is_powered(pos) then
 			mesecon:deactivate(pos, node, rulename)
