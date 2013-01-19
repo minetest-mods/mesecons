@@ -272,9 +272,10 @@ local reset_meta = function(pos, code, errmsg)
 	errmsg = string.gsub(errmsg, "%]", ")") -- corrupt formspec
 	meta:set_string("code", code)
 	meta:set_string("formspec", "size[10,8]"..
-		"textarea[0.2,0.4;10.2,5;code;Code:;"..code.."]"..
-		"button[3.5,7.5;2,0;program;Program]"..
-		"image_button_exit[9.62,-0.35;0.7,0.7;jeija_close_window.png;exit;]"..
+		"background[-0.2,-0.25;10.4,8.75;jeija_luac_background.png]"..
+		"textarea[0.2,0.6;10.2,5;code;;"..code.."]"..
+		"image_button[3.75,6;2.5,1;jeija_luac_runbutton.png;program;]"..
+		"image_button_exit[9.72,-0.25;0.425,0.4;jeija_close_window.png;exit;]"..
 		"label[0.1,4.5;"..errmsg.."]")
 	meta:set_int("heat", 0)
 end
