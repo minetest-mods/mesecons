@@ -167,6 +167,15 @@ local getinterrupt = function(pos)
 	return interrupt
 end
 
+local getdigiline_send = function (pos)
+	local digiline_send = function (channel, msg)
+		if digiline then
+			digiline:receptor_send(pos, digiline.rules.default, channel, minetest.serialize(msg))
+		end
+	end
+	return digiline_send
+end
+
 local create_environment = function(pos, mem, event)
 	-- Gather variables for the environment
 	local vports = minetest.registered_nodes[minetest.env:get_node(pos).name].virtual_portstates
@@ -177,6 +186,7 @@ local create_environment = function(pos, mem, event)
 			pin = merge_portstates(vports, rports),
 			port = vports,
 			interrupt = getinterrupt(pos),
+			digiline_send = getdigiline_send(pos),
 			mem = mem,
 			event = event}
 end
@@ -200,7 +210,6 @@ local do_overheat = function (pos, meta)
 		minetest.env:remove_node(pos)
 		minetest.after(0.2, overheat_off, pos) -- wait for pending operations
 		minetest.env:add_item(pos, BASENAME.."0000")
-		return
 	end
 end
 
@@ -298,6 +307,29 @@ end
 local output_rules={}
 local input_rules={}
 
+local nodebox = {
+		type = "fixed",
+		fixed = {
+			{ -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 }, -- bottom slab
+			{ -5/16, -7/16, -5/16, 5/16, -6/16, 5/16 }, -- circuit board
+			{ -3/16, -6/16, -3/16, 3/16, -5/16, 3/16 }, -- IC
+		}
+	}
+
+local selectionbox = {
+		type = "fixed",
+		fixed = { -8/16, -8/16, -8/16, 8/16, -5/16, 8/16 },
+	}
+
+local digiline = {
+	receptor = {},
+	effector = {
+		action = function (pos, node, channel, msg)
+			lc_update (pos, {type = "digiline", iid = {channel = channel, msg = minetest.deserialize(msg)}})
+		end
+	}
+}
+
 for a = 0, 1 do
 for b = 0, 1 do
 for c = 0, 1 do
@@ -354,20 +386,6 @@ local mesecons = {
 	}
 }
 
-local nodebox = {
-		type = "fixed",
-		fixed = {
-			{ -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 }, -- bottom slab
-			{ -5/16, -7/16, -5/16, 5/16, -6/16, 5/16 }, -- circuit board
-			{ -3/16, -6/16, -3/16, 3/16, -5/16, 3/16 }, -- IC
-		}
-	}
-
-local selectionbox = {
-		type = "fixed",
-		fixed = { -8/16, -8/16, -8/16, 8/16, -5/16, 8/16 },
-	}
-
 minetest.register_node(nodename, {
 	description = "Luacontroller",
 	drawtype = "nodebox",
@@ -395,6 +413,7 @@ minetest.register_node(nodename, {
 		reset_meta(pos, fields.code, err)
 	end,
 	mesecons = mesecons,
+	digiline = digiline,
 	is_luacontroller = true,
 	virtual_portstates = {	a = a == 1, -- virtual portstates are
 					b = b == 1, -- the ports the the
