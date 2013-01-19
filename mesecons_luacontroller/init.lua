@@ -70,7 +70,6 @@ local action_setports_on = function (pos, ports, vports)
 end
 
 local action_setports_off = function (pos, ports, vports)
-	local todo = {}
 	if vports.a ~= ports.a and not ports.a then
 		mesecon:receptor_off(pos, {rules.a})
 	end
