@@ -54,50 +54,46 @@ local merge_portstates = function (ports, vports)
 	return npo
 end
 
-local action_setports_on = function (pos, ports, vports)
-	if vports.a ~= ports.a and ports.a then
-		mesecon:receptor_on(pos, {rules.a})
-	end
-	if vports.b ~= ports.b and ports.b then
-		mesecon:receptor_on(pos, {rules.b})
-	end
-	if vports.c ~= ports.c and ports.c then
-		mesecon:receptor_on(pos, {rules.c})
-	end
-	if vports.d ~= ports.d and ports.d then
-		mesecon:receptor_on(pos, {rules.d})
-	end
-end
-
-local action_setports_off = function (pos, ports, vports)
-	if vports.a ~= ports.a and not ports.a then
-		mesecon:receptor_off(pos, {rules.a})
-	end
-	if vports.b ~= ports.b and not ports.b then
-		mesecon:receptor_off(pos, {rules.b})
-	end
-	if vports.c ~= ports.c and not ports.c then
-		mesecon:receptor_off(pos, {rules.c})
-	end
-	if vports.d ~= ports.d and not ports.d then
-		mesecon:receptor_off(pos, {rules.d})
-	end
+local generate_name = function (ports, overwrite)
+	local overwrite = overwrite or {}
+	local d = overwrite.d or (ports.d and 1 or 0)
+	local c = overwrite.d or (ports.c and 1 or 0)
+	local b = overwrite.d or (ports.b and 1 or 0)
+	local a = overwrite.d or (ports.a and 1 or 0)
+	return BASENAME..d..c..b..a
 end
 
 local action = function (pos, ports)
 	local name = minetest.env:get_node(pos).name
 	local vports = minetest.registered_nodes[name].virtual_portstates
-	local newname = BASENAME
-		..tonumber(ports.d and 1 or 0)
-		..tonumber(ports.c and 1 or 0)
-		..tonumber(ports.b and 1 or 0)
-		..tonumber(ports.a and 1 or 0)
+	local newname = generate_name(ports)
 
 	if name ~= newname and vports then
-		mesecon:swap_node(pos, "air")
-		action_setports_off (pos, ports, vports)
-		mesecon:swap_node(pos, newname)
-		action_setports_on (pos, ports, vports)
+		local rules_on  = {}
+		local rules_off = {}
+		local ignore = {}
+
+		if ports.a then	table.insert(rules_on,  rules.a)
+		else			table.insert(rules_off, rules.a) end
+		if ports.b then	table.insert(rules_on,  rules.b)
+		else			table.insert(rules_off, rules.b) end
+		if ports.c then	table.insert(rules_on,  rules.c)
+		else			table.insert(rules_off, rules.c) end
+		if ports.d then	table.insert(rules_on,  rules.d)
+		else			table.insert(rules_off, rules.d) end
+
+		if ports.a ~= vports.a then ignore.a = 2 end
+		if ports.b ~= vports.b then ignore.b = 2 end
+		if ports.c ~= vports.c then ignore.c = 2 end
+		if ports.d ~= vports.d then ignore.d = 2 end
+
+		mesecon:swap_node(pos, generate_name(ports, ignore))
+		mesecon:receptor_off(pos, rules_off)
+		if minetest.env:get_node(pos).name ~= generate_name(ports, ignore) then return end -- not interrupted by another event
+		mesecon:receptor_on (pos, rules_on )
+		if minetest.registered_nodes[minetest.env:get_node(pos).name].is_luacontroller then --didnt overheat
+			mesecon:swap_node(pos, newname)
+		end
 	end
 end
 
@@ -122,7 +118,7 @@ end
 local overheat = function (meta) -- determine if too hot
 	h = meta:get_int("heat")
 	if h == nil then return true end -- if nil then overheat
-	if h > 10 then 
+	if h > 20 then 
 		return true
 	else 
 		return false 
@@ -210,6 +206,7 @@ local do_overheat = function (pos, meta)
 		minetest.env:remove_node(pos)
 		minetest.after(0.2, overheat_off, pos) -- wait for pending operations
 		minetest.env:add_item(pos, BASENAME.."0000")
+		return true
 	end
 end
 
@@ -248,6 +245,7 @@ end
 lc_update = function (pos, event)
 	local meta = minetest.env:get_meta(pos)
 	if not interrupt_allow(meta, event) then return end
+	if do_overheat(pos, meta) then return end
 
 	-- load code & mem from memory
 	local mem  = load_memory(meta)
@@ -265,7 +263,6 @@ lc_update = function (pos, event)
 	if not success then return msg end
 	if ports_invalid(env.port) then return ports_invalid(env.port) end
 
-	do_overheat(pos, meta)
 	save_memory(meta, mem)
 
 	-- Actually set the ports
@@ -284,7 +281,7 @@ local reset_meta = function(pos, code, errmsg)
 		"textarea[0.2,0.6;10.2,5;code;;"..code.."]"..
 		"image_button[3.75,6;2.5,1;jeija_luac_runbutton.png;program;]"..
 		"image_button_exit[9.72,-0.25;0.425,0.4;jeija_close_window.png;exit;]"..
-		"label[0.1,4.5;"..errmsg.."]")
+		"label[0.1,5;"..errmsg.."]")
 	meta:set_int("heat", 0)
 end
 
@@ -325,15 +322,16 @@ local digiline = {
 	receptor = {},
 	effector = {
 		action = function (pos, node, channel, msg)
-			lc_update (pos, {type = "digiline", iid = {channel = channel, msg = msg}})
+			lc_update (pos, {type = "digiline", channel = channel, msg = msg})
 		end
 	}
 }
 
-for a = 0, 1 do
-for b = 0, 1 do
-for c = 0, 1 do
-for d = 0, 1 do
+for a = 0, 2 do -- 0 = off; 1 = on; 2 = ignore
+for b = 0, 2 do
+for c = 0, 2 do
+for d = 0, 2 do
+
 local cid = tostring(d)..tostring(c)..tostring(b)..tostring(a)
 local nodename = BASENAME..cid
 local top = "jeija_luacontroller_top.png"
