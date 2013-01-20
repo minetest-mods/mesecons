@@ -156,7 +156,7 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
@@ -233,7 +233,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
@@ -305,7 +305,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal_off", {
 		},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	mesecons_piston = pistonspec_normal_up,
 	mesecons = {effector={
 		action_on = piston_on,
@@ -326,7 +326,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_up_on_box,
 	selection_box = piston_up_on_box,
@@ -381,7 +381,7 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_off", {
 		},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_sticky_off"},
+	drop = "mesecons_pistons:piston_sticky_off",
 	mesecons_piston = pistonspec_sticky_up,
 	mesecons = {effector={
 		action_on = piston_on,
@@ -402,7 +402,7 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_up_on_box,
 	selection_box = piston_up_on_box,
@@ -475,7 +475,7 @@ minetest.register_node("mesecons_pistons:piston_down_normal_off", {
 		},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	mesecons_piston = pistonspec_normal_down,
 	mesecons = {effector={
 		action_on = piston_on,
@@ -496,7 +496,7 @@ minetest.register_node("mesecons_pistons:piston_down_normal_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_down_on_box,
 	selection_box = piston_down_on_box,
@@ -547,7 +547,7 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_off", {
 		},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_sticky_off"},
+	drop = "mesecons_pistons:piston_sticky_off",
 	mesecons_piston = pistonspec_sticky_down,
 	mesecons = {effector={
 		action_on = piston_on,
@@ -568,7 +568,7 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_sticky_off"},
+	drop = "mesecons_pistons:piston_sticky_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_down_on_box,
 	selection_box = piston_down_on_box,
@@ -670,7 +670,7 @@ mesecon:register_mvps_stopper("mesecons_pistons:piston_down_sticky_on", piston_u
 
 --craft recipes
 minetest.register_craft({
-	output = '"mesecons_pistons:piston_normal" 2',
+	output = '"mesecons_pistons:piston_normal_off" 2',
 	recipe = {
 		{"default:wood", "default:wood", "default:wood"},
 		{"default:cobble", "default:steel_ingot", "default:cobble"},
@@ -679,7 +679,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "mesecons_pistons:piston_sticky",
+	output = "mesecons_pistons:piston_sticky_off",
 	recipe = {
 		{"mesecons_materials:glue"},
 		{"mesecons_pistons:piston_normal"},
