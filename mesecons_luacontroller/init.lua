@@ -63,7 +63,21 @@ local generate_name = function (ports, overwrite)
 	return BASENAME..d..c..b..a
 end
 
-local action = function (pos, ports)
+local setport = function (pos, rule, ignore, state, ports)
+	local ignorename = generate_name(ports, ignore)
+	mesecon:swap_node(pos, ignorename)
+	if state then
+		mesecon:receptor_on(pos, {rule})
+	else
+		mesecon:receptor_off(pos, {rule})
+	end
+	if minetest.env:get_node(pos).name ~= ignorename then
+		return true -- overridden by second process
+	end
+	return false -- success
+end
+
+local action = function (pos, ports, forcereset)
 	local name = minetest.env:get_node(pos).name
 	local vports = minetest.registered_nodes[name].virtual_portstates
 	local newname = generate_name(ports)
@@ -73,27 +87,17 @@ local action = function (pos, ports)
 		local rules_off = {}
 		local ignore = {}
 
-		if ports.a then	table.insert(rules_on,  rules.a)
-		else			table.insert(rules_off, rules.a) end
-		if ports.b then	table.insert(rules_on,  rules.b)
-		else			table.insert(rules_off, rules.b) end
-		if ports.c then	table.insert(rules_on,  rules.c)
-		else			table.insert(rules_off, rules.c) end
-		if ports.d then	table.insert(rules_on,  rules.d)
-		else			table.insert(rules_off, rules.d) end
+		local interrupted
+		if ports.a ~= vports.a then interrupted = setport(pos, rules.a, {a = 2}, ports.a, ports) end
+		if interrupted and not forcereset then return end
+		if ports.b ~= vports.b then interrupted = setport(pos, rules.b, {b = 2}, ports.b, ports) end
+		if interrupted and not forcereset then return end
+		if ports.c ~= vports.c then interrupted = setport(pos, rules.c, {c = 2}, ports.c, ports) end
+		if interrupted and not forcereset then return end
+		if ports.d ~= vports.d then interrupted = setport(pos, rules.d, {d = 2}, ports.d, ports) end
+		if interrupted and not forcereset then return end
 
-		if ports.a ~= vports.a then ignore.a = 2 end
-		if ports.b ~= vports.b then ignore.b = 2 end
-		if ports.c ~= vports.c then ignore.c = 2 end
-		if ports.d ~= vports.d then ignore.d = 2 end
-
-		mesecon:swap_node(pos, generate_name(ports, ignore))
-		mesecon:receptor_off(pos, rules_off)
-		if minetest.env:get_node(pos).name ~= generate_name(ports, ignore) then return end -- not interrupted by another event
-		mesecon:receptor_on (pos, rules_on )
-		if minetest.registered_nodes[minetest.env:get_node(pos).name].is_luacontroller then --didnt overheat
-			mesecon:swap_node(pos, newname)
-		end
+		mesecon:swap_node(pos, newname)
 	end
 end
 
@@ -286,7 +290,7 @@ local reset_meta = function(pos, code, errmsg)
 end
 
 local reset = function (pos)
-	action(pos, {a=false, b=false, c=false, d=false})
+	action(pos, {a=false, b=false, c=false, d=false}, true)
 end
 
 --        ______
