@@ -139,7 +139,7 @@ end
 
 local code_prohibited = function(code)
 	-- Clean code
-	local prohibited = {"while", "for", "repeat", "until"}
+	local prohibited = {"while", "for", "repeat", "until", "function"}
 	for _, p in ipairs(prohibited) do
 		if string.find(code, p) then
 			return "Prohibited command: "..p
@@ -188,6 +188,9 @@ local create_environment = function(pos, mem, event)
 			interrupt = getinterrupt(pos),
 			digiline_send = getdigiline_send(pos),
 			mem = mem,
+			tostring = tostring,
+			tonumber = tonumber,
+			string = string,
 			event = event}
 end
 
