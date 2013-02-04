@@ -144,6 +144,7 @@ minetest.register_node("mesecons_pistons:piston_normal_off", {
 
 -- onstate
 minetest.register_node("mesecons_pistons:piston_normal_on", {
+	description = "Piston",
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_top.png", 
@@ -156,7 +157,7 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
@@ -221,6 +222,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 
 -- onstate
 minetest.register_node("mesecons_pistons:piston_sticky_on", {
+	description = "Sticky Piston",
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_top.png", 
@@ -233,7 +235,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
@@ -305,7 +307,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal_off", {
 		},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	mesecons_piston = pistonspec_normal_up,
 	mesecons = {effector={
 		action_on = piston_on,
@@ -326,7 +328,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_up_on_box,
 	selection_box = piston_up_on_box,
@@ -381,7 +383,7 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_off", {
 		},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_sticky_off"},
+	drop = "mesecons_pistons:piston_sticky_off",
 	mesecons_piston = pistonspec_sticky_up,
 	mesecons = {effector={
 		action_on = piston_on,
@@ -402,7 +404,7 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_up_on_box,
 	selection_box = piston_up_on_box,
@@ -475,7 +477,7 @@ minetest.register_node("mesecons_pistons:piston_down_normal_off", {
 		},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	mesecons_piston = pistonspec_normal_down,
 	mesecons = {effector={
 		action_on = piston_on,
@@ -496,7 +498,7 @@ minetest.register_node("mesecons_pistons:piston_down_normal_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_normal_off"},
+	drop = "mesecons_pistons:piston_normal_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_down_on_box,
 	selection_box = piston_down_on_box,
@@ -547,7 +549,7 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_off", {
 		},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_sticky_off"},
+	drop = "mesecons_pistons:piston_sticky_off",
 	mesecons_piston = pistonspec_sticky_down,
 	mesecons = {effector={
 		action_on = piston_on,
@@ -568,7 +570,7 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_on", {
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
-	drop = {"mesecons_pistons:piston_sticky_off"},
+	drop = "mesecons_pistons:piston_sticky_off",
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_down_on_box,
 	selection_box = piston_down_on_box,
