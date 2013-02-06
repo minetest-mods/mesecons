@@ -144,7 +144,6 @@ minetest.register_node("mesecons_pistons:piston_normal_off", {
 
 -- onstate
 minetest.register_node("mesecons_pistons:piston_normal_on", {
-	description = "Piston",
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_top.png", 
@@ -222,7 +221,6 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 
 -- onstate
 minetest.register_node("mesecons_pistons:piston_sticky_on", {
-	description = "Sticky Piston",
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_top.png", 
