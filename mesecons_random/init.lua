@@ -31,10 +31,17 @@ minetest.register_node("mesecons_random:ghoststone", {
 	inventory_image = minetest.inventorycube("jeija_ghoststone_inv.png"),
 	groups = {cracky=3},
 	sounds = default.node_sound_stone_defaults(),
-	mesecons = {effector = {
-		action_on = function (pos, node)
-			minetest.env:add_node(pos, {name="mesecons_random:ghoststone_active"})
-		end
+	mesecons = {conductor = {
+		state = mesecon.state.off,
+		rules = { --axes
+			{x = -1, y = 0, z = 0},
+			{x = 1, y = 0, z = 0},
+			{x = 0, y = -1, z = 0},
+			{x = 0, y = 1, z = 0},
+			{x = 0, y = 0, z = -1},
+			{x = 0, y = 0, z = 1},
+		},
+		onstate = "mesecons_random:ghoststone_active"
 	}}
 })
 
@@ -44,10 +51,17 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 	walkable = false,
 	diggable = false,
 	sunlight_propagates = true,
-	mesecons = {effector = {
-		action_off = function (pos, node)
-			minetest.env:add_node(pos, {name="mesecons_random:ghoststone"})
-		end
+	mesecons = {conductor = {
+		state = mesecon.state.on,
+		rules = {
+			{x = -1, y = 0, z = 0},
+			{x = 1, y = 0, z = 0},
+			{x = 0, y = -1, z = 0},
+			{x = 0, y = 1, z = 0},
+			{x = 0, y = 0, z = -1},
+			{x = 0, y = 0, z = 1},
+		},
+		offstate = "mesecons_random:ghoststone"
 	}}
 })
 
