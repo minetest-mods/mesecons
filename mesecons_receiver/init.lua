@@ -128,8 +128,10 @@ function mesecon:receiver_remove(rcpt_pos, dugnode)
 	local nn = minetest.env:get_node(pos)
 	if string.find(nn.name, "mesecons_receiver:receiver_") ~=nil then
 		minetest.env:dig_node(pos)
-		minetest.env:place_node(pos, {name = "mesecons:wire_00000000_off"})
+		local node = {name = "mesecons:wire_00000000_off"}
+		minetest.env:add_node(pos, node)
 		mesecon:update_autoconnect(pos)
+		mesecon.on_placenode(pos, node)
 	end
 end
 
