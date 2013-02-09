@@ -690,7 +690,7 @@ mesecon:register_mvps_stopper("mesecons_pistons:piston_down_sticky_on", piston_u
 
 --craft recipes
 minetest.register_craft({
-	output = '"mesecons_pistons:piston_normal_off" 2',
+	output = 'mesecons_pistons:piston_normal_off 2',
 	recipe = {
 		{"default:wood", "default:wood", "default:wood"},
 		{"default:cobble", "default:steel_ingot", "default:cobble"},
@@ -702,6 +702,6 @@ minetest.register_craft({
 	output = "mesecons_pistons:piston_sticky_off",
 	recipe = {
 		{"mesecons_materials:glue"},
-		{"mesecons_pistons:piston_normal"},
+		{"mesecons_pistons:piston_normal_off"},
 	}
 })
