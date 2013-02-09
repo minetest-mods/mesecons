@@ -51,6 +51,7 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 	walkable = false,
 	diggable = false,
 	sunlight_propagates = true,
+	paramtype = "light",
 	mesecons = {conductor = {
 		state = mesecon.state.on,
 		rules = {
@@ -62,7 +63,14 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 			{x = 0, y = 0, z = 1},
 		},
 		offstate = "mesecons_random:ghoststone"
-	}}
+	}},
+	on_construct = function(pos)
+		--remove shadow
+		pos2 = {x = pos.x, y = pos.y + 1, z = pos.z}
+		if ( minetest.env:get_node(pos2).name == "air" ) then
+			minetest.env:dig_node(pos2)
+		end
+	end
 })
 
 
