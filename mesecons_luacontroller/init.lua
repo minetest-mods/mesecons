@@ -101,6 +101,10 @@ local action = function (pos, ports, forcereset)
 	end
 end
 
+local delayedaction = function (params)
+	action(params.pos, params.ports)
+end
+
 --------------------
 -- Overheat stuff --
 --------------------
@@ -273,7 +277,7 @@ lc_update = function (pos, event)
 	save_memory(meta, mem)
 
 	-- Actually set the ports
-	action(pos, env.port)
+	minetest.after(0, delayedaction, {pos = pos, ports = env.port})
 end
 
 local reset_meta = function(pos, code, errmsg)
