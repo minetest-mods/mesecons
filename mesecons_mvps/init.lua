@@ -20,6 +20,7 @@ end
 function mesecon:mvps_process_stack(stack)
 	-- update mesecons for placed nodes ( has to be done after all nodes have been added )
 	for _, n in ipairs(stack) do
+		nodeupdate(n.pos)
 		mesecon.on_placenode(n.pos, minetest.env:get_node(n.pos))
 		mesecon:update_autoconnect(n.pos)
 	end
@@ -57,7 +58,6 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 	-- remove all nodes
 	for _, n in ipairs(nodes) do
 		minetest.env:remove_node(n.pos)
-		nodeupdate(n.pos)
 	end
 
 	-- update mesecons for removed nodes ( has to be done after all nodes have been removed )
@@ -70,7 +70,6 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 	for _, n in ipairs(nodes) do
 		np = mesecon:addPosRule(n.pos, dir)
 		minetest.env:add_node(np, n.node)
-		nodeupdate(np)
 	end
 
 	for i in ipairs(nodes) do
