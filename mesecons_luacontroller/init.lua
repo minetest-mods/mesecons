@@ -162,9 +162,10 @@ end
 local getinterrupt = function(pos)
 	local interrupt = function (time, iid) -- iid = interrupt id
 		if type(time) ~= "number" then return end
+		local iid = iid or math.random()
 		local meta = minetest.env:get_meta(pos)
 		local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
-		table.insert (interrupts, iid or 0)
+		table.insert (interrupts, iid)
 		meta:set_string("lc_interrupts", minetest.serialize(interrupts))
 		minetest.after(time, interrupt, {pos=pos, iid = iid})
 	end
@@ -297,6 +298,7 @@ local reset_meta = function(pos, code, errmsg)
 end
 
 local reset = function (pos)
+	minetest.env:get_meta(pos):set_string("lc_interrupts", "")
 	action(pos, {a=false, b=false, c=false, d=false}, true)
 end
 
