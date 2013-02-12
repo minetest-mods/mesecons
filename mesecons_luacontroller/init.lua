@@ -57,9 +57,9 @@ end
 local generate_name = function (ports, overwrite)
 	local overwrite = overwrite or {}
 	local d = overwrite.d or (ports.d and 1 or 0)
-	local c = overwrite.d or (ports.c and 1 or 0)
-	local b = overwrite.d or (ports.b and 1 or 0)
-	local a = overwrite.d or (ports.a and 1 or 0)
+	local c = overwrite.c or (ports.c and 1 or 0)
+	local b = overwrite.b or (ports.b and 1 or 0)
+	local a = overwrite.a or (ports.a and 1 or 0)
 	return BASENAME..d..c..b..a
 end
 
