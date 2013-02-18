@@ -76,7 +76,44 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 		nodes[i].pos = mesecon:addPosRule(nodes[i].pos, dir)
 	end
 
+	-- move the player when pushed by a piston - BrandonReese
+	players = minetest.get_connected_players()
+	vars_set = false
+	for k,p in pairs(players) do		
+		pos = p:getpos()
+		if mesecon:round(pos.x,0) == np.x and math.ceil(pos.y) == np.y and mesecon:round(pos.z,0) == np.z then
+			-- only get the block and position information once for this loop instead of for each player
+			if ( vars_set == false ) then
+				player_bottom_pos = mesecon:addPosRule(pos,dir)
+				player_top_pos = {x=player_bottom_pos.x,y=(player_bottom_pos.y+1),z=player_bottom_pos.z}
+				
+				player_bottom_node = minetest.env:get_node(player_bottom_pos)
+				player_top_node = minetest.env:get_node(player_top_pos)
+				
+				top_walkable = minetest.registered_nodes[player_top_node.name]["walkable"]			
+				bottom_walkable = minetest.registered_nodes[player_bottom_node.name]["walkable"]
+				
+				vars_set = true;
+			end
+			
+			if top_walkable == false and bottom_walkable == false then
+				p:moveto(player_bottom_pos,false)												
+			else
+				-- kill the player, they are squished				
+				if minetest.setting_getbool("enable_damage") == true then
+					p:set_hp(0)
+				end 
+			end
+		end
+	end	
+	-- end move player
+	
 	return true, nodes
+end
+
+function mesecon:round(num, idp)
+  local mult = 10^(idp or 0)
+  return math.floor(num * mult + 0.5) / mult
 end
 
 function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: direction of pull (matches push direction for sticky pistons)
