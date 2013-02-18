@@ -38,7 +38,7 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 	selection_box = corner_selectionbox,
 	node_box = corner_nodebox,
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
-	drop = "mesecons_extrawires:insulated_off",
+	drop = "mesecons_insulated:insulated_off",
 	mesecons = {conductor = 
 	{
 		state = mesecon.state.on,
