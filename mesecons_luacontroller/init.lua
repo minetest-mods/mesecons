@@ -406,6 +406,7 @@ minetest.register_node(nodename, {
 		"jeija_microcontroller_sides.png"
 		},
 
+	inventory_image = top,
 	paramtype = "light",
 	groups = groups,
 	drop = BASENAME.."0000",
