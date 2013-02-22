@@ -201,3 +201,17 @@ minetest.register_node("mesecons_extrawires:vertical_bottom_off", {
 	after_place_node	= vertical_update,
 	after_dig_node 		= vertical_update
 })
+
+minetest.register_craft({
+	output = "mesecons_extrawires:vertical_off 3",
+	recipe = {
+		{"mesecons:wire_00000000_off"},
+		{"mesecons:wire_00000000_off"},
+		{"mesecons:wire_00000000_off"}
+	}
+})
+
+minetest.register_craft({
+	output = "mesecons:wire_00000000_off",
+	recipe = {{"mesecons_extrawires:vertical_off"}}
+})
