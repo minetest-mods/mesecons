@@ -74,9 +74,9 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 minetest.register_craft({
 	output = 'mesecons_detector:object_detector_off',
 	recipe = {
-		{"default:steelblock", '', "default:steelblock"},
-		{"default:steelblock", "mesecons_microcontroller:microcontroller0000", "default:steelblock"},
-		{"default:steelblock", "group:mesecon_conductor_craftable", "default:steelblock"},
+		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		{"default:steel_ingot", "mesecons_luacontroller:luacontroller0000", "default:steel_ingot"},
+		{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
 	}
 })
 
