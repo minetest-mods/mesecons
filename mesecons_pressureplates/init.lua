@@ -17,12 +17,15 @@ pp_on_timer = function (pos, elapsed)
 	if not ppspec then return end
 
 	local objs   = minetest.env:get_objects_inside_radius(pos, 1)
+	local two_below = mesecon:addPosRule(pos, {x = 0, y = -2, z = 0})
 
 	if objs[1] == nil and node.name == ppspec.onstate then
 		minetest.env:add_node(pos, {name = ppspec.offstate})
 		mesecon:receptor_off(pos)
 		-- force deactivation of mesecon two blocks below (hacky)
-		mesecon:turnoff(mesecon:addPosRule(pos, {x = 0, y = -2, z = 0}))
+		if not mesecon:connected_to_receptor(two_below) then
+			mesecon:turnoff(two_below)
+		end
 	else
 		for k, obj in pairs(objs) do
 			local objpos = obj:getpos()
@@ -30,7 +33,7 @@ pp_on_timer = function (pos, elapsed)
 				minetest.env:add_node(pos, {name=ppspec.onstate})
 				mesecon:receptor_on(pos)
 				-- force activation of mesecon two blocks below (hacky)
-				mesecon:turnon(mesecon:addPosRule(pos, {x = 0, y = -2, z = 0}))
+				mesecon:turnon(two_below)
 			end
 		end
 	end
