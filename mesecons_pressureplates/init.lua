@@ -39,12 +39,12 @@ end
 
 -- Register a Pressure Plate
 -- offstate:	name of the pressure plate when inactive
--- onstate:		name of the pressure plate when active
+-- onstate:	name of the pressure plate when active
 -- description:	description displayed in the player's inventory
 -- tiles_off:	textures of the pressure plate when inactive
 -- tiles_on:	textures of the pressure plate when active
--- image:		inventory and wield image of the pressure plate
--- recipe:		crafting recipe of the pressure plate
+-- image:	inventory and wield image of the pressure plate
+-- recipe:	crafting recipe of the pressure plate
 
 function mesecon:register_pressure_plate(offstate, onstate, description, texture_off, texture_on, recipe)
 	local ppspec = {
@@ -88,6 +88,12 @@ function mesecon:register_pressure_plate(offstate, onstate, description, texture
 		on_construct = function(pos)
 			minetest.env:get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 		end,
+		after_dig_node = function(pos)
+			local two_below = mesecon:addPosRule(pos, {x = 0, y = -2, z = 0})
+			if not mesecon:connected_to_receptor(two_below) then
+				mesecon:turnoff(two_below)
+			end
+		end
 	})
 
 	minetest.register_craft({
