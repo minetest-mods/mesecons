@@ -276,8 +276,8 @@ minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 local piston_up_pusher_box = {
 	type = "fixed",
 	fixed = {
-		{-2/16, -.5 - pt, -2/16, 2/16, .5, 2/16},
-		{-.5  ,  .5 - pt, -.5  , .5  , .5,   .5},
+		{-2/16, -.5 - pt, -2/16, 2/16, .5 - pt, 2/16},
+		{-.5  ,  .5 - pt, -.5  , .5  , .5     ,   .5},
 	}
 }
 
@@ -452,8 +452,8 @@ minetest.register_node("mesecons_pistons:piston_up_pusher_sticky", {
 local piston_down_pusher_box = {
 	type = "fixed",
 	fixed = {
-		{-2/16, -.5, -2/16, 2/16,  .5 + pt, 2/16},
-		{-.5  , -.5, -.5  , .5  , -.5 + pt,   .5},
+		{-2/16, -.5 + pt, -2/16, 2/16,  .5 + pt, 2/16},
+		{-.5  , -.5     , -.5  , .5  , -.5 + pt,   .5},
 	}
 }
 
