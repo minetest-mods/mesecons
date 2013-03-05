@@ -10,7 +10,7 @@ local mesewire_rules =
 
 minetest.register_node(":default:mese", {
 	description = "Mese Block",
-	tiles = {"default_mese_block.png"},
+	tiles = {minetest.registered_nodes["default:mese"].tiles[1]},
 	is_ground_content = true,
 	groups = {cracky=1},
 	sounds = default.node_sound_stone_defaults(),
@@ -22,7 +22,7 @@ minetest.register_node(":default:mese", {
 })
 
 minetest.register_node("mesecons_extrawires:mese_powered", {
-	tiles = {"default_mese_block.png^[brighten"},
+	tiles = {minetest.registered_nodes["default:mese"].tiles[1].."^[brighten"},
 	is_ground_content = true,
 	groups = {cracky=1, not_in_creative_inventory = 1},
 	sounds = default.node_sound_stone_defaults(),
