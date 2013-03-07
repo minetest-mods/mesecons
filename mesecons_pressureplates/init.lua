@@ -85,6 +85,7 @@ function mesecon:register_pressure_plate(offstate, onstate, description, texture
 		drop = offstate,
 		pressureplate = ppspec,
 		on_timer = pp_on_timer,
+		sounds = default.node_sound_wood_defaults(),
 		mesecons = {receptor = {
 			state = mesecon.state.on
 		}},

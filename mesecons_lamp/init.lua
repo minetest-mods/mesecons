@@ -22,6 +22,7 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 	selection_box = mesecon_lamp_box,
 	groups = {dig_immediate=3,not_in_creative_inventory=1, mesecon_effector_on = 1},
 	drop='"mesecons_lamp:lamp_off" 1',
+	sounds = default.node_sound_glass_defaults(),
 	mesecons = {effector = {
 		action_off = function (pos, node)
 			mesecon:swap_node(pos, "mesecons_lamp:lamp_off")
@@ -42,6 +43,7 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 	selection_box = mesecon_lamp_box,
 	groups = {dig_immediate=3, mesecon_receptor_off = 1, mesecon_effector_off = 1},
     	description="Meselamp",
+	sounds = default.node_sound_glass_defaults(),
 	mesecons = {effector = {
 		action_on = function (pos, node)
 			mesecon:swap_node(pos, "mesecons_lamp:lamp_on")

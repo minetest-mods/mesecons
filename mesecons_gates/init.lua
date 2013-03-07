@@ -156,6 +156,7 @@ for _, gate in ipairs(gates) do
 			end,
 			groups = groups,
 			drop = drop,
+			sounds = default.node_sound_stone_defaults(),
 			mesecons_gate = gate.name,
 			mesecons =
 			{

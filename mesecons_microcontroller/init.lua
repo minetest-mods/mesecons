@@ -128,6 +128,7 @@ minetest.register_node(nodename, {
 		yc_reset (pos)
 		update_yc(pos)
 	end,
+	sounds = default.node_sound_stone_defaults(),
 	mesecons = mesecons,
 	after_dig_node = function (pos, node)
 		rules = mesecon:get_rules(node.name)

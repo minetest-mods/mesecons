@@ -54,6 +54,7 @@ minetest.register_node("mesecons_detector:object_detector_off", {
 	}},
 	on_construct = object_detector_make_formspec,
 	on_receive_fields = object_detector_on_receive_fields,
+	sounds = default.node_sound_stone_defaults(),
 	digiline = object_detector_digiline
 })
 
@@ -68,6 +69,7 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	}},
 	on_construct = object_detector_make_formspec,
 	on_receive_fields = object_detector_on_receive_fields,
+	sounds = default.node_sound_stone_defaults(),
 	digiline = object_detector_digiline
 })
 

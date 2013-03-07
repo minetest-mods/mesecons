@@ -5,6 +5,7 @@ minetest.register_node("mesecons_random:removestone", {
 	inventory_image = minetest.inventorycube("jeija_removestone_inv.png"),
 	groups = {cracky=3},
 	description="Removestone",
+	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = function (pos, node)
 			minetest.env:remove_node(pos)

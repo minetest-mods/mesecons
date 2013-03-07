@@ -15,6 +15,7 @@ minetest.register_node("mesecons_powerplant:power_plant", {
 		type = "fixed",
 		fixed = {-0.1, -0.5, -0.1, 0.1, -0.5+0.6, 0.1},
 	},
+	sounds = default.node_sound_leaves_defaults(),
 	mesecons = {receptor = {
 		state = mesecon.state.on
 	}}

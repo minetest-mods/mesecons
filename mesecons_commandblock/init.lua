@@ -152,6 +152,7 @@ minetest.register_node("mesecons_commandblock:commandblock_off", {
 		local owner = minetest.env:get_meta(pos):get_string("owner")
 		return owner == "" or owner == player:get_player_name()
 	end,
+	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = commandblock_action_on
 	}}
@@ -169,6 +170,7 @@ minetest.register_node("mesecons_commandblock:commandblock_on", {
 		local owner = minetest.env:get_meta(pos):get_string("owner")
 		return owner == "" or owner == player:get_player_name()
 	end,
+	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_off = commandblock_action_off
 	}}

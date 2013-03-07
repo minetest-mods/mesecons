@@ -421,6 +421,7 @@ minetest.register_node(nodename, {
 		if err then print(err) end
 		reset_meta(pos, fields.code, err)
 	end,
+	sounds = default.node_sound_stone_defaults(),
 	mesecons = mesecons,
 	digiline = digiline,
 	is_luacontroller = true,

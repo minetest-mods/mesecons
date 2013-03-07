@@ -61,6 +61,7 @@ minetest.register_node("mesecons_movestones:movestone", {
 	legacy_facedir_simple = true,
 	groups = {cracky=3},
     	description="Movestone",
+	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = function (pos, node)
 			local direction=mesecon:get_movestone_direction(pos)
@@ -131,6 +132,7 @@ minetest.register_node("mesecons_movestones:sticky_movestone", {
 	legacy_facedir_simple = true,
 	groups = {cracky=3},
     	description="Sticky Movestone",
+	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = function (pos, node)
 			local direction=mesecon:get_movestone_direction(pos)

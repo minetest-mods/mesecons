@@ -136,6 +136,7 @@ minetest.register_node("mesecons_pistons:piston_normal_off", {
 	paramtype2 = "facedir",
 	after_place_node = piston_orientate,
 	mesecons_piston = pistonspec_normal,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
 		rules = piston_get_rules
@@ -163,6 +164,7 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
 	mesecons_piston = pistonspec_normal,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
 		rules = piston_get_rules
@@ -215,6 +217,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 	paramtype2 = "facedir",
 	after_place_node = piston_orientate,
 	mesecons_piston = pistonspec_sticky,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
 		rules = piston_get_rules
@@ -242,6 +245,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
 	mesecons_piston = pistonspec_sticky,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
 		rules = piston_get_rules
@@ -339,6 +343,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal_on", {
 	node_box = piston_up_on_box,
 	selection_box = piston_up_on_box,
 	mesecons_piston = pistonspec_normal_up,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
 	}}
@@ -393,6 +398,7 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_off", {
 	paramtype2 = "facedir",
 	drop = "mesecons_pistons:piston_sticky_off",
 	mesecons_piston = pistonspec_sticky_up,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
 	}}
@@ -419,6 +425,7 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_on", {
 	node_box = piston_up_on_box,
 	selection_box = piston_up_on_box,
 	mesecons_piston = pistonspec_sticky_up,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
 	}}
@@ -491,6 +498,7 @@ minetest.register_node("mesecons_pistons:piston_down_normal_off", {
 	paramtype2 = "facedir",
 	drop = "mesecons_pistons:piston_normal_off",
 	mesecons_piston = pistonspec_normal_down,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
 	}}
@@ -517,6 +525,7 @@ minetest.register_node("mesecons_pistons:piston_down_normal_on", {
 	node_box = piston_down_on_box,
 	selection_box = piston_down_on_box,
 	mesecons_piston = pistonspec_normal_down,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
 	}}
@@ -567,6 +576,7 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_off", {
 	paramtype2 = "facedir",
 	drop = "mesecons_pistons:piston_sticky_off",
 	mesecons_piston = pistonspec_sticky_down,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
 	}}
@@ -593,6 +603,7 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_on", {
 	node_box = piston_down_on_box,
 	selection_box = piston_down_on_box,
 	mesecons_piston = pistonspec_sticky_down,
+	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
 	}}
