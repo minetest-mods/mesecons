@@ -3,7 +3,7 @@ minetest.register_chatcommand("say", {
 	description = "Say <text> as the server",
 	privs = {server=true},
 	func = function(name, param)
-		minetest.chat_send_all(param)
+		minetest.chat_send_all(name .. ": " .. param)
 	end
 })
 
@@ -17,6 +17,20 @@ minetest.register_chatcommand("tell", {
 			return
 		end
 		minetest.chat_send_player(target, name .. " whispers: " .. message)
+	end
+})
+
+minetest.register_chatcommand("hp", {
+	params = "<name> <value>",
+	description = "Set health of <name> to <value> hitpoints",
+	privs = {ban=true},
+	func = function(name, param)
+		local found, _, target, value = param:find("^([^%s]+)%s+(%d+)$")
+		if found == nil then
+			minetest.chat_send_player(name, "Invalid usage: " .. param)
+			return
+		end
+		minetest.get_player_by_name(target):set_hp(value)
 	end
 })
 
