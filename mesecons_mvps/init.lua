@@ -57,6 +57,7 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 
 	-- remove all nodes
 	for _, n in ipairs(nodes) do
+		n.meta = minetest.env:get_meta(n.pos):to_table()
 		minetest.env:remove_node(n.pos)
 	end
 
@@ -70,6 +71,7 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 	for _, n in ipairs(nodes) do
 		np = mesecon:addPosRule(n.pos, dir)
 		minetest.env:add_node(np, n.node)
+		minetest.env:get_meta(np):from_table(n.meta)
 	end
 
 	for i in ipairs(nodes) do
@@ -85,8 +87,10 @@ function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: dire
 
 	if minetest.registered_nodes[nn.name].liquidtype == "none"
 	and not mesecon:is_mvps_stopper(nn, {x = -dir.x, y = -dir.y, z = -dir.z}, {{pos = np, node = nn}}, 1) then
+		local meta = minetest.env:get_meta(np):to_table()
 		minetest.env:remove_node(np)
 		minetest.env:add_node(pos, nn)
+		minetest.env:get_meta(pos):from_table(meta)
 
 		nodeupdate(np)
 		nodeupdate(pos)
@@ -107,7 +111,8 @@ function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: d
 
 		local oldpos = {x=lpos2.x+direction.x, y=lpos2.y+direction.y, z=lpos2.z+direction.z}
 		repeat
-			minetest.env:add_node(oldpos, {name=minetest.env:get_node(lpos2).name})
+			lnode2 = minetest.env:get_node(lpos2)
+			minetest.env:add_node(oldpos, {name=lnode2.name})
 			nodeupdate(oldpos)
 			oldpos = {x=lpos2.x, y=lpos2.y, z=lpos2.z}
 			lpos2.x = lpos2.x-direction.x
@@ -118,6 +123,5 @@ function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: d
 		minetest.env:remove_node(oldpos)
 end
 
-mesecon:register_mvps_stopper("default:chest")
 mesecon:register_mvps_stopper("default:chest_locked")
 mesecon:register_mvps_stopper("default:furnace")
