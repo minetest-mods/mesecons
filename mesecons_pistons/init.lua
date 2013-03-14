@@ -10,6 +10,26 @@ piston_rules =
  {x=0,  y=1,  z=1},
  {x=0,  y=-1, z=1}}
 
+local piston_up_rules =
+{{x=0,  y=0,  z=-1}, --everything apart from y+ (pusher side)
+ {x=1,  y=0,  z=0},
+ {x=-1, y=0,  z=0},
+ {x=0,  y=0,  z=1},
+ {x=1,  y=-1, z=0},
+ {x=-1, y=-1, z=0},
+ {x=0,  y=-1, z=1},
+ {x=0,  y=-1, z=-1}}
+
+local piston_down_rules =
+{{x=0,  y=0,  z=-1}, --everything apart from y- (pusher side)
+ {x=1,  y=0,  z=0},
+ {x=-1, y=0,  z=0},
+ {x=0,  y=0,  z=1},
+ {x=1,  y=1, z=0},
+ {x=-1, y=1, z=0},
+ {x=0,  y=1, z=1},
+ {x=0,  y=1, z=-1}}
+
 local piston_get_rules = function (node)
 	local rules = piston_rules
 	for i = 1, node.param2 do
@@ -319,6 +339,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal_off", {
 	mesecons_piston = pistonspec_normal_up,
 	mesecons = {effector={
 		action_on = piston_on,
+		rules = piston_up_rules,
 	}}
 })
 
@@ -346,6 +367,7 @@ minetest.register_node("mesecons_pistons:piston_up_normal_on", {
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
+		rules = piston_up_rules,
 	}}
 })
 
@@ -401,6 +423,7 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_off", {
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
+		rules = piston_up_rules,
 	}}
 })
 
@@ -428,6 +451,7 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_on", {
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
+		rules = piston_up_rules,
 	}}
 })
 
@@ -501,6 +525,7 @@ minetest.register_node("mesecons_pistons:piston_down_normal_off", {
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
+		rules = piston_down_rules,
 	}}
 })
 
@@ -528,6 +553,7 @@ minetest.register_node("mesecons_pistons:piston_down_normal_on", {
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
+		rules = piston_down_rules,
 	}}
 })
 
@@ -579,6 +605,7 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_off", {
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
+		rules = piston_down_rules,
 	}}
 })
 
@@ -606,6 +633,7 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_on", {
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
+		rules = piston_down_rules,
 	}}
 })
 
