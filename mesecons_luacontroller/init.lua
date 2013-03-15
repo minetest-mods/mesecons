@@ -283,6 +283,7 @@ end
 
 local reset_meta = function(pos, code, errmsg)
 	local meta = minetest.env:get_meta(pos)
+	meta:set_string("code", code)
 	if minetest.formspec_escape then
 		code = minetest.formspec_escape(code or "")
 		errmsg = minetest.formspec_escape(errmsg or "")
@@ -292,7 +293,6 @@ local reset_meta = function(pos, code, errmsg)
 		errmsg = string.gsub(errmsg or "", "%[", "(") -- would otherwise
 		errmsg = string.gsub(errmsg, "%]", ")") -- corrupt formspec
 	end
-	meta:set_string("code", code)
 	meta:set_string("formspec", "size[10,8]"..
 		"background[-0.2,-0.25;10.4,8.75;jeija_luac_background.png]"..
 		"textarea[0.2,0.6;10.2,5;code;;"..code.."]"..
