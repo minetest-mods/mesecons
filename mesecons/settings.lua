@@ -4,3 +4,4 @@ NEW_STYLE_WIRES  = true  -- true = new nodebox wires, false = old raillike wires
 PRESSURE_PLATE_INTERVAL = 0.1
 OBJECT_DETECTOR_RADIUS = 6
 PISTON_MAXIMUM_PUSH = 15
+MOVESTONE_MAXIMUM_PUSH = 100
