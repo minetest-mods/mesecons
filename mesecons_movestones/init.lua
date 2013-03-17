@@ -136,26 +136,6 @@ minetest.register_node("mesecons_movestones:sticky_movestone", {
 		action_on = function (pos, node)
 			local direction=mesecon:get_movestone_direction(pos)
 			if not direction then return end
-			local checknode={}
-			local collpos={x=pos.x, y=pos.y, z=pos.z}
-			repeat -- Check if it collides with a stopper
-				collpos = mesecon:addPosRule(collpos, direction)
-				checknode=minetest.env:get_node(collpos)
-				if mesecon:is_mvps_stopper(checknode.name, direction) then 
-					return 
-				end
-			until checknode.name=="air"
-			or checknode.name=="ignore" 
-			or not(minetest.registered_nodes[checknode.name].liquidtype == "none")  
-			repeat -- Check if it collides with a stopper (pull direction)
-				collpos={x=collpos.x-direction.x, y=collpos.y-direction.y, z=collpos.z-direction.z}
-				checknode=minetest.env:get_node(collpos)
-				if mesecon:is_mvps_stopper(checknode.name, direction) then
-					return 
-				end
-			until checknode.name=="air"
-			or checknode.name=="ignore" 
-			or not(minetest.registered_nodes[checknode.name].liquidtype == "none")
 			minetest.env:remove_node(pos)
 			mesecon:update_autoconnect(pos)
 			minetest.env:add_entity(pos, "mesecons_movestones:sticky_movestone_entity")
@@ -184,18 +164,27 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 
 	on_step = function(self, dtime)
 		local pos = self.object:getpos()
-		local colp = pos
-		local direction=mesecon:get_movestone_direction(colp)
+		pos.x, pos.y, pos.z = math.floor(pos.x), math.floor(pos.y), math.floor(pos.z)
+		local direction = mesecon:get_movestone_direction(pos)
 
 		if not direction then
+			local name = minetest.env:get_node(pos).name
+			if name ~= "air" and name ~= "ignore" and minetest.registered_nodes[name].liquidtype == "none" then
+				mesecon:mvps_push(pos, direction, MOVESTONE_MAXIMUM_PUSH)
+			end
+			minetest.env:add_node(pos, {name="mesecons_movestones:sticky_movestone"})
+			self.object:remove()
+			return
+		end
+
+		local np = mesecon:addPosRule(pos, direction)
+		if not mesecon:mvps_push(np, direction, MOVESTONE_MAXIMUM_PUSH) then
 			minetest.env:add_node(pos, {name="mesecons_movestones:sticky_movestone"})
 			self.object:remove()
 			return
 		end
 
 		self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
-
-		mesecon:mvps_push(pos, direction, 100)
 
 		--STICKY
 		mesecon:mvps_pull_all(pos, direction)
