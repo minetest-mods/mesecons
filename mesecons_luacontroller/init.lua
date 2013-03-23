@@ -195,7 +195,8 @@ local create_environment = function(pos, mem, event)
 			mem = mem,
 			tostring = tostring,
 			tonumber = tonumber,
-			string = string,
+			string = tablecopy(string),
+			math = tablecopy(math),
 			event = event}
 end
 
@@ -220,6 +221,14 @@ local do_overheat = function (pos, meta)
 		minetest.env:add_item(pos, BASENAME.."0000")
 		return true
 	end
+end
+
+local tablecopy = function(t)
+	local tnew = {}
+	for key, value in pairs(t) do
+		tnew[key] = value
+	end
+	return tnew
 end
 
 local load_memory = function(meta)
