@@ -241,6 +241,12 @@ local create_environment = function(pos, mem, event)
 				tan = math.tan,
 				tanh = math.tanh,
 			},
+			table = {
+				insert = table.insert,
+				maxn = table.maxn,
+				remove = table.remove,
+				sort = table.sort
+			},
 			event = event,
 	}
 end
