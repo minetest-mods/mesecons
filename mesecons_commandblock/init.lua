@@ -20,6 +20,14 @@ minetest.register_chatcommand("tell", {
 	end
 })
 
+minetest.register_chatcommand("tellme", {
+	params = "<text>",
+	description = "Say <text> to yourself",
+	func = function(name, param)
+		minetest.chat_send_player(name, param)
+	end
+})
+
 minetest.register_chatcommand("hp", {
 	params = "<name> <value>",
 	description = "Set health of <name> to <value> hitpoints",
