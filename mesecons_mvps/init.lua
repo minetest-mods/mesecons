@@ -26,6 +26,125 @@ function mesecon:mvps_process_stack(stack)
 	end
 end
 
+object_table = {}
+ent_pos_check = {}
+function mesecon:piston_object_get(npos,dir,push,nodes)
+	--get anything inside radius
+	for _,object in ipairs(minetest.env:get_objects_inside_radius(npos, 2)) do
+		if object:is_player() then
+			if object_table[object:get_player_name()] ~= nil then
+				return
+			end
+		else
+			if object_table[tostring(object)] == nil then
+				ent_pos_check[tostring(object)] = object:getpos()
+			elseif object_table[tostring(object)] ~= nil and ent_pos_check[tostring(object)] ~= object:getpos() then
+				return
+			elseif object_table[tostring(object)] ~= nil and ent_pos_check[tostring(object)] == object:getpos() then
+				--nothing
+			end
+		end
+		local pos = object:getpos()
+		--check if it's an upright piston
+		if dir.y == 1 or dir.y == -1 then
+			--if the thing isn't on the piston don't push it
+			if npos.x ~= math.floor(0.5+(pos.x)) or npos.z ~= math.floor(0.5+(pos.z)) then
+				return
+			end
+			--for sticky pistons to be able to pull objects
+			if push == true and dir.y == -1 then
+				--do nothing so people can pick up items!
+			elseif push == true then
+				local x = pos.x+dir.x
+				local y = pos.y+dir.y
+				local z = pos.z+dir.z
+				object:setpos({x=x,y=y,z=z})
+			elseif push == false then
+				local x = pos.x-dir.x
+				local y = pos.y-dir.y
+				local z = pos.z-dir.z
+				--do this so pistons can't pull objects into it's own node
+				if minetest.env:get_node({x=x,y=y,z=z}).name ~= "mesecons_pistons:piston_down_sticky_off" then
+					object:setpos({x=x,y=y,z=z})
+				end
+			end
+		else
+			--if the thing isn't on the piston don't push it
+			fail = nil
+			if nodes == false then
+				if push == true then
+					if (npos.x ~= math.floor(0.5+(pos.x)) or npos.z ~= math.floor(0.5+(pos.z))) or pos.y < npos.y-0.5 then
+						if object:is_player() then
+							if object_table[object:get_player_name()] ~= nil then
+								object_table[object:get_player_name()] = nil
+							end
+						else
+							if object_table[tostring(object)] ~= nil then
+								object_table[tostring(object)] = nil
+							end
+						end
+						fail = true
+					end
+				elseif push == false then
+					if (npos.x ~= math.floor(0.5+(pos.x-dir.x)) or npos.z ~= math.floor(0.5+(pos.z-dir.z))) or pos.y < npos.y-0.5 then
+						if object:is_player() then
+							if object_table[object:get_player_name()] ~= nil then
+								object_table[object:get_player_name()] = nil
+							end
+						else
+							if object_table[tostring(object)] ~= nil then
+								object_table[tostring(object)] = nil
+							end
+						end
+							
+						fail = true
+					end
+				end
+			elseif nodes == true then
+				if (npos.x ~= math.floor(0.5+(pos.x-dir.x)) or npos.z ~= math.floor(0.5+(pos.z-dir.z))) or pos.y < npos.y-0.5 then
+					if object:is_player() then
+						if object_table[object:get_player_name()] ~= nil then
+							object_table[object:get_player_name()] = nil
+						end
+					else
+						if object_table[tostring(object)] ~= nil then
+							object_table[tostring(object)] = nil
+						end
+					end
+					fail = true
+				end
+			end
+			--for sticky pistons to be able to pull objects
+			if fail == nil then
+				if push == true then
+					local x = pos.x+dir.x
+					local y = pos.y+dir.y
+					local z = pos.z+dir.z
+					object:setpos({x=x,y=y,z=z})
+				elseif push == false then
+					local x = pos.x-dir.x
+					local y = pos.y-dir.y
+					local z = pos.z-dir.z
+					object:setpos({x=x,y=y,z=z})
+				end
+			end
+		end
+		if object:is_player() then
+			if object_table[object:get_player_name()] == nil then
+				if object:is_player() then
+					object_table[object:get_player_name()] = object:get_player_name()
+				end
+			else
+				return
+			end
+		else
+			if object_table[tostring(object)] == nil then
+				object_table[tostring(object)] = tostring(object)
+			end
+		end
+	end
+end
+
 function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: direction of push; maximum: maximum nodes to be pushed
 	np = {x = pos.x, y = pos.y, z = pos.z}
 
@@ -40,6 +159,7 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 
 		if nn.name == "air"
 		or minetest.registered_nodes[nn.name].liquidtype ~= "none" then --is liquid
+			mesecon:piston_object_get(pos,dir,true,false)
 			break
 		end
 
@@ -55,18 +175,23 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 		end
 	end
 
-	-- remove all nodes
+	-- remove all nodes and move things
+	object_table = {}
+	ent_pos_check = {}
 	for _, n in ipairs(nodes) do
 		n.meta = minetest.env:get_meta(n.pos):to_table()
 		minetest.env:remove_node(n.pos)
+		mesecon:piston_object_get(n.pos,dir,true,true)
 	end
+	object_table = {}
+	ent_pos_check = {}
 
 	-- update mesecons for removed nodes ( has to be done after all nodes have been removed )
 	for _, n in ipairs(nodes) do
 		mesecon.on_dignode(n.pos, n.node)
 		mesecon:update_autoconnect(n.pos)
 	end
-
+	
 	-- add nodes
 	for _, n in ipairs(nodes) do
 		np = mesecon:addPosRule(n.pos, dir)
@@ -96,6 +221,8 @@ function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: dire
 		nodeupdate(pos)
 		mesecon.on_dignode(np, nn)
 		mesecon:update_autoconnect(np)
+		mesecon:piston_object_get(pos,dir,false,false)
+		object_table = {}
 	end
 	return {{pos = np, node = {param2 = 0, name = "air"}}, {pos = pos, node = nn}}
 end
