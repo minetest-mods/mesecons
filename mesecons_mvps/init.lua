@@ -26,6 +26,49 @@ function mesecon:mvps_process_stack(stack)
 	end
 end
 
+function mesecon:piston_object_get(npos,dir,push)
+	--get nodes inside radius
+	for _,object in ipairs(minetest.env:get_objects_inside_radius(npos, 2)) do
+		local pos = object:getpos()
+		--check if it's an upright piston
+		if dir.y == 1 or dir.y == -1 then
+			--if the thing isn't on the piston don't push it
+			if npos.x ~= math.floor(0.5+(pos.x)) or npos.z ~= math.floor(0.5+(pos.z)) then
+				return
+			end
+			--for sticky pistons to be able to pull objects
+			if push == true then
+				local x = pos.x+dir.x
+				local y = pos.y+dir.y
+				local z = pos.z+dir.z
+				object:setpos({x=x,y=y,z=z})
+			elseif push == false then
+				local x = pos.x-dir.x
+				local y = pos.y-dir.y
+				local z = pos.z-dir.z
+				object:setpos({x=x,y=y,z=z})
+			end
+		else
+			--if the thing isn't on the piston don't push it
+			if not npos.x == math.floor(0.5+(pos.x-dir.x)) or not npos.z == math.floor(0.5+(pos.z-dir.z)) or pos.y < npos.y-0.6 then
+				return
+			end
+			--for sticky pistons to be able to pull objects
+			if push == true then
+				local x = pos.x+dir.x
+				local y = pos.y+dir.y
+				local z = pos.z+dir.z
+				object:setpos({x=x,y=y,z=z})
+			elseif push == false then
+				local x = pos.x-dir.x
+				local y = pos.y-dir.y
+				local z = pos.z-dir.z
+				object:setpos({x=x,y=y,z=z})
+			end
+		end
+	end
+end
+
 function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: direction of push; maximum: maximum nodes to be pushed
 	np = {x = pos.x, y = pos.y, z = pos.z}
 
@@ -40,6 +83,7 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 
 		if nn.name == "air"
 		or minetest.registered_nodes[nn.name].liquidtype ~= "none" then --is liquid
+			mesecon:piston_object_get(pos,dir,true)
 			break
 		end
 
@@ -59,6 +103,7 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 	for _, n in ipairs(nodes) do
 		n.meta = minetest.env:get_meta(n.pos):to_table()
 		minetest.env:remove_node(n.pos)
+		mesecon:piston_object_get(n.pos,dir,true)
 	end
 
 	-- update mesecons for removed nodes ( has to be done after all nodes have been removed )
@@ -96,6 +141,7 @@ function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: dire
 		nodeupdate(pos)
 		mesecon.on_dignode(np, nn)
 		mesecon:update_autoconnect(np)
+		mesecon:piston_object_get(pos,dir,false)
 	end
 	return {{pos = np, node = {param2 = 0, name = "air"}}, {pos = pos, node = nn}}
 end
