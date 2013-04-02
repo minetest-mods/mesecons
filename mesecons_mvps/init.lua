@@ -44,7 +44,7 @@ function mesecon:mvps_get_stack(pos, dir, maximum)
 		local nn = minetest.env:get_node_or_nil(np)
 		if not nn or #nodes > maximum then
 			-- don't push at all, something is in the way (unloaded map or too many nodes)
-			return
+			return nil
 		end
 
 		if nn.name == "air"
@@ -62,6 +62,7 @@ end
 function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: direction of push; maximum: maximum nodes to be pushed
 	local nodes = mesecon:mvps_get_stack(pos, dir, maximum)
 
+	if not nodes then return end
 	-- determine if one of the nodes blocks the push
 	for id, n in ipairs(nodes) do
 		if mesecon:is_mvps_stopper(n.node, dir, nodes, id) then
@@ -139,6 +140,8 @@ function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: d
 end
 
 function mesecon:mvps_move_objects(pos, dir, nodestack)
+	local objects_to_move = {}
+
 	-- Move object at tip of stack
 	local pushpos = mesecon:addPosRule(pos, -- get pos at tip of stack
 		{x = dir.x * (#nodestack),
@@ -148,29 +151,29 @@ function mesecon:mvps_move_objects(pos, dir, nodestack)
 
 	local objects = minetest.env:get_objects_inside_radius(pushpos, 1)
 	for _, obj in ipairs(objects) do
-		local entity = obj:get_luaentity()
-		if not entity or not mesecon:is_mvps_unmov(entity.name) then
-			obj:setpos(mesecon:addPosRule(obj:getpos(), dir))
-		end
+		table.insert(objects_to_move, obj)
 	end
 
 	-- Move objects lying/standing on the stack (before it was pushed - oldstack)
-	local objects_above = {}
 	if tonumber(minetest.setting_get("movement_gravity")) > 0 and dir.y == 0 then
 		-- If gravity positive and dir horizontal, push players standing on the stack
 		for _, n in ipairs(nodestack) do
 			local p_above = mesecon:addPosRule(n.pos, {x=0, y=1, z=0})
 			local objects = minetest.env:get_objects_inside_radius(p_above, 1)
 			for _, obj in ipairs(objects) do
-				table.insert(objects_above, obj)
+				table.insert(objects_to_move, obj)
 			end
 		end
 	end
 
-	for _, obj in ipairs(objects_above) do
+	for _, obj in ipairs(objects_to_move) do
 		local entity = obj:get_luaentity()
 		if not entity or not mesecon:is_mvps_unmov(entity.name) then
-			obj:setpos(mesecon:addPosRule(obj:getpos(), dir))
+			local np = mesecon:addPosRule(obj:getpos(), dir)
+			local nn = minetest.env:get_node(np)
+			if not minetest.registered_nodes[nn.name].walkable then
+				obj:setpos(np)
+			end
 		end
 	end
 end
