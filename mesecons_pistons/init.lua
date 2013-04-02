@@ -70,13 +70,14 @@ end
 local piston_on = function (pos, node)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
 
-	dir = piston_get_direction(pistonspec.dir, node)
+	local dir = piston_get_direction(pistonspec.dir, node)
 	local np = mesecon:addPosRule(pos, dir)
-	success, stack = mesecon:mvps_push(np, dir, PISTON_MAXIMUM_PUSH)
+	local success, stack, oldstack = mesecon:mvps_push(np, dir, PISTON_MAXIMUM_PUSH)
 	if success then
 		minetest.env:add_node(pos, {param2 = node.param2, name = pistonspec.onname})
-		minetest.env:add_node(np, {param2 = node.param2, name = pistonspec.pusher})
-		mesecon:mvps_process_stack(stack)
+		minetest.env:add_node(np,  {param2 = node.param2, name = pistonspec.pusher})
+		mesecon:mvps_process_stack (stack)
+		mesecon:mvps_move_objects  (np, dir, oldstack)
 	end
 end
 
@@ -89,7 +90,7 @@ local piston_off = function (pos, node)
 		dir = piston_get_direction(pistonspec.dir, node)
 		pullpos = mesecon:addPosRule(pos, dir)
 		stack = mesecon:mvps_pull_single(pullpos, dir)
-		mesecon:mvps_process_stack(stack)
+		mesecon:mvps_process_stack(pos, dir, stack)
 	end
 end
 
