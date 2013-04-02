@@ -22,3 +22,17 @@ end
 function mesecon:cmpPos(p1, p2)
 	return (p1.x == p2.x and p1.y == p2.y and p1.z == p2.z)
 end
+
+function mesecon:tablecopy(table) -- deep table copy
+	local newtable = {}
+
+	for idx, item in pairs(table) do
+		if type(item) == "table" then
+			newtable[idx] = mesecon:tablecopy(item)
+		else
+			newtable[idx] = item
+		end
+	end
+
+	return newtable
+end
