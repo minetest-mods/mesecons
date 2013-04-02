@@ -16,6 +16,9 @@ minetest.register_chatcommand("tell", {
 			minetest.chat_send_player(name, "Invalid usage: " .. param)
 			return
 		end
+		if not minetest.env:get_player_by_name(target) then
+			minetest.chat_send_player(name, "Invalid target: " .. target)
+		end
 		minetest.chat_send_player(target, name .. " whispers: " .. message)
 	end
 })
@@ -38,7 +41,12 @@ minetest.register_chatcommand("hp", {
 			minetest.chat_send_player(name, "Invalid usage: " .. param)
 			return
 		end
-		minetest.get_player_by_name(target):set_hp(value)
+		local player = minetest.env:get_player_by_name(target)
+		if player then
+			player:set_hp(value)
+		else
+			minetest.chat_send_player(name, "Invalid target: " .. target)
+		end
 	end
 })
 
