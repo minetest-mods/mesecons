@@ -88,7 +88,7 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 
 	on_step = function(self, dtime)
 		local pos = self.object:getpos()
-		pos.x, pos.y, pos.z = math.floor(pos.x), math.floor(pos.y), math.floor(pos.z)
+		pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
 		local direction = mesecon:get_movestone_direction(pos)
 
 		if not direction then -- no mesecon power
@@ -172,7 +172,7 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 
 	on_step = function(self, dtime)
 		local pos = self.object:getpos()
-		pos.x, pos.y, pos.z = math.floor(pos.x), math.floor(pos.y), math.floor(pos.z)
+		pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
 		local direction = mesecon:get_movestone_direction(pos)
 
 		if not direction then -- no mesecon power
@@ -180,6 +180,8 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 			if  name ~= "air" and name ~= "ignore"
 			and minetest.registered_nodes[name].liquidtype == "none" then
 				mesecon:mvps_push(pos, self.lastdir, MOVESTONE_MAXIMUM_PUSH)
+				--STICKY
+				mesecon:mvps_pull_all(pos, self.lastdir)
 			end
 			minetest.env:add_node(pos, {name="mesecons_movestones:sticky_movestone"})
 			self.object:remove()
