@@ -1,7 +1,7 @@
 -- Reference
 -- ports = get_real_portstates(pos): gets if inputs are powered from outside
 -- newport = merge_portstates(state1, state2): just does result = state1 or state2 for every port
--- action_setports(pos, ports, vports): activates/deactivates the mesecons according to the portstates (helper for action)
+-- action_setports(pos, rule, state): activates/deactivates the mesecons according to the portstates (helper for action)
 -- action(pos, ports): Applies new portstates to a luacontroller at pos
 -- lc_update(pos): updates the controller at pos by executing the code
 -- reset_meta (pos, code, errmsg): performs a software-reset, installs new code and prints error messages
@@ -54,30 +54,24 @@ local merge_portstates = function (ports, vports)
 	return npo
 end
 
-local generate_name = function (ports, overwrite)
+local generate_name = function (ports)
 	local overwrite = overwrite or {}
-	local d = overwrite.d or (ports.d and 1 or 0)
-	local c = overwrite.c or (ports.c and 1 or 0)
-	local b = overwrite.b or (ports.b and 1 or 0)
-	local a = overwrite.a or (ports.a and 1 or 0)
+	local d = ports.d and 1 or 0
+	local c = ports.c and 1 or 0
+	local b = ports.b and 1 or 0
+	local a = ports.a and 1 or 0
 	return BASENAME..d..c..b..a
 end
 
-local setport = function (pos, rule, ignore, state, ports)
-	local ignorename = generate_name(ports, ignore)
-	mesecon:swap_node(pos, ignorename)
+local setport = function (pos, rule, state)
 	if state then
 		mesecon:receptor_on(pos, {rule})
 	else
 		mesecon:receptor_off(pos, {rule})
 	end
-	if minetest.env:get_node(pos).name ~= ignorename then
-		return true -- overridden by second process
-	end
-	return false -- success
 end
 
-local action = function (pos, ports, forcereset)
+local action = function (pos, ports)
 	local name = minetest.env:get_node(pos).name
 	local vports = minetest.registered_nodes[name].virtual_portstates
 	local newname = generate_name(ports)
@@ -85,24 +79,14 @@ local action = function (pos, ports, forcereset)
 	if name ~= newname and vports then
 		local rules_on  = {}
 		local rules_off = {}
-		local ignore = {}
-
-		local interrupted
-		if ports.a ~= vports.a then interrupted = setport(pos, rules.a, {a = 2}, ports.a, ports) end
-		if interrupted and not forcereset then return end
-		if ports.b ~= vports.b then interrupted = setport(pos, rules.b, {b = 2}, ports.b, ports) end
-		if interrupted and not forcereset then return end
-		if ports.c ~= vports.c then interrupted = setport(pos, rules.c, {c = 2}, ports.c, ports) end
-		if interrupted and not forcereset then return end
-		if ports.d ~= vports.d then interrupted = setport(pos, rules.d, {d = 2}, ports.d, ports) end
-		if interrupted and not forcereset then return end
 
 		mesecon:swap_node(pos, newname)
-	end
-end
 
-local delayedaction = function (params)
-	action(params.pos, params.ports)
+		if ports.a ~= vports.a then setport(pos, rules.a, ports.a) end
+		if ports.b ~= vports.b then setport(pos, rules.b, ports.b) end
+		if ports.c ~= vports.c then setport(pos, rules.c, ports.c) end
+		if ports.d ~= vports.d then setport(pos, rules.d, ports.d) end
+	end
 end
 
 --------------------
@@ -330,7 +314,7 @@ lc_update = function (pos, event)
 	save_memory(meta, mem)
 
 	-- Actually set the ports
-	minetest.after(0, delayedaction, {pos = pos, ports = env.port})
+	minetest.after(0, action, pos, env.port)
 end
 
 local reset_meta = function(pos, code, errmsg)
@@ -397,10 +381,10 @@ local digiline = {
 	}
 }
 
-for a = 0, 2 do -- 0 = off; 1 = on; 2 = ignore
-for b = 0, 2 do
-for c = 0, 2 do
-for d = 0, 2 do
+for a = 0, 1 do -- 0 = off; 1 = on
+for b = 0, 1 do
+for c = 0, 1 do
+for d = 0, 1 do
 
 local cid = tostring(d)..tostring(c)..tostring(b)..tostring(a)
 local nodename = BASENAME..cid
