@@ -1,4 +1,5 @@
-mesecon.on_placenode = function (pos, node)
+mesecon.on_placenode = function (pos)
+	local node = minetest.env:get_node(pos)
 	if mesecon:is_receptor_on(node.name) then
 		mesecon:receptor_on(pos, mesecon:receptor_get_rules(node))
 	elseif mesecon:is_powered(pos) then
