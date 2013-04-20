@@ -108,7 +108,7 @@ for zmy=0, 1 do
 		sunlight_propagates = true,
 		selection_box = {
               		type = "fixed",
-			fixed = {-.5, -.5, -.5, .5, -.5+1/16, .5}
+			fixed = {-.5, -.5, -.5, .5, -.5+4/16, .5}
 		},
 		node_box = {
 			type = "fixed",
@@ -137,7 +137,7 @@ for zmy=0, 1 do
 		sunlight_propagates = true,
 		selection_box = {
               		type = "fixed",
-			fixed = {-.5, -.5, -.5, .5, -.5+1/16, .5}
+			fixed = {-.5, -.5, -.5, .5, -.5+4/16, .5}
 		},
 		node_box = {
 			type = "fixed",

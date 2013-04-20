@@ -13,7 +13,7 @@ minetest.register_node("mesecons_powerplant:power_plant", {
     	description="Power Plant",
 	selection_box = {
 		type = "fixed",
-		fixed = {-0.1, -0.5, -0.1, 0.1, -0.5+0.6, 0.1},
+		fixed = {-0.3, -0.5, -0.3, 0.3, -0.5+0.7, 0.3},
 	},
 	sounds = default.node_sound_leaves_defaults(),
 	mesecons = {receptor = {
