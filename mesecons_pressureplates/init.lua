@@ -5,7 +5,7 @@ local pp_box_off = {
 
 local pp_box_on = {
 	type = "fixed",
-	fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
+	fixed = { -7/16, -8/16, -7/16, 7/16, -7.5/16, 7/16 },
 }
 
 pp_on_timer = function (pos, elapsed)
