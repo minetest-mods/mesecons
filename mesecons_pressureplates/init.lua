@@ -49,7 +49,7 @@ end
 -- image:	inventory and wield image of the pressure plate
 -- recipe:	crafting recipe of the pressure plate
 
-function mesecon:register_pressure_plate(offstate, onstate, description, texture_off, texture_on, recipe)
+function mesecon:register_pressure_plate(offstate, onstate, description, texture_off, texture_on, image, recipe)
 	local ppspec = {
 		offstate = offstate,
 		onstate  = onstate
@@ -112,6 +112,7 @@ mesecon:register_pressure_plate(
 	"Wooden Pressure Plate",
 	"jeija_pressure_plate_wood_off.png",
 	"jeija_pressure_plate_wood_on.png",
+	"jeija_pressure_plate_wood_off.png",
 	{{"default:wood", "default:wood"}})
 
 mesecon:register_pressure_plate(
@@ -120,4 +121,5 @@ mesecon:register_pressure_plate(
 	"Stone Pressure Plate",
 	"jeija_pressure_plate_stone_off.png",
 	"jeija_pressure_plate_stone_on.png",
+	"jeija_pressure_plate_stone_off.png",
 	{{"default:cobble", "default:cobble"}})
