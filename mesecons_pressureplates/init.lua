@@ -5,7 +5,7 @@ local pp_box_off = {
 
 local pp_box_on = {
 	type = "fixed",
-	fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
+	fixed = { -7/16, -8/16, -7/16, 7/16, -7.5/16, 7/16 },
 }
 
 pp_on_timer = function (pos, elapsed)
@@ -49,7 +49,7 @@ end
 -- image:	inventory and wield image of the pressure plate
 -- recipe:	crafting recipe of the pressure plate
 
-function mesecon:register_pressure_plate(offstate, onstate, description, texture_off, texture_on, image, recipe)
+function mesecon:register_pressure_plate(offstate, onstate, description, textures_off, textures_on, image_w, image_i, recipe)
 	local ppspec = {
 		offstate = offstate,
 		onstate  = onstate
@@ -57,9 +57,9 @@ function mesecon:register_pressure_plate(offstate, onstate, description, texture
 
 	minetest.register_node(offstate, {
 		drawtype = "nodebox",
-		tiles = {texture_off},
-		inventory_image = texture_off,
-		wield_image = image,
+		tiles = textures_off,
+		inventory_image = image_i,
+		wield_image = image_w,
 		paramtype = "light",
 		selection_box = pp_box_off,
 		node_box = pp_box_off,
@@ -77,7 +77,7 @@ function mesecon:register_pressure_plate(offstate, onstate, description, texture
 
 	minetest.register_node(onstate, {
 		drawtype = "nodebox",
-		tiles = {texture_on},
+		tiles = textures_on,
 		paramtype = "light",
 		selection_box = pp_box_on,
 		node_box = pp_box_on,
@@ -110,16 +110,18 @@ mesecon:register_pressure_plate(
 	"mesecons_pressureplates:pressure_plate_wood_off",
 	"mesecons_pressureplates:pressure_plate_wood_on",
 	"Wooden Pressure Plate",
-	"jeija_pressure_plate_wood_off.png",
-	"jeija_pressure_plate_wood_on.png",
-	"jeija_pressure_plate_wood_off.png",
+	{"jeija_pressure_plate_wood_off.png","jeija_pressure_plate_wood_off.png","jeija_pressure_plate_wood_off_edges.png"},
+	{"jeija_pressure_plate_wood_on.png","jeija_pressure_plate_wood_on.png","jeija_pressure_plate_wood_on_edges.png"},
+	"jeija_pressure_plate_wood_wield.png",
+	"jeija_pressure_plate_wood_inv.png",
 	{{"default:wood", "default:wood"}})
 
 mesecon:register_pressure_plate(
 	"mesecons_pressureplates:pressure_plate_stone_off",
 	"mesecons_pressureplates:pressure_plate_stone_on",
 	"Stone Pressure Plate",
-	"jeija_pressure_plate_stone_off.png",
-	"jeija_pressure_plate_stone_on.png",
-	"jeija_pressure_plate_stone_off.png",
+	{"jeija_pressure_plate_stone_off.png","jeija_pressure_plate_stone_off.png","jeija_pressure_plate_stone_off_edges.png"},
+	{"jeija_pressure_plate_stone_on.png","jeija_pressure_plate_stone_on.png","jeija_pressure_plate_stone_on_edges.png"},
+	"jeija_pressure_plate_stone_wield.png",
+	"jeija_pressure_plate_stone_inv.png",
 	{{"default:cobble", "default:cobble"}})
