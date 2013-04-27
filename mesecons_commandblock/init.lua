@@ -19,7 +19,7 @@ minetest.register_chatcommand("tell", {
 		if not minetest.env:get_player_by_name(target) then
 			minetest.chat_send_player(name, "Invalid target: " .. target)
 		end
-		minetest.chat_send_player(target, name .. " whispers: " .. message)
+		minetest.chat_send_player(target, name .. " whispers: " .. message, false)
 	end
 })
 
@@ -27,7 +27,7 @@ minetest.register_chatcommand("tellme", {
 	params = "<text>",
 	description = "Say <text> to yourself",
 	func = function(name, param)
-		minetest.chat_send_player(name, param)
+		minetest.chat_send_player(name, param, false)
 	end
 })
 
