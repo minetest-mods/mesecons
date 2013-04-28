@@ -59,10 +59,10 @@ minetest.register_node("mesecons_solarpanel:solar_panel_off", {
 })
 
 minetest.register_craft({
-	output = '"mesecons_solarpanel:solar_panel_off" 1',
+	output = "mesecons_solarpanel:solar_panel_off 1",
 	recipe = {
-		{'"mesecons_materials:silicon"', '"mesecons_materials:silicon"'},
-		{'"mesecons_materials:silicon"', '"mesecons_materials:silicon"'},
+		{"mesecons_materials:silicon", "mesecons_materials:silicon"},
+		{"mesecons_materials:silicon", "mesecons_materials:silicon"},
 	}
 })
 

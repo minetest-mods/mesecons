@@ -21,7 +21,7 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 	node_box = mesecon_lamp_box,
 	selection_box = mesecon_lamp_box,
 	groups = {dig_immediate=3,not_in_creative_inventory=1, mesecon_effector_on = 1},
-	drop='"mesecons_lamp:lamp_off" 1',
+	drop="mesecons_lamp:lamp_off 1",
 	sounds = default.node_sound_glass_defaults(),
 	mesecons = {effector = {
 		action_off = function (pos, node)
@@ -52,10 +52,10 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 })
 
 minetest.register_craft({
-	output = '"mesecons_lamp:lamp_off" 1',
+	output = "mesecons_lamp:lamp_off 1",
 	recipe = {
-		{'', '"default:glass"', ''},
-		{'"group:mesecon_conductor_craftable"', '"default:steel_ingot"', '"group:mesecon_conductor_craftable"'},
-		{'', '"default:glass"', ''},
+		{"", "default:glass", ""},
+		{"group:mesecon_conductor_craftable", "default:steel_ingot", "group:mesecon_conductor_craftable"},
+		{"", "default:glass", ""},
 	}
 })

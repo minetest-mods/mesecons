@@ -75,7 +75,7 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 })
 
 minetest.register_craft({
-	output = '"mesecons_extrawires:tjunction_off" 3',
+	output = "mesecons_extrawires:tjunction_off 3",
 	recipe = {
 		{"", "", ""},
 		{"mesecons_insulated:insulated_off", "mesecons_insulated:insulated_off", "mesecons_insulated:insulated_off"},
