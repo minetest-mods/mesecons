@@ -71,7 +71,7 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 			 { -1/16,  0,     4/16, 1/16, 8/16,  6/16 }}	-- the lever itself.
 	},
 	groups = {dig_immediate = 2, not_in_creative_inventory = 1, mesecon_needs_receiver = 1},
-	drop = '"mesecons_walllever:wall_lever_off" 1',
+	drop = "mesecons_walllever:wall_lever_off 1",
 	description="Lever",
 	on_punch = function (pos, node)
 		mesecon:swap_node(pos, "mesecons_walllever:wall_lever_off")
@@ -86,10 +86,10 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 })
 
 minetest.register_craft({
-	output = '"mesecons_walllever:wall_lever_off" 2',
+	output = "mesecons_walllever:wall_lever_off 2",
 	recipe = {
-	    {'"group:mesecon_conductor_craftable"'},
-		{'"default:stone"'},
-		{'"default:stick"'},
+	    {"group:mesecon_conductor_craftable"},
+		{"default:stone"},
+		{"default:stick"},
 	}
 })

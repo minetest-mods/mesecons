@@ -27,7 +27,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	paramtype = "light",
 	walkable = false,
 	groups = {dig_immediate=3, not_in_creative_inventory=1, mesecon = 2},
-	drop='"mesecons_blinkyplant:blinky_plant_off" 1',
+	drop="mesecons_blinkyplant:blinky_plant_off 1",
 	light_source = LIGHT_MAX-7,
 	description = "Blinky Plant",
 	sounds = default.node_sound_leaves_defaults(),
@@ -41,11 +41,11 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 })
 
 minetest.register_craft({
-	output = '"mesecons_blinkyplant:blinky_plant_off" 1',
+	output = "mesecons_blinkyplant:blinky_plant_off 1",
 	recipe = {
-	{'','"group:mesecon_conductor_craftable"',''},
-	{'','"group:mesecon_conductor_craftable"',''},
-	{'"default:sapling"','"default:sapling"','"default:sapling"'},
+	{"","group:mesecon_conductor_craftable",""},
+	{"","group:mesecon_conductor_craftable",""},
+	{"default:sapling","default:sapling","default:sapling"},
 	}
 })
 

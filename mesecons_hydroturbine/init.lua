@@ -32,7 +32,7 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 	drawtype = "nodebox",
 	tiles = {"jeija_hydro_turbine_on.png"},
-	drop = '"mesecons_hydroturbine:hydro_turbine_off" 1',
+	drop = "mesecons_hydroturbine:hydro_turbine_off 1",
 	groups = {dig_immediate=2,not_in_creative_inventory=1},
 	description="Water Turbine",
 	paramtype = "light",
@@ -86,11 +86,11 @@ nodenames = {"mesecons_hydroturbine:hydro_turbine_on"},
 })
 
 minetest.register_craft({
-	output = '"mesecons_hydroturbine:hydro_turbine_off" 2',
+	output = "mesecons_hydroturbine:hydro_turbine_off 2",
 	recipe = {
-	{'','"default:stick"', ''},
-	{'"default:stick"', '"default:steel_ingot"', '"default:stick"'},
-	{'','"default:stick"', ''},
+	{"","default:stick", ""},
+	{"default:stick", "default:steel_ingot", "default:stick"},
+	{"","default:stick", ""},
 	}
 })
 

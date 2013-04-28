@@ -66,7 +66,7 @@ minetest.register_node(nodename, {
 	paramtype = "light",
 	walkable = true,
 	groups = groups,
-	drop = '"mesecons_microcontroller:microcontroller0000" 1',
+	drop = "mesecons_microcontroller:microcontroller0000 1",
 	selection_box = {
 		type = "fixed",
 		fixed = { -8/16, -8/16, -8/16, 8/16, -5/16, 8/16 },

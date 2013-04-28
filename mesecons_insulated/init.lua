@@ -71,7 +71,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 })
 
 minetest.register_craft({
-	output = '"mesecons_insulated:insulated_off" 3',
+	output = "mesecons_insulated:insulated_off 3",
 	recipe = {
 		{"mesecons_materials:fiber", "mesecons_materials:fiber", "mesecons_materials:fiber"},
 		{"mesecons:wire_00000000_off", "mesecons:wire_00000000_off", "mesecons:wire_00000000_off"},

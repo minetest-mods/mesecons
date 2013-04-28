@@ -276,6 +276,6 @@ end
 
 minetest.register_craft({
 	type = "cooking",
-	output = '"mesecons:wire_00000000_off" 16',
+	output = "mesecons:wire_00000000_off 16",
 	recipe = "default:mese_crystal",
 })
