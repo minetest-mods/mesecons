@@ -149,8 +149,17 @@ local getinterrupt = function(pos)
 		local iid = iid or math.random()
 		local meta = minetest.env:get_meta(pos)
 		local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
-		table.insert (interrupts, iid)
-		meta:set_string("lc_interrupts", minetest.serialize(interrupts))
+		local found = false
+		for _, i in ipairs(interrupts) do
+			if minetest.serialize(i) == minetest.serialize(event.iid) then
+				found = true
+				break
+			end
+		end
+		if not found then
+			table.insert(interrupts, iid)
+			meta:set_string("lc_interrupts", minetest.serialize(interrupts))
+		end
 		minetest.after(time, interrupt, {pos=pos, iid = iid})
 	end
 	return interrupt
@@ -251,9 +260,9 @@ local do_overheat = function (pos, meta)
 	heat(meta)
 	minetest.after(0.5, cool, meta)
 	if overheat(meta) then
-		minetest.env:remove_node(pos)
+		mesecon:swap_node(pos, BASENAME.."_burnt")
+		minetest.env:get_meta(pos):set_string("lc_interrupts", "")
 		minetest.after(0.2, overheat_off, pos) -- wait for pending operations
-		minetest.env:add_item(pos, BASENAME.."0000")
 		return true
 	end
 end
@@ -478,6 +487,37 @@ end
 end
 end
 end
+
+--overheated luacontroller
+minetest.register_node(BASENAME .. "_burnt", {
+	drawtype = "nodebox",
+	tiles = {
+		"jeija_luacontroller_burnt_top.png",
+		"jeija_microcontroller_bottom.png",
+		"jeija_microcontroller_sides.png",
+		"jeija_microcontroller_sides.png",
+		"jeija_microcontroller_sides.png",
+		"jeija_microcontroller_sides.png"
+	},
+	inventory_image = "jeija_luacontroller_burnt_top.png",
+	paramtype = "light",
+	groups = {dig_immediate=2, not_in_creative_inventory=1},
+	drop = BASENAME.."0000",
+	sunlight_propagates = true,
+	selection_box = selectionbox,
+	node_box = nodebox,
+	on_construct = reset_meta,
+	on_receive_fields = function(pos, formname, fields)
+		reset(pos)
+		reset_meta(pos, fields.code)
+		local err = lc_update(pos, {type="program"})
+		if err then print(err) end
+		reset_meta(pos, fields.code, err)
+	end,
+	sounds = default.node_sound_stone_defaults(),
+	is_luacontroller = true,
+	virtual_portstates = {a = false, b = false, c = false, d = false},
+})
 
 ------------------------
 -- Craft Registration --
