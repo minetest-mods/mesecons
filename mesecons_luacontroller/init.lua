@@ -151,7 +151,7 @@ local getinterrupt = function(pos)
 		local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
 		local found = false
 		for _, i in ipairs(interrupts) do
-			if minetest.serialize(i) == minetest.serialize(event.iid) then
+			if minetest.serialize(i) == minetest.serialize(iid) then
 				found = true
 				break
 			end
