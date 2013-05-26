@@ -14,6 +14,10 @@ Jordach: Sounds for the noteblock
 minerd247: Some textures
 ...other contributors
 
+License:
+Textures: CC-BY-SA
+Code: LGPL
+
 This is a mod for minetest.
 Copy the minetest-mod-mesecons directory into you game's mod folder 
 (e.g. games/minetest_game/mods/minetest-mod-mesecons)
