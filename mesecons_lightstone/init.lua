@@ -39,3 +39,4 @@ mesecon:lightstone_add("green", "default:cactus", "jeija_lightstone_green_off.pn
 mesecon:lightstone_add("blue", "mesecons_materials:fiber", "jeija_lightstone_blue_off.png", "jeija_lightstone_blue_on.png")
 mesecon:lightstone_add("gray", "default:cobble", "jeija_lightstone_gray_off.png", "jeija_lightstone_gray_on.png")
 mesecon:lightstone_add("darkgray", "default:gravel", "jeija_lightstone_darkgray_off.png", "jeija_lightstone_darkgray_on.png")
+mesecon:lightstone_add("yellow", "default:mese_crystal_fragment", "jeija_lightstone_yellow_off.png", "jeija_lightstone_yellow_on.png")
