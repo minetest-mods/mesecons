@@ -49,6 +49,10 @@ mesecon.receptors={} --  saves all information about receptors  | DEPRECATED
 mesecon.effectors={} --  saves all information about effectors  | DEPRECATED
 mesecon.conductors={} -- saves all information about conductors | DEPRECATED
 
+
+mesecon.to_update = {}
+mesecon.r_to_update = {}
+
 -- Settings
 dofile(minetest.get_modpath("mesecons").."/settings.lua")
 
@@ -76,7 +80,7 @@ dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 -- API
 -- these are the only functions you need to remember
 
-function mesecon:receptor_on(pos, rules)
+function mesecon:receptor_on_i(pos, rules)
 	rules = rules or mesecon.rules.default
 
 	for _, rule in ipairs(rules) do
@@ -88,7 +92,12 @@ function mesecon:receptor_on(pos, rules)
 	end
 end
 
-function mesecon:receptor_off(pos, rules)
+function mesecon:receptor_on(pos, rules)
+	rules = rules or mesecon.rules.default
+	mesecon.r_to_update[#mesecon.r_to_update+1]={pos=pos, rules=rules, action="on"}
+end
+
+function mesecon:receptor_off_i(pos, rules)
 	rules = rules or mesecon.rules.default
 
 	for _, rule in ipairs(rules) do
@@ -102,6 +111,11 @@ function mesecon:receptor_off(pos, rules)
 			end
 		end
 	end
+end
+
+function mesecon:receptor_off(pos, rules)
+	rules = rules or mesecon.rules.default
+	mesecon.r_to_update[#mesecon.r_to_update+1]={pos=pos, rules=rules, action="off"}
 end
 
 
