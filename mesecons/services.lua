@@ -25,5 +25,15 @@ mesecon.on_dignode = function (pos, node)
 	end
 end
 
+minetest.register_abm({
+	nodenames = {"group:overheat"},
+	interval = 1.0,
+	chance = 1,
+	action = function(pos, node, active_object_count, active_object_count_wider)
+		local meta = minetest.env:get_meta(pos)
+		meta:set_int("heat",0)
+	end,
+})
+
 minetest.register_on_placenode(mesecon.on_placenode)
 minetest.register_on_dignode(mesecon.on_dignode)
