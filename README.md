@@ -51,19 +51,21 @@ Who wrote it anyways?
 ---------------------
 These awesome people made Mesecons possible!
 
-| Contributor     | Contribution                       |
-| --------------- | ---------------------------------- |
-| Jat15           | Various tweaks.                    |
-| Jeija           | **Main developer! Everything.**    |
-| Jordach         | Noteblock sounds.                  |
-| khonkhortistan  | Coding, recipes, textures.         |
-| Kotolegokot     | Nodeboxes for items.               |
-| minerd247       | Textures.                          |
-| RealBadAngel    | Fixes, improvements.               |
-| sfan5           | Coding, recipes, textures.         |
-| Uberi/Temperest | Coding, textures, documentation.   |
-| VanessaE        | Coding, recipes, textures, design. |
-| Whiskers75      | Logic gates implementation.        |
+| Contributor     | Contribution                     |
+| --------------- | -------------------------------- |
+| Jat15           | Various tweaks.                  |
+| Jeija           | **Main developer! Everything.**  |
+| Jordach         | Noteblock sounds.                |
+| khonkhortistan  | Code, recipes, textures.         |
+| Kotolegokot     | Nodeboxes for items.             |
+| minerd247       | Textures.                        |
+| Nore/Novatux    | Code.                            |
+| RealBadAngel    | Fixes, improvements.             |
+| sfan5           | Code, recipes, textures.         |
+| suzenako        | Piston sounds.                   |
+| Uberi/Temperest | Code, textures, documentation.   |
+| VanessaE        | Code, recipes, textures, design. |
+| Whiskers75      | Logic gates implementation.      |
 
 There are also a whole bunch of other people helping with everything from code to testing and feedback. Mesecons would also not be possible without their help!
 

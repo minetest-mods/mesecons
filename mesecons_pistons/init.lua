@@ -63,6 +63,11 @@ local piston_remove_pusher = function (pos, node)
 
 	if pushername == pistonspec.pusher then --make sure there actually is a pusher (for compatibility reasons mainly)
 		minetest.env:remove_node(pusherpos)
+		minetest.sound_play("piston_retract", {
+			pos = pos,
+			max_hear_distance = 20,
+			gain = 0.3,
+		})
 		nodeupdate(pusherpos)
 	end
 end
@@ -76,6 +81,11 @@ local piston_on = function (pos, node)
 	if success then
 		minetest.env:add_node(pos, {param2 = node.param2, name = pistonspec.onname})
 		minetest.env:add_node(np,  {param2 = node.param2, name = pistonspec.pusher})
+		minetest.sound_play("piston_extend", {
+			pos = pos,
+			max_hear_distance = 20,
+			gain = 0.3,
+		})
 		mesecon:mvps_process_stack (stack)
 		mesecon:mvps_move_objects  (np, dir, oldstack)
 	end
