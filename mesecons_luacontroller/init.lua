@@ -100,17 +100,17 @@ local heat = function (meta) -- warm up
 	end
 end
 
-local cool = function (meta) -- cool down after a while
-	h = meta:get_int("heat")
-	if h ~= nil then
-		meta:set_int("heat", h - 1)
-	end
-end
+--local cool = function (meta) -- cool down after a while
+--	h = meta:get_int("heat")
+--	if h ~= nil then
+--		meta:set_int("heat", h - 1)
+--	end
+--end
 
 local overheat = function (meta) -- determine if too hot
 	h = meta:get_int("heat")
 	if h == nil then return true end -- if nil then overheat
-	if h > 20 then 
+	if h > 40 then 
 		return true
 	else 
 		return false 
@@ -258,7 +258,7 @@ end
 local do_overheat = function (pos, meta)
 	-- Overheat protection
 	heat(meta)
-	minetest.after(0.5, cool, meta)
+	--minetest.after(0.5, cool, meta)
 	if overheat(meta) then
 		mesecon:swap_node(pos, BASENAME.."_burnt")
 		minetest.env:get_meta(pos):set_string("lc_interrupts", "")
@@ -412,9 +412,9 @@ if d == 1 then
 end
 
 if a + b + c + d ~= 0 then
-	groups = {dig_immediate=2, not_in_creative_inventory=1}
+	groups = {dig_immediate=2, not_in_creative_inventory=1, overheat = 1}
 else
-	groups = {dig_immediate=2}
+	groups = {dig_immediate=2, overheat = 1}
 end
 
 output_rules[cid] = {}
