@@ -1,5 +1,4 @@
-mesecon.on_placenode = function (pos)
-	local node = minetest.env:get_node(pos)
+mesecon.on_placenode = function (pos, node)
 	if mesecon:is_receptor_on(node.name) then
 		mesecon:receptor_on(pos, mesecon:receptor_get_rules(node))
 	elseif mesecon:is_powered(pos) then
@@ -7,7 +6,7 @@ mesecon.on_placenode = function (pos)
 			mesecon:turnon (pos)
 			mesecon:receptor_on (pos, mesecon:conductor_get_rules(node))
 		else
-			mesecon:changesignal(pos, node)
+			mesecon:changesignal(pos, node, mesecon:effector_get_rules(node), "on")
 			mesecon:activate(pos, node)
 		end
 	elseif mesecon:is_conductor_on(node.name) then

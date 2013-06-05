@@ -49,6 +49,31 @@ mesecon.receptors={} --  saves all information about receptors  | DEPRECATED
 mesecon.effectors={} --  saves all information about effectors  | DEPRECATED
 mesecon.conductors={} -- saves all information about conductors | DEPRECATED
 
+
+local wpath = minetest.get_worldpath()
+local function read_file(fn)
+	local f = io.open(fn, "r")
+	if f==nil then return {} end
+	local t = f:read("*all")
+	f:close()
+	if t=="" or t==nil then return {} end
+	return minetest.deserialize(t)
+end
+
+local function write_file(fn, tbl)
+	local f = io.open(fn, "w")
+	f:write(minetest.serialize(tbl))
+	f:close()
+end
+
+mesecon.to_update = read_file(wpath.."/mesecon_to_update")
+mesecon.r_to_update = read_file(wpath.."/mesecon_r_to_update")
+
+minetest.register_on_shutdown(function()
+	write_file(wpath.."/mesecon_to_update",mesecon.to_update)
+	write_file(wpath.."/mesecon_r_to_update",mesecon.r_to_update)
+end)
+
 -- Settings
 dofile(minetest.get_modpath("mesecons").."/settings.lua")
 
@@ -76,7 +101,7 @@ dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 -- API
 -- these are the only functions you need to remember
 
-function mesecon:receptor_on(pos, rules)
+function mesecon:receptor_on_i(pos, rules)
 	rules = rules or mesecon.rules.default
 
 	for _, rule in ipairs(rules) do
@@ -88,7 +113,16 @@ function mesecon:receptor_on(pos, rules)
 	end
 end
 
-function mesecon:receptor_off(pos, rules)
+function mesecon:receptor_on(pos, rules)
+	if MESECONS_GLOBALSTEP then
+		rules = rules or mesecon.rules.default
+		mesecon.r_to_update[#mesecon.r_to_update+1]={pos=pos, rules=rules, action="on"}
+	else
+		mesecon:receptor_on_i(pos, rules)
+	end
+end
+
+function mesecon:receptor_off_i(pos, rules)
 	rules = rules or mesecon.rules.default
 
 	for _, rule in ipairs(rules) do
@@ -101,6 +135,15 @@ function mesecon:receptor_off(pos, rules)
 				mesecon:changesignal(np, minetest.env:get_node(np), rulename, mesecon.state.off)
 			end
 		end
+	end
+end
+
+function mesecon:receptor_off(pos, rules)
+	if MESECONS_GLOBALSTEP then
+		rules = rules or mesecon.rules.default
+		mesecon.r_to_update[#mesecon.r_to_update+1]={pos=pos, rules=rules, action="off"}
+	else
+		mesecon:receptor_off_i(pos, rules)
 	end
 end
 

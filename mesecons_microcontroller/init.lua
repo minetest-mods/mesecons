@@ -682,6 +682,7 @@ end
 --end
 
 function yc_overheat(meta)
+	if MESECONS_GLOBALSTEP then return false end
 	h = meta:get_int("heat")
 	if h == nil then return true end -- if nil the overheat
 	if h>60 then 

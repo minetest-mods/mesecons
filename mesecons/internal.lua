@@ -180,24 +180,115 @@ end
 --Signals
 
 function mesecon:activate(pos, node, rulename)
-	local effector = mesecon:get_effector(node.name)
-	if effector and effector.action_on then
-		effector.action_on (pos, node, rulename)
+	if MESECONS_GLOBALSTEP then
+		if rulename == nil then
+			for _,rule in ipairs(mesecon:effector_get_rules(node)) do
+				mesecon:activate(pos, node, rule)
+			end
+			return
+		end
+		add_action(pos, "on", rulename)
+	else
+		local effector = mesecon:get_effector(node.name)
+		if effector and effector.action_on then
+			effector.action_on (pos, node, rulename)
+		end
 	end
 end
 
 function mesecon:deactivate(pos, node, rulename)
-	local effector = mesecon:get_effector(node.name)
-	if effector and effector.action_off then
-		effector.action_off (pos, node, rulename)
+	if MESECONS_GLOBALSTEP then
+		if rulename == nil then
+			for _,rule in ipairs(mesecon:effector_get_rules(node)) do
+				mesecon:deactivate(pos, node, rule)
+			end
+			return
+		end
+		add_action(pos, "off", rulename)
+	else
+		local effector = mesecon:get_effector(node.name)
+		if effector and effector.action_off then
+			effector.action_off (pos, node, rulename)
+		end
 	end
 end
 
 function mesecon:changesignal(pos, node, rulename, newstate)
-	local effector = mesecon:get_effector(node.name)
-	if effector and effector.action_change then
-		effector.action_change (pos, node, rulename, newstate)
+	
+	newstate = newstate or "on"
+	--rulename = rulename or mesecon.rules.default
+	if MESECONS_GLOBALSTEP then
+		if rulename == nil then
+			for _,rule in ipairs(mesecon:effector_get_rules(node)) do
+				mesecon:changesignal(pos, node, rule, newstate)
+			end
+		return
+		end
+		add_action(pos, "c"..newstate, rulename)
+	else
+		local effector = mesecon:get_effector(node.name)
+		if effector and effector.action_change then
+			effector.action_change (pos, node, rulename, newstate)
+		end
 	end
+end
+
+function execute_actions(dtime)
+	local nactions = mesecon.to_update
+	mesecon.to_update = {}
+	for _,i in ipairs(nactions) do
+		node = minetest.env:get_node(i.pos)
+		if node.name=="ignore" then
+			add_action(i.pos, i.action, i.rname)
+		else
+			effector = mesecon:get_effector(node.name)
+			if i.action == "on" then
+				if effector and effector.action_on then
+					effector.action_on(i.pos, node, i.rname)
+				end
+			elseif i.action == "off" then
+				if effector and effector.action_off then
+					effector.action_off(i.pos, node, i.rname)
+				end
+			elseif i.action == "con" then
+				if effector and effector.action_change then
+					effector.action_change(i.pos, node, i.rname, "on")
+				end
+			elseif i.action == "coff" then
+				if effector and effector.action_change then
+					effector.action_change(i.pos, node, i.rname, "off")
+				end
+			end
+		end
+	end
+	local nactions = mesecon.r_to_update
+	mesecon.r_to_update = {}
+	for _,i in ipairs(nactions) do
+		if i.action == "on" then
+			mesecon:receptor_on_i(i.pos, i.rules)
+		else
+			mesecon:receptor_off_i(i.pos,i.rules)
+		end
+	end
+end
+
+minetest.register_globalstep(execute_actions)
+
+function add_action(pos, action, rname)
+	for _,i in ipairs(mesecon.to_update) do
+		if i.pos.x == pos.x and i.pos.y == pos.y and i.pos.z == pos.z and i.rname.x == rname.x and i.rname.y == rname.y and i.rname.z == rname.z then
+			if (i.action == "on" and action == "on") or (i.action == "off" and action == "off") then
+				--nothing
+			elseif i.action == "coff" and action == "on" then i.action = "on"
+			elseif i.action == "con" and action == "off" then i.action = "off"
+			else
+				if action == "on" or action == "con" then i.action = "con" end
+				if action == "off" or action == "coff" then i.action = "coff" end
+			end
+			break
+		end
+	end
+	mesecon.to_update[#mesecon.to_update+1] = {pos = pos, action = action, rname = rname}
 end
 
 --Rules
