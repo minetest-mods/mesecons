@@ -19,9 +19,9 @@ if tostring(d) == "1" then
 	top = top.."^jeija_microcontroller_LED_D.png"
 end
 if tostring(d)..tostring(c)..tostring(b)..tostring(a) ~= "0000" then
-	groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3}
+	groups = {dig_immediate=2, not_in_creative_inventory=1, mesecon = 3, overheat = 1}
 else
-	groups = {dig_immediate=2, mesecon = 3}
+	groups = {dig_immediate=2, mesecon = 3, overheat = 1}
 end
 local rules={}
 if (a == 1) then table.insert(rules, {x = -1, y = 0, z =  0}) end
@@ -162,7 +162,7 @@ end
 function update_yc(pos)
 	local meta = minetest.env:get_meta(pos)
 	yc_heat(meta)
-	minetest.after(0.5, yc_cool, meta)
+	--minetest.after(0.5, yc_cool, meta)
 	if (yc_overheat(meta)) then
 		minetest.env:remove_node(pos)
 		minetest.after(0.2, yc_overheat_off, pos) --wait for pending parsings
@@ -674,17 +674,17 @@ function yc_heat(meta)
 	end
 end
 
-function yc_cool(meta)
-	h = meta:get_int("heat")
-	if h ~= nil then
-		meta:set_int("heat", h - 1)
-	end
-end
+--function yc_cool(meta)
+--	h = meta:get_int("heat")
+--	if h ~= nil then
+--		meta:set_int("heat", h - 1)
+--	end
+--end
 
 function yc_overheat(meta)
 	h = meta:get_int("heat")
 	if h == nil then return true end -- if nil the overheat
-	if h>30 then 
+	if h>60 then 
 		return true
 	else 
 		return false 

@@ -47,7 +47,7 @@ function set_gate(pos, on)
 	local meta = minetest.env:get_meta(pos)
 	if on ~= gate_state(pos) then
 		yc_heat(meta)
-		minetest.after(0.5, yc_cool, meta)
+		--minetest.after(0.5, yc_cool, meta)
 		if yc_overheat(meta) then
 			pop_gate(pos)
 		else
@@ -112,13 +112,13 @@ for _, gate in ipairs(gates) do
 			drop = nodename.."_off"
 			nodename = nodename.."_"..onoff
 			description = "You hacker you!"
-			groups = {dig_immediate=2, not_in_creative_inventory=1}
+			groups = {dig_immediate=2, not_in_creative_inventory=1, overheat = 1}
 		else
 			onoff = "off"
 			drop = nil
 			nodename = nodename.."_"..onoff
 			description = gate.name.." Gate"
-			groups = {dig_immediate=2}
+			groups = {dig_immediate=2, overheat = 1}
 		end
 
 		tiles = "jeija_microcontroller_bottom.png^"..
