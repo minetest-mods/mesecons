@@ -135,8 +135,27 @@ local code_prohibited = function(code)
 	end
 end
 
-local safeprint = function(param)
+local safe_print = function(param)
 	print(dump(param))
+end
+
+deep_copy = function(original) --deep copy that removes functions
+	if type(original) == 'table' then --nested table
+		local copy = {}
+		for key, value in next, original, nil do
+			copy[deep_copy(key)] = deep_copy(value)
+		end
+		setmetatable(copy, deep_copy(getmetatable(original)))
+		return copy
+	elseif type(original) == 'function' then --ignore functions
+		return nil
+	else --by-value type
+		return original
+	end
+end
+
+local safe_serialize = function(value)
+	return minetest.serialize(deep_copy(value))
 end
 
 local interrupt = function(params)
@@ -150,15 +169,16 @@ local getinterrupt = function(pos)
 		local meta = minetest.env:get_meta(pos)
 		local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
 		local found = false
+		local search = safe_serialize(iid)
 		for _, i in ipairs(interrupts) do
-			if minetest.serialize(i) == minetest.serialize(iid) then
+			if safe_serialize(i) == search then
 				found = true
 				break
 			end
 		end
 		if not found then
 			table.insert(interrupts, iid)
-			meta:set_string("lc_interrupts", minetest.serialize(interrupts))
+			meta:set_string("lc_interrupts", safe_serialize(interrupts))
 		end
 		minetest.after(time, interrupt, {pos=pos, iid = iid})
 	end
@@ -181,7 +201,7 @@ local create_environment = function(pos, mem, event)
 	local rports = get_real_portstates(pos)
 
 	return {
-			print = safeprint,
+			print = safe_print,
 			pin = merge_portstates(vports, rports),
 			port = vports,
 			interrupt = getinterrupt(pos),
@@ -272,15 +292,16 @@ local load_memory = function(meta)
 end
 
 local save_memory = function(meta, mem)
-	meta:set_string("lc_memory", minetest.serialize(mem))
+	meta:set_string("lc_memory", safe_serialize(mem))
 end
 
 local interrupt_allow = function (meta, event)
 	if event.type ~= "interrupt" then return true end
 
 	local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
+	local search = safe_serialize(event.iid)
 	for _, i in ipairs(interrupts) do
-		if minetest.serialize(i) == minetest.serialize(event.iid) then
+		if safe_serialize(i) == search then
 			return true
 		end
 	end
