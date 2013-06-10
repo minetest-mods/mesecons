@@ -127,7 +127,7 @@ end
 
 local code_prohibited = function(code)
 	-- Clean code
-	local prohibited = {"while", "for", "repeat", "until", "function"}
+	local prohibited = {"while", "for", "repeat", "until", "function", "goto"}
 	for _, p in ipairs(prohibited) do
 		if string.find(code, p) then
 			return "Prohibited command: "..p
@@ -139,13 +139,18 @@ local safe_print = function(param)
 	print(dump(param))
 end
 
-deep_copy = function(original) --deep copy that removes functions
+deep_copy = function(original, visited) --deep copy that removes functions
+	visited = visited or {}
+	if visited[original] ~= nil then --already visited this node
+		return visited[original]
+	end
 	if type(original) == 'table' then --nested table
 		local copy = {}
+		visited[original] = copy
 		for key, value in next, original, nil do
-			copy[deep_copy(key)] = deep_copy(value)
+			copy[deep_copy(key, visited)] = deep_copy(value, visited)
 		end
-		setmetatable(copy, deep_copy(getmetatable(original)))
+		setmetatable(copy, deep_copy(getmetatable(original), visited))
 		return copy
 	elseif type(original) == 'function' then --ignore functions
 		return nil
