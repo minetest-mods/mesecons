@@ -487,7 +487,7 @@ function mesecon:rules_link(output, input, dug_outputrules) --output/input are p
 			for _, inputrule in ipairs(inputrules) do
 				-- Check if input accepts from output
 				if  mesecon:cmpPos(mesecon:addPosRule(input, inputrule), output) then
-					return true, inputrule.name
+					return true, inputrule
 				end
 			end
 		end
