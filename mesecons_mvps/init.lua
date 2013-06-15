@@ -93,6 +93,11 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 	for i in ipairs(nodes) do
 		nodes[i].pos = mesecon:addPosRule(nodes[i].pos, dir)
 	end
+	
+	for _, n in ipairs(nodes) do
+		mesecon.on_placenode(n.pos, n.node)
+		mesecon:update_autoconnect(n.pos)
+	end
 
 	return true, nodes, oldstack
 end
@@ -112,6 +117,8 @@ function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: dire
 		nodeupdate(pos)
 		mesecon.on_dignode(np, nn)
 		mesecon:update_autoconnect(np)
+		mesecon:update_autoconnect(pos)
+		mesecon.on_placenode(pos, nn)
 	end
 	return {{pos = np, node = {param2 = 0, name = "air"}}, {pos = pos, node = nn}}
 end
