@@ -635,10 +635,18 @@ function yc_get_real_portstates(pos) -- port powered or not (by itself or from o
 	rulesC = mesecon:get_rules("mesecons_microcontroller:microcontroller0100")
 	rulesD = mesecon:get_rules("mesecons_microcontroller:microcontroller1000")
 	L = {
-		a = mesecon:is_power_on({x=pos.x+rulesA[1].x, y=pos.y+rulesA[1].y, z=pos.z+rulesA[1].z}) and mesecon:rules_link({x=pos.x+rulesA[1].x, y=pos.y+rulesA[1].y, z=pos.z+rulesA[1].z}, pos),
-		b = mesecon:is_power_on({x=pos.x+rulesB[1].x, y=pos.y+rulesB[1].y, z=pos.z+rulesB[1].z}) and mesecon:rules_link({x=pos.x+rulesB[1].x, y=pos.y+rulesB[1].y, z=pos.z+rulesB[1].z}, pos),
-		c = mesecon:is_power_on({x=pos.x+rulesC[1].x, y=pos.y+rulesC[1].y, z=pos.z+rulesC[1].z}) and mesecon:rules_link({x=pos.x+rulesC[1].x, y=pos.y+rulesC[1].y, z=pos.z+rulesC[1].z}, pos),
-		d = mesecon:is_power_on({x=pos.x+rulesD[1].x, y=pos.y+rulesD[1].y, z=pos.z+rulesD[1].z}) and mesecon:rules_link({x=pos.x+rulesD[1].x, y=pos.y+rulesD[1].y, z=pos.z+rulesD[1].z}, pos)
+		a = mesecon:is_power_on(mesecon:addPosRule(pos, rulesA[1]),
+			mesecon:invertRule(rulesA[1])) and
+			mesecon:rules_link(mesecon:addPosRule(pos, rulesA[1]), pos),
+		b = mesecon:is_power_on(mesecon:addPosRule(pos, rulesB[1]),
+			mesecon:invertRule(rulesB[1])) and
+			mesecon:rules_link(mesecon:addPosRule(pos, rulesB[1]), pos),
+		c = mesecon:is_power_on(mesecon:addPosRule(pos, rulesC[1]),
+			mesecon:invertRule(rulesC[1])) and
+			mesecon:rules_link(mesecon:addPosRule(pos, rulesC[1]), pos),
+		d = mesecon:is_power_on(mesecon:addPosRule(pos, rulesD[1]),
+			mesecon:invertRule(rulesD[1])) and
+			mesecon:rules_link(mesecon:addPosRule(pos, rulesD[1]), pos),
 	}
 	return L
 end
