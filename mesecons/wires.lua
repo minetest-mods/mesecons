@@ -241,8 +241,7 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 	end
 end
 
-if minetest.registered_nodes["default:stone_with_mese"] == nil then
-
+if not minetest.registered_nodes["default:stone_with_mese"] then --before MESE update, use old recipes
 	minetest.register_craft({
 		output = "mesecons:wire_00000000_off 18",
 		recipe = {

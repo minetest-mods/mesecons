@@ -48,7 +48,8 @@ function mesecon:mvps_get_stack(pos, dir, maximum)
 		end
 
 		if nn.name == "air"
-		or minetest.registered_nodes[nn.name].liquidtype ~= "none" then --is liquid
+		or (minetest.registered_nodes[nn.name]
+		and minetest.registered_nodes[nn.name].liquidtype ~= "none") then --is liquid
 			break
 		end
 
@@ -106,8 +107,9 @@ function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: dire
 	np = mesecon:addPosRule(pos, dir)
 	nn = minetest.env:get_node(np)
 
-	if minetest.registered_nodes[nn.name].liquidtype == "none"
-	and not mesecon:is_mvps_stopper(nn, {x = -dir.x, y = -dir.y, z = -dir.z}, {{pos = np, node = nn}}, 1) then
+	if ((not minetest.registered_nodes[nn.name]) --unregistered node
+	or minetest.registered_nodes[nn.name].liquidtype == "none") --non-liquid node
+	and not mesecon:is_mvps_stopper(nn, {x = -dir.x, y = -dir.y, z = -dir.z}, {{pos = np, node = nn}}, 1) then --non-stopper node
 		local meta = minetest.env:get_meta(np):to_table()
 		minetest.env:remove_node(np)
 		minetest.env:add_node(pos, nn)
@@ -129,10 +131,23 @@ function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: d
 	local lpos2 = {x=pos.x-direction.x*2, y=pos.y-direction.y*2, z=pos.z-direction.z*2} -- 2 away
 	local lnode2 = minetest.env:get_node(lpos2)
 
-	if lnode.name ~= "ignore" and lnode.name ~= "air" and minetest.registered_nodes[lnode.name].liquidtype == "none" then return end
-	if lnode2.name == "ignore" or lnode2.name == "air" or not(minetest.registered_nodes[lnode2.name].liquidtype == "none") then return end
+	--avoid pulling solid nodes
+	if lnode.name ~= "ignore"
+	and lnode.name ~= "air"
+	and ((not minetest.registered_nodes[lnode.name])
+	or minetest.registered_nodes[lnode.name].liquidtype == "none") then
+		return
+	end
 
-	local oldpos = {x=lpos2.x+direction.x, y=lpos2.y+direction.y, z=lpos2.z+direction.z}
+	--avoid pulling empty or liquid nodes
+	if lnode2.name == "ignore"
+	or lnode2.name == "air"
+	or (minetest.registered_nodes[lnode2.name]
+	and minetest.registered_nodes[lnode2.name].liquidtype ~= "none") then
+		return
+	end
+
+	local oldpos = {x=lpos2.x + direction.x, y=lpos2.y + direction.y, z=lpos2.z + direction.z}
 	repeat
 		lnode2 = minetest.env:get_node(lpos2)
 		minetest.env:add_node(oldpos, {name=lnode2.name})
@@ -142,7 +157,10 @@ function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: d
 		lpos2.y = lpos2.y-direction.y
 		lpos2.z = lpos2.z-direction.z
 		lnode = minetest.env:get_node(lpos2)
-	until lnode.name=="air" or lnode.name=="ignore" or not(minetest.registered_nodes[lnode2.name].liquidtype == "none")
+	until lnode.name == "air"
+	or lnode.name == "ignore"
+	or (minetest.registered_nodes[lnode2.name]
+	and minetest.registered_nodes[lnode2.name].liquidtype ~= "none")
 	minetest.env:remove_node(oldpos)
 end
 
@@ -151,9 +169,9 @@ function mesecon:mvps_move_objects(pos, dir, nodestack)
 
 	-- Move object at tip of stack
 	local pushpos = mesecon:addPosRule(pos, -- get pos at tip of stack
-		{x = dir.x * (#nodestack),
-		 y = dir.y * (#nodestack),
-		 z = dir.z * (#nodestack)})
+		{x = dir.x * #nodestack,
+		 y = dir.y * #nodestack,
+		 z = dir.z * #nodestack})
 
 
 	local objects = minetest.env:get_objects_inside_radius(pushpos, 1)
@@ -177,8 +195,11 @@ function mesecon:mvps_move_objects(pos, dir, nodestack)
 		local entity = obj:get_luaentity()
 		if not entity or not mesecon:is_mvps_unmov(entity.name) then
 			local np = mesecon:addPosRule(obj:getpos(), dir)
+
+			--move only if destination is not solid
 			local nn = minetest.env:get_node(np)
-			if not minetest.registered_nodes[nn.name].walkable then
+			if not ((not minetest.registered_nodes[nn.name])
+			or minetest.registered_nodes[nn.name].walkable) then
 				obj:setpos(np)
 			end
 		end

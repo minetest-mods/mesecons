@@ -34,31 +34,23 @@ local brules =
 
 local vertical_updatepos = function (pos)
 	local node = minetest.env:get_node(pos)
-	if minetest.registered_nodes[node.name].is_vertical_conductor then
+	if minetest.registered_nodes[node.name]
+	and minetest.registered_nodes[node.name].is_vertical_conductor then
 		local node_above = minetest.env:get_node(mesecon:addPosRule(pos, vrules[1]))
 		local node_below = minetest.env:get_node(mesecon:addPosRule(pos, vrules[2]))
 		local namestate = minetest.registered_nodes[node.name].vertical_conductor_state
 
-		-- above and below: vertical mesecon
-		if 	minetest.registered_nodes[node_above.name].is_vertical_conductor
-		and	minetest.registered_nodes[node_below.name].is_vertical_conductor then
-			minetest.env:add_node (pos, 
-			{name = "mesecons_extrawires:vertical_"..namestate})
+		local above = minetest.registered_nodes[node_above.name] and minetest.registered_nodes[node_above.name].is_vertical_conductor
+		local below = minetest.registered_nodes[node_below.name] and minetest.registered_nodes[node_below.name].is_vertical_conductor
 
-		-- above only: bottom
-		elseif 		minetest.registered_nodes[node_above.name].is_vertical_conductor
-		and 	not 	minetest.registered_nodes[node_below.name].is_vertical_conductor then
-			minetest.env:add_node (pos, 
-			{name = "mesecons_extrawires:vertical_bottom_"..namestate})
-
-		-- below only: top
-		elseif 	not 	minetest.registered_nodes[node_above.name].is_vertical_conductor
-		and		minetest.registered_nodes[node_below.name].is_vertical_conductor then
-			minetest.env:add_node (pos, 
-			{name = "mesecons_extrawires:vertical_top_"..namestate})
+		if above and below then -- above and below: vertical mesecon
+			minetest.env:add_node(pos, {name = "mesecons_extrawires:vertical_"..namestate})
+		elseif above and not below then -- above only: bottom
+			minetest.env:add_node(pos, {name = "mesecons_extrawires:vertical_bottom_"..namestate})
+		elseif not above and below then -- below only: top
+			minetest.env:add_node(pos, {name = "mesecons_extrawires:vertical_top_"..namestate})
 		else -- no vertical wire above, no vertical wire below: use default wire
-			minetest.env:add_node (pos, 
-			{name = "mesecons_extrawires:vertical_"..namestate})
+			minetest.env:add_node (pos, {name = "mesecons_extrawires:vertical_"..namestate})
 		end
 	end
 end

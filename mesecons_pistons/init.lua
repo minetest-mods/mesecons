@@ -46,7 +46,7 @@ piston_facedir_direction = function (node)
 	return rules[1]
 end
 
-piston_get_direction = function (dir, node)
+piston_get_direction = function(dir, node)
 	if type(dir) == "function" then
 		return dir(node)
 	else
@@ -54,25 +54,26 @@ piston_get_direction = function (dir, node)
 	end
 end
 
-local piston_remove_pusher = function (pos, node)
+local piston_remove_pusher = function(pos, node)
 	pistonspec = minetest.registered_nodes[node.name].mesecons_piston
+	if pushername == pistonspec.pusher then --make sure there actually is a pusher (for compatibility reasons mainly)
+		return
+	end
 
 	dir = piston_get_direction(pistonspec.dir, node)
 	local pusherpos = mesecon:addPosRule(pos, dir)
 	local pushername = minetest.env:get_node(pusherpos).name
 
-	if pushername == pistonspec.pusher then --make sure there actually is a pusher (for compatibility reasons mainly)
-		minetest.env:remove_node(pusherpos)
-		minetest.sound_play("piston_retract", {
-			pos = pos,
-			max_hear_distance = 20,
-			gain = 0.3,
-		})
-		nodeupdate(pusherpos)
-	end
+	minetest.env:remove_node(pusherpos)
+	minetest.sound_play("piston_retract", {
+		pos = pos,
+		max_hear_distance = 20,
+		gain = 0.3,
+	})
+	nodeupdate(pusherpos)
 end
 
-local piston_on = function (pos, node)
+local piston_on = function(pos, node)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
 
 	local dir = piston_get_direction(pistonspec.dir, node)
@@ -91,10 +92,10 @@ local piston_on = function (pos, node)
 	end
 end
 
-local piston_off = function (pos, node)
+local piston_off = function(pos, node)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
 	minetest.env:add_node(pos, {param2 = node.param2, name = pistonspec.offname})
-	piston_remove_pusher (pos, node)
+	piston_remove_pusher(pos, node)
 
 	if pistonspec.sticky then
 		dir = piston_get_direction(pistonspec.dir, node)
@@ -104,7 +105,7 @@ local piston_off = function (pos, node)
 	end
 end
 
-local piston_orientate = function (pos, placer)
+local piston_orientate = function(pos, placer)
 	-- not placed by player
 	if not placer then return end
 
