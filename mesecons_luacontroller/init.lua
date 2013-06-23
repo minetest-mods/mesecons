@@ -125,11 +125,125 @@ end
 -- Parsing stuff --
 -------------------
 
+local function long_string(s,i)
+	local ii=i
+	local ls=string.len(s)
+	local depth=0
+	while i<=ls do
+		i=i+1
+		c=string.sub(s,i,i)
+		if c=='[' then
+			i=i+1
+			break
+		else
+			depth=depth+1
+		end
+	end
+	while i<=ls-depth-1 do
+		i=i+1
+		c=string.sub(s,i,i+depth+1)
+		if c==']'..string.rep("=",depth).."]" then
+			i=i+depth+2
+			break
+		end
+	end
+	return i,string.sub(s,ii,i-1)
+end
+
+local function remove_comments(s)
+	local i=1
+	local ls=string.len(s)
+	local l2=""
+	while i<=ls do
+		local c=string.sub(s,i,i)
+		if c=="-" then
+			if i==ls then
+				l2=l2.."-"
+				break
+			end
+			local c2=string.sub(s,i+1,i+1)
+			if c2=="-" then
+				--comment
+				if i==ls-1 then break end
+				local c3=string.sub(s,i+2,i+2)
+				if c3=="[" then --long comment
+					local k=""
+					i,k=long_string(s,i+2)
+				else --short comment
+					i=i+2
+					c=string.sub(s,i,i)
+					while i<=ls and c~="\n" do
+						c=string.sub(s,i,i)
+						i=i+1
+					end
+					l2=l2.."\n"
+				end
+			else
+				i=i+1
+				l2=l2.."-"
+			end
+		elseif c=='"' then
+			l2=l2..'"'
+			i=i+1
+			c=string.sub(s,i,i)
+			while i<=ls do
+				l2=l2..c
+				i=i+1
+				c=string.sub(s,i,i)
+				if c=='"' then
+					local c2=string.sub(s,i-1,i-1)
+					if c2~="\\" then
+						i=i+1
+						l2=l2..'"'
+						break
+					end
+				end
+			end
+		elseif c=="'" then
+			l2=l2.."'"
+			i=i+1
+			c=string.sub(s,i,i)
+			while i<=ls do
+				l2=l2..c
+				i=i+1
+				c=string.sub(s,i,i)
+				if c=="'" then
+					local c2=string.sub(s,i-1,i-1)
+					if c2~="\\" then
+						i=i+1
+						l2=l2.."'"
+						break
+					end
+				end
+			end
+		elseif c=="[" then
+			if i==ls then
+				l2=l2.."["
+				break
+			end
+			local c2=string.sub(s,i+1,i+1)
+			if c2=="[" or c2=="=" then
+				local k=""
+				i,k=long_string(s,i)
+				l2=l2..k
+			else
+				i=i+1
+				l2=l2.."["
+			end
+		else
+			l2=l2..c
+			i=i+1
+		end
+	end
+	return l2
+end
+
 local code_prohibited = function(code)
 	-- Clean code
+	code = " "..remove_comments(code).." "
 	local prohibited = {"while", "for", "repeat", "until", "function"}
 	for _, p in ipairs(prohibited) do
-		if string.find(code, p) then
+		if string.find(code, "%A"..p.."%A") then
 			return "Prohibited command: "..p
 		end
 	end
