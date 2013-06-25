@@ -33,13 +33,13 @@ rules.d = {x =  0, y = 0, z = -1, name="D"}
 
 local get_real_portstates = function(pos) -- determine if ports are powered (by itself or from outside)
 	ports = {
-		a = mesecon:is_power_on(mesecon:addPosRule(pos, rules.a))
+		a = mesecon:is_power_on(mesecon:addPosRule(pos, rules.a), mesecon:invertRule(rules.a))
 			and mesecon:rules_link(mesecon:addPosRule(pos, rules.a), pos),
-		b = mesecon:is_power_on(mesecon:addPosRule(pos, rules.b))
+		b = mesecon:is_power_on(mesecon:addPosRule(pos, rules.b), mesecon:invertRule(rules.b))
 			and mesecon:rules_link(mesecon:addPosRule(pos, rules.b), pos),
-		c = mesecon:is_power_on(mesecon:addPosRule(pos, rules.c))
+		c = mesecon:is_power_on(mesecon:addPosRule(pos, rules.c), mesecon:invertRule(rules.c))
 			and mesecon:rules_link(mesecon:addPosRule(pos, rules.c), pos),
-		d = mesecon:is_power_on(mesecon:addPosRule(pos, rules.d))
+		d = mesecon:is_power_on(mesecon:addPosRule(pos, rules.d), mesecon:invertRule(rules.d))
 			and mesecon:rules_link(mesecon:addPosRule(pos, rules.d), pos),
 	}
 	return ports
