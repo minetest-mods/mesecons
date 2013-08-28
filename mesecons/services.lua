@@ -4,7 +4,7 @@ mesecon.on_placenode = function (pos, node)
 	elseif mesecon:is_powered(pos) then
 		if mesecon:is_conductor(node.name) then
 			mesecon:turnon (pos)
-			mesecon:receptor_on (pos, mesecon:conductor_get_rules(node))
+			--mesecon:receptor_on (pos, mesecon:conductor_get_rules(node))
 		else
 			mesecon:changesignal(pos, node, mesecon:effector_get_rules(node), "on")
 			mesecon:activate(pos, node)
