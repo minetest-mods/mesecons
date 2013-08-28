@@ -21,7 +21,11 @@ local crossover_states = {
 minetest.register_node("mesecons_extrawires:crossover_off", {
 	description = "Insulated Crossover",
 	drawtype = "nodebox",
-	tiles = {"jeija_insulated_wire_sides_off.png"},
+	tiles = {
+		"jeija_insulated_wire_crossing_tb_off.png",
+		"jeija_insulated_wire_crossing_tb_off.png",
+		"jeija_insulated_wire_ends_off.png"
+	},
 	paramtype = "light",
 	walkable = false,
 	stack_max = 99,
@@ -50,7 +54,14 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 	description = "You hacker you!",
 	drop = "mesecons_extrawires:crossover_off",
 	drawtype = "nodebox",
-	tiles = {"default_dirt.png"},
+	tiles = {
+		"jeija_insulated_wire_crossing_tb_01.png",
+		"jeija_insulated_wire_crossing_tb_01.png",
+		"jeija_insulated_wire_ends_01x.png",
+		"jeija_insulated_wire_ends_01x.png",
+		"jeija_insulated_wire_ends_01z.png",
+		"jeija_insulated_wire_ends_01z.png"
+	},
 	paramtype = "light",
 	walkable = false,
 	stack_max = 99,
@@ -79,7 +90,14 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 	description = "You hacker you!",
 	drop = "mesecons_extrawires:crossover_off",
 	drawtype = "nodebox",
-	tiles = {"default_stone.png"},
+	tiles = {
+		"jeija_insulated_wire_crossing_tb_10.png",
+		"jeija_insulated_wire_crossing_tb_10.png",
+		"jeija_insulated_wire_ends_10x.png",
+		"jeija_insulated_wire_ends_10x.png",
+		"jeija_insulated_wire_ends_10z.png",
+		"jeija_insulated_wire_ends_10z.png"
+	},
 	paramtype = "light",
 	walkable = false,
 	stack_max = 99,
@@ -108,7 +126,14 @@ minetest.register_node("mesecons_extrawires:crossover_on", {
 	description = "You hacker you!",
 	drop = "mesecons_extrawires:crossover_off",
 	drawtype = "nodebox",
-	tiles = {"jeija_insulated_wire_sides_on.png"},
+	tiles = {
+		"jeija_insulated_wire_crossing_tb_on.png",
+		"jeija_insulated_wire_crossing_tb_on.png",
+		"jeija_insulated_wire_ends_on.png",
+		"jeija_insulated_wire_ends_on.png",
+		"jeija_insulated_wire_ends_on.png",
+		"jeija_insulated_wire_ends_on.png"
+	},
 	paramtype = "light",
 	walkable = false,
 	stack_max = 99,
