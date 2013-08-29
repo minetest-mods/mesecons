@@ -116,7 +116,7 @@ minetest.register_node(nodename, {
 
 		meta:set_string("code", fields.code)
 		meta:set_string("formspec", "size[9,2.5]"..
-		"field[0.256,-0.2;9,2;code;Code:;"..fields.code.."]"..
+		"field[0.256,-0.2;9,2;code;Code:;"..minetest.formspec_escape(fields.code).."]"..
 		"button[0  ,0.2;1.5,3;band;AND]"..
 		"button[1.5,0.2;1.5,3;bxor;XOR]"..
 		"button[3  ,0.2;1.5,3;bnot;NOT]"..
