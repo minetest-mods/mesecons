@@ -1,4 +1,24 @@
 -- The BLINKY_PLANT
+minetest.register_node("mesecons_blinkyplant:blinky_plant", {
+	drawtype = "plantlike",
+	visual_scale = 1,
+	tiles = {"jeija_blinky_plant_off.png"},
+	inventory_image = "jeija_blinky_plant_off.png",
+	walkable = false,
+	groups = {snappy=3},
+    description="Deactivated Blinky Plant",
+	sounds = default.node_sound_leaves_defaults(),
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.3, -0.5, -0.3, 0.3, -0.5+0.7, 0.3},
+	},
+	mesecons = {receptor = {
+		state = mesecon.state.off
+	}},
+	on_punch = function(pos, node, puncher)
+        minetest.set_node(pos, {name="mesecons_blinkyplant:blinky_plant_off"})
+    end	
+})
 
 minetest.register_node("mesecons_blinkyplant:blinky_plant_off", {
 	drawtype = "plantlike",
@@ -7,7 +27,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_off", {
 	inventory_image = "jeija_blinky_plant_off.png",
 	paramtype = "light",
 	walkable = false,
-	groups = {dig_immediate=3, mesecon = 2},
+	groups = {snappy=3, mesecon = 2},
     	description="Blinky Plant",
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {
@@ -16,7 +36,10 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_off", {
 	},
 	mesecons = {receptor = {
 		state = mesecon.state.off
-	}}
+	}},
+	on_punch = function(pos, node, puncher)
+        minetest.set_node(pos, {name="mesecons_blinkyplant:blinky_plant"})
+    end
 })
 
 minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
@@ -26,7 +49,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	inventory_image = "jeija_blinky_plant_off.png",
 	paramtype = "light",
 	walkable = false,
-	groups = {dig_immediate=3, not_in_creative_inventory=1, mesecon = 2},
+	groups = {snappy=3, not_in_creative_inventory=1, mesecon = 2},
 	drop="mesecons_blinkyplant:blinky_plant_off 1",
 	light_source = LIGHT_MAX-7,
 	description = "Blinky Plant",
@@ -37,7 +60,11 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	},
 	mesecons = {receptor = {
 		state = mesecon.state.on
-	}}
+	}},
+	on_punch = function(pos, node, puncher)
+	mesecon:swap_node(pos, "mesecons_blinkyplant:blinky_plant")
+	mesecon:receptor_off(pos)
+	end
 })
 
 minetest.register_craft({
