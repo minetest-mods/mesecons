@@ -33,24 +33,24 @@ local brules =
  {x = 0, y = 1, z = 0}}
 
 local vertical_updatepos = function (pos)
-	local node = minetest.env:get_node(pos)
+	local node = minetest.get_node(pos)
 	if minetest.registered_nodes[node.name]
 	and minetest.registered_nodes[node.name].is_vertical_conductor then
-		local node_above = minetest.env:get_node(mesecon:addPosRule(pos, vrules[1]))
-		local node_below = minetest.env:get_node(mesecon:addPosRule(pos, vrules[2]))
+		local node_above = minetest.get_node(mesecon:addPosRule(pos, vrules[1]))
+		local node_below = minetest.get_node(mesecon:addPosRule(pos, vrules[2]))
 		local namestate = minetest.registered_nodes[node.name].vertical_conductor_state
 
 		local above = minetest.registered_nodes[node_above.name] and minetest.registered_nodes[node_above.name].is_vertical_conductor
 		local below = minetest.registered_nodes[node_below.name] and minetest.registered_nodes[node_below.name].is_vertical_conductor
 
 		if above and below then -- above and below: vertical mesecon
-			minetest.env:add_node(pos, {name = "mesecons_extrawires:vertical_"..namestate})
+			minetest.add_node(pos, {name = "mesecons_extrawires:vertical_"..namestate})
 		elseif above and not below then -- above only: bottom
-			minetest.env:add_node(pos, {name = "mesecons_extrawires:vertical_bottom_"..namestate})
+			minetest.add_node(pos, {name = "mesecons_extrawires:vertical_bottom_"..namestate})
 		elseif not above and below then -- below only: top
-			minetest.env:add_node(pos, {name = "mesecons_extrawires:vertical_top_"..namestate})
+			minetest.add_node(pos, {name = "mesecons_extrawires:vertical_top_"..namestate})
 		else -- no vertical wire above, no vertical wire below: use default wire
-			minetest.env:add_node (pos, {name = "mesecons_extrawires:vertical_"..namestate})
+			minetest.add_node(pos, {name = "mesecons_extrawires:vertical_"..namestate})
 		end
 	end
 end
@@ -79,7 +79,7 @@ minetest.register_node("mesecons_extrawires:vertical_on", {
 		offstate = "mesecons_extrawires:vertical_off",
 		rules = vrules
 	}},
-	drop = {"mesecons_extrawires:vertical_off"},
+	drop = "mesecons_extrawires:vertical_off",
 	after_place_node	= vertical_update,
 	after_dig_node 		= vertical_update
 })
@@ -123,7 +123,7 @@ minetest.register_node("mesecons_extrawires:vertical_top_on", {
 		offstate = "mesecons_extrawires:vertical_top_off",
 		rules = trules
 	}},
-	drop = {"mesecons_extrawires:vertical_off"},
+	drop = "mesecons_extrawires:vertical_off",
 	after_place_node	= vertical_update,
 	after_dig_node 		= vertical_update
 })
@@ -145,7 +145,7 @@ minetest.register_node("mesecons_extrawires:vertical_top_off", {
 		onstate = "mesecons_extrawires:vertical_top_on",
 		rules = trules
 	}},
-	drop = {"mesecons_extrawires:vertical_off"},
+	drop = "mesecons_extrawires:vertical_off",
 	after_place_node	= vertical_update,
 	after_dig_node 		= vertical_update
 })
@@ -167,7 +167,7 @@ minetest.register_node("mesecons_extrawires:vertical_bottom_on", {
 		offstate = "mesecons_extrawires:vertical_bottom_off",
 		rules = brules
 	}},
-	drop = {"mesecons_extrawires:vertical_off"},
+	drop = "mesecons_extrawires:vertical_off",
 	after_place_node	= vertical_update,
 	after_dig_node 		= vertical_update
 })
@@ -189,7 +189,7 @@ minetest.register_node("mesecons_extrawires:vertical_bottom_off", {
 		onstate = "mesecons_extrawires:vertical_bottom_on",
 		rules = brules
 	}},
-	drop = {"mesecons_extrawires:vertical_off"},
+	drop = "mesecons_extrawires:vertical_off",
 	after_place_node	= vertical_update,
 	after_dig_node 		= vertical_update
 })
