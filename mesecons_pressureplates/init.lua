@@ -114,7 +114,7 @@ mesecon:register_pressure_plate(
 	{"jeija_pressure_plate_wood_on.png","jeija_pressure_plate_wood_on.png","jeija_pressure_plate_wood_on_edges.png"},
 	"jeija_pressure_plate_wood_wield.png",
 	"jeija_pressure_plate_wood_inv.png",
-	{{"default:wood", "default:wood"}})
+	{{"group:wood", "group:wood"}})
 
 mesecon:register_pressure_plate(
 	"mesecons_pressureplates:pressure_plate_stone_off",

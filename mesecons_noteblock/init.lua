@@ -25,9 +25,9 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 minetest.register_craft({
 	output = "mesecons_noteblock:noteblock 1",
 	recipe = {
-		{"default:wood", "default:wood", "default:wood"},
+		{"group:wood", "group:wood", "group:wood"},
 		{"group:mesecon_conductor_craftable", "default:steel_ingot", "group:mesecon_conductor_craftable"},
-		{"default:wood", "default:wood", "default:wood"},
+		{"group:wood", "group:wood", "group:wood"},
 	}
 })
 
