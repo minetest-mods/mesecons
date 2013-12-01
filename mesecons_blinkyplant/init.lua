@@ -81,8 +81,8 @@ minetest.register_abm(
 	interval = BLINKY_PLANT_INTERVAL,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		--minetest.env:remove_node(pos)
-		minetest.env:add_node(pos, {name="mesecons_blinkyplant:blinky_plant_on"})
+		--minetest.remove_node(pos)
+		minetest.add_node(pos, {name="mesecons_blinkyplant:blinky_plant_on"})
 		nodeupdate(pos)	
 		mesecon:receptor_on(pos)
 	end,
@@ -93,8 +93,8 @@ minetest.register_abm({
 	interval = BLINKY_PLANT_INTERVAL,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		--minetest.env:remove_node(pos)
-		minetest.env:add_node(pos, {name="mesecons_blinkyplant:blinky_plant_off"})
+		--minetest.remove_node(pos)
+		minetest.add_node(pos, {name="mesecons_blinkyplant:blinky_plant_off"})
 		nodeupdate(pos)	
 		mesecon:receptor_off(pos)
 	end,

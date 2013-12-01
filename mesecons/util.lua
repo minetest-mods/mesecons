@@ -1,9 +1,9 @@
 function mesecon:move_node(pos, newpos)
-	local node = minetest.env:get_node(pos)
-	local meta = minetest.env:get_meta(pos):to_table()
-	minetest.env:remove_node(pos)
-	minetest.env:add_node(newpos, node)
-	minetest.env:get_meta(pos):from_table(meta)
+	local node = minetest.get_node(pos)
+	local meta = minetest.get_meta(pos):to_table()
+	minetest.remove_node(pos)
+	minetest.add_node(newpos, node)
+	minetest.get_meta(pos):from_table(meta)
 end
 
 --[[ new functions:

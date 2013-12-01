@@ -91,7 +91,7 @@ mesecon:add_rules("receiver_pos_all", {
 
 function mesecon:receiver_get_pos_from_rcpt(pos, param2)
 	local rules = mesecon:get_rules("receiver_pos")
-	if param2 == nil then param2 = minetest.env:get_node(pos).param2 end
+	if param2 == nil then param2 = minetest.get_node(pos).param2 end
 	if param2 == 2 then
 		rules = mesecon:rotate_rules_left(rules)
 	elseif param2 == 3 then
@@ -107,17 +107,17 @@ function mesecon:receiver_get_pos_from_rcpt(pos, param2)
 end
 
 function mesecon:receiver_place(rcpt_pos)
-	local node = minetest.env:get_node(rcpt_pos)
+	local node = minetest.get_node(rcpt_pos)
 	local pos = mesecon:receiver_get_pos_from_rcpt(rcpt_pos, node.param2)
-	local nn = minetest.env:get_node(pos)
+	local nn = minetest.get_node(pos)
 
 	if string.find(nn.name, "mesecons:wire_") ~= nil then
-		minetest.env:dig_node(pos)
+		minetest.dig_node(pos)
 		if mesecon:is_power_on(rcpt_pos) then
-			minetest.env:add_node(pos, {name = "mesecons_receiver:receiver_on", param2 = node.param2})
+			minetest.add_node(pos, {name = "mesecons_receiver:receiver_on", param2 = node.param2})
 			mesecon:receptor_on(pos, receiver_get_rules(node))
 		else
-			minetest.env:add_node(pos, {name = "mesecons_receiver:receiver_off", param2 = node.param2})
+			minetest.add_node(pos, {name = "mesecons_receiver:receiver_off", param2 = node.param2})
 		end
 		mesecon:update_autoconnect(pos)
 	end
@@ -125,11 +125,11 @@ end
 
 function mesecon:receiver_remove(rcpt_pos, dugnode)
 	local pos = mesecon:receiver_get_pos_from_rcpt(rcpt_pos, dugnode.param2)
-	local nn = minetest.env:get_node(pos)
+	local nn = minetest.get_node(pos)
 	if string.find(nn.name, "mesecons_receiver:receiver_") ~=nil then
-		minetest.env:dig_node(pos)
+		minetest.dig_node(pos)
 		local node = {name = "mesecons:wire_00000000_off"}
-		minetest.env:add_node(pos, node)
+		minetest.add_node(pos, node)
 		mesecon:update_autoconnect(pos)
 		mesecon.on_placenode(pos, node)
 	end
@@ -156,7 +156,7 @@ minetest.register_on_placenode(function (pos, node)
 			x = pos.x + rules[i].x,
 			y = pos.y + rules[i].y,
 			z = pos.z + rules[i].z}
-			if minetest.get_item_group(minetest.env:get_node(np).name, "mesecon_needs_receiver") == 1 then
+			if minetest.get_item_group(minetest.get_node(np).name, "mesecon_needs_receiver") == 1 then
 				mesecon:receiver_place(np)
 			end
 			i = i + 1

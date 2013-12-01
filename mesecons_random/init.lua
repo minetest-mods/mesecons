@@ -8,7 +8,7 @@ minetest.register_node("mesecons_random:removestone", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			minetest.env:remove_node(pos)
+			minetest.remove_node(pos)
 			mesecon:update_autoconnect(pos)
 		end
 	}}
@@ -68,8 +68,8 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 	on_construct = function(pos)
 		--remove shadow
 		pos2 = {x = pos.x, y = pos.y + 1, z = pos.z}
-		if ( minetest.env:get_node(pos2).name == "air" ) then
-			minetest.env:dig_node(pos2)
+		if ( minetest.get_node(pos2).name == "air" ) then
+			minetest.dig_node(pos2)
 		end
 	end
 })

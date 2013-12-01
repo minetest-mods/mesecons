@@ -16,7 +16,7 @@ minetest.register_chatcommand("tell", {
 			minetest.chat_send_player(name, "Invalid usage: " .. param)
 			return
 		end
-		if not minetest.env:get_player_by_name(target) then
+		if not minetest.get_player_by_name(target) then
 			minetest.chat_send_player(name, "Invalid target: " .. target)
 		end
 		minetest.chat_send_player(target, name .. " whispers: " .. message, false)
@@ -41,7 +41,7 @@ minetest.register_chatcommand("hp", {
 			minetest.chat_send_player(name, "Invalid usage: " .. param)
 			return
 		end
-		local player = minetest.env:get_player_by_name(target)
+		local player = minetest.get_player_by_name(target)
 		if player then
 			player:set_hp(value)
 		else
@@ -72,7 +72,7 @@ local initialize_data = function(meta, player, command, param)
 end
 
 local construct = function(pos)
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 
 	meta:set_string("player", "@nearest")
 	meta:set_string("command", "time")
@@ -85,14 +85,14 @@ end
 
 local after_place = function(pos, placer)
 	if placer then
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", placer:get_player_name())
 		initialize_data(meta, "@nearest", "time", "7000")
 	end
 end
 
 local receive_fields = function(pos, formname, fields, sender)
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	if fields.nearest then
 		initialize_data(meta, "@nearest", fields.command, fields.param)
 	elseif fields.farthest then
@@ -146,7 +146,7 @@ local commandblock_action_on = function(pos, node)
 
 	minetest.swap_node(pos, {name = "mesecons_commandblock:commandblock_on"})
 
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	local command = minetest.chatcommands[meta:get_string("command")]
 	if command == nil then
 		return
@@ -179,7 +179,7 @@ minetest.register_node("mesecons_commandblock:commandblock_off", {
 	after_place_node = after_place,
 	on_receive_fields = receive_fields,
 	can_dig = function(pos,player)
-		local owner = minetest.env:get_meta(pos):get_string("owner")
+		local owner = minetest.get_meta(pos):get_string("owner")
 		return owner == "" or owner == player:get_player_name()
 	end,
 	sounds = default.node_sound_stone_defaults(),
@@ -197,7 +197,7 @@ minetest.register_node("mesecons_commandblock:commandblock_on", {
 	after_place_node = after_place,
 	on_receive_fields = receive_fields,
 	can_dig = function(pos,player)
-		local owner = minetest.env:get_meta(pos):get_string("owner")
+		local owner = minetest.get_meta(pos):get_string("owner")
 		return owner == "" or owner == player:get_player_name()
 	end,
 	sounds = default.node_sound_stone_defaults(),

@@ -207,7 +207,7 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 		mesecon:update_autoconnect(zmympos, true)
 	end
 
-	nodename = minetest.env:get_node(pos).name
+	nodename = minetest.get_node(pos).name
 	if string.find(nodename, "mesecons:wire_") == nil and not replace_old then return nil end
 
 	if mesecon:rules_link_anydir(pos, xppos) then xp = 1 else xp = 0 end
@@ -235,9 +235,9 @@ function mesecon:update_autoconnect(pos, secondcall, replace_old)
 
 	
 	if string.find(nodename, "_off") ~= nil then
-		minetest.env:set_node(pos, {name = "mesecons:wire_"..nodeid.."_off"})
+		minetest.set_node(pos, {name = "mesecons:wire_"..nodeid.."_off"})
 	else
-		minetest.env:set_node(pos, {name = "mesecons:wire_"..nodeid.."_on" })
+		minetest.set_node(pos, {name = "mesecons:wire_"..nodeid.."_on" })
 	end
 end
 

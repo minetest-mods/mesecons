@@ -66,9 +66,9 @@ minetest.register_node("mesecons_movestones:movestone", {
 		action_on = function (pos, node)
 			local direction=mesecon:get_movestone_direction(pos)
 			if not direction then return end
-			minetest.env:remove_node(pos)
+			minetest.remove_node(pos)
 			mesecon:update_autoconnect(pos)
-			minetest.env:add_entity(pos, "mesecons_movestones:movestone_entity")
+			minetest.add_entity(pos, "mesecons_movestones:movestone_entity")
 		end
 	}}
 })
@@ -93,13 +93,13 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 
 		if not direction then -- no mesecon power
 			--push only solid nodes
-			local name = minetest.env:get_node(pos).name
+			local name = minetest.get_node(pos).name
 			if  name ~= "air" and name ~= "ignore"
 			and ((not minetest.registered_nodes[name])
 			or minetest.registered_nodes[name].liquidtype == "none") then
 				mesecon:mvps_push(pos, self.lastdir, MOVESTONE_MAXIMUM_PUSH)
 			end
-			minetest.env:add_node(pos, {name="mesecons_movestones:movestone"})
+			minetest.add_node(pos, {name="mesecons_movestones:movestone"})
 			self.object:remove()
 			return
 		end
@@ -107,7 +107,7 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 		local success, stack, oldstack =
 			mesecon:mvps_push(pos, direction, MOVESTONE_MAXIMUM_PUSH)
 		if not success then -- Too large stack/stopper in the way
-			minetest.env:add_node(pos, {name="mesecons_movestones:movestone"})
+			minetest.add_node(pos, {name="mesecons_movestones:movestone"})
 			self.object:remove()
 			return
 		else
@@ -145,9 +145,9 @@ minetest.register_node("mesecons_movestones:sticky_movestone", {
 		action_on = function (pos, node)
 			local direction=mesecon:get_movestone_direction(pos)
 			if not direction then return end
-			minetest.env:remove_node(pos)
+			minetest.remove_node(pos)
 			mesecon:update_autoconnect(pos)
-			minetest.env:add_entity(pos, "mesecons_movestones:sticky_movestone_entity")
+			minetest.add_entity(pos, "mesecons_movestones:sticky_movestone_entity")
 		end
 	}}
 })
@@ -179,7 +179,7 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 
 		if not direction then -- no mesecon power
 			--push only solid nodes
-			local name = minetest.env:get_node(pos).name
+			local name = minetest.get_node(pos).name
 			if  name ~= "air" and name ~= "ignore"
 			and ((not minetest.registered_nodes[name])
 			or minetest.registered_nodes[name].liquidtype == "none") then
@@ -187,7 +187,7 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 				--STICKY
 				mesecon:mvps_pull_all(pos, self.lastdir)
 			end
-			minetest.env:add_node(pos, {name="mesecons_movestones:sticky_movestone"})
+			minetest.add_node(pos, {name="mesecons_movestones:sticky_movestone"})
 			self.object:remove()
 			return
 		end
@@ -195,7 +195,7 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 		local success, stack, oldstack =
 			mesecon:mvps_push(pos, direction, MOVESTONE_MAXIMUM_PUSH)
 		if not success then -- Too large stack/stopper in the way
-			minetest.env:add_node(pos, {name="mesecons_movestones:sticky_movestone"})
+			minetest.add_node(pos, {name="mesecons_movestones:sticky_movestone"})
 			self.object:remove()
 			return
 		else

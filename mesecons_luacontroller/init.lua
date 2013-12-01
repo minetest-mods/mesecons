@@ -172,7 +172,7 @@ local getinterrupt = function(pos)
 	local interrupt = function (time, iid) -- iid = interrupt id
 		if type(time) ~= "number" then return end
 		local iid = iid or math.random()
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		local interrupts = minetest.deserialize(meta:get_string("lc_interrupts")) or {}
 		local found = false
 		local search = safe_serialize(iid)
@@ -202,7 +202,7 @@ end
 
 local create_environment = function(pos, mem, event)
 	-- Gather variables for the environment
-	local vports = minetest.registered_nodes[minetest.env:get_node(pos).name].virtual_portstates
+	local vports = minetest.registered_nodes[minetest.get_node(pos).name].virtual_portstates
 	vports = {a = vports.a, b = vports.b, c = vports.c, d = vports.d}
 	local rports = get_real_portstates(pos)
 
@@ -288,7 +288,7 @@ local do_overheat = function (pos, meta)
 	if overheat(meta) then
 		local node = minetest.get_node(pos)
 		minetest.swap_node(pos, {name = BASENAME.."_burnt", param2 = node.param2})
-		minetest.env:get_meta(pos):set_string("lc_interrupts", "")
+		minetest.get_meta(pos):set_string("lc_interrupts", "")
 		minetest.after(0.2, overheat_off, pos) -- wait for pending operations
 		return true
 	end
@@ -328,7 +328,7 @@ end
 ----------------------
 
 lc_update = function (pos, event)
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	if not interrupt_allow(meta, event) then return end
 	if do_overheat(pos, meta) then return end
 
@@ -355,17 +355,10 @@ lc_update = function (pos, event)
 end
 
 local reset_meta = function(pos, code, errmsg)
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	meta:set_string("code", code)
-	if minetest.formspec_escape then
-		code = minetest.formspec_escape(code or "")
-		errmsg = minetest.formspec_escape(errmsg or "")
-	else
-		code = string.gsub(code or "", "%[", "(") -- would otherwise
-		code = string.gsub(code, "%]", ")") -- corrupt formspec
-		errmsg = string.gsub(errmsg or "", "%[", "(") -- would otherwise
-		errmsg = string.gsub(errmsg, "%]", ")") -- corrupt formspec
-	end
+	code = minetest.formspec_escape(code or "")
+	errmsg = minetest.formspec_escape(errmsg or "")
 	meta:set_string("formspec", "size[10,8]"..
 		"background[-0.2,-0.25;10.4,8.75;jeija_luac_background.png]"..
 		"textarea[0.2,0.6;10.2,5;code;;"..code.."]"..
@@ -376,7 +369,7 @@ local reset_meta = function(pos, code, errmsg)
 end
 
 local reset = function (pos)
-	minetest.env:get_meta(pos):set_string("lc_interrupts", "")
+	minetest.get_meta(pos):set_string("lc_interrupts", "")
 	action(pos, {a=false, b=false, c=false, d=false}, true)
 end
 

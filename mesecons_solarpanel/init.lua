@@ -71,10 +71,10 @@ minetest.register_abm(
 	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		local light = minetest.env:get_node_light(pos, nil)
+		local light = minetest.get_node_light(pos, nil)
 
 		if light >= 12 then
-			minetest.env:set_node(pos, {name="mesecons_solarpanel:solar_panel_on", param2=node.param2})
+			minetest.set_node(pos, {name="mesecons_solarpanel:solar_panel_on", param2=node.param2})
 			mesecon:receptor_on(pos)
 		end
 	end,
@@ -85,10 +85,10 @@ minetest.register_abm(
 	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		local light = minetest.env:get_node_light(pos, nil)
+		local light = minetest.get_node_light(pos, nil)
 
 		if light < 12 then
-			minetest.env:set_node(pos, {name="mesecons_solarpanel:solar_panel_off", param2=node.param2})
+			minetest.set_node(pos, {name="mesecons_solarpanel:solar_panel_off", param2=node.param2})
 			mesecon:receptor_off(pos)
 		end
 	end,

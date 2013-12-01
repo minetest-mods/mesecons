@@ -6,12 +6,12 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 	visual_scale = 1.3,
 	paramtype="light",
 	after_place_node = function(pos)
-		minetest.env:add_node(pos, {name="mesecons_noteblock:noteblock", param2=0})
+		minetest.add_node(pos, {name="mesecons_noteblock:noteblock", param2=0})
 	end,
 	on_punch = function (pos, node) -- change sound when punched
 		local param2 = node.param2+1
 		if param2==12 then param2=0 end
-		minetest.env:add_node(pos, {name = node.name, param2 = param2})
+		minetest.add_node(pos, {name = node.name, param2 = param2})
 		mesecon.noteblock_play(pos, param2)
 	end,
 	sounds = default.node_sound_wood_defaults(),
@@ -58,7 +58,7 @@ mesecon.noteblock_play = function (pos, param2)
 	elseif param2==7 then
 		soundname="mesecons_noteblock_gsharp"
 	end
-	local block_below_name = minetest.env:get_node({x=pos.x, y=pos.y-1, z=pos.z}).name
+	local block_below_name = minetest.get_node({x=pos.x, y=pos.y-1, z=pos.z}).name
 	if block_below_name == "default:glass" then
 		soundname="mesecons_noteblock_hihat"
 	end

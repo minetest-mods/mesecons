@@ -9,18 +9,18 @@ local pp_box_on = {
 }
 
 pp_on_timer = function (pos, elapsed)
-	local node   = minetest.env:get_node(pos)
+	local node   = minetest.get_node(pos)
 	local ppspec = minetest.registered_nodes[node.name].pressureplate
 
 	-- This is a workaround for a strange bug that occurs when the server is started
 	-- For some reason the first time on_timer is called, the pos is wrong
 	if not ppspec then return end
 
-	local objs   = minetest.env:get_objects_inside_radius(pos, 1)
+	local objs   = minetest.get_objects_inside_radius(pos, 1)
 	local two_below = mesecon:addPosRule(pos, {x = 0, y = -2, z = 0})
 
 	if objs[1] == nil and node.name == ppspec.onstate then
-		minetest.env:add_node(pos, {name = ppspec.offstate})
+		minetest.add_node(pos, {name = ppspec.offstate})
 		mesecon:receptor_off(pos)
 		-- force deactivation of mesecon two blocks below (hacky)
 		if not mesecon:connected_to_receptor(two_below) then
@@ -30,7 +30,7 @@ pp_on_timer = function (pos, elapsed)
 		for k, obj in pairs(objs) do
 			local objpos = obj:getpos()
 			if objpos.y > pos.y-1 and objpos.y < pos.y then
-				minetest.env:add_node(pos, {name=ppspec.onstate})
+				minetest.add_node(pos, {name=ppspec.onstate})
 				mesecon:receptor_on(pos)
 				-- force activation of mesecon two blocks below (hacky)
 				mesecon:turnon(two_below)
@@ -71,7 +71,7 @@ function mesecon:register_pressure_plate(offstate, onstate, description, texture
 			state = mesecon.state.off
 		}},
 		on_construct = function(pos)
-			minetest.env:get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
+			minetest.get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 		end,
 	})
 
@@ -90,7 +90,7 @@ function mesecon:register_pressure_plate(offstate, onstate, description, texture
 			state = mesecon.state.on
 		}},
 		on_construct = function(pos)
-			minetest.env:get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
+			minetest.get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 		end,
 		after_dig_node = function(pos)
 			local two_below = mesecon:addPosRule(pos, {x = 0, y = -2, z = 0})

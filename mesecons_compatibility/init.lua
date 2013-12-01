@@ -38,27 +38,27 @@ function doors:register_door(name, def)
 	local tb = def.tiles_bottom
 	
 	local function after_dig_node(pos, name)
-		if minetest.env:get_node(pos).name == name then
-			minetest.env:remove_node(pos)
+		if minetest.get_node(pos).name == name then
+			minetest.remove_node(pos)
 		end
 	end
 
 	local function on_rightclick(pos, dir, check_name, replace, replace_dir, params)
 		pos.y = pos.y+dir
-		if not minetest.env:get_node(pos).name == check_name then
+		if not minetest.get_node(pos).name == check_name then
 			return
 		end
-		local p2 = minetest.env:get_node(pos).param2
+		local p2 = minetest.get_node(pos).param2
 		p2 = params[p2+1]
 		
-		local meta = minetest.env:get_meta(pos):to_table()
-		minetest.env:set_node(pos, {name=replace_dir, param2=p2})
-		minetest.env:get_meta(pos):from_table(meta)
+		local meta = minetest.get_meta(pos):to_table()
+		minetest.set_node(pos, {name=replace_dir, param2=p2})
+		minetest.get_meta(pos):from_table(meta)
 		
 		pos.y = pos.y-dir
-		meta = minetest.env:get_meta(pos):to_table()
-		minetest.env:set_node(pos, {name=replace, param2=p2})
-		minetest.env:get_meta(pos):from_table(meta)
+		meta = minetest.get_meta(pos):to_table()
+		minetest.set_node(pos, {name=replace, param2=p2})
+		minetest.get_meta(pos):from_table(meta)
 	end
 
 	local function on_mesecons_signal_open (pos, node)
@@ -73,7 +73,7 @@ function doors:register_door(name, def)
 		if not def.only_placer_can_open then
 			return true
 		end
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		local pn = player:get_player_name()
 		return meta:get_string("doors_owner") == pn
 	end

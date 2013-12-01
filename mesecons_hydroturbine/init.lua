@@ -63,8 +63,8 @@ nodenames = {"mesecons_hydroturbine:hydro_turbine_off"},
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		local waterpos={x=pos.x, y=pos.y+1, z=pos.z}
-		if minetest.env:get_node(waterpos).name=="default:water_flowing" then
-			minetest.env:add_node(pos, {name="mesecons_hydroturbine:hydro_turbine_on"})
+		if minetest.get_node(waterpos).name=="default:water_flowing" then
+			minetest.add_node(pos, {name="mesecons_hydroturbine:hydro_turbine_on"})
 			nodeupdate(pos)
 			mesecon:receptor_on(pos)
 		end
@@ -77,8 +77,8 @@ nodenames = {"mesecons_hydroturbine:hydro_turbine_on"},
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		local waterpos={x=pos.x, y=pos.y+1, z=pos.z}
-		if minetest.env:get_node(waterpos).name~="default:water_flowing" then
-			minetest.env:add_node(pos, {name="mesecons_hydroturbine:hydro_turbine_off"})
+		if minetest.get_node(waterpos).name~="default:water_flowing" then
+			minetest.add_node(pos, {name="mesecons_hydroturbine:hydro_turbine_off"})
 			nodeupdate(pos)
 			mesecon:receptor_off(pos)
 		end

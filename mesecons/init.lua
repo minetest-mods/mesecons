@@ -132,7 +132,7 @@ function mesecon:receptor_off_i(pos, rules)
 			if not mesecon:connected_to_receptor(np, mesecon:invertRule(rule)) then
 				mesecon:turnoff(np, rulename)
 			else
-				mesecon:changesignal(np, minetest.env:get_node(np), rulename, mesecon.state.off)
+				mesecon:changesignal(np, minetest.get_node(np), rulename, mesecon.state.off)
 			end
 		end
 	end

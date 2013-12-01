@@ -27,7 +27,7 @@ function update_gate(pos)
 	gate = get_gate(pos)
 	L = rotate_ports(
 		yc_get_real_portstates(pos),
-		minetest.env:get_node(pos).param2
+		minetest.get_node(pos).param2
 	)
 	if gate == "diode" then
 		set_gate(pos, L.a)
@@ -44,7 +44,7 @@ end
 
 function set_gate(pos, on)
 	gate = get_gate(pos)
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	if on ~= gate_state(pos) then
 		yc_heat(meta)
 		--minetest.after(0.5, yc_cool, meta)
@@ -66,19 +66,19 @@ function set_gate(pos, on)
 end
 
 function get_gate(pos)
-	return minetest.registered_nodes[minetest.env:get_node(pos).name].mesecons_gate
+	return minetest.registered_nodes[minetest.get_node(pos).name].mesecons_gate
 end
 
 function gate_state(pos)
-	name = minetest.env:get_node(pos).name
+	name = minetest.get_node(pos).name
 	return string.find(name, "_on") ~= nil
 end
 
 function pop_gate(pos)
 	gate = get_gate(pos)
-	minetest.env:remove_node(pos)
+	minetest.remove_node(pos)
 	minetest.after(0.2, yc_overheat_off, pos)
-	minetest.env:add_item(pos, "mesecons_gates:"..gate.."_off")
+	minetest.add_item(pos, "mesecons_gates:"..gate.."_off")
 end
 
 function rotate_ports(L, param2)
@@ -151,7 +151,7 @@ for _, gate in ipairs(gates) do
 			node_box = node_box,
 			walkable = true,
 			on_construct = function(pos)
-				local meta = minetest.env:get_meta(pos)
+				local meta = minetest.get_meta(pos)
 				meta:set_int("heat", 0)
 				update_gate(pos)
 			end,

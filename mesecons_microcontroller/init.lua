@@ -80,7 +80,7 @@ minetest.register_node(nodename, {
 		}
 	},
 	on_construct = function(pos)
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		meta:set_string("code", "")
 		meta:set_string("formspec", "size[9,2.5]"..
 			"field[0.256,-0.2;9,2;code;Code:;]"..
@@ -98,7 +98,7 @@ minetest.register_node(nodename, {
 		meta:set_string("eeprom", r)
 	end,
 	on_receive_fields = function(pos, formanme, fields, sender)
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		if fields.band then
 			fields.code = "sbi(C, A&B) :A and B are inputs, C is output"
 		elseif fields.bxor then
@@ -151,7 +151,7 @@ minetest.register_craft({
 
 function yc_reset(pos)
 	yc_action(pos, {a=false, b=false, c=false, d=false})
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	meta:set_int("heat", 0)
 	meta:set_int("afterid", 0)
 	local r = ""
@@ -160,13 +160,13 @@ function yc_reset(pos)
 end
 
 function update_yc(pos)
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	yc_heat(meta)
 	--minetest.after(0.5, yc_cool, meta)
 	if (yc_overheat(meta)) then
-		minetest.env:remove_node(pos)
+		minetest.remove_node(pos)
 		minetest.after(0.2, yc_overheat_off, pos) --wait for pending parsings
-		minetest.env:add_item(pos, "mesecons_microcontroller:microcontroller0000")
+		minetest.add_item(pos, "mesecons_microcontroller:microcontroller0000")
 	end
 
 	local code = meta:get_string("code")
@@ -195,7 +195,7 @@ function yc_code_remove_commentary(code)
 end
 
 function yc_parsecode(code, pos)
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	local endi = 1
 	local Lreal = yc_get_real_portstates(pos)
 	local Lvirtual = yc_get_virtual_portstates(pos)
@@ -243,7 +243,7 @@ function yc_parsecode(code, pos)
 		end
 		if Lvirtual == nil then return nil end
 		if eeprom == nil then return nil else
-		minetest.env:get_meta(pos):set_string("eeprom", eeprom) end
+		minetest.get_meta(pos):set_string("eeprom", eeprom) end
 	end
 	yc_action(pos, Lvirtual)
 	return true
@@ -429,14 +429,14 @@ function yc_command_after(params, pos)
 	local code = string.sub(params[2], 2, #params[2] - 1)
 
 	local afterid = math.random(10000)
-	local meta = minetest.env:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	meta:set_int("afterid", afterid)
 	minetest.after(time, yc_command_after_execute, {pos = pos, code = code, afterid = afterid})
 	return true
 end
 
 function yc_command_after_execute(params)
-	local meta = minetest.env:get_meta(params.pos)
+	local meta = minetest.get_meta(params.pos)
 	if meta:get_int("afterid") == params.afterid then --make sure the node has not been changed
 		if yc_parsecode(params.code, params.pos) == nil then
 			meta:set_string("infotext", "Code in after() not valid!")
@@ -653,7 +653,7 @@ function yc_get_real_portstates(pos) -- port powered or not (by itself or from o
 end
 
 function yc_get_virtual_portstates(pos) -- portstates according to the name
-	name = minetest.env:get_node(pos).name
+	name = minetest.get_node(pos).name
 	b, a = string.find(name, ":microcontroller")
 	if a == nil then return nil end
 	a = a + 1
