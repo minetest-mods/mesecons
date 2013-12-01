@@ -1,0 +1,1 @@
+To be auto-recognized as a mesecons door, aka one that opens and closes by mesecon signal, use doors:register_door. Otherwise just set the mesecons of your node's idef like with any other mesecon enabled thing.
