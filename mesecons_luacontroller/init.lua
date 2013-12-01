@@ -72,7 +72,8 @@ local setport = function (pos, rule, state)
 end
 
 local action = function (pos, ports)
-	local name = minetest.env:get_node(pos).name
+	local node = minetest.get_node(pos)
+	local name = node.name
 	local vports = minetest.registered_nodes[name].virtual_portstates
 	local newname = generate_name(ports)
 
@@ -80,7 +81,7 @@ local action = function (pos, ports)
 		local rules_on  = {}
 		local rules_off = {}
 
-		mesecon:swap_node(pos, newname)
+		minetest.swap_node(pos, {name = newname, param2 = node.param2})
 
 		if ports.a ~= vports.a then setport(pos, rules.a, ports.a) end
 		if ports.b ~= vports.b then setport(pos, rules.b, ports.b) end
@@ -285,7 +286,8 @@ local do_overheat = function (pos, meta)
 	heat(meta)
 	--minetest.after(0.5, cool, meta)
 	if overheat(meta) then
-		mesecon:swap_node(pos, BASENAME.."_burnt")
+		local node = minetest.get_node(pos)
+		minetest.swap_node(pos, {name = BASENAME.."_burnt", param2 = node.param2})
 		minetest.env:get_meta(pos):set_string("lc_interrupts", "")
 		minetest.after(0.2, overheat_off, pos) -- wait for pending operations
 		return true

@@ -1,11 +1,3 @@
-function mesecon:swap_node(pos, name)
-	local node = minetest.env:get_node(pos)
-	local data = minetest.env:get_meta(pos):to_table()
-	node.name = name
-	minetest.env:add_node(pos, node)
-	minetest.env:get_meta(pos):from_table(data)
-end
-
 function mesecon:move_node(pos, newpos)
 	local node = minetest.env:get_node(pos)
 	local meta = minetest.env:get_meta(pos):to_table()

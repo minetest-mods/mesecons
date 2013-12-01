@@ -590,7 +590,8 @@ function yc_action(pos, L) --L-->Lvirtual
 		..tonumber(L.c and 1 or 0)
 		..tonumber(L.b and 1 or 0)
 		..tonumber(L.a and 1 or 0)
-	mesecon:swap_node(pos, name)
+	local node = minetest.get_node(pos)
+	minetest.swap_node(pos, {name = name, param2 = node.param2})
 
 	yc_action_setports(pos, L, Lv)
 end

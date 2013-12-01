@@ -25,7 +25,7 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 	sounds = default.node_sound_glass_defaults(),
 	mesecons = {effector = {
 		action_off = function (pos, node)
-			mesecon:swap_node(pos, "mesecons_lamp:lamp_off")
+			minetest.swap_node(pos, {name = "mesecons_lamp:lamp_off", param2 = node.param2})
 		end
 	}}
 })
@@ -46,7 +46,7 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 	sounds = default.node_sound_glass_defaults(),
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			mesecon:swap_node(pos, "mesecons_lamp:lamp_on")
+			minetest.swap_node(pos, {name = "mesecons_lamp:lamp_on", param2 = node.param2})
 		end
 	}}
 })

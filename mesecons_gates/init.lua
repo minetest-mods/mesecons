@@ -51,14 +51,15 @@ function set_gate(pos, on)
 		if yc_overheat(meta) then
 			pop_gate(pos)
 		else
+			local node = minetest.get_node(pos)
 			if on then
-				mesecon:swap_node(pos, "mesecons_gates:"..gate.."_on")
+				minetest.swap_node(pos, {name = "mesecons_gates:"..gate.."_on", param2=node.param2})
 				mesecon:receptor_on(pos,
-				gate_get_output_rules(minetest.env:get_node(pos)))
+				gate_get_output_rules(node))
 			else
-				mesecon:swap_node(pos, "mesecons_gates:"..gate.."_off")
+				minetest.swap_node(pos, {name = "mesecons_gates:"..gate.."_off", param2=node.param2})
 				mesecon:receptor_off(pos,
-				gate_get_output_rules(minetest.env:get_node(pos)))
+				gate_get_output_rules(node))
 			end
 		end
 	end

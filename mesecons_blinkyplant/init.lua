@@ -62,7 +62,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 		state = mesecon.state.on
 	}},
 	on_punch = function(pos, node, puncher)
-	mesecon:swap_node(pos, "mesecons_blinkyplant:blinky_plant")
+	minetest.swap_node(pos, {name = "mesecons_blinkyplant:blinky_plant"})
 	mesecon:receptor_off(pos)
 	end
 })

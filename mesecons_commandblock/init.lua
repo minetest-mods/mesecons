@@ -144,7 +144,7 @@ local commandblock_action_on = function(pos, node)
 		return
 	end
 
-	mesecon:swap_node(pos, "mesecons_commandblock:commandblock_on")
+	minetest.swap_node(pos, {name = "mesecons_commandblock:commandblock_on"})
 
 	local meta = minetest.env:get_meta(pos)
 	local command = minetest.chatcommands[meta:get_string("command")]
@@ -166,7 +166,7 @@ end
 
 local commandblock_action_off = function(pos, node)
 	if node.name == "mesecons_commandblock:commandblock_on" then
-		mesecon:swap_node(pos, "mesecons_commandblock:commandblock_off")
+		minetest.swap_node(pos, {name = "mesecons_commandblock:commandblock_off"})
 	end
 end
 

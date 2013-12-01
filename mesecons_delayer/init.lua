@@ -30,14 +30,14 @@ end
 local delayer_activate = function(pos, node)
 	local def = minetest.registered_nodes[node.name]
 	local time = def.delayer_time
-	mesecon:swap_node(pos, def.delayer_onstate)
+	minetest.swap_node(pos, {name = def.delayer_onstate, param2=node.param2})
 	minetest.after(time, delayer_turnon , {pos = pos, node = node})
 end
 
 local delayer_deactivate = function(pos, node)
 	local def = minetest.registered_nodes[node.name]
 	local time = def.delayer_time
-	mesecon:swap_node(pos, def.delayer_offstate)
+	minetest.swap_node(pos, {name = def.delayer_offstate, param2=node.param2})
 	minetest.after(time, delayer_turnoff, {pos = pos, node = node})
 end
 
@@ -99,13 +99,13 @@ minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), {
 	drop = 'mesecons_delayer:delayer_off_1',
 	on_punch = function (pos, node)
 		if node.name=="mesecons_delayer:delayer_off_1" then
-			mesecon:swap_node(pos,"mesecons_delayer:delayer_off_2")
+			minetest.swap_node(pos, {name = "mesecons_delayer:delayer_off_2", param2=node.param2})
 		elseif node.name=="mesecons_delayer:delayer_off_2" then
-			mesecon:swap_node(pos,"mesecons_delayer:delayer_off_3")
+			minetest.swap_node(pos, {name = "mesecons_delayer:delayer_off_3", param2=node.param2})
 		elseif node.name=="mesecons_delayer:delayer_off_3" then
-			mesecon:swap_node(pos,"mesecons_delayer:delayer_off_4")
+			minetest.swap_node(pos, {name = "mesecons_delayer:delayer_off_4", param2=node.param2})
 		elseif node.name=="mesecons_delayer:delayer_off_4" then
-			mesecon:swap_node(pos,"mesecons_delayer:delayer_off_1")
+			minetest.swap_node(pos, {name = "mesecons_delayer:delayer_off_1", param2=node.param2})
 		end
 	end,
 	delayer_time = delaytime,
@@ -154,13 +154,13 @@ minetest.register_node("mesecons_delayer:delayer_on_"..tostring(i), {
 	drop = 'mesecons_delayer:delayer_off_1',
 	on_punch = function (pos, node)
 		if node.name=="mesecons_delayer:delayer_on_1" then
-			mesecon:swap_node(pos,"mesecons_delayer:delayer_on_2")
+			minetest.swap_node(pos, {name = "mesecons_delayer:delayer_on_2", param2=node.param2})
 		elseif node.name=="mesecons_delayer:delayer_on_2" then
-			mesecon:swap_node(pos,"mesecons_delayer:delayer_on_3")
+			minetest.swap_node(pos, {name = "mesecons_delayer:delayer_on_3", param2=node.param2})
 		elseif node.name=="mesecons_delayer:delayer_on_3" then
-			mesecon:swap_node(pos,"mesecons_delayer:delayer_on_4")
+			minetest.swap_node(pos, {name = "mesecons_delayer:delayer_on_4", param2=node.param2})
 		elseif node.name=="mesecons_delayer:delayer_on_4" then
-			mesecon:swap_node(pos,"mesecons_delayer:delayer_on_1")
+			minetest.swap_node(pos, {name = "mesecons_delayer:delayer_on_1", param2=node.param2})
 		end
 	end,
 	delayer_time = delaytime,

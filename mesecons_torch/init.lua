@@ -99,11 +99,11 @@ minetest.register_abm({
 
 		if is_powered then
 			if node.name == "mesecons_torch:mesecon_torch_on" then
-				mesecon:swap_node(pos, "mesecons_torch:mesecon_torch_off")
+				minetest.swap_node(pos, {name = "mesecons_torch:mesecon_torch_off", param2 = node.param2})
 				mesecon:receptor_off(pos, torch_get_output_rules(node))
 			end
 		elseif node.name == "mesecons_torch:mesecon_torch_off" then
-			mesecon:swap_node(pos, "mesecons_torch:mesecon_torch_on")
+			minetest.swap_node(pos, {name = "mesecons_torch:mesecon_torch_on", param2 = node.param2})
 			mesecon:receptor_on(pos, torch_get_output_rules(node))
 		end
 	end

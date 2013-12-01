@@ -32,7 +32,7 @@ minetest.register_node("mesecons_walllever:wall_lever_off", {
 	groups = {dig_immediate=2, mesecon_needs_receiver = 1},
 	description="Lever",
 	on_punch = function (pos, node)
-		mesecon:swap_node(pos, "mesecons_walllever:wall_lever_on")
+		minetest.swap_node(pos, {name = "mesecons_walllever:wall_lever_on", param2 = node.param2})
 		mesecon:receptor_on(pos, mesecon.rules.buttonlike_get(node))
 		minetest.sound_play("mesecons_lever", {pos=pos})
 	end,
@@ -74,7 +74,7 @@ minetest.register_node("mesecons_walllever:wall_lever_on", {
 	drop = "mesecons_walllever:wall_lever_off 1",
 	description="Lever",
 	on_punch = function (pos, node)
-		mesecon:swap_node(pos, "mesecons_walllever:wall_lever_off")
+		minetest.swap_node(pos, {name = "mesecons_walllever:wall_lever_off", param2 = node.param2})
 		mesecon:receptor_off(pos, mesecon.rules.buttonlike_get(node))
 		minetest.sound_play("mesecons_lever", {pos=pos})
 	end,

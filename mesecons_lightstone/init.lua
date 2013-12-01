@@ -6,7 +6,7 @@ function mesecon:lightstone_add(name, base_item, texture_off, texture_on)
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			mesecon:swap_node(pos, "mesecons_lightstone:lightstone_" .. name .. "_on")
+			minetest.swap_node(pos, {name = "mesecons_lightstone:lightstone_" .. name .. "_on", param2 = node.param2})
 		end
 	}}
     })
@@ -18,7 +18,7 @@ function mesecon:lightstone_add(name, base_item, texture_off, texture_on)
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_off = function (pos, node)
-			mesecon:swap_node(pos, "mesecons_lightstone:lightstone_" .. name .. "_off")
+			minetest.swap_node(pos, {name = "mesecons_lightstone:lightstone_" .. name .. "_off", param2 = node.param2})
 		end
 	}}
 	})
