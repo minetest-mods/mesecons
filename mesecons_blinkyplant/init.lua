@@ -5,7 +5,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant", {
 	tiles = {"jeija_blinky_plant_off.png"},
 	inventory_image = "jeija_blinky_plant_off.png",
 	walkable = false,
-	groups = {snappy=3},
+	groups = {snappy=3, not_in_creative_inventory=1},
     description="Deactivated Blinky Plant",
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {
