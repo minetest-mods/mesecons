@@ -5,7 +5,8 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant", {
 	tiles = {"jeija_blinky_plant_off.png"},
 	inventory_image = "jeija_blinky_plant_off.png",
 	walkable = false,
-	groups = {snappy=3, not_in_creative_inventory=1},
+	groups = {dig_immediate=3, not_in_creative_inventory=1},
+	drop="mesecons_blinkyplant:blinky_plant_off 1",
     description="Deactivated Blinky Plant",
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {
@@ -15,7 +16,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant", {
 	mesecons = {receptor = {
 		state = mesecon.state.off
 	}},
-	on_punch = function(pos, node, puncher)
+	on_rightclick = function(pos, node, clicker)
         minetest.set_node(pos, {name="mesecons_blinkyplant:blinky_plant_off"})
     end	
 })
@@ -27,8 +28,8 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_off", {
 	inventory_image = "jeija_blinky_plant_off.png",
 	paramtype = "light",
 	walkable = false,
-	groups = {snappy=3, mesecon = 2},
-    	description="Blinky Plant",
+	groups = {dig_immediate=3, mesecon=2},
+    description="Blinky Plant",
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {
 		type = "fixed",
@@ -37,7 +38,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_off", {
 	mesecons = {receptor = {
 		state = mesecon.state.off
 	}},
-	on_punch = function(pos, node, puncher)
+	on_rightclick = function(pos, node, clicker)
         minetest.set_node(pos, {name="mesecons_blinkyplant:blinky_plant"})
     end
 })
@@ -49,7 +50,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	inventory_image = "jeija_blinky_plant_off.png",
 	paramtype = "light",
 	walkable = false,
-	groups = {snappy=3, not_in_creative_inventory=1, mesecon = 2},
+	groups = {dig_immediate=3, not_in_creative_inventory=1, mesecon=2},
 	drop="mesecons_blinkyplant:blinky_plant_off 1",
 	light_source = LIGHT_MAX-7,
 	description = "Blinky Plant",
@@ -61,9 +62,9 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	mesecons = {receptor = {
 		state = mesecon.state.on
 	}},
-	on_punch = function(pos, node, puncher)
-	minetest.swap_node(pos, {name = "mesecons_blinkyplant:blinky_plant"})
-	mesecon:receptor_off(pos)
+	on_rightclick = function(pos, node, clicker)
+		minetest.set_node(pos, {name = "mesecons_blinkyplant:blinky_plant"})
+		mesecon:receptor_off(pos)
 	end
 })
 
