@@ -9,7 +9,10 @@ local object_detector_make_formspec = function (pos)
 		"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]")
 end
 
-local object_detector_on_receive_fields = function (pos, formname, fields)
+local object_detector_on_receive_fields = function(pos, formname, fields)
+	if fields.quit then
+		return
+	end
 	local meta = minetest.get_meta(pos)
 	meta:set_string("scanname", fields.scanname)
 	meta:set_string("digiline_channel", fields.digiline_channel)

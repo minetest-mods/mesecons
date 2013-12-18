@@ -92,6 +92,9 @@ local after_place = function(pos, placer)
 end
 
 local receive_fields = function(pos, formname, fields, sender)
+	if fields.quit then
+		return
+	end
 	local meta = minetest.get_meta(pos)
 	if fields.nearest then
 		initialize_data(meta, "@nearest", fields.command, fields.param)

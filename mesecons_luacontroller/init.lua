@@ -488,6 +488,9 @@ minetest.register_node(nodename, {
 	node_box = nodebox,
 	on_construct = reset_meta,
 	on_receive_fields = function(pos, formname, fields)
+		if fields.quit then
+			return
+		end
 		reset(pos)
 		reset_meta(pos, fields.code)
 		local err = lc_update(pos, {type="program"})
@@ -531,6 +534,9 @@ minetest.register_node(BASENAME .. "_burnt", {
 	node_box = nodebox,
 	on_construct = reset_meta,
 	on_receive_fields = function(pos, formname, fields)
+		if fields.quit then
+			return
+		end
 		reset(pos)
 		reset_meta(pos, fields.code)
 		local err = lc_update(pos, {type="program"})
