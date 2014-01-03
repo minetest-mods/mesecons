@@ -2,6 +2,7 @@
 
 mesecon.mvps_stoppers = {}
 mesecon.mvps_unmov = {}
+mesecon.on_mvps_move = {}
 
 function mesecon:is_mvps_stopper(node, pushdir, stack, stackid)
 	local get_stopper = mesecon.mvps_stoppers[node.name]
@@ -25,6 +26,17 @@ end
 
 function mesecon:is_mvps_unmov(objectname)
 	return mesecon.mvps_unmov[objectname]
+end
+
+-- Functions to be called on mvps movement
+function mesecon:register_on_mvps_move(callback)
+	mesecon.on_mvps_move[#mesecon.on_mvps_move+1] = callback
+end
+
+local function on_mvps_move(moved_nodes)
+	for _, callback in ipairs(mesecon.on_mvps_move) do
+		callback(moved_nodes)
+	end
 end
 
 function mesecon:mvps_process_stack(stack)
@@ -89,19 +101,29 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 		minetest.add_node(np, n.node)
 		minetest.get_meta(np):from_table(n.meta)
 	end
-
+	
+	local moved_nodes = {}
 	local oldstack = mesecon:tablecopy(nodes)
 	for i in ipairs(nodes) do
+		moved_nodes[i] = {}
+		moved_nodes[i].oldpos = nodes[i].pos
 		nodes[i].pos = mesecon:addPosRule(nodes[i].pos, dir)
+		moved_nodes[i].pos = nodes[i].pos
+		moved_nodes[i].node = nodes[i].node
+		moved_nodes[i].meta = nodes[i].meta
 	end
 	
-	for _, n in ipairs(nodes) do
-		mesecon.on_placenode(n.pos, n.node)
-		mesecon:update_autoconnect(n.pos)
-	end
+	on_mvps_move(moved_nodes)
 
 	return true, nodes, oldstack
 end
+
+mesecon:register_on_mvps_move(function(moved_nodes)
+	for _, n in ipairs(moved_nodes) do
+		mesecon.on_placenode(n.pos, n.node)
+		mesecon:update_autoconnect(n.pos)
+	end
+end)
 
 function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: direction of pull (matches push direction for sticky pistons)
 	np = mesecon:addPosRule(pos, dir)
@@ -119,8 +141,7 @@ function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: dire
 		nodeupdate(pos)
 		mesecon.on_dignode(np, nn)
 		mesecon:update_autoconnect(np)
-		mesecon:update_autoconnect(pos)
-		mesecon.on_placenode(pos, nn)
+		on_mvps_move({{pos = pos, oldpos = np, node = nn, meta = meta}})
 	end
 	return {{pos = np, node = {param2 = 0, name = "air"}}, {pos = pos, node = nn}}
 end
@@ -147,10 +168,14 @@ function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: d
 		return
 	end
 
+	local moved_nodes = {}
 	local oldpos = {x=lpos2.x + direction.x, y=lpos2.y + direction.y, z=lpos2.z + direction.z}
 	repeat
 		lnode2 = minetest.get_node(lpos2)
-		minetest.add_node(oldpos, {name=lnode2.name})
+		local meta = minetest.get_meta(lnode2):to_table()
+		minetest.add_node(oldpos, lnode2)
+		minetest.get_meta(oldpos):from_table(meta)
+		moved_nodes[#moved_nodes+1] = {pos = oldpos, oldpos = lnode2, node = lnode2, meta = meta}
 		nodeupdate(oldpos)
 		oldpos = {x=lpos2.x, y=lpos2.y, z=lpos2.z}
 		lpos2.x = lpos2.x-direction.x
@@ -159,9 +184,12 @@ function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: d
 		lnode = minetest.get_node(lpos2)
 	until lnode.name == "air"
 	or lnode.name == "ignore"
-	or (minetest.registered_nodes[lnode2.name]
-	and minetest.registered_nodes[lnode2.name].liquidtype ~= "none")
+	or (minetest.registered_nodes[lnode.name]
+	and minetest.registered_nodes[lnode.name].liquidtype ~= "none")
 	minetest.remove_node(oldpos)
+	mesecon.on_dignode(oldpos, lnode2)
+	mesecon:update_autoconnect(oldpos)
+	on_mvps_move(moved_nodes)
 end
 
 function mesecon:mvps_move_objects(pos, dir, nodestack)
