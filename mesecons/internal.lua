@@ -429,9 +429,9 @@ function mesecon:turnon(pos, rulename)
 
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
 			local np = mesecon:addPosRule(pos, rule)
-			local link, rulename = mesecon:rules_link_rule(pos, rule)
+			local rulenames = mesecon:rules_link_rule_all(pos, rule)
 
-			if link then
+			for _, rulename in ipairs(rulenames) do
 				mesecon:turnon(np, rulename)
 			end
 		end
@@ -462,9 +462,9 @@ function mesecon:turnoff(pos, rulename)
 
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
 			local np = mesecon:addPosRule(pos, rule)
-			local link, rulename = mesecon:rules_link_rule(pos, rule)
+			local rulenames = mesecon:rules_link_rule_all(pos, rule)
 
-			if link then
+			for _, rulename in ipairs(rulenames) do
 				mesecon:turnoff(np, rulename)
 			end
 		end
@@ -563,23 +563,24 @@ function mesecon:rules_link(output, input, dug_outputrules) --output/input are p
 	return false
 end
 
-function mesecon:rules_link_rule(output, rule) --output/input are positions (outputrules optional, used if node has been dug), second return value: the name of the affected input rule
+function mesecon:rules_link_rule_all(output, rule) --output/input are positions (outputrules optional, used if node has been dug), second return value: affected input rules
 	local input = mesecon:addPosRule(output, rule)
 	local inputnode = minetest.get_node(input)
 	local inputrules = mesecon:get_any_inputrules (inputnode)
 	if not inputrules then
-		return
+		return {}
 	end
-
+	local rules = {}
+	
 	for _, inputrule in ipairs(mesecon:flattenrules(inputrules)) do
 		-- Check if input accepts from output
 		if  mesecon:cmpPos(mesecon:addPosRule(input, inputrule), output) then
 			if inputrule.sx == nil or rule.sx == nil or mesecon:cmpSpecial(inputrule, rule) then
-				return true, inputrule
+				rules[#rules+1] = inputrule
 			end
 		end
 	end
-	return false
+	return rules
 end
 
 function mesecon:rules_link_anydir(pos1, pos2)
