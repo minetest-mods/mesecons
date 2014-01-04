@@ -412,7 +412,7 @@ end
 
 function mesecon:turnon(pos, rulename)
 	local node = minetest.get_node(pos)
-
+	
 	if mesecon:is_conductor_off(node, rulename) then
 		local rules = mesecon:conductor_get_rules(node)
 
@@ -429,7 +429,7 @@ function mesecon:turnon(pos, rulename)
 
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
 			local np = mesecon:addPosRule(pos, rule)
-			local link, rulename = mesecon:rules_link(pos, np)
+			local link, rulename = mesecon:rules_link_rule(pos, rule)
 
 			if link then
 				mesecon:turnon(np, rulename)
@@ -462,7 +462,7 @@ function mesecon:turnoff(pos, rulename)
 
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
 			local np = mesecon:addPosRule(pos, rule)
-			local link, rulename = mesecon:rules_link(pos, np)
+			local link, rulename = mesecon:rules_link_rule(pos, rule)
 
 			if link then
 				mesecon:turnoff(np, rulename)
@@ -498,23 +498,25 @@ function mesecon:connected_to_receptor(pos, rulename)
 end
 
 function mesecon:find_receptor_on(pos, checked, rulename)
-	-- find out if node has already been checked (to prevent from endless loop)
-	for _, cp in ipairs(checked) do
-		if mesecon:cmpPos(cp, pos) then
-			return false, checked
-		end
-	end
-
-	-- add current position to checked
-	table.insert(checked, {x=pos.x, y=pos.y, z=pos.z})
 	local node = minetest.get_node(pos)
 
 	if mesecon:is_receptor_on(node.name) then
+		-- add current position to checked
+		table.insert(checked, {x=pos.x, y=pos.y, z=pos.z})
 		return true
 	end
 
 	if mesecon:is_conductor(node.name) then
 		local rules = mesecon:conductor_get_rules(node)
+		local metaindex = mesecon:rule2metaindex(rulename, rules)
+		-- find out if node has already been checked (to prevent from endless loop)
+		for _, cp in ipairs(checked) do
+			if mesecon:cmpPos(cp, pos) and cp.metaindex == metaindex then
+				return false, checked
+			end
+		end
+		-- add current position to checked
+		table.insert(checked, {x=pos.x, y=pos.y, z=pos.z, metaindex = metaindex})
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
 			local np = mesecon:addPosRule(pos, rule)
 			if mesecon:rules_link(np, pos) then
@@ -523,6 +525,14 @@ function mesecon:find_receptor_on(pos, checked, rulename)
 				end
 			end
 		end
+	else
+		-- find out if node has already been checked (to prevent from endless loop)
+		for _, cp in ipairs(checked) do
+			if mesecon:cmpPos(cp, pos) then
+				return false, checked
+			end
+		end
+		table.insert(checked, {x=pos.x, y=pos.y, z=pos.z})
 	end
 
 	return false
@@ -543,12 +553,29 @@ function mesecon:rules_link(output, input, dug_outputrules) --output/input are p
 			for _, inputrule in ipairs(mesecon:flattenrules(inputrules)) do
 				-- Check if input accepts from output
 				if  mesecon:cmpPos(mesecon:addPosRule(input, inputrule), output) then
-					if inputrule.sx == nil or outputrule.sx == nil or
-						(inputrule.sx == outputrule.sx and inputrule.sy == outputrule.sy
-							and inputrule.sz == outputrule.sz) then
+					if inputrule.sx == nil or outputrule.sx == nil or mesecon:cmpSpecial(inputrule, outputrule) then
 						return true, inputrule
 					end
 				end
+			end
+		end
+	end
+	return false
+end
+
+function mesecon:rules_link_rule(output, rule) --output/input are positions (outputrules optional, used if node has been dug), second return value: the name of the affected input rule
+	local input = mesecon:addPosRule(output, rule)
+	local inputnode = minetest.get_node(input)
+	local inputrules = mesecon:get_any_inputrules (inputnode)
+	if not inputrules then
+		return
+	end
+
+	for _, inputrule in ipairs(mesecon:flattenrules(inputrules)) do
+		-- Check if input accepts from output
+		if  mesecon:cmpPos(mesecon:addPosRule(input, inputrule), output) then
+			if inputrule.sx == nil or rule.sx == nil or mesecon:cmpSpecial(inputrule, rule) then
+				return true, inputrule
 			end
 		end
 	end
