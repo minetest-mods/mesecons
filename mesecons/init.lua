@@ -124,7 +124,6 @@ end
 
 function mesecon:receptor_off_i(pos, rules)
 	rules = rules or mesecon.rules.default
-
 	for _, rule in ipairs(mesecon:flattenrules(rules)) do
 		local np = mesecon:addPosRule(pos, rule)
 		local link, rulename = mesecon:rules_link(pos, np, rules)
