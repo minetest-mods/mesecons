@@ -91,7 +91,13 @@ end
 
 function mesecon:rule2meta(findrule, allrules)
 	local index = mesecon:rule2metaindex(findrule, allrules)
-	if index == nil then return allrules end
+	if index == nil then
+		if allrules[1].x then
+			return allrules
+		else
+			return {}
+		end
+	end
 	return allrules[index]
 end
 
