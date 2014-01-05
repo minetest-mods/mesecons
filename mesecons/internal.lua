@@ -425,7 +425,7 @@ function mesecon:turnon(pos, rulename)
 			return
 		end
 
-		minetest.add_node(pos, {name = mesecon:get_conductor_on(node, rulename), param2 = node.param2})
+		minetest.swap_node(pos, {name = mesecon:get_conductor_on(node, rulename), param2 = node.param2})
 
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
 			local np = mesecon:addPosRule(pos, rule)
@@ -458,7 +458,7 @@ function mesecon:turnoff(pos, rulename)
 			return
 		end
 		--]]
-		minetest.add_node(pos, {name = mesecon:get_conductor_off(node, rulename), param2 = node.param2})
+		minetest.swap_node(pos, {name = mesecon:get_conductor_off(node, rulename), param2 = node.param2})
 
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
 			local np = mesecon:addPosRule(pos, rule)
