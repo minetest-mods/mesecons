@@ -486,9 +486,10 @@ function mesecon:connected_to_receptor(pos, rulename)
 	if not rules then return false end
 
 	for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
-		local np = mesecon:addPosRule(pos, rule)
-		if mesecon:rules_link(np, pos) then
-			if mesecon:find_receptor_on(np, {}, mesecon:invertRule(rule)) then
+		local rulenames = mesecon:rules_link_rule_all_inverted(pos, rule)
+		for _, rname in ipairs(rulenames) do
+			local np = mesecon:addPosRule(pos, rname)
+			if mesecon:find_receptor_on(np, {}, mesecon:invertRule(rname)) then
 				return true
 			end
 		end
@@ -518,9 +519,10 @@ function mesecon:find_receptor_on(pos, checked, rulename)
 		-- add current position to checked
 		table.insert(checked, {x=pos.x, y=pos.y, z=pos.z, metaindex = metaindex})
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
-			local np = mesecon:addPosRule(pos, rule)
-			if mesecon:rules_link(np, pos) then
-				if mesecon:find_receptor_on(np, checked, mesecon:invertRule(rule)) then
+			local rulenames = mesecon:rules_link_rule_all_inverted(pos, rule)
+			for _, rname in ipairs(rulenames) do
+				local np = mesecon:addPosRule(pos, rname)
+				if mesecon:find_receptor_on(np, checked, mesecon:invertRule(rname)) then
 					return true
 				end
 			end
@@ -583,6 +585,26 @@ function mesecon:rules_link_rule_all(output, rule) --output/input are positions 
 	return rules
 end
 
+function mesecon:rules_link_rule_all_inverted(input, rule)
+	--local irule = mesecon:invertRule(rule)
+	local output = mesecon:addPosRule(input, rule)
+	local outputnode = minetest.get_node(output)
+	local outputrules = mesecon:get_any_outputrules (outputnode)
+	if not outputrules then
+		return {}
+	end
+	local rules = {}
+	
+	for _, outputrule in ipairs(mesecon:flattenrules(outputrules)) do
+		if  mesecon:cmpPos(mesecon:addPosRule(output, outputrule), input) then
+			if outputrule.sx == nil or rule.sx == nil or mesecon:cmpSpecial(outputrule, rule) then
+				rules[#rules+1] = mesecon:invertRule(outputrule)
+			end
+		end
+	end
+	return rules
+end
+
 function mesecon:rules_link_anydir(pos1, pos2)
 	return mesecon:rules_link(pos1, pos2) or mesecon:rules_link(pos2, pos1)
 end
@@ -594,21 +616,23 @@ function mesecon:is_powered(pos, rule)
 
 	if not rule then
 		for _, rule in ipairs(mesecon:flattenrules(rules)) do
-			local np = mesecon:addPosRule(pos, rule)
-			local nn = minetest.get_node(np)
-	
-			if (mesecon:is_conductor_on (nn, mesecon:invertRule(rule)) or mesecon:is_receptor_on (nn.name))
-			and mesecon:rules_link(np, pos) then
-				return true
+			local rulenames = mesecon:rules_link_rule_all_inverted(pos, rule)
+			for _, rname in ipairs(rulenames) do
+				local np = mesecon:addPosRule(pos, rname)
+				local nn = minetest.get_node(np)
+				if (mesecon:is_conductor_on (nn, mesecon:invertRule(rname)) or mesecon:is_receptor_on (nn.name)) then
+					return true
+				end
 			end
 		end
 	else
-		local np = mesecon:addPosRule(pos, rule)
-		local nn = minetest.get_node(np)
-
-		if (mesecon:is_conductor_on (nn, mesecon:invertRule(rule)) or mesecon:is_receptor_on (nn.name))
-		and mesecon:rules_link(np, pos) then
-			return true
+		local rulenames = mesecon:rules_link_rule_all_inverted(pos, rule)
+		for _, rname in ipairs(rulenames) do
+			local np = mesecon:addPosRule(pos, rname)
+			local nn = minetest.get_node(np)
+			if (mesecon:is_conductor_on (nn, mesecon:invertRule(rname)) or mesecon:is_receptor_on (nn.name)) then
+				return true
+			end
 		end
 	end
 	
