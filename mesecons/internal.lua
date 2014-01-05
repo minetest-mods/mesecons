@@ -275,20 +275,15 @@ end
 minetest.register_globalstep(execute_actions)
 
 function add_action(pos, action, rname)
-	for _,i in ipairs(mesecon.to_update) do
-		if i.pos.x == pos.x and i.pos.y == pos.y and i.pos.z == pos.z and i.rname.x == rname.x and i.rname.y == rname.y and i.rname.z == rname.z then
-			if (i.action == "on" and action == "on") or (i.action == "off" and action == "off") then
-				--nothing
-			elseif i.action == "coff" and action == "on" then i.action = "on"
-			elseif i.action == "con" and action == "off" then i.action = "off"
-			else
-				if action == "on" or action == "con" then i.action = "con" end
-				if action == "off" or action == "coff" then i.action = "coff" end
-			end
-			break
+	for i, update in ipairs(mesecon.to_update) do
+		-- check if action for this node already exist, if so correct it:
+		if mesecon:cmpPos(pos, update.pos) and mesecon:cmpPos(update.rname, rname) then
+			mesecon.to_update[i].action = action
+			return -- action added (as correction), so return now
 		end
 	end
-	mesecon.to_update[#mesecon.to_update+1] = {pos = pos, action = action, rname = rname}
+
+	table.insert(mesecon.to_update, {pos = pos, action = action, rname = rname})
 end
 
 --Rules
