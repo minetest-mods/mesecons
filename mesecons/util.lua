@@ -181,3 +181,14 @@ function mesecon:tablecopy(table) -- deep table copy
 
 	return newtable
 end
+
+function mesecon:cmpAny(t1, t2)
+	if type(t1) ~= type(t2) then return false end
+	if type(t1) ~= "table" and type(t2) ~= "table" then return t1 == t2 end
+
+	for i, e in pairs(t1) do
+		if not mesecon:cmpAny(e, t2[i]) then return false end
+	end
+
+	return true
+end

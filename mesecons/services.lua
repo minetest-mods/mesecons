@@ -18,7 +18,7 @@ end
 
 mesecon.on_dignode = function (pos, node)
 	if mesecon:is_conductor_on(node) then
-		mesecon:receptor_off_i(pos, mesecon:conductor_get_rules(node))
+		mesecon:receptor_off(pos, mesecon:conductor_get_rules(node))
 	elseif mesecon:is_receptor_on(node.name) then
 		mesecon:receptor_off(pos, mesecon:receptor_get_rules(node))
 	end

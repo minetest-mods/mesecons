@@ -42,37 +42,8 @@
 
 -- PUBLIC VARIABLES
 mesecon={} -- contains all functions and all global variables
-mesecon.actions_on={} -- Saves registered function callbacks for mesecon on | DEPRECATED
-mesecon.actions_off={} -- Saves registered function callbacks for mesecon off | DEPRECATED
-mesecon.actions_change={} -- Saves registered function callbacks for mesecon change | DEPRECATED
-mesecon.receptors={} --  saves all information about receptors  | DEPRECATED
-mesecon.effectors={} --  saves all information about effectors  | DEPRECATED
-mesecon.conductors={} -- saves all information about conductors | DEPRECATED
-
-
-local wpath = minetest.get_worldpath()
-local function read_file(fn)
-	local f = io.open(fn, "r")
-	if f==nil then return {} end
-	local t = f:read("*all")
-	f:close()
-	if t=="" or t==nil then return {} end
-	return minetest.deserialize(t)
-end
-
-local function write_file(fn, tbl)
-	local f = io.open(fn, "w")
-	f:write(minetest.serialize(tbl))
-	f:close()
-end
-
-mesecon.to_update = read_file(wpath.."/mesecon_to_update")
-mesecon.r_to_update = read_file(wpath.."/mesecon_r_to_update")
-
-minetest.register_on_shutdown(function()
-	write_file(wpath.."/mesecon_to_update",mesecon.to_update)
-	write_file(wpath.."/mesecon_r_to_update",mesecon.r_to_update)
-end)
+mesecon.queue={} -- contains the ActionQueue
+mesecon.queue.funcs={} -- contains all ActionQueue functions
 
 -- Settings
 dofile(minetest.get_modpath("mesecons").."/settings.lua")
@@ -85,6 +56,10 @@ dofile(minetest.get_modpath("mesecons").."/presets.lua");
 -- adding positions and rules,
 -- mostly things that make the source look cleaner
 dofile(minetest.get_modpath("mesecons").."/util.lua");
+
+-- The ActionQueue
+-- Saves all the actions that have to be execute in the future
+dofile(minetest.get_modpath("mesecons").."/actionqueue.lua");
 
 -- Internal stuff
 -- This is the most important file
@@ -101,31 +76,33 @@ dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 -- API
 -- these are the only functions you need to remember
 
-function mesecon:receptor_on_i(pos, rules)
+mesecon.queue:add_function("receptor_on", function (pos, rules)
 	rules = rules or mesecon.rules.default
 
 	for _, rule in ipairs(mesecon:flattenrules(rules)) do
 		local np = mesecon:addPosRule(pos, rule)
+		-- if area is not loaded, keep trying
+		if minetest.env:get_node_or_nil(np) == nil then
+			mesecon.queue:add_action(pos, "receptor_on", {rules})
+		end
 		local rulenames = mesecon:rules_link_rule_all(pos, rule)
 		for _, rulename in ipairs(rulenames) do
 			mesecon:turnon(np, rulename)
 		end
 	end
-end
+end)
 
 function mesecon:receptor_on(pos, rules)
-	if MESECONS_GLOBALSTEP then
-		rules = rules or mesecon.rules.default
-		mesecon.r_to_update[#mesecon.r_to_update+1]={pos=pos, rules=rules, action="on"}
-	else
-		mesecon:receptor_on_i(pos, rules)
-	end
+	mesecon.queue:add_action(pos, "receptor_on", {rules})
 end
 
-function mesecon:receptor_off_i(pos, rules)
+mesecon.queue:add_function("receptor_off", function (pos, rules)
 	rules = rules or mesecon.rules.default
 	for _, rule in ipairs(mesecon:flattenrules(rules)) do
 		local np = mesecon:addPosRule(pos, rule)
+		if minetest.env:get_node_or_nil(np) == nil then
+			mesecon.queue:add_action(pos, "receptor_off", {rules})
+		end
 		local rulenames = mesecon:rules_link_rule_all(pos, rule)
 		for _, rulename in ipairs(rulenames) do
 			if not mesecon:connected_to_receptor(np, mesecon:invertRule(rule)) then
@@ -135,15 +112,10 @@ function mesecon:receptor_off_i(pos, rules)
 			end
 		end
 	end
-end
+end)
 
 function mesecon:receptor_off(pos, rules)
-	if MESECONS_GLOBALSTEP then
-		rules = rules or mesecon.rules.default
-		mesecon.r_to_update[#mesecon.r_to_update+1]={pos=pos, rules=rules, action="off"}
-	else
-		mesecon:receptor_off_i(pos, rules)
-	end
+	mesecon.queue:add_action(pos, "receptor_off", {rules})
 end
 
 
