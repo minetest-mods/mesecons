@@ -23,7 +23,8 @@ function gate_get_input_rules_twoinputs(node)
 	return gate_rotate_rules(node)
 end
 
-function update_gate(pos)
+function update_gate(pos, node, rulename, newstate)
+	yc_update_real_portstates(pos, node, rulename, newstate)
 	gate = get_gate(pos)
 	L = rotate_ports(
 		yc_get_real_portstates(pos),
