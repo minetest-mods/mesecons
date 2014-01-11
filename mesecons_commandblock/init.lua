@@ -43,14 +43,12 @@ minetest.register_chatcommand("hp", {
 })
 
 local function initialize_data(meta)
-	local command = meta:get_string("command")
-	local param = meta:get_string("param")
+	local commands = meta:get_string("commands")
 	meta:set_string("formspec",
-		"invsize[9,4;]" ..
-		"field[1,1;2,1;command;Command;" .. command .. "]" ..
-		"field[3,1;5.5,1;param;Parameter;" .. param .. "]" ..
-		"label[3,1.5;@nearest, @farthest, and @random are replaced by the respective player names]" ..
-		"button_exit[3.3,3;2,1;submit;Submit]")
+		"invsize[9,5;]" ..
+		"textarea[0.5,0.5;8.5,4;commands;Commands;"..commands.."]" ..
+		"label[1,3.8;@nearest, @farthest, and @random are replaced by the respective player names]" ..
+		"button_exit[3.3,4.5;2,1;submit;Submit]")
 	local owner = meta:get_string("owner")
 	if owner == "" then
 		owner = "not owned"
@@ -59,14 +57,13 @@ local function initialize_data(meta)
 	end
 	meta:set_string("infotext", "Command Block\n" ..
 		"(" .. owner .. ")\n" ..
-		"Command: /" .. command .. " " .. param)
+		"Commands: "..commands)
 end
 
 local function construct(pos)
 	local meta = minetest.get_meta(pos)
 
-	meta:set_string("command", "time")
-	meta:set_string("param", "7000")
+	meta:set_string("commands", "tell @nearest Commandblock unconfigured")
 
 	meta:set_string("owner", "")
 
@@ -90,13 +87,12 @@ local function receive_fields(pos, formname, fields, sender)
 	if owner ~= "" and sender:get_player_name() ~= owner then
 		return
 	end
-	meta:set_string("command", fields.command)
-	meta:set_string("param", fields.param)
+	meta:set_string("commands", fields.commands)
 
 	initialize_data(meta)
 end
 
-local function resolve_param(param, pos)
+local function resolve_commands(commands, pos)
 	local nearest, farthest = nil, nil
 	local min_distance, max_distance = math.huge, -1
 	local players = minetest.get_connected_players()
@@ -112,10 +108,10 @@ local function resolve_param(param, pos)
 		end
 	end
 	local random = players[math.random(#players)]:get_player_name()
-	param = param:gsub("@nearest", nearest)
-	param = param:gsub("@farthest", farthest)
-	param = param:gsub("@random", random)
-	return param
+	commands = commands:gsub("@nearest", nearest)
+	commands = commands:gsub("@farthest", farthest)
+	commands = commands:gsub("@random", random)
+	return commands
 end
 
 local function commandblock_action_on(pos, node)
@@ -126,22 +122,34 @@ local function commandblock_action_on(pos, node)
 	minetest.swap_node(pos, {name = "mesecons_commandblock:commandblock_on"})
 
 	local meta = minetest.get_meta(pos)
-	local command = minetest.chatcommands[meta:get_string("command")]
-	if command == nil then
-		return
-	end
 	local owner = meta:get_string("owner")
 	if owner == "" then
 		return
 	end
-	local has_privs, missing_privs = minetest.check_player_privs(owner, command.privs)
-	if not has_privs then
-		minetest.chat_send_player(owner, "You don't have permission "
-				.."to run this command (missing privileges: "
-				..table.concat(missing_privs, ", ")..")")
-		return
+
+	local commands = resolve_commands(meta:get_string("commands"), pos)
+	for _, command in pairs(commands:split("\n")) do
+		local pos = command:find(" ")
+		local cmd, param = command, ""
+		if pos then
+			cmd = command:sub(1, pos - 1)
+			param = command:sub(pos + 1)
+		end
+		local cmddef = minetest.chatcommands[cmd]
+		if not cmddef then
+			minetest.chat_send_player(owner, "The command "..cmd.." does not exist")
+			return
+		end
+		local has_privs, missing_privs = minetest.check_player_privs(owner, cmddef.privs)
+		if not has_privs then
+			minetest.chat_send_player(owner, "You don't have permission "
+					.."to run "..cmd
+					.." (missing privileges: "
+					..table.concat(missing_privs, ", ")..")")
+			return
+		end
+		cmddef.func(owner, param)
 	end
-	command.func(owner, resolve_param(meta:get_string("param"), pos))
 end
 
 local function commandblock_action_off(pos, node)
