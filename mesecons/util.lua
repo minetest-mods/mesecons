@@ -169,6 +169,7 @@ function mesecon:cmpSpecial(r1, r2)
 end
 
 function mesecon:tablecopy(table) -- deep table copy
+	if type(table) ~= "table" then return table end -- no need to copy
 	local newtable = {}
 
 	for idx, item in pairs(table) do

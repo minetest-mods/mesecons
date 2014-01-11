@@ -6,13 +6,13 @@ mesecon.on_placenode = function (pos, node)
 			mesecon:turnon (pos)
 			--mesecon:receptor_on (pos, mesecon:conductor_get_rules(node))
 		else
-			mesecon:changesignal(pos, node, mesecon:effector_get_rules(node), "on")
-			mesecon:activate(pos, node)
+			mesecon:changesignal(pos, node, mesecon:effector_get_rules(node), "on", 1)
+			mesecon:activate(pos, node, nil, 1)
 		end
 	elseif mesecon:is_conductor_on(node) then
 		minetest.swap_node(pos, {name = mesecon:get_conductor_off(node)})
 	elseif mesecon:is_effector_on (node.name) then
-		mesecon:deactivate(pos, node)
+		mesecon:deactivate(pos, node, nil, 1)
 	end
 end
 

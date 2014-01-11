@@ -22,9 +22,9 @@
 -- mesecon:effector_get_rules(node)  --> Returns the input rules of the effector (mesecon.rules.default if none specified)
 
 -- SIGNALS
--- mesecon:activate(pos, node)     --> Activates   the effector node at the specific pos (calls nodedef.mesecons.effector.action_on)
--- mesecon:deactivate(pos, node)   --> Deactivates the effector node at the specific pos (calls nodedef.mesecons.effector.action_off)
--- mesecon:changesignal(pos, node, rulename, newstate) --> Changes     the effector node at the specific pos (calls nodedef.mesecons.effector.action_change)
+-- mesecon:activate(pos, node, recdepth)		--> Activates   the effector node at the specific pos (calls nodedef.mesecons.effector.action_on), higher recdepths are executed later
+-- mesecon:deactivate(pos, node, recdepth)		--> Deactivates the effector node at the specific pos (calls nodedef.mesecons.effector.action_off), "
+-- mesecon:changesignal(pos, node, rulename, newstate)	--> Changes     the effector node at the specific pos (calls nodedef.mesecons.effector.action_change), "
 
 -- RULES
 -- mesecon:add_rules(name, rules) | deprecated? --> Saves rules table by name
@@ -41,8 +41,8 @@
 -- HIGH-LEVEL Internals
 -- mesecon:is_power_on(pos)             --> Returns true if pos emits power in any way
 -- mesecon:is_power_off(pos)            --> Returns true if pos does not emit power in any way
--- mesecon:turnon(pos, rulename)        --> Returns true  whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnon
--- mesecon:turnoff(pos, rulename)       --> Turns off whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnoff
+-- mesecon:turnon(pos, rulename)        --> Returns true  whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnon; Uses third parameter recdepth internally to determine how far away the current node is from the initial pos as it uses recursion
+-- mesecon:turnoff(pos, rulename)       --> Turns off whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnoff; Uses third parameter recdepth internally to determine how far away the current node is from the initial pos as it uses recursion
 -- mesecon:connected_to_receptor(pos)   --> Returns true if pos is connected to a receptor directly or via conductors; calls itself if pos is a conductor --> recursive
 -- mesecon:rules_link(output, input, dug_outputrules) --> Returns true if outputposition + outputrules = inputposition and inputposition + inputrules = outputposition (if the two positions connect)
 -- mesecon:rules_link_anydir(outp., inp., d_outpr.)   --> Same as rules mesecon:rules_link but also returns true if output and input are swapped
@@ -191,14 +191,14 @@ mesecon.queue:add_function("activate", function (pos, rulename)
 	end
 end)
 
-function mesecon:activate(pos, node, rulename)
+function mesecon:activate(pos, node, rulename, recdepth)
 	if rulename == nil then
 		for _,rule in ipairs(mesecon:effector_get_rules(node)) do
-			mesecon:activate(pos, node, rule)
+			mesecon:activate(pos, node, rule, recdepth + 1)
 		end
 		return
 	end
-	mesecon.queue:add_action(pos, "activate", {rulename}, nil, rulename)
+	mesecon.queue:add_action(pos, "activate", {rulename}, nil, rulename, 1 / recdepth)
 end
 
 
@@ -212,14 +212,14 @@ mesecon.queue:add_function("deactivate", function (pos, rulename)
 	end
 end)
 
-function mesecon:deactivate(pos, node, rulename)
+function mesecon:deactivate(pos, node, rulename, recdepth)
 	if rulename == nil then
 		for _,rule in ipairs(mesecon:effector_get_rules(node)) do
-			mesecon:deactivate(pos, node, rule)
+			mesecon:deactivate(pos, node, rule, recdepth + 1)
 		end
 		return
 	end
-	mesecon.queue:add_action(pos, "deactivate", {rulename}, nil, rulename)
+	mesecon.queue:add_action(pos, "deactivate", {rulename}, nil, rulename, 1 / recdepth)
 end
 
 
@@ -233,15 +233,15 @@ mesecon.queue:add_function("change", function (pos, rulename, changetype)
 	end
 end)
 
-function mesecon:changesignal(pos, node, rulename, newstate)
+function mesecon:changesignal(pos, node, rulename, newstate, recdepth)
 	if rulename == nil then
 		for _,rule in ipairs(mesecon:effector_get_rules(node)) do
-			mesecon:changesignal(pos, node, rule, newstate)
+			mesecon:changesignal(pos, node, rule, newstate, recdepth + 1)
 		end
 		return
 	end
 
-	mesecon.queue:add_action(pos, "change", {rulename, newstate}, nil, rulename)
+	mesecon.queue:add_action(pos, "change", {rulename, newstate}, nil, rulename, 1 / recdepth)
 end
 
 -- #########
@@ -365,7 +365,8 @@ function mesecon:is_power_off(pos, rulename)
 	return false
 end
 
-function mesecon:turnon(pos, rulename)
+function mesecon:turnon(pos, rulename, recdepth)
+	recdepth = recdepth or 2
 	local node = minetest.get_node(pos)
 	
 	if mesecon:is_conductor_off(node, rulename) then
@@ -374,7 +375,7 @@ function mesecon:turnon(pos, rulename)
 		if not rulename then
 			for _, rule in ipairs(mesecon:flattenrules(rules)) do
 				if mesecon:connected_to_receptor(pos, rule) then
-					mesecon:turnon(pos, rule)
+					mesecon:turnon(pos, rule, recdepth + 1)
 				end
 			end
 			return
@@ -387,32 +388,23 @@ function mesecon:turnon(pos, rulename)
 			local rulenames = mesecon:rules_link_rule_all(pos, rule)
 
 			for _, rulename in ipairs(rulenames) do
-				mesecon:turnon(np, rulename)
+				mesecon:turnon(np, rulename, recdepth + 1)
 			end
 		end
 	elseif mesecon:is_effector(node.name) then
-		mesecon:changesignal(pos, node, rulename, mesecon.state.on)
+		mesecon:changesignal(pos, node, rulename, mesecon.state.on, recdepth)
 		if mesecon:is_effector_off(node.name) then
-			mesecon:activate(pos, node, rulename)
+			mesecon:activate(pos, node, rulename, recdepth)
 		end
 	end
 end
 
-function mesecon:turnoff(pos, rulename)
+function mesecon:turnoff(pos, rulename, recdepth)
+	recdepth = recdepth or 0
 	local node = minetest.get_node(pos)
 
 	if mesecon:is_conductor_on(node, rulename) then
 		local rules = mesecon:conductor_get_rules(node)
-		--[[
-		if not rulename then
-			for _, rule in ipairs(mesecon:flattenrules(rules)) do
-				if mesecon:is_powered(pos, rule) then
-					mesecon:turnoff(pos, rule)
-				end
-			end
-			return
-		end
-		--]]
 		minetest.swap_node(pos, {name = mesecon:get_conductor_off(node, rulename), param2 = node.param2})
 
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
@@ -420,14 +412,14 @@ function mesecon:turnoff(pos, rulename)
 			local rulenames = mesecon:rules_link_rule_all(pos, rule)
 
 			for _, rulename in ipairs(rulenames) do
-				mesecon:turnoff(np, rulename)
+				mesecon:turnoff(np, rulename, recdepth + 1)
 			end
 		end
 	elseif mesecon:is_effector(node.name) then
-		mesecon:changesignal(pos, node, rulename, mesecon.state.off)
+		mesecon:changesignal(pos, node, rulename, mesecon.state.off, recdepth)
 		if mesecon:is_effector_on(node.name)
 		and not mesecon:is_powered(pos) then
-			mesecon:deactivate(pos, node, rulename)
+			mesecon:deactivate(pos, node, rulename, recdepth + 1)
 		end
 	end
 end
