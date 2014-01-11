@@ -31,18 +31,46 @@ rules.d = {x =  0, y = 0, z = -1, name="D"}
 ------------------
 -- These helpers are required to set the portstates of the luacontroller
 
+function lc_update_real_portstates(pos, rulename, newstate)
+	local meta = minetest.get_meta(pos)
+	if rulename == nil then
+		meta:set_int("real_portstates", 1)
+		return
+	end
+	local n = meta:get_int("real_portstates") - 1
+	if n < 0 then
+		legacy_update_ports(pos)
+		n = meta:get_int("real_portstates") - 1
+	end
+	local L = {}
+	for i = 1, 4 do
+		L[i] = n%2
+		n = math.floor(n/2)
+	end
+	if rulename.x == nil then
+		for _, rname in ipairs(rulename) do
+			local port = ({4, 1, nil, 3, 2})[rname.x+2*rname.z+3]
+			L[port] = (newstate == "on") and 1 or 0
+		end
+	else
+		local port = ({4, 1, nil, 3, 2})[rulename.x+2*rulename.z+3]
+		L[port] = (newstate == "on") and 1 or 0
+	end
+	meta:set_int("real_portstates", 1 + L[1] + 2*L[2] + 4*L[3] + 8*L[4])
+end
+
 local get_real_portstates = function(pos) -- determine if ports are powered (by itself or from outside)
-	ports = {
-		a = mesecon:is_power_on(mesecon:addPosRule(pos, rules.a), mesecon:invertRule(rules.a))
-			and mesecon:rules_link(mesecon:addPosRule(pos, rules.a), pos),
-		b = mesecon:is_power_on(mesecon:addPosRule(pos, rules.b), mesecon:invertRule(rules.b))
-			and mesecon:rules_link(mesecon:addPosRule(pos, rules.b), pos),
-		c = mesecon:is_power_on(mesecon:addPosRule(pos, rules.c), mesecon:invertRule(rules.c))
-			and mesecon:rules_link(mesecon:addPosRule(pos, rules.c), pos),
-		d = mesecon:is_power_on(mesecon:addPosRule(pos, rules.d), mesecon:invertRule(rules.d))
-			and mesecon:rules_link(mesecon:addPosRule(pos, rules.d), pos),
-	}
-	return ports
+	local meta = minetest.get_meta(pos)
+	local L = {}
+	local n = meta:get_int("real_portstates") - 1
+	if n < 0 then
+		return legacy_update_ports(pos)
+	end
+	for _, index in ipairs({"a", "b", "c", "d"}) do
+		L[index] = ((n%2) == 1)
+		n = math.floor(n/2)
+	end
+	return L
 end
 
 local merge_portstates = function (ports, vports)
@@ -457,6 +485,7 @@ local mesecons = {
 	{
 		rules = input_rules[cid],
 		action_change = function (pos, _, rulename, newstate)
+			lc_update_real_portstates(pos, rulename, newstate)
 			lc_update(pos, {type=newstate,  pin=rulename})
 		end,
 	},

@@ -39,7 +39,8 @@ mesecon:add_rules(nodename, rules)
 local mesecons = {effector =
 {
 	rules = input_rules,
-	action_change = function (pos, node, rulename)
+	action_change = function (pos, node, rulename, newstate)
+		yc_update_real_portstates(pos, node, rulename, newstate)
 		update_yc(pos)
 	end
 }}
@@ -633,25 +634,45 @@ function yc_set_portstate(port, state, L)
 	return L
 end
 
-function yc_get_real_portstates(pos) -- port powered or not (by itself or from outside)?
-	rulesA = mesecon:get_rules("mesecons_microcontroller:microcontroller0001")
-	rulesB = mesecon:get_rules("mesecons_microcontroller:microcontroller0010")
-	rulesC = mesecon:get_rules("mesecons_microcontroller:microcontroller0100")
-	rulesD = mesecon:get_rules("mesecons_microcontroller:microcontroller1000")
-	L = {
-		a = mesecon:is_power_on(mesecon:addPosRule(pos, rulesA[1]),
-			mesecon:invertRule(rulesA[1])) and
-			mesecon:rules_link(mesecon:addPosRule(pos, rulesA[1]), pos),
-		b = mesecon:is_power_on(mesecon:addPosRule(pos, rulesB[1]),
-			mesecon:invertRule(rulesB[1])) and
-			mesecon:rules_link(mesecon:addPosRule(pos, rulesB[1]), pos),
-		c = mesecon:is_power_on(mesecon:addPosRule(pos, rulesC[1]),
-			mesecon:invertRule(rulesC[1])) and
-			mesecon:rules_link(mesecon:addPosRule(pos, rulesC[1]), pos),
-		d = mesecon:is_power_on(mesecon:addPosRule(pos, rulesD[1]),
-			mesecon:invertRule(rulesD[1])) and
-			mesecon:rules_link(mesecon:addPosRule(pos, rulesD[1]), pos),
-	}
+function yc_update_real_portstates(pos, node, rulename, newstate)
+	local meta = minetest.get_meta(pos)
+	if rulename == nil then
+		meta:set_int("real_portstates", 1)
+		return
+	end
+	local n = meta:get_int("real_portstates") - 1
+	if n < 0 then
+		legacy_update_ports(pos)
+		n = meta:get_int("real_portstates") - 1
+	end
+	local L = {}
+	for i = 1, 4 do
+		L[i] = n%2
+		n = math.floor(n/2)
+	end
+	if rulename.x == nil then
+		for _, rname in ipairs(rulename) do
+			local port = ({4, 1, nil, 3, 2})[rname.x+2*rname.z+3]
+			L[port] = (newstate == "on") and 1 or 0
+		end
+	else
+		local port = ({4, 1, nil, 3, 2})[rulename.x+2*rulename.z+3]
+		L[port] = (newstate == "on") and 1 or 0
+	end
+	meta:set_int("real_portstates", 1 + L[1] + 2*L[2] + 4*L[3] + 8*L[4])
+end
+
+function yc_get_real_portstates(pos) -- determine if ports are powered (by itself or from outside)
+	local meta = minetest.get_meta(pos)
+	local L = {}
+	local n = meta:get_int("real_portstates") - 1
+	if n < 0 then
+		return legacy_update_ports(pos)
+	end
+	for _, index in ipairs({"a", "b", "c", "d"}) do
+		L[index] = ((n%2) == 1)
+		n = math.floor(n/2)
+	end
 	return L
 end
 
