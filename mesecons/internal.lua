@@ -416,7 +416,7 @@ mesecon.queue:add_function("turnon", function (pos, rulename, recdepth)
 end)
 
 function mesecon:turnoff(pos, rulename, recdepth)
-	recdepth = recdepth or 0
+	recdepth = recdepth or 2
 	local node = minetest.get_node(pos)
 
 	if(node.name == "ignore") then
