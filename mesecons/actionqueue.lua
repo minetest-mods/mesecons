@@ -9,11 +9,12 @@ end
 function mesecon.queue:add_action(pos, func, params, time, overwritecheck)
 	-- Create Action Table:
 	time = time or 0 -- time <= 0 --> execute, time > 0 --> wait time until execution
-	action = {	pos=pos,
+	overwritecheck = overwritecheck or {}
+	action = {	pos=mesecon:tablecopy(pos),
 			func=func,
 			params=mesecon:tablecopy(params),
 			time=time,
-			owcheck=overwritecheck}
+			owcheck=mesecon:tablecopy(overwritecheck)}
 
 	--print(dump(action))
 	-- if not using the queue, (MESECONS_GLOBALSTEP off), just execute the function an we're done
@@ -25,7 +26,7 @@ function mesecon.queue:add_action(pos, func, params, time, overwritecheck)
 	-- Otherwise, add the action to the queue
 	if overwritecheck then -- check if old action has to be overwritten / removed:
 		for i, ac in ipairs(mesecon.queue.actions) do
-			if(mesecon:cmpPos(pos, action.pos)
+			if(mesecon:cmpPos(pos, ac.pos)
 			and mesecon:cmpAny(overwritecheck, ac.owcheck)) then
 				table.remove(mesecon.queue.actions, i)
 				break
