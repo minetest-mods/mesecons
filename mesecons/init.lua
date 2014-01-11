@@ -79,7 +79,7 @@ dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 mesecon.queue:add_function("receptor_on", function (pos, rules)
 	rules = rules or mesecon.rules.default
 
-	-- if area (any of the neighbors) is not loaded, keep trying and call this again later
+	-- if area (any of the rule targets) is not loaded, keep trying and call this again later
 	for _, rule in ipairs(mesecon:flattenrules(rules)) do
 		local np = mesecon:addPosRule(pos, rule)
 		if minetest.get_node_or_nil(np) == nil then
@@ -104,11 +104,17 @@ end
 
 mesecon.queue:add_function("receptor_off", function (pos, rules)
 	rules = rules or mesecon.rules.default
+
+	-- if area (any of the rule targets) is not loaded, keep trying and call this again later
 	for _, rule in ipairs(mesecon:flattenrules(rules)) do
 		local np = mesecon:addPosRule(pos, rule)
 		if minetest.get_node_or_nil(np) == nil then
 			mesecon.queue:add_action(pos, "receptor_off", {rules})
 		end
+	end
+
+	for _, rule in ipairs(mesecon:flattenrules(rules)) do
+		local np = mesecon:addPosRule(pos, rule)
 		local rulenames = mesecon:rules_link_rule_all(pos, rule)
 		for _, rulename in ipairs(rulenames) do
 			if not mesecon:connected_to_receptor(np, mesecon:invertRule(rule)) then
