@@ -38,7 +38,7 @@ function mesecon.queue:add_action(pos, func, params, time, overwritecheck, prior
 	end
 
 	if (toremove ~= nil) then
-		table.remove(mesecon.queue.actions, i)
+		table.remove(mesecon.queue.actions, toremove)
 	end
 
 	table.insert(mesecon.queue.actions, action)
