@@ -63,19 +63,24 @@ minetest.register_globalstep(function (dtime)
 	m_time = m_time + dtime
 	if (m_time < 5) then return end -- don't even try if server has not been running for 2 seconds
 	local actions = mesecon:tablecopy(mesecon.queue.actions)
+	local actions_now={}
+
 	mesecon.queue.actions = {}
 
-	for i, action in ipairs(actions) do
-		if action.time > 0 then
-			action.time = action.time - dtime
-			table.insert(mesecon.queue.actions, action) -- will be handled another time
+	-- sort actions in execute now (actions_now) and for later (mesecon.queue.actions)
+	for i, ac in ipairs(actions) do
+		if ac.time > 0 then
+			ac.time = ac.time - dtime -- executed later
+			table.insert(mesecon.queue.actions, ac)
+		else
+			table.insert(actions_now, ac)
 		end
 	end
 
-	while(#actions > 0) do -- execute highest priorities first, until all are executed
-		local hp = get_highest_priority(actions)
-		mesecon.queue:execute(actions[hp])
-		table.remove(actions, hp)
+	while(#actions_now > 0) do -- execute highest priorities first, until all are executed
+		local hp = get_highest_priority(actions_now)
+		mesecon.queue:execute(actions_now[hp])
+		table.remove(actions_now, hp)
 	end
 end)
 
