@@ -20,22 +20,26 @@ function mesecon.queue:add_action(pos, func, params, time, overwritecheck, prior
 			owcheck=(overwritecheck and mesecon:tablecopy(overwritecheck)) or nil,
 			priority=priority}
 
-	--print(dump(action))
 	-- if not using the queue, (MESECONS_GLOBALSTEP off), just execute the function an we're done
 	if not MESECONS_GLOBALSTEP then
 		mesecon.queue:execute(action)
 		return
 	end
 
+	local toremove = nil
 	-- Otherwise, add the action to the queue
 	if overwritecheck then -- check if old action has to be overwritten / removed:
 		for i, ac in ipairs(mesecon.queue.actions) do
 			if(mesecon:cmpPos(pos, ac.pos)
 			and mesecon:cmpAny(overwritecheck, ac.owcheck)) then
-				table.remove(mesecon.queue.actions, i)
+				toremove = i
 				break
 			end
 		end
+	end
+
+	if (toremove ~= nil) then
+		table.remove(mesecon.queue.actions, i)
 	end
 
 	table.insert(mesecon.queue.actions, action)

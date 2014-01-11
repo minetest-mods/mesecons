@@ -368,6 +368,12 @@ end
 function mesecon:turnon(pos, rulename, recdepth)
 	recdepth = recdepth or 2
 	local node = minetest.get_node(pos)
+
+	if(node.name == "ignore") then
+		-- try turning on later again
+		mesecon.queue:add_action(
+			pos, "turnon", {rulename, recdepth + 1}, nil, rulename)
+	end
 	
 	if mesecon:is_conductor_off(node, rulename) then
 		local rules = mesecon:conductor_get_rules(node)
@@ -385,10 +391,16 @@ function mesecon:turnon(pos, rulename, recdepth)
 
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
 			local np = mesecon:addPosRule(pos, rule)
-			local rulenames = mesecon:rules_link_rule_all(pos, rule)
+			if(minetest.get_node(np).name == "ignore") then
+				-- try turning on later again
+				mesecon.queue:add_action(
+					np, "turnon", {rulename, recdepth + 1}, nil, rulename)
+			else
+				local rulenames = mesecon:rules_link_rule_all(pos, rule)
 
-			for _, rulename in ipairs(rulenames) do
-				mesecon:turnon(np, rulename, recdepth + 1)
+				for _, rulename in ipairs(rulenames) do
+					mesecon:turnon(np, rulename, recdepth + 1)
+				end
 			end
 		end
 	elseif mesecon:is_effector(node.name) then
@@ -399,9 +411,19 @@ function mesecon:turnon(pos, rulename, recdepth)
 	end
 end
 
+mesecon.queue:add_function("turnon", function (pos, rulename, recdepth)
+	mesecon:turnon(pos, rulename, recdepth)
+end)
+
 function mesecon:turnoff(pos, rulename, recdepth)
 	recdepth = recdepth or 0
 	local node = minetest.get_node(pos)
+
+	if(node.name == "ignore") then
+		-- try turning on later again
+		mesecon.queue:add_action(
+			pos, "turnoff", {rulename, recdepth + 1}, nil, rulename)
+	end
 
 	if mesecon:is_conductor_on(node, rulename) then
 		local rules = mesecon:conductor_get_rules(node)
@@ -409,10 +431,16 @@ function mesecon:turnoff(pos, rulename, recdepth)
 
 		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
 			local np = mesecon:addPosRule(pos, rule)
-			local rulenames = mesecon:rules_link_rule_all(pos, rule)
+			if(minetest.get_node(np).name == "ignore") then
+				-- try turning on later again
+				mesecon.queue:add_action(
+					np, "turnoff", {rulename, recdepth + 1}, nil, rulename)
+			else
+				local rulenames = mesecon:rules_link_rule_all(pos, rule)
 
-			for _, rulename in ipairs(rulenames) do
-				mesecon:turnoff(np, rulename, recdepth + 1)
+				for _, rulename in ipairs(rulenames) do
+					mesecon:turnoff(np, rulename, recdepth + 1)
+				end
 			end
 		end
 	elseif mesecon:is_effector(node.name) then
@@ -423,6 +451,10 @@ function mesecon:turnoff(pos, rulename, recdepth)
 		end
 	end
 end
+
+mesecon.queue:add_function("turnoff", function (pos, rulename, recdepth)
+	mesecon:turnoff(pos, rulename, recdepth)
+end)
 
 
 function mesecon:connected_to_receptor(pos, rulename)
