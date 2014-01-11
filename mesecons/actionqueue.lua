@@ -12,7 +12,6 @@ function mesecon.queue:add_action(pos, func, params, time, overwritecheck, prior
 	-- Create Action Table:
 	time = time or 0 -- time <= 0 --> execute, time > 0 --> wait time until execution
 	priority = priority or 1
-	overwritecheck = overwritecheck or {}
 	action = {	pos=mesecon:tablecopy(pos),
 			func=func,
 			params=mesecon:tablecopy(params),
@@ -39,7 +38,7 @@ function mesecon.queue:add_action(pos, func, params, time, overwritecheck, prior
 	end
 
 	if (toremove ~= nil) then
-		table.remove(mesecon.queue.actions, i)
+		table.remove(mesecon.queue.actions, toremove)
 	end
 
 	table.insert(mesecon.queue.actions, action)

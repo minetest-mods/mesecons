@@ -82,8 +82,9 @@ mesecon.queue:add_function("receptor_on", function (pos, rules)
 	-- if area (any of the rule targets) is not loaded, keep trying and call this again later
 	for _, rule in ipairs(mesecon:flattenrules(rules)) do
 		local np = mesecon:addPosRule(pos, rule)
+		-- if area is not loaded, keep trying
 		if minetest.get_node_or_nil(np) == nil then
-			mesecon.queue:add_action(pos, "receptor_on", {rules})
+			mesecon.queue:add_action(pos, "receptor_on", {rules}, nil, rules)
 			return
 		end
 	end
@@ -99,7 +100,7 @@ mesecon.queue:add_function("receptor_on", function (pos, rules)
 end)
 
 function mesecon:receptor_on(pos, rules)
-	mesecon.queue:add_action(pos, "receptor_on", {rules})
+	mesecon.queue:add_action(pos, "receptor_on", {rules}, nil, rules)
 end
 
 mesecon.queue:add_function("receptor_off", function (pos, rules)
@@ -109,7 +110,8 @@ mesecon.queue:add_function("receptor_off", function (pos, rules)
 	for _, rule in ipairs(mesecon:flattenrules(rules)) do
 		local np = mesecon:addPosRule(pos, rule)
 		if minetest.get_node_or_nil(np) == nil then
-			mesecon.queue:add_action(pos, "receptor_off", {rules})
+			mesecon.queue:add_action(pos, "receptor_off", {rules}, nil, rules)
+			return
 		end
 	end
 
@@ -120,14 +122,14 @@ mesecon.queue:add_function("receptor_off", function (pos, rules)
 			if not mesecon:connected_to_receptor(np, mesecon:invertRule(rule)) then
 				mesecon:turnoff(np, rulename)
 			else
-				mesecon:changesignal(np, minetest.get_node(np), rulename, mesecon.state.off, 1)
+				mesecon:changesignal(np, minetest.get_node(np), rulename, mesecon.state.off, 2)
 			end
 		end
 	end
 end)
 
 function mesecon:receptor_off(pos, rules)
-	mesecon.queue:add_action(pos, "receptor_off", {rules})
+	mesecon.queue:add_action(pos, "receptor_off", {rules}, nil, rules)
 end
 
 
