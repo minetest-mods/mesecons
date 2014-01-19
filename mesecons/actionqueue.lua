@@ -20,7 +20,7 @@ function mesecon.queue:add_action(pos, func, params, time, overwritecheck, prior
 			priority=priority}
 
 	-- if not using the queue, (MESECONS_GLOBALSTEP off), just execute the function an we're done
-	if not MESECONS_GLOBALSTEP then
+	if not MESECONS_GLOBALSTEP and action.time == 0 then
 		mesecon.queue:execute(action)
 		return
 	end
@@ -64,7 +64,7 @@ end
 local m_time = 0
 minetest.register_globalstep(function (dtime)
 	m_time = m_time + dtime
-	if (m_time < 5) then return end -- don't even try if server has not been running for 2 seconds
+	if (m_time < MESECONS_RESUMETIME) then return end -- don't even try if server has not been running for XY seconds
 	local actions = mesecon:tablecopy(mesecon.queue.actions)
 	local actions_now={}
 

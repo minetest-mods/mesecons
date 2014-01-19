@@ -7,3 +7,5 @@ PISTON_MAXIMUM_PUSH = 15
 MOVESTONE_MAXIMUM_PUSH = 100
 MESECONS_GLOBALSTEP = true	-- true = receptors/effectors won't be updated
 				-- until next globalstep, decreases server load
+MESECONS_RESUMETIME = 4		-- time to wait when starting the server before
+				-- processing the ActionQueue, don't set this too low
