@@ -252,6 +252,7 @@ local create_environment = function(pos, mem, event)
 				gsub = string.gsub,
 				len = string.len,
 				lower = string.lower,
+				upper = string.upper,
 				match = string.match,
 				rep = string.rep,
 				reverse = string.reverse,
