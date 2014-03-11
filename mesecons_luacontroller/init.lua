@@ -518,7 +518,7 @@ minetest.register_node(nodename, {
 	node_box = nodebox,
 	on_construct = reset_meta,
 	on_receive_fields = function(pos, formname, fields)
-		if fields.quit then
+		if not fields.program then
 			return
 		end
 		reset(pos)
