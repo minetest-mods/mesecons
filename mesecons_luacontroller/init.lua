@@ -219,13 +219,19 @@ local getinterrupt = function(pos)
 	return interrupt
 end
 
-local getdigiline_send = function (pos)
-	local digiline_send = function (channel, msg)
-		if digiline then
-			digiline:receptor_send(pos, digiline.rules.default, channel, msg)
-		end
+local handle_timer = function(pos, elapsed)
+	local err = lc_update(pos, {type="timer"})
+	if err then print(err) end
+	return false
+end
+
+local gettimer = function(pos)
+	local timer = function (time)
+		if type(time) ~= "number" then return end
+		local nodetimer = minetest.get_node_timer(pos)
+		nodetimer:start(time)
 	end
-	return digiline_send
+	return timer
 end
 
 local create_environment = function(pos, mem, event)
@@ -239,7 +245,11 @@ local create_environment = function(pos, mem, event)
 			pin = merge_portstates(vports, rports),
 			port = vports,
 			interrupt = getinterrupt(pos),
-			digiline_send = getdigiline_send(pos),
+			timer = gettimer(pos),
+			digiline_msgs = {},
+			digiline_send = function(channel, msg)
+				table.insert(lc_digiline_msgs, {["channel"]=channel, ["msg"]=msg})
+			end,
 			mem = mem,
 			tostring = tostring,
 			tonumber = tonumber,
@@ -527,6 +537,7 @@ minetest.register_node(nodename, {
 		if err then print(err) end
 		reset_meta(pos, fields.code, err)
 	end,
+	on_timer = handle_timer,
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = mesecons,
 	digiline = digiline,
