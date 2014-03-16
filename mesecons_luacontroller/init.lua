@@ -2,7 +2,7 @@
 -- ports = get_real_portstates(pos): gets if inputs are powered from outside
 -- newport = merge_portstates(state1, state2): just does result = state1 or state2 for every port
 -- action_setports(pos, rule, state): activates/deactivates the mesecons according to the portstates (helper for action)
--- action(pos, ports): Applies new portstates to a luacontroller at pos
+-- action(pos, ports, digiline_msgs): Applies new portstates to a luacontroller at pos, and sends pending digiline messages
 -- lc_update(pos): updates the controller at pos by executing the code
 -- reset_meta (pos, code, errmsg): performs a software-reset, installs new code and prints error messages
 -- reset (pos): performs a hardware reset, turns off all ports
@@ -99,7 +99,7 @@ local setport = function (pos, rule, state)
 	end
 end
 
-local action = function (pos, ports)
+local action = function (pos, ports, digiline_msgs)
 	local node = minetest.get_node(pos)
 	local name = node.name
 	local vports = minetest.registered_nodes[name].virtual_portstates
@@ -115,6 +115,13 @@ local action = function (pos, ports)
 		if ports.b ~= vports.b then setport(pos, rules.b, ports.b) end
 		if ports.c ~= vports.c then setport(pos, rules.c, ports.c) end
 		if ports.d ~= vports.d then setport(pos, rules.d, ports.d) end
+	end
+
+	if digiline then
+		for i = 1, #digiline_msgs do
+			digiline:receptor_send(pos, digiline.rules.default,
+			    digiline_msgs[i].channel, digiline_msgs[i].msg)
+		end
 	end
 end
 
@@ -366,6 +373,7 @@ end
 -- Parsing function --
 ----------------------
 
+lc_digiline_msgs = nil
 lc_update = function (pos, event)
 	local meta = minetest.get_meta(pos)
 	if not interrupt_allow(meta, event) then return end
@@ -381,6 +389,7 @@ lc_update = function (pos, event)
 	local env = create_environment(pos, mem, event)
 
 	-- create the sandbox and execute code
+	lc_digiline_msgs = {}
 	local chunk, msg = create_sandbox (code, env)
 	if not chunk then return msg end
 	local success, msg = pcall(f)
@@ -389,8 +398,8 @@ lc_update = function (pos, event)
 
 	save_memory(meta, mem)
 
-	-- Actually set the ports
-	minetest.after(0, action, pos, env.port)
+	-- Actually set the ports and send digiline messages
+	minetest.after(0, action, pos, env.port, lc_digiline_msgs)
 end
 
 local reset_meta = function(pos, code, errmsg)
@@ -409,7 +418,7 @@ end
 
 local reset = function (pos)
 	minetest.get_meta(pos):set_string("lc_interrupts", "")
-	action(pos, {a=false, b=false, c=false, d=false}, true)
+	action(pos, {a=false, b=false, c=false, d=false}, {})
 end
 
 --        ______
