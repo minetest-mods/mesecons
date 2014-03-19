@@ -6,18 +6,18 @@ end
 
 -- If add_action with twice the same overwritecheck and same position are called, the first one is overwritten
 -- use overwritecheck nil to never overwrite, but just add the event to the queue
--- priority specifies the order actions are executed within one globalstep, highest by default
+-- priority specifies the order actions are executed within one globalstep, highest first
 -- should be between 0 and 1
 function mesecon.queue:add_action(pos, func, params, time, overwritecheck, priority)
 	-- Create Action Table:
 	time = time or 0 -- time <= 0 --> execute, time > 0 --> wait time until execution
 	priority = priority or 1
-	action = {	pos=mesecon:tablecopy(pos),
-			func=func,
-			params=mesecon:tablecopy(params),
-			time=time,
-			owcheck=(overwritecheck and mesecon:tablecopy(overwritecheck)) or nil,
-			priority=priority}
+	local action = {	pos=mesecon:tablecopy(pos),
+				func=func,
+				params=mesecon:tablecopy(params),
+				time=time,
+				owcheck=(overwritecheck and mesecon:tablecopy(overwritecheck)) or nil,
+				priority=priority}
 
 	-- if not using the queue, (MESECONS_GLOBALSTEP off), just execute the function an we're done
 	if not MESECONS_GLOBALSTEP and action.time == 0 then
@@ -50,7 +50,7 @@ end
 -- However, even that does not work in some cases, that's why we delay the time the globalsteps
 -- start to be execute by 5 seconds
 local get_highest_priority = function (actions)
-	local highestp = 0, highesti
+	local highestp = -1, highesti
 	for i, ac in ipairs(actions) do
 		if ac.priority > highestp then
 			highestp = ac.priority
@@ -70,7 +70,8 @@ minetest.register_globalstep(function (dtime)
 
 	mesecon.queue.actions = {}
 
-	-- sort actions in execute now (actions_now) and for later (mesecon.queue.actions)
+	-- sort actions into two categories:
+	-- those toexecute now (actions_now) and those to execute later (mesecon.queue.actions)
 	for i, ac in ipairs(actions) do
 		if ac.time > 0 then
 			ac.time = ac.time - dtime -- executed later
