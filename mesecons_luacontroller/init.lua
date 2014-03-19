@@ -353,7 +353,7 @@ lc_update = function (pos, event)
 	save_memory(meta, mem)
 
 	-- Actually set the ports
-	minetest.after(0, action, pos, env.port)
+	action(pos, env.port)
 end
 
 local reset_meta = function(pos, code, errmsg)
