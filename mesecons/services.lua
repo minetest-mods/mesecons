@@ -3,8 +3,9 @@ mesecon.on_placenode = function (pos, node)
 		mesecon:receptor_on(pos, mesecon:receptor_get_rules(node))
 	elseif mesecon:is_powered(pos) then
 		if mesecon:is_conductor(node.name) then
+			-- receptor_on if itself is powered already
 			mesecon:turnon (pos)
-			--mesecon:receptor_on (pos, mesecon:conductor_get_rules(node))
+			mesecon:receptor_on (pos, mesecon:conductor_get_rules(node))
 		else
 			mesecon:changesignal(pos, node, mesecon:effector_get_rules(node), "on", 1)
 			mesecon:activate(pos, node, nil, 1)
