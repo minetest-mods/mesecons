@@ -21,14 +21,14 @@ local delayer_activate = function(pos, node)
 	local def = minetest.registered_nodes[node.name]
 	local time = def.delayer_time
 	minetest.swap_node(pos, {name = def.delayer_onstate, param2=node.param2})
-	mesecon.queue:add_action(pos, "receptor_on", {rules=delayer_get_output_rules(node)}, time, nil)
+	mesecon.queue:add_action(pos, "receptor_on", {delayer_get_output_rules(node)}, time, nil)
 end
 
 local delayer_deactivate = function(pos, node)
 	local def = minetest.registered_nodes[node.name]
 	local time = def.delayer_time
 	minetest.swap_node(pos, {name = def.delayer_offstate, param2=node.param2})
-	mesecon.queue:add_action(pos, "receptor_off", {rules=delayer_get_output_rules(node)}, time, nil)
+	mesecon.queue:add_action(pos, "receptor_off", {delayer_get_output_rules(node)}, time, nil)
 end
 
 -- Register the 2 (states) x 4 (delay times) delayers
