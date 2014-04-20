@@ -122,30 +122,6 @@ end
 -- Overheat stuff --
 --------------------
 
-local heat = function (meta) -- warm up
-	h = meta:get_int("heat")
-	if h ~= nil then
-		meta:set_int("heat", h + 1)
-	end
-end
-
---local cool = function (meta) -- cool down after a while
---	h = meta:get_int("heat")
---	if h ~= nil then
---		meta:set_int("heat", h - 1)
---	end
---end
-
-local overheat = function (meta) -- determine if too hot
-	h = meta:get_int("heat")
-	if h == nil then return true end -- if nil then overheat
-	if h > 40 then 
-		return true
-	else 
-		return false 
-	end
-end
-
 local overheat_off = function(pos)
 	mesecon:receptor_off(pos, mesecon.rules.flat)
 end
@@ -232,6 +208,8 @@ local create_environment = function(pos, mem, event)
 			mem = mem,
 			tostring = tostring,
 			tonumber = tonumber,
+			heat = minetest.get_meta(pos):get_int("heat"),
+			heat_max = OVERHEAT_MAX,
 			string = {
 				byte = string.byte,
 				char = string.char,
@@ -299,11 +277,8 @@ local create_sandbox = function (code, env)
 	return f
 end
 
-local do_overheat = function (pos, meta)
-	-- Overheat protection
-	heat(meta)
-	--minetest.after(0.5, cool, meta)
-	if overheat(meta) then
+local lc_overheat = function (pos, meta)
+	if mesecon.do_overheat(pos) then -- if too hot
 		local node = minetest.get_node(pos)
 		minetest.swap_node(pos, {name = BASENAME.."_burnt", param2 = node.param2})
 		minetest.after(0.2, overheat_off, pos) -- wait for pending operations
@@ -332,7 +307,7 @@ end
 
 lc_update = function (pos, event)
 	local meta = minetest.get_meta(pos)
-	if do_overheat(pos, meta) then return end
+	if lc_overheat(pos) then return end
 
 	-- load code & mem from memory
 	local mem  = load_memory(meta)
@@ -507,9 +482,9 @@ minetest.register_node(nodename, {
 	mesecons = mesecons,
 	digiline = digiline,
 	virtual_portstates = {	a = a == 1, -- virtual portstates are
-					b = b == 1, -- the ports the the
-					c = c == 1, -- controller powers itself
-					d = d == 1},-- so those that light up
+				b = b == 1, -- the ports the the
+				c = c == 1, -- controller powers itself
+				d = d == 1},-- so those that light up
 	after_dig_node = function (pos, node)
 		mesecon:receptor_off(pos, output_rules)
 	end,
@@ -520,7 +495,21 @@ end
 end
 end
 
---overheated luacontroller
+------------------------------
+-- overheated luacontroller --
+------------------------------
+
+local mesecons_burnt = {
+	effector =
+	{
+		rules = mesecon.rules.flat,
+		action_change = function (pos, _, rulename, newstate)
+			-- only update portstates when changes are triggered
+			lc_update_real_portstates(pos, rulename, newstate)
+		end
+	}
+}
+
 minetest.register_node(BASENAME .. "_burnt", {
 	drawtype = "nodebox",
 	tiles = {
@@ -553,6 +542,7 @@ minetest.register_node(BASENAME .. "_burnt", {
 	end,
 	sounds = default.node_sound_stone_defaults(),
 	virtual_portstates = {a = false, b = false, c = false, d = false},
+	mesecons = mesecons_burnt,
 })
 
 ------------------------

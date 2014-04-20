@@ -1,3 +1,5 @@
+-- Dig and place services
+
 mesecon.on_placenode = function (pos, node)
 	-- Receptors: Send on signal when active
 	if mesecon:is_receptor_on(node.name) then
@@ -37,15 +39,38 @@ mesecon.on_dignode = function (pos, node)
 	end
 end
 
-minetest.register_abm({
-	nodenames = {"group:overheat"},
-	interval = 1.0,
-	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		local meta = minetest.get_meta(pos)
-		meta:set_int("heat",0)
-	end,
-})
-
 minetest.register_on_placenode(mesecon.on_placenode)
 minetest.register_on_dignode(mesecon.on_dignode)
+
+-- Overheating service for fast circuits
+
+-- returns true if heat is too high
+mesecon.do_overheat = function(pos)
+	local meta = minetest.get_meta(pos)
+	local heat = meta:get_int("heat") or 0
+
+	heat = heat + 1
+	meta:set_int("heat", heat)
+
+	if heat < OVERHEAT_MAX then
+		mesecon.queue:add_action(pos, "cooldown", {}, 1, nil, 0)
+	else
+		return true
+	end
+
+	return false
+end
+
+
+mesecon.queue:add_function("cooldown", function (pos)
+	if minetest.get_item_group(minetest.get_node(pos).name, "overheat") == 0 then
+		return -- node has been moved, this one does not use overheating - ignore
+	end
+
+	local meta = minetest.get_meta(pos)
+	local heat = meta:get_int("heat")
+
+	if (heat > 0) then
+		meta:set_int("heat", heat - 1)
+	end
+end)

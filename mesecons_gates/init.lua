@@ -47,9 +47,7 @@ function set_gate(pos, on)
 	gate = get_gate(pos)
 	local meta = minetest.get_meta(pos)
 	if on ~= gate_state(pos) then
-		yc_heat(meta)
-		--minetest.after(0.5, yc_cool, meta)
-		if yc_overheat(meta) then
+		if mesecon.do_overheat(pos) then
 			pop_gate(pos)
 		else
 			local node = minetest.get_node(pos)
@@ -78,7 +76,9 @@ end
 function pop_gate(pos)
 	gate = get_gate(pos)
 	minetest.remove_node(pos)
-	minetest.after(0.2, yc_overheat_off, pos)
+	minetest.after(0.2, function (pos)
+		mesecon:receptor_off(pos, mesecon.rules.flat)
+	end , pos) -- wait for pending parsings
 	minetest.add_item(pos, "mesecons_gates:"..gate.."_off")
 end
 
@@ -153,7 +153,6 @@ for _, gate in ipairs(gates) do
 			walkable = true,
 			on_construct = function(pos)
 				local meta = minetest.get_meta(pos)
-				meta:set_int("heat", 0)
 				update_gate(pos)
 			end,
 			groups = groups,
@@ -221,4 +220,3 @@ minetest.register_craft({
 		{'mesecons:mesecon', '', ''},
 	},
 })
-

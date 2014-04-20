@@ -79,14 +79,12 @@ mesecon.queue:add_function("receptor_on", function (pos, rules)
 	rules = rules or mesecon.rules.default
 
 	-- if area (any of the rule targets) is not loaded, keep trying and call this again later
-	if MESECONS_GLOBALSTEP then -- trying to enable resuming with globalstep disabled would cause an endless loop
-		for _, rule in ipairs(mesecon:flattenrules(rules)) do
-			local np = mesecon:addPosRule(pos, rule)
-			-- if area is not loaded, keep trying
-			if minetest.get_node_or_nil(np) == nil then
-				mesecon.queue:add_action(pos, "receptor_on", {rules}, nil, rules)
-				return
-			end
+	for _, rule in ipairs(mesecon:flattenrules(rules)) do
+		local np = mesecon:addPosRule(pos, rule)
+		-- if area is not loaded, keep trying
+		if minetest.get_node_or_nil(np) == nil then
+			mesecon.queue:add_action(pos, "receptor_on", {rules}, nil, rules)
+			return
 		end
 	end
 
@@ -108,13 +106,11 @@ mesecon.queue:add_function("receptor_off", function (pos, rules)
 	rules = rules or mesecon.rules.default
 
 	-- if area (any of the rule targets) is not loaded, keep trying and call this again later
-	if MESECONS_GLOBALSTEP then
-		for _, rule in ipairs(mesecon:flattenrules(rules)) do
-			local np = mesecon:addPosRule(pos, rule)
-			if minetest.get_node_or_nil(np) == nil then
-				mesecon.queue:add_action(pos, "receptor_off", {rules}, nil, rules)
-				return
-			end
+	for _, rule in ipairs(mesecon:flattenrules(rules)) do
+		local np = mesecon:addPosRule(pos, rule)
+		if minetest.get_node_or_nil(np) == nil then
+			mesecon.queue:add_action(pos, "receptor_off", {rules}, nil, rules)
+			return
 		end
 	end
 

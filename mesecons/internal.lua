@@ -412,9 +412,7 @@ function mesecon:turnon(pos, rulename, recdepth)
 end
 
 mesecon.queue:add_function("turnon", function (pos, rulename, recdepth)
-	if (MESECONS_GLOBALSTEP) then -- do not resume if we don't use globalstep - that would cause an endless loop
-		mesecon:turnon(pos, rulename, recdepth)
-	end
+	mesecon:turnon(pos, rulename, recdepth)
 end)
 
 function mesecon:turnoff(pos, rulename, recdepth)
@@ -455,9 +453,7 @@ function mesecon:turnoff(pos, rulename, recdepth)
 end
 
 mesecon.queue:add_function("turnoff", function (pos, rulename, recdepth)
-	if (MESECONS_GLOBALSTEP) then -- do not resume if we don't use globalstep - that would cause an endless loop
-		mesecon:turnoff(pos, rulename, recdepth)
-	end
+	mesecon:turnoff(pos, rulename, recdepth)
 end)
 
 
