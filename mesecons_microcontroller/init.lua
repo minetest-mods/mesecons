@@ -98,9 +98,6 @@ minetest.register_node(nodename, {
 		meta:set_string("eeprom", r)
 	end,
 	on_receive_fields = function(pos, formanme, fields, sender)
-		if fields.quit then
-			return
-		end
 		local meta = minetest.get_meta(pos)
 		if fields.band then
 			fields.code = "sbi(C, A&B) :A and B are inputs, C is output"
@@ -114,8 +111,8 @@ minetest.register_node(nodename, {
 			fields.code = "if(A)sbi(1,1);if(!A&#1)sbi(B,!B)sbi(1,0); if(C)off(B,1); :A is input, B is output (Q), C is reset, toggles with falling edge"
 		elseif fields.brsflop then
 			fields.code = "if(A)on(C);if(B)off(C); :A is S (Set), B is R (Reset), C is output (R dominates)"
-		elseif fields.program or fields.code then --nothing
-		else return nil end
+		end
+		if fields.code == nil then return end
 
 		meta:set_string("code", fields.code)
 		meta:set_string("formspec", "size[9,2.5]"..
