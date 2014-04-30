@@ -11,9 +11,8 @@ local object_detector_make_formspec = function (pos)
 end
 
 local object_detector_on_receive_fields = function(pos, formname, fields)
-	if fields.quit then
-		return
-	end
+	if not fields.scanname or not fields.digiline_channel then return end;
+
 	local meta = minetest.get_meta(pos)
 	meta:set_string("scanname", fields.scanname)
 	meta:set_string("digiline_channel", fields.digiline_channel)
