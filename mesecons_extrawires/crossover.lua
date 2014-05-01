@@ -77,7 +77,7 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 			{ -3/32, -17/32, 6/32, 3/32, -13/32, 16/32+0.001 },
 		},
 	},
-	groups = {dig_immediate=3, mesecon=3, mesecon_conductor_craftable=1, not_in_creative_inventory=1},
+	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
 	mesecons = {
 		conductor = {
 			states = crossover_states,
@@ -113,7 +113,7 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 			{ -3/32, -17/32, 6/32, 3/32, -13/32, 16/32+0.001 },
 		},
 	},
-	groups = {dig_immediate=3, mesecon=3, mesecon_conductor_craftable=1, not_in_creative_inventory=1},
+	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
 	mesecons = {
 		conductor = {
 			states = crossover_states,
@@ -149,7 +149,7 @@ minetest.register_node("mesecons_extrawires:crossover_on", {
 			{ -3/32, -17/32, 6/32, 3/32, -13/32, 16/32+0.001 },
 		},
 	},
-	groups = {dig_immediate=3, mesecon=3, mesecon_conductor_craftable=1, not_in_creative_inventory=1},
+	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
 	mesecons = {
 		conductor = {
 			states = crossover_states,
