@@ -10,3 +10,5 @@ MESECONS_RESUMETIME = 4		-- time to wait when starting the server before
 OVERHEAT_MAX = 20		-- maximum heat of any component that directly sends an output
 				-- signal when the input changes (e.g. luacontroller, gates)
 				-- Unit: actions per second, checks are every 1 second
+STACK_SIZE = 3000		-- Recursive functions will abort when this is reached. Therefore,
+				-- this is also limits the maximum circuit size.

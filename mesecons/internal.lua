@@ -367,6 +367,7 @@ end
 
 function mesecon:turnon(pos, rulename, recdepth)
 	recdepth = recdepth or 2
+	if (recdepth > STACK_SIZE) then return end
 	local node = minetest.get_node(pos)
 
 	if(node.name == "ignore") then
@@ -417,6 +418,7 @@ end)
 
 function mesecon:turnoff(pos, rulename, recdepth)
 	recdepth = recdepth or 2
+	if (recdepth > STACK_SIZE) then return end
 	local node = minetest.get_node(pos)
 
 	if(node.name == "ignore") then
@@ -477,7 +479,9 @@ function mesecon:connected_to_receptor(pos, rulename)
 	return false
 end
 
-function mesecon:find_receptor_on(pos, checked, rulename)
+function mesecon:find_receptor_on(pos, checked, rulename, recdepth)
+	recdepth = recdepth or 2
+	if (recdepth > STACK_SIZE) then return true end -- ignore request
 	local node = minetest.get_node(pos)
 
 	if mesecon:is_receptor_on(node.name) then
@@ -501,7 +505,7 @@ function mesecon:find_receptor_on(pos, checked, rulename)
 			local rulenames = mesecon:rules_link_rule_all_inverted(pos, rule)
 			for _, rname in ipairs(rulenames) do
 				local np = mesecon:addPosRule(pos, rname)
-				if mesecon:find_receptor_on(np, checked, mesecon:invertRule(rname)) then
+				if mesecon:find_receptor_on(np, checked, mesecon:invertRule(rname), recdepth + 1) then
 					return true
 				end
 			end
