@@ -79,7 +79,7 @@ local function after_place(pos, placer)
 end
 
 local function receive_fields(pos, formname, fields, sender)
-	if fields.quit then
+	if not fields.submit then
 		return
 	end
 	local meta = minetest.get_meta(pos)
