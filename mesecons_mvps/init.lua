@@ -175,7 +175,7 @@ function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: d
 		local meta = minetest.get_meta(lnode2):to_table()
 		minetest.add_node(oldpos, lnode2)
 		minetest.get_meta(oldpos):from_table(meta)
-		moved_nodes[#moved_nodes+1] = {pos = oldpos, oldpos = lnode2, node = lnode2, meta = meta}
+		moved_nodes[#moved_nodes+1] = {pos = oldpos, oldpos = lpos2, node = lnode2, meta = meta}
 		nodeupdate(oldpos)
 		oldpos = {x=lpos2.x, y=lpos2.y, z=lpos2.z}
 		lpos2.x = lpos2.x-direction.x
