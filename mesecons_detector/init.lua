@@ -1,3 +1,5 @@
+local GET_COMMAND = "GET"
+
 -- Object detector
 -- Detects players in a certain radius
 -- The radius can be specified in mesecons/settings.lua
@@ -33,7 +35,7 @@ local object_detector_scan = function (pos)
 end
 
 -- set player name when receiving a digiline signal on a specific channel
-object_detector_digiline = {
+local object_detector_digiline = {
 	effector = {
 		action = function (pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
@@ -140,17 +142,24 @@ local node_detector_scan = function (pos)
 end
 
 -- set player name when receiving a digiline signal on a specific channel
-node_detector_digiline = {
+local node_detector_digiline = {
 	effector = {
 		action = function (pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
 			local active_channel = meta:get_string("digiline_channel")
 			if channel == active_channel then
-				meta:set_string("scanname", msg)
-				node_detector_make_formspec(pos)
+				if msg == GET_COMMAND then
+					local frontpos = vector.subtract(pos, minetest.facedir_to_dir(node.param2))
+					local name = minetest.get_node(frontpos).name
+					digiline:receptor_send(pos, digiline.rules.default, channel, name)
+				else
+					meta:set_string("scanname", msg)
+					node_detector_make_formspec(pos)
+				end
 			end
 		end,
-	}
+	},
+	receptor = {}
 }
 
 minetest.register_node("mesecons_detector:node_detector_off", {
