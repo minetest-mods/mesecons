@@ -15,6 +15,17 @@ doors = {}
 --    selection_box_top
 --    only_placer_can_open: if true only the player who placed the door can
 --                          open it
+local function is_right(pos)
+	local r1 = minetest.get_node({x=pos.x-1, y=pos.y, z=pos.z})
+	local r2 = minetest.get_node({x=pos.x, y=pos.y, z=pos.z-1})
+	if string.find(r1.name, "door_") or string.find(r2.name, "door_") then
+		if string.find(r1.name, "_1") or string.find(r2.name, "_1") then
+			return true
+		else
+			return false
+		end
+	end
+end
 
 function doors:register_door(name, def)
 	def.groups.not_in_creative_inventory = 1
@@ -59,6 +70,19 @@ function doors:register_door(name, def)
 		meta = minetest.get_meta(pos):to_table()
 		minetest.set_node(pos, {name=replace, param2=p2})
 		minetest.get_meta(pos):from_table(meta)
+
+		local snd_1 = "_close"
+		local snd_2 = "_open"
+		if params[1] == 3 then
+			snd_1 = "_open"
+			snd_2 = "_close"
+		end
+
+		if is_right(pos) then
+			minetest.sound_play("door"..snd_1, {pos = pos, gain = 0.3, max_hear_distance = 10})
+		else
+			minetest.sound_play("door"..snd_2, {pos = pos, gain = 0.3, max_hear_distance = 10})
+		end
 	end
 
 	local function on_mesecons_signal_open (pos, node)
