@@ -132,7 +132,7 @@ function mesecon:receptor_off(pos, rules)
 end
 
 
-print("[OK] Mesecons")
+print("[MOD] Mesecons loaded!")
 
 --The actual wires
 dofile(minetest.get_modpath("mesecons").."/wires.lua");
