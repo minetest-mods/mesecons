@@ -638,7 +638,7 @@ function yc_update_real_portstates(pos, node, rulename, newstate)
 	end
 	local n = meta:get_int("real_portstates") - 1
 	if n < 0 then
-		legacy_update_ports(pos)
+		mesecon.legacy_update_ports(pos)
 		n = meta:get_int("real_portstates") - 1
 	end
 	local L = {}
@@ -663,7 +663,7 @@ function yc_get_real_portstates(pos) -- determine if ports are powered (by itsel
 	local L = {}
 	local n = meta:get_int("real_portstates") - 1
 	if n < 0 then
-		return legacy_update_ports(pos)
+		return mesecon.legacy_update_ports(pos)
 	end
 	for _, index in ipairs({"a", "b", "c", "d"}) do
 		L[index] = ((n%2) == 1)
