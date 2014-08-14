@@ -61,12 +61,44 @@ local function is_ghoststone_active(pos)
 	return minetest.get_node(pos).name == "mesecons_random:ghoststone_active"
 end
 
+local c = {}
 local function update_ghoststones(pos, func, name)
 	func = func or is_ghoststone
 	name = name or "mesecons_random:ghoststone_active"
-	for _,p in pairs(get_tab(pos, func)) do
-		minetest.set_node(p, {name=name})
+	local tab = get_tab(pos, func)
+	if #tab < 50 then
+		for _,p in pairs(tab) do
+			minetest.set_node(p, {name=name})
+		end
+		return
 	end
+
+	local p = tab[1]
+	local min = vector.new(p)
+	local max = vector.new(p)
+	for _,p in pairs(tab) do
+		for _,coord in pairs({"x", "y", "z"}) do
+			min[coord] = math.min(min[coord], p[coord])
+			max[coord] = math.max(max[coord], p[coord])
+		end
+	end
+
+	c[name] = c[name] or minetest.get_content_id(name)
+	local c_name = c[name]
+
+	local manip = minetest.get_voxel_manip()
+	local emerged_pos1, emerged_pos2 = manip:read_from_map(min, max)
+	local area = VoxelArea:new({MinEdge=emerged_pos1, MaxEdge=emerged_pos2})
+	local nodes = manip:get_data()
+
+	for _,p in pairs(tab) do
+		nodes[area:indexp(p)] = c_name
+	end
+
+	manip:set_data(nodes)
+	manip:write_to_map()
+	manip:update_map()
+	--print(string.format("[mesecons] ghostblocks updated after ca. %.2fs", os.clock() - --t1))
 end
 
 minetest.register_node("mesecons_random:ghoststone", {
