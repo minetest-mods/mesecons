@@ -77,26 +77,21 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_abm(
-	{nodenames = {"mesecons_blinkyplant:blinky_plant_off"},
+minetest.register_abm({
+	nodenames = {
+		"mesecons_blinkyplant:blinky_plant_off",
+		"mesecons_blinkyplant:blinky_plant_on"
+	},
 	interval = BLINKY_PLANT_INTERVAL,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		--minetest.remove_node(pos)
-		minetest.add_node(pos, {name="mesecons_blinkyplant:blinky_plant_on"})
+		if node.name == "mesecons_blinkyplant:blinky_plant_off" then
+			minetest.add_node(pos, {name="mesecons_blinkyplant:blinky_plant_on"})
+		else
+			minetest.add_node(pos, {name="mesecons_blinkyplant:blinky_plant_off"})
+		end
 		nodeupdate(pos)	
 		mesecon:receptor_on(pos)
 	end,
 })
 
-minetest.register_abm({
-	nodenames = {"mesecons_blinkyplant:blinky_plant_on"},
-	interval = BLINKY_PLANT_INTERVAL,
-	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		--minetest.remove_node(pos)
-		minetest.add_node(pos, {name="mesecons_blinkyplant:blinky_plant_off"})
-		nodeupdate(pos)	
-		mesecon:receptor_off(pos)
-	end,
-})
