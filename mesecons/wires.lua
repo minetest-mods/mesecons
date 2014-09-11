@@ -252,29 +252,16 @@ else
 
 	minetest.register_craft({
 		type = "cooking",
-		output = "mesecons:wire_00000000_off 2",
+		output = "mesecons:wire_00000000_off 4",
 		recipe = "default:mese_crystal_fragment",
-		cooktime = 3,
-	})
-
-	minetest.register_craft({
-		type = "cooking",
-		output = "mesecons:wire_00000000_off 18",
-		recipe = "default:mese_crystal",
 		cooktime = 15,
 	})
 
 	minetest.register_craft({
 		type = "cooking",
-		output = "mesecons:wire_00000000_off 162",
-		recipe = "default:mese",
+		output = "mesecons:wire_00000000_off 36",
+		recipe = "default:mese_crystal",
 		cooktime = 30,
 	})
 
 end
-
-minetest.register_craft({
-	type = "cooking",
-	output = "mesecons:wire_00000000_off 16",
-	recipe = "default:mese_crystal",
-})
