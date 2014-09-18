@@ -49,6 +49,34 @@ minetest.register_node("mesecons_random:conductingfence", {
 			{x = 0, y = 0, z = -1},
 			{x = 0, y = 0, z = 1},
 		},
+		onstate = "mesecons_random:conductingfence_active"
+	}}
+})
+
+minetest.register_node("mesecons_random:conductingfence_active", {
+	description="A fence that conducts electricity",
+	is_ground_content = true,
+	drawtype = "fencelike",
+	tiles = {"electricfence_active.png"},
+	paramtype = "light",
+	selection_box = {
+	        type = "fixed",
+	        fixed = {-1/7, -1/2, -1/7, 1/7, 1/2, 1/7},
+	},
+	groups = {snappy=3},
+	sounds = default.node_sound_wood_defaults(),
+	walkable = true,
+	mesecons = {conductor = {
+		state = mesecon.state.on,
+		rules = { --axes
+			{x = -1, y = 0, z = 0},
+			{x = 1, y = 0, z = 0},
+			{x = 0, y = -1, z = 0},
+			{x = 0, y = 1, z = 0},
+			{x = 0, y = 0, z = -1},
+			{x = 0, y = 0, z = 1},
+		},
+		offstate = "mesecons_random:conductingfence"
 	}}
 })
 
