@@ -50,7 +50,7 @@ minetest.register_node("mesecons_random:conductingfence", {
 			{x = 0, y = 0, z = 1},
 		},
 	}}
-}}
+})
 
 minetest.register_craft({
 	output = 'mesecons_random:conductingfence 4',
