@@ -23,6 +23,44 @@ minetest.register_craft({
 	}
 })
 
+-- CONDUCTING FENCE
+minetest.register_node("mesecons_random:conductingfence", {
+	description="A fence that conducts electricity",
+	is_ground_content = true,
+	drawtype = "fencelike",
+	tiles = {"electricfence.png"},
+	inventory_image = "electricfence.png",
+	wield_image = "electricfence.png",
+	paramtype = "light",
+	selection_box = {
+	        type = "fixed",
+	        fixed = {-1/7, -1/2, -1/7, 1/7, 1/2, 1/7},
+	},
+	groups = {snappy=3},
+	sounds = default.node_sound_wood_defaults(),
+	walkable = true,
+	mesecons = {conductor = {
+		state = mesecon.state.off,
+		rules = { --axes
+			{x = -1, y = 0, z = 0},
+			{x = 1, y = 0, z = 0},
+			{x = 0, y = -1, z = 0},
+			{x = 0, y = 1, z = 0},
+			{x = 0, y = 0, z = -1},
+			{x = 0, y = 0, z = 1},
+		},
+	}}
+}}
+
+minetest.register_craft({
+	output = 'mesecons_random:conductingfence 4',
+	recipe = {
+		{"default:stick", "default:stick", "default:stick"},
+		{"default:stick", "group:mesecon_conductor_craftable", "default:stick"},
+		{"default:stick", "default:steel_ingot", "default:default:stick"},
+	}
+})
+
 -- GHOSTSTONE
 
 minetest.register_node("mesecons_random:ghoststone", {
