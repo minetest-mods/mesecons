@@ -54,7 +54,7 @@ minetest.register_node("mesecons_random:conductingfence", {
 })
 
 minetest.register_node("mesecons_random:conductingfence_active", {
-	description="A fence that conducts electricity",
+	description="COnducting fence",
 	is_ground_content = true,
 	drawtype = "fencelike",
 	tiles = {"electricfence_tile_active.png"},
