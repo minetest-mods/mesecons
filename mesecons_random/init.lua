@@ -83,9 +83,9 @@ minetest.register_node("mesecons_random:conductingfence_active", {
 minetest.register_craft({
 	output = 'mesecons_random:conductingfence 4',
 	recipe = {
-		{"default:stick", "default:stick", "default:stick"},
-		{"default:stick", "group:mesecon_conductor_craftable", "default:stick"},
-		{"default:stick", "default:steel_ingot", "default:default:stick"},
+		{"group:stick", "group:stick", "group:stick"},
+		{"group:stick", "group:mesecon_conductor_craftable", "group:stick"},
+		{"group:stick", "default:steel_ingot", "group:stick"},
 	}
 })
 
