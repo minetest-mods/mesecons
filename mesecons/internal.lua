@@ -597,14 +597,18 @@ function mesecon:is_powered(pos, rule)
 	local rules = mesecon:get_any_inputrules(node)
 	if not rules then return false end
 
+	-- List of nodes that send out power to pos
+	local sourcepos = {}
+
 	if not rule then
 		for _, rule in ipairs(mesecon:flattenrules(rules)) do
 			local rulenames = mesecon:rules_link_rule_all_inverted(pos, rule)
 			for _, rname in ipairs(rulenames) do
 				local np = mesecon:addPosRule(pos, rname)
 				local nn = minetest.get_node(np)
-				if (mesecon:is_conductor_on (nn, mesecon:invertRule(rname)) or mesecon:is_receptor_on (nn.name)) then
-					return true
+				if (mesecon:is_conductor_on (nn, mesecon:invertRule(rname))
+				or mesecon:is_receptor_on (nn.name)) then
+					table.insert(sourcepos, np)
 				end
 			end
 		end
@@ -614,12 +618,14 @@ function mesecon:is_powered(pos, rule)
 			local np = mesecon:addPosRule(pos, rname)
 			local nn = minetest.get_node(np)
 			if (mesecon:is_conductor_on (nn, mesecon:invertRule(rname)) or mesecon:is_receptor_on (nn.name)) then
-				return true
+				sourcepos.insert(np)
 			end
 		end
 	end
-	
-	return false
+
+	-- Return FALSE if not powered, return list of sources if is powered
+	if (#sourcepos == 0) then return false
+	else return sourcepos end
 end
 
 --Rules rotation Functions:

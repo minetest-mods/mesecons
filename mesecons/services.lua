@@ -9,11 +9,15 @@ mesecon.on_placenode = function (pos, node)
 	-- Conductors: Send turnon signal when powered or replace by respective offstate conductor
 	-- if placed conductor is an onstate one
 	if mesecon:is_conductor(node.name) then
-		if mesecon:is_powered(pos) then
+		local sources = mesecon:is_powered(pos)
+		if sources then
 			-- also call receptor_on if itself is powered already, so that neighboring
 			-- conductors will be activated (when pushing an on-conductor with a piston)
-			mesecon:turnon (pos)
-			mesecon:receptor_on (pos, mesecon:conductor_get_rules(node))
+			for _, s in ipairs(sources) do
+				local rule = {x = pos.x - s.x, y = pos.y - s.y, z = pos.z - s.z}
+				mesecon:turnon(pos, rule)
+			end
+			--mesecon:receptor_on (pos, mesecon:conductor_get_rules(node))
 		elseif mesecon:is_conductor_off(node.name) then
 			minetest.swap_node(pos, {name = mesecon:get_conductor_off(node)})
 		end
