@@ -477,7 +477,6 @@ minetest.register_node(nodename, {
 			reset_meta(pos, fields.code, err)
 		end
 	end,
-	on_timer = handle_timer,
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = mesecons,
 	digiline = digiline,

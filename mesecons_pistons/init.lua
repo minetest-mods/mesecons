@@ -56,13 +56,14 @@ end
 
 local piston_remove_pusher = function(pos, node)
 	pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-	if pushername == pistonspec.pusher then --make sure there actually is a pusher (for compatibility reasons mainly)
-		return
-	end
-
 	dir = piston_get_direction(pistonspec.dir, node)
 	local pusherpos = mesecon:addPosRule(pos, dir)
 	local pushername = minetest.get_node(pusherpos).name
+
+	-- make sure there actually is a pusher (for compatibility reasons mainly)
+	if pushername ~= pistonspec.pusher then
+		return
+	end
 
 	minetest.remove_node(pusherpos)
 	minetest.sound_play("piston_retract", {

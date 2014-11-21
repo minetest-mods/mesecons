@@ -44,7 +44,8 @@ end
 -- However, even that does not work in some cases, that's why we delay the time the globalsteps
 -- start to be execute by 5 seconds
 local get_highest_priority = function (actions)
-	local highestp = -1, highesti
+	local highestp = -1
+	local highesti
 	for i, ac in ipairs(actions) do
 		if ac.priority > highestp then
 			highestp = ac.priority
