@@ -195,7 +195,7 @@ function mesecon.cmpAny(t1, t2)
 end
 
 -- does not overwrite values; number keys (ipairs) are appended, not overwritten
-mesecon.mergetable = function(source, dest)
+function mesecon.mergetable(source, dest)
 	local rval = mesecon.tablecopy(dest)
 
 	for k, v in pairs(source) do
@@ -208,12 +208,28 @@ mesecon.mergetable = function(source, dest)
 	return rval
 end
 
-mesecon.register_node = function(name, spec_common, spec_off, spec_on)
+function mesecon.register_node(name, spec_common, spec_off, spec_on)
 	spec_common.drop = spec_common.drop or name .. "_off"
+	spec_common.__mesecon_basename = name
+	spec_on.__mesecon_state = "on"
+	spec_off.__mesecon_state = "off"
 
 	spec_on = mesecon.mergetable(spec_common, spec_on);
 	spec_off = mesecon.mergetable(spec_common, spec_off);
 
 	minetest.register_node(name .. "_on", spec_on)
 	minetest.register_node(name .. "_off", spec_off)
+end
+
+-- swap onstate and offstate nodes, returns new state
+function mesecon.flipstate(pos, node)
+	local nodedef = minetest.registered_nodes[node.name]
+	local newstate
+	if (nodedef.__mesecon_state == "on") then newstate = "off" end
+	if (nodedef.__mesecon_state == "off") then newstate = "on" end
+		
+	minetest.swap_node(pos, {name = nodedef.__mesecon_basename .. "_" .. newstate,
+		param2 = node.param2})
+
+	return newstate
 end

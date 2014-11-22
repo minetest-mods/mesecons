@@ -486,9 +486,10 @@ function mesecon.find_receptor_on(pos, link)
 
 				local links = mesecon.rules_link_rule_all_inverted(f.pos, r)
 				for _, l in ipairs(links) do
-					if not checked[f.pos.x .. f.pos.y .. f.pos.z] then
+					local checkedstring = np.x..np.y..np.z..l.x..l.y..l.z
+					if not checked[checkedstring] then
 						table.insert(frontiers, {pos = np, link = l})
-						checked[f.pos.x .. f.pos.y .. f.pos.z] = true
+						checked[checkedstring] = true
 					end
 				end
 			end

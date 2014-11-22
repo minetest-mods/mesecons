@@ -61,6 +61,7 @@ local vertical_updatepos = function (pos)
 		else -- no vertical wire above, no vertical wire below: use bottom
 			minetest.add_node(pos, {name = basename .. "bottom_" .. namestate})
 		end
+		mesecon.update_autoconnect(pos)
 	end
 end
 
