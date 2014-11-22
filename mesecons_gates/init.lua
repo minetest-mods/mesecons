@@ -1,6 +1,6 @@
 function gate_rotate_rules(node)
 	for rotations = 0, node.param2 - 1 do
-		rules = mesecon:rotate_rules_left(rules)
+		rules = mesecon.rotate_rules_left(rules)
 	end
 	return rules
 end
@@ -53,11 +53,11 @@ function set_gate(pos, on)
 			local node = minetest.get_node(pos)
 			if on then
 				minetest.swap_node(pos, {name = "mesecons_gates:"..gate.."_on", param2=node.param2})
-				mesecon:receptor_on(pos,
+				mesecon.receptor_on(pos,
 				gate_get_output_rules(node))
 			else
 				minetest.swap_node(pos, {name = "mesecons_gates:"..gate.."_off", param2=node.param2})
-				mesecon:receptor_off(pos,
+				mesecon.receptor_off(pos,
 				gate_get_output_rules(node))
 			end
 		end
@@ -77,7 +77,7 @@ function pop_gate(pos)
 	gate = get_gate(pos)
 	minetest.remove_node(pos)
 	minetest.after(0.2, function (pos)
-		mesecon:receptor_off(pos, mesecon.rules.flat)
+		mesecon.receptor_off(pos, mesecon.rules.flat)
 	end , pos) -- wait for pending parsings
 	minetest.add_item(pos, "mesecons_gates:"..gate.."_off")
 end

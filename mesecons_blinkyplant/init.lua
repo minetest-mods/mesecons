@@ -64,7 +64,7 @@ minetest.register_node("mesecons_blinkyplant:blinky_plant_on", {
 	}},
 	on_rightclick = function(pos, node, clicker)
 		minetest.set_node(pos, {name = "mesecons_blinkyplant:blinky_plant"})
-		mesecon:receptor_off(pos)
+		mesecon.receptor_off(pos)
 	end
 })
 
@@ -87,10 +87,10 @@ minetest.register_abm({
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		if node.name == "mesecons_blinkyplant:blinky_plant_off" then
 			minetest.add_node(pos, {name="mesecons_blinkyplant:blinky_plant_on"})
-			mesecon:receptor_on(pos)
+			mesecon.receptor_on(pos)
 		else
 			minetest.add_node(pos, {name="mesecons_blinkyplant:blinky_plant_off"})
-			mesecon:receptor_off(pos)
+			mesecon.receptor_off(pos)
 		end
 		nodeupdate(pos)	
 	end,

@@ -8,7 +8,7 @@ mesecon.button_turnoff = function (pos)
 		minetest.swap_node(pos, {name = "mesecons_button:button_off", param2=node.param2})
 		minetest.sound_play("mesecons_button_pop", {pos=pos})
 		local rules = mesecon.rules.buttonlike_get(node)
-		mesecon:receptor_off(pos, rules)
+		mesecon.receptor_off(pos, rules)
 	end
 end
 
@@ -42,7 +42,7 @@ minetest.register_node("mesecons_button:button_off", {
 	description = "Button",
 	on_punch = function (pos, node)
 		minetest.swap_node(pos, {name = "mesecons_button:button_on", param2=node.param2})
-		mesecon:receptor_on(pos, mesecon.rules.buttonlike_get(node))
+		mesecon.receptor_on(pos, mesecon.rules.buttonlike_get(node))
 		minetest.sound_play("mesecons_button_push", {pos=pos})
 		minetest.after(1, mesecon.button_turnoff, pos)
 	end,

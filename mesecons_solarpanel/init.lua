@@ -75,7 +75,7 @@ minetest.register_abm(
 
 		if light >= 12 then
 			minetest.set_node(pos, {name="mesecons_solarpanel:solar_panel_on", param2=node.param2})
-			mesecon:receptor_on(pos)
+			mesecon.receptor_on(pos)
 		end
 	end,
 })
@@ -89,7 +89,7 @@ minetest.register_abm(
 
 		if light < 12 then
 			minetest.set_node(pos, {name="mesecons_solarpanel:solar_panel_off", param2=node.param2})
-			mesecon:receptor_off(pos)
+			mesecon.receptor_off(pos)
 		end
 	end,
 })

@@ -2,15 +2,15 @@
 
 local rotate_torch_rules = function (rules, param2)
 	if param2 == 5 then
-		return mesecon:rotate_rules_right(rules)
+		return mesecon.rotate_rules_right(rules)
 	elseif param2 == 2 then
-		return mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules)) --180 degrees
+		return mesecon.rotate_rules_right(mesecon.rotate_rules_right(rules)) --180 degrees
 	elseif param2 == 4 then
-		return mesecon:rotate_rules_left(rules)
+		return mesecon.rotate_rules_left(rules)
 	elseif param2 == 1 then
-		return mesecon:rotate_rules_down(rules)
+		return mesecon.rotate_rules_down(rules)
 	elseif param2 == 0 then
-		return mesecon:rotate_rules_up(rules)
+		return mesecon.rotate_rules_up(rules)
 	else
 		return rules
 	end
@@ -91,8 +91,8 @@ minetest.register_abm({
 	action = function(pos, node)
 		local is_powered = false
 		for _, rule in ipairs(torch_get_input_rules(node)) do
-			local src = mesecon:addPosRule(pos, rule)
-			if mesecon:is_power_on(src) then
+			local src = mesecon.addPosRule(pos, rule)
+			if mesecon.is_power_on(src) then
 				is_powered = true
 			end
 		end
@@ -100,11 +100,11 @@ minetest.register_abm({
 		if is_powered then
 			if node.name == "mesecons_torch:mesecon_torch_on" then
 				minetest.swap_node(pos, {name = "mesecons_torch:mesecon_torch_off", param2 = node.param2})
-				mesecon:receptor_off(pos, torch_get_output_rules(node))
+				mesecon.receptor_off(pos, torch_get_output_rules(node))
 			end
 		elseif node.name == "mesecons_torch:mesecon_torch_off" then
 			minetest.swap_node(pos, {name = "mesecons_torch:mesecon_torch_on", param2 = node.param2})
-			mesecon:receptor_on(pos, torch_get_output_rules(node))
+			mesecon.receptor_on(pos, torch_get_output_rules(node))
 		end
 	end
 })

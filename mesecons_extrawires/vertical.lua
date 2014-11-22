@@ -42,8 +42,8 @@ local vertical_updatepos = function (pos)
 	local node = minetest.get_node(pos)
 	if minetest.registered_nodes[node.name]
 	and minetest.registered_nodes[node.name].is_vertical_conductor then
-		local node_above = minetest.get_node(mesecon:addPosRule(pos, vertical_rules[1]))
-		local node_below = minetest.get_node(mesecon:addPosRule(pos, vertical_rules[2]))
+		local node_above = minetest.get_node(mesecon.addPosRule(pos, vertical_rules[1]))
+		local node_below = minetest.get_node(mesecon.addPosRule(pos, vertical_rules[2]))
 		local namestate = minetest.registered_nodes[node.name].vertical_conductor_state
 
 		local above = minetest.registered_nodes[node_above.name]
@@ -66,8 +66,8 @@ end
 
 local vertical_update = function (pos, node)
 	vertical_updatepos(pos) -- this one
-	vertical_updatepos(mesecon:addPosRule(pos, vertical_rules[1])) -- above
-	vertical_updatepos(mesecon:addPosRule(pos, vertical_rules[2])) -- below
+	vertical_updatepos(mesecon.addPosRule(pos, vertical_rules[1])) -- above
+	vertical_updatepos(mesecon.addPosRule(pos, vertical_rules[2])) -- below
 end
 
 -- Vertical wire

@@ -38,10 +38,6 @@ function lc_update_real_portstates(pos, rulename, newstate)
 		return
 	end
 	local n = meta:get_int("real_portstates") - 1
-	if n < 0 then
-		legacy_update_ports(pos)
-		n = meta:get_int("real_portstates") - 1
-	end
 	local L = {}
 	for i = 1, 4 do
 		L[i] = n%2
@@ -63,9 +59,6 @@ local get_real_portstates = function(pos) -- determine if ports are powered (by 
 	local meta = minetest.get_meta(pos)
 	local L = {}
 	local n = meta:get_int("real_portstates") - 1
-	if n < 0 then
-		return legacy_update_ports(pos)
-	end
 	for _, index in ipairs({"a", "b", "c", "d"}) do
 		L[index] = ((n%2) == 1)
 		n = math.floor(n/2)
@@ -92,9 +85,9 @@ end
 
 local setport = function (pos, rule, state)
 	if state then
-		mesecon:receptor_on(pos, {rule})
+		mesecon.receptor_on(pos, {rule})
 	else
-		mesecon:receptor_off(pos, {rule})
+		mesecon.receptor_off(pos, {rule})
 	end
 end
 
@@ -122,7 +115,7 @@ end
 --------------------
 
 local overheat_off = function(pos)
-	mesecon:receptor_off(pos, mesecon.rules.flat)
+	mesecon.receptor_off(pos, mesecon.rules.flat)
 end
 
 -------------------
@@ -484,7 +477,7 @@ minetest.register_node(nodename, {
 				c = c == 1, -- controller powers itself
 				d = d == 1},-- so those that light up
 	after_dig_node = function (pos, node)
-		mesecon:receptor_off(pos, output_rules)
+		mesecon.receptor_off(pos, output_rules)
 	end,
 	is_luacontroller = true,
 })

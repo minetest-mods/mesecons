@@ -35,11 +35,11 @@ mesecon.rules.flat =
 mesecon.rules.buttonlike_get = function(node)
 	local rules = mesecon.rules.buttonlike
 	if node.param2 == 2 then
-		rules=mesecon:rotate_rules_left(rules)
+		rules=mesecon.rotate_rules_left(rules)
 	elseif node.param2 == 3 then
-		rules=mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
+		rules=mesecon.rotate_rules_right(mesecon.rotate_rules_right(rules))
 	elseif node.param2 == 0 then
-		rules=mesecon:rotate_rules_right(rules)
+		rules=mesecon.rotate_rules_right(rules)
 	end
 	return rules
 end

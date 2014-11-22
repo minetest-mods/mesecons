@@ -18,12 +18,12 @@ local wire_getconnect = function (from_pos, self_pos)
 		if (minetest.registered_nodes[node.name].mesecon_wire) then
 			rules = mesecon.rules.default
 		else
-			rules = mesecon:get_any_inputrules(node) or {}
-			mesecon.mergetable(mesecon:get_any_outputrules(node) or {}, rules)
+			rules = mesecon.get_any_inputrules(node) or {}
+			mesecon.mergetable(mesecon.get_any_outputrules(node) or {}, rules)
 		end
 
-		for _, r in ipairs(mesecon:flattenrules(rules)) do
-			if (mesecon:cmpPos(mesecon:addPosRule(self_pos, r), from_pos)) then
+		for _, r in ipairs(mesecon.flattenrules(rules)) do
+			if (mesecon.cmpPos(mesecon.addPosRule(self_pos, r), from_pos)) then
 				return true
 			end
 		end
@@ -36,7 +36,7 @@ local wire_updateconnect = function (pos)
 	local connections = {}
 
 	for _, r in ipairs(mesecon.rules.default) do
-		if wire_getconnect(pos, mesecon:addPosRule(pos, r)) then
+		if wire_getconnect(pos, mesecon.addPosRule(pos, r)) then
 			table.insert(connections, r)
 		end
 	end
@@ -79,13 +79,13 @@ local update_on_place_dig = function (pos, node)
 	and minetest.registered_nodes[node.name].mesecon_wire then
 		rules = mesecon.rules.default
 	else
-		rules = mesecon:get_any_inputrules(node) or {}
-		mesecon.mergetable(mesecon:get_any_outputrules(node) or {}, rules)
+		rules = mesecon.get_any_inputrules(node) or {}
+		mesecon.mergetable(mesecon.get_any_outputrules(node) or {}, rules)
 	end
 	if (not rules) then return end
 
-	for _, r in ipairs(mesecon:flattenrules(rules)) do
-		local np = mesecon:addPosRule(pos, r)
+	for _, r in ipairs(mesecon.flattenrules(rules)) do
+		local np = mesecon.addPosRule(pos, r)
 		if minetest.registered_nodes[minetest.get_node(np).name]
 		and minetest.registered_nodes[minetest.get_node(np).name].mesecon_wire then
 			wire_updateconnect(np)

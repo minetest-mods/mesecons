@@ -9,11 +9,11 @@ local receiver_get_rules = function (node)
 	local rules = {	{x =  1, y = 0, z = 0},
 			{x = -2, y = 0, z = 0}}
 	if node.param2 == 2 then
-		rules = mesecon:rotate_rules_left(rules)
+		rules = mesecon.rotate_rules_left(rules)
 	elseif node.param2 == 3 then
-		rules = mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
+		rules = mesecon.rotate_rules_right(mesecon.rotate_rules_right(rules))
 	elseif node.param2 == 0 then
-		rules = mesecon:rotate_rules_right(rules)
+		rules = mesecon.rotate_rules_right(rules)
 	end
 	return rules
 end
@@ -81,15 +81,15 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 	}}
 })
 
-function mesecon:receiver_get_pos_from_rcpt(pos, param2)
+function mesecon.receiver_get_pos_from_rcpt(pos, param2)
 	local rules = {{x = 2,  y = 0, z = 0}}
 	if param2 == nil then param2 = minetest.get_node(pos).param2 end
 	if param2 == 2 then
-		rules = mesecon:rotate_rules_left(rules)
+		rules = mesecon.rotate_rules_left(rules)
 	elseif param2 == 3 then
-		rules = mesecon:rotate_rules_right(mesecon:rotate_rules_right(rules))
+		rules = mesecon.rotate_rules_right(mesecon.rotate_rules_right(rules))
 	elseif param2 == 0 then
-		rules = mesecon:rotate_rules_right(rules)
+		rules = mesecon.rotate_rules_right(rules)
 	end
 	np = {
 	x = pos.x + rules[1].x,
@@ -98,16 +98,16 @@ function mesecon:receiver_get_pos_from_rcpt(pos, param2)
 	return np
 end
 
-function mesecon:receiver_place(rcpt_pos)
+function mesecon.receiver_place(rcpt_pos)
 	local node = minetest.get_node(rcpt_pos)
-	local pos = mesecon:receiver_get_pos_from_rcpt(rcpt_pos, node.param2)
+	local pos = mesecon.receiver_get_pos_from_rcpt(rcpt_pos, node.param2)
 	local nn = minetest.get_node(pos)
 
 	if string.find(nn.name, "mesecons:wire_") ~= nil then
 		minetest.dig_node(pos)
-		if mesecon:is_power_on(rcpt_pos) then
+		if mesecon.is_power_on(rcpt_pos) then
 			minetest.add_node(pos, {name = "mesecons_receiver:receiver_on", param2 = node.param2})
-			mesecon:receptor_on(pos, receiver_get_rules(node))
+			mesecon.receptor_on(pos, receiver_get_rules(node))
 		else
 			minetest.add_node(pos, {name = "mesecons_receiver:receiver_off", param2 = node.param2})
 		end
@@ -115,8 +115,8 @@ function mesecon:receiver_place(rcpt_pos)
 	end
 end
 
-function mesecon:receiver_remove(rcpt_pos, dugnode)
-	local pos = mesecon:receiver_get_pos_from_rcpt(rcpt_pos, dugnode.param2)
+function mesecon.receiver_remove(rcpt_pos, dugnode)
+	local pos = mesecon.receiver_get_pos_from_rcpt(rcpt_pos, dugnode.param2)
 	local nn = minetest.get_node(pos)
 	if string.find(nn.name, "mesecons_receiver:receiver_") ~=nil then
 		minetest.dig_node(pos)
@@ -129,13 +129,13 @@ end
 
 minetest.register_on_placenode(function (pos, node)
 	if minetest.get_item_group(node.name, "mesecon_needs_receiver") == 1 then
-		mesecon:receiver_place(pos)
+		mesecon.receiver_place(pos)
 	end
 end)
 
 minetest.register_on_dignode(function(pos, node)
 	if minetest.get_item_group(node.name, "mesecon_needs_receiver") == 1 then
-		mesecon:receiver_remove(pos, node)
+		mesecon.receiver_remove(pos, node)
 	end
 end)
 
@@ -152,7 +152,7 @@ minetest.register_on_placenode(function (pos, node)
 			y = pos.y + rules[i].y,
 			z = pos.z + rules[i].z}
 			if minetest.get_item_group(minetest.get_node(np).name, "mesecon_needs_receiver") == 1 then
-				mesecon:receiver_place(np)
+				mesecon.receiver_place(np)
 			end
 			i = i + 1
 		end

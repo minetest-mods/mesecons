@@ -17,23 +17,23 @@ pp_on_timer = function (pos, elapsed)
 	if not basename then return end
 
 	local objs   = minetest.get_objects_inside_radius(pos, 1)
-	local two_below = mesecon:addPosRule(pos, {x = 0, y = -2, z = 0})
+	local two_below = mesecon.addPosRule(pos, {x = 0, y = -2, z = 0})
 
 	if objs[1] == nil and node.name == basename .. "_on" then
 		minetest.add_node(pos, {name = basename .. "_off"})
-		mesecon:receptor_off(pos, mesecon.rules.pplate)
+		mesecon.receptor_off(pos, mesecon.rules.pplate)
 		-- force deactivation of mesecon two blocks below (hacky)
-		if not mesecon:connected_to_receptor(two_below) then
-			mesecon:turnoff(two_below)
+		if not mesecon.connected_to_receptor(two_below) then
+			mesecon.turnoff(two_below)
 		end
 	else
 		for k, obj in pairs(objs) do
 			local objpos = obj:getpos()
 			if objpos.y > pos.y-1 and objpos.y < pos.y then
 				minetest.add_node(pos, {name = basename .. "_on"})
-				mesecon:receptor_on(pos, mesecon.rules.pplate )
+				mesecon.receptor_on(pos, mesecon.rules.pplate )
 				-- force activation of mesecon two blocks below (hacky)
-				mesecon:turnon(two_below)
+				mesecon.turnon(two_below)
 			end
 		end
 	end
@@ -49,7 +49,7 @@ end
 -- image:	inventory and wield image of the pressure plate
 -- recipe:	crafting recipe of the pressure plate
 
-function mesecon:register_pressure_plate(basename, description, textures_off, textures_on, image_w, image_i, recipe)
+function mesecon.register_pressure_plate(basename, description, textures_off, textures_on, image_w, image_i, recipe)
 	mesecon.register_node(basename, {
 		drawtype = "nodebox",
 		inventory_image = image_i,
@@ -81,7 +81,7 @@ function mesecon:register_pressure_plate(basename, description, textures_off, te
 	})
 end
 
-mesecon:register_pressure_plate(
+mesecon.register_pressure_plate(
 	"mesecons_pressureplates:pressure_plate_wood",
 	"Wooden Pressure Plate",
 	{"jeija_pressure_plate_wood_off.png","jeija_pressure_plate_wood_off.png","jeija_pressure_plate_wood_off_edges.png"},
@@ -90,7 +90,7 @@ mesecon:register_pressure_plate(
 	"jeija_pressure_plate_wood_inv.png",
 	{{"group:wood", "group:wood"}})
 
-mesecon:register_pressure_plate(
+mesecon.register_pressure_plate(
 	"mesecons_pressureplates:pressure_plate_stone",
 	"Stone Pressure Plate",
 	{"jeija_pressure_plate_stone_off.png","jeija_pressure_plate_stone_off.png","jeija_pressure_plate_stone_off_edges.png"},

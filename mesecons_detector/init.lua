@@ -96,7 +96,7 @@ minetest.register_abm(
 	action = function(pos)
 		if object_detector_scan(pos) then
 			minetest.swap_node(pos, {name = "mesecons_detector:object_detector_on"})
-			mesecon:receptor_on(pos, mesecon.rules.pplate)
+			mesecon.receptor_on(pos, mesecon.rules.pplate)
 		end
 	end,
 })
@@ -108,7 +108,7 @@ minetest.register_abm(
 	action = function(pos)
 		if not object_detector_scan(pos) then
 			minetest.swap_node(pos, {name = "mesecons_detector:object_detector_off"})
-			mesecon:receptor_off(pos, mesecon.rules.pplate)
+			mesecon.receptor_off(pos, mesecon.rules.pplate)
 		end
 	end,
 })
@@ -250,7 +250,7 @@ minetest.register_abm(
 	action = function(pos, node)
 		if node_detector_scan(pos) then
 			minetest.swap_node(pos, {name = "mesecons_detector:node_detector_on", param2 = node.param2})
-			mesecon:receptor_on(pos)
+			mesecon.receptor_on(pos)
 		end
 	end,
 })
@@ -262,7 +262,7 @@ minetest.register_abm(
 	action = function(pos, node)
 		if not node_detector_scan(pos) then
 			minetest.swap_node(pos, {name = "mesecons_detector:node_detector_off", param2 = node.param2})
-			mesecon:receptor_off(pos)
+			mesecon.receptor_off(pos)
 		end
 	end,
 })

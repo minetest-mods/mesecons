@@ -134,7 +134,7 @@ minetest.register_node(nodename, {
 	mesecons = mesecons,
 	after_dig_node = function (pos, node)
 		rules = microc_rules[node.name]
-		mesecon:receptor_off(pos, rules)
+		mesecon.receptor_off(pos, rules)
 	end,
 })
 end
@@ -166,7 +166,7 @@ function update_yc(pos)
 	if (mesecon.do_overheat(pos)) then
 		minetest.remove_node(pos)
 		minetest.after(0.2, function (pos)
-			mesecon:receptor_off(pos, mesecon.rules.flat)
+			mesecon.receptor_off(pos, mesecon.rules.flat)
 		end , pos) -- wait for pending parsings
 		minetest.add_item(pos, "mesecons_microcontroller:microcontroller0000")
 	end
@@ -185,7 +185,7 @@ end
 
 --Code Parsing
 function yc_code_remove_commentary(code)
-	is_string = false
+	local is_string = false
 	for i = 1, #code do
 		if code:sub(i, i) == '"' then
 			is_string = not is_string --toggle is_string
@@ -205,15 +205,17 @@ function yc_parsecode(code, pos)
 	local c
 	local eeprom = meta:get_string("eeprom")
 	while true do
+		local command, params
 		command, endi = parse_get_command(code, endi)
 		if command == nil then return nil end
 		if command == true then break end --end of code
 		if command == "if" then
+			local r
 			r, endi = yc_command_if(code, endi, yc_merge_portstates(Lreal, Lvirtual), eeprom)
 			if r == nil then return nil end
 			if r == true then  -- nothing
 			elseif r == false then
-				endi_new = yc_skip_to_else (code, endi)
+				local endi_new = yc_skip_to_else (code, endi)
 				if endi_new == nil then --else > not found
 					endi = yc_skip_to_endif(code, endi)
 				else
@@ -223,7 +225,7 @@ function yc_parsecode(code, pos)
 			end
 		else
 			params, endi = parse_get_params(code, endi)
-			if params  == nil then return nil end
+			if not params then return nil end
 		end
 		if command == "on" then
 			L = yc_command_on (params, Lvirtual)
@@ -236,6 +238,7 @@ function yc_parsecode(code, pos)
 			local su = yc_command_after(params, pos)
 			if su == nil then return nil end
 		elseif command == "sbi" then
+			local new_eeprom
 			new_eeprom, Lvirtual = yc_command_sbi (params, eeprom, yc_merge_portstates(Lreal, Lvirtual), Lvirtual)
 			if new_eeprom == nil then return nil
 			else eeprom = new_eeprom end
@@ -253,7 +256,7 @@ end
 
 function parse_get_command(code, starti)
 	i = starti
-	s = nil
+	local s
 	while s ~= "" do
 		s = string.sub(code, i, i)
 		if s == "(" then
@@ -279,7 +282,7 @@ end
 
 function parse_get_params(code, starti)
 	i = starti
-	s = nil
+	local s
 	local params = {}
 	local is_string = false
 	while s ~= "" do
@@ -302,7 +305,7 @@ end
 
 function yc_parse_get_eeprom_param(cond, starti)
 	i = starti
-	s = nil
+	local s
 	local addr
 	while s ~= "" do
 		s = string.sub(cond, i, i)
@@ -405,7 +408,7 @@ function yc_command_sbi(params, eeprom, L, Lv)
 	end
 
 	--is an eeprom address
-	new_eeprom = "";
+	local new_eeprom = "";
 	for i=1, #eeprom do
 		if tonumber(params[1])==i then 
 			new_eeprom = new_eeprom..status
@@ -459,17 +462,17 @@ function yc_command_if(code, starti, L, eeprom)
 
 	cond = yc_command_parsecondition(cond, L, eeprom)
 
+	local result
 	if cond == "0" then result = false
-	elseif cond == "1" then result = true
-	else result = nil end
-	if result == nil then end
+	elseif cond == "1" then result = true end
+	if not result then end
 	return result, endi --endi from local cond, endi = yc_command_if_getcondition(code, starti)
 end
 
 --Condition parsing
 function yc_command_if_getcondition(code, starti)
 	i = starti
-	s = nil
+	local s
 	local brackets = 1 --1 Bracket to close
 	while s ~= "" do
 		s = string.sub(code, i, i)
@@ -503,8 +506,8 @@ function yc_command_parsecondition(cond, L, eeprom)
 	while i<=l do
 		local s = cond:sub(i,i)
 		if s == "#" then
-			addr, endi = yc_parse_get_eeprom_param(cond, i+1)
-			buf = yc_eeprom_read(tonumber(addr), eeprom)
+			local addr, endi = yc_parse_get_eeprom_param(cond, i+1)
+			local buf = yc_eeprom_read(tonumber(addr), eeprom)
 			if buf == nil then return nil end
 			local call = cond:sub(i, endi-1)
 			cond = string.gsub(cond, call, buf)
@@ -578,10 +581,8 @@ end
 
 --Virtual-Hardware functions
 function yc_eeprom_read(number, eeprom)
-	if number == nil then return nil, nil end
-	value = eeprom:sub(number, number)
-	if value  == nil then return nil, nil end
-	return value, endi
+	if not number then return end
+	return eeprom:sub(number, number)
 end
 
 --Real I/O functions
@@ -603,23 +604,23 @@ function yc_action_setports(pos, L, Lv)
 	local rules
 	if Lv.a ~= L.a then
 		rules = microc_rules[name.."0001"]
-		if L.a == true then mesecon:receptor_on(pos, rules)
-		else mesecon:receptor_off(pos, rules) end
+		if L.a == true then mesecon.receptor_on(pos, rules)
+		else mesecon.receptor_off(pos, rules) end
 	end
 	if Lv.b ~= L.b then
 		rules = microc_rules[name.."0010"]
-		if L.b == true then mesecon:receptor_on(pos, rules)
-		else mesecon:receptor_off(pos, rules) end
+		if L.b == true then mesecon.receptor_on(pos, rules)
+		else mesecon.receptor_off(pos, rules) end
 	end
 	if Lv.c ~= L.c then 
 		rules = microc_rules[name.."0100"]
-		if L.c == true then mesecon:receptor_on(pos, rules)
-		else mesecon:receptor_off(pos, rules) end
+		if L.c == true then mesecon.receptor_on(pos, rules)
+		else mesecon.receptor_off(pos, rules) end
 	end
 	if Lv.d ~= L.d then 
 		rules = microc_rules[name.."1000"]
-		if L.d == true then mesecon:receptor_on(pos, rules)
-		else mesecon:receptor_off(pos, rules) end
+		if L.d == true then mesecon.receptor_on(pos, rules)
+		else mesecon.receptor_off(pos, rules) end
 	end
 end
 
@@ -639,10 +640,6 @@ function yc_update_real_portstates(pos, node, rulename, newstate)
 		return
 	end
 	local n = meta:get_int("real_portstates") - 1
-	if n < 0 then
-		legacy_update_ports(pos)
-		n = meta:get_int("real_portstates") - 1
-	end
 	local L = {}
 	for i = 1, 4 do
 		L[i] = n%2
@@ -664,9 +661,6 @@ function yc_get_real_portstates(pos) -- determine if ports are powered (by itsel
 	local meta = minetest.get_meta(pos)
 	local L = {}
 	local n = meta:get_int("real_portstates") - 1
-	if n < 0 then
-		return legacy_update_ports(pos)
-	end
 	for _, index in ipairs({"a", "b", "c", "d"}) do
 		L[index] = ((n%2) == 1)
 		n = math.floor(n/2)
@@ -675,12 +669,12 @@ function yc_get_real_portstates(pos) -- determine if ports are powered (by itsel
 end
 
 function yc_get_virtual_portstates(pos) -- portstates according to the name
-	name = minetest.get_node(pos).name
-	b, a = string.find(name, ":microcontroller")
+	local name = minetest.get_node(pos).name
+	local b, a = string.find(name, ":microcontroller")
 	if a == nil then return nil end
 	a = a + 1
 
-	Lvirtual = {a=false, b=false, c=false, d=false}
+	local Lvirtual = {a=false, b=false, c=false, d=false}
 	if name:sub(a  , a  ) == "1" then Lvirtual.d = true end
 	if name:sub(a+1, a+1) == "1" then Lvirtual.c = true end
 	if name:sub(a+2, a+2) == "1" then Lvirtual.b = true end
