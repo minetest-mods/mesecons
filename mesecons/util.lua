@@ -194,13 +194,14 @@ function mesecon.cmpAny(t1, t2)
 	return true
 end
 
--- does not overwrite values
+-- does not overwrite values; number keys (ipairs) are appended, not overwritten
 mesecon.mergetable = function(source, dest)
 	for k, v in pairs(source) do
 		dest[k] = dest[k] or v
 	end
+
 	for i, v in ipairs(source) do
-		dest[i] = dest[i] or v
+		table.insert(dest, v)
 	end
 end
 

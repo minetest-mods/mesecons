@@ -91,10 +91,9 @@ function mesecon.receiver_get_pos_from_rcpt(pos, param2)
 	elseif param2 == 0 then
 		rules = mesecon.rotate_rules_right(rules)
 	end
-	np = {
-	x = pos.x + rules[1].x,
-	y = pos.y + rules[1].y,
-	z = pos.z + rules[1].z}
+	local np = {	x = pos.x + rules[1].x,
+			y = pos.y + rules[1].y,
+			z = pos.z + rules[1].z}
 	return np
 end
 
@@ -141,16 +140,15 @@ end)
 
 minetest.register_on_placenode(function (pos, node)
 	if string.find(node.name, "mesecons:wire_") ~=nil then
-		rules = {	{x = 2,  y = 0, z = 0},
+		local rules = {	{x = 2,  y = 0, z = 0},
 				{x =-2,  y = 0, z = 0},
 				{x = 0,  y = 0, z = 2},
 				{x = 0,  y = 0, z =-2}}
 		local i = 1
 		while rules[i] ~= nil do
-			np = {
-			x = pos.x + rules[i].x,
-			y = pos.y + rules[i].y,
-			z = pos.z + rules[i].z}
+			local np = {	x = pos.x + rules[i].x,
+					y = pos.y + rules[i].y,
+					z = pos.z + rules[i].z}
 			if minetest.get_item_group(minetest.get_node(np).name, "mesecon_needs_receiver") == 1 then
 				mesecon.receiver_place(np)
 			end
