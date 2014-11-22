@@ -64,7 +64,7 @@ minetest.register_craft({
 	}
 })
 
+dofile(minetest.get_modpath("mesecons_mese_fence").."/legacy.lua");
 minetest.register_alias('mese_fence', 'mesecons_mese_fence:mese_fence')
 print('[mesecons_mese_fence] loaded.')
 
-dofile(minetest.get_modpath("mesecons_extrawires").."/legacy.lua");
