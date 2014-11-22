@@ -590,7 +590,7 @@ minetest.register_node(BASENAME .. "_burnt", {
 	drop = BASENAME.."0000",
 	sunlight_propagates = true,
 	selection_box = selectionbox,
-	node_box = nodebox,
+	node_box = node_box,
 	on_construct = reset_meta,
 	on_receive_fields = on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
@@ -599,7 +599,7 @@ minetest.register_node(BASENAME .. "_burnt", {
 		effector = {
 			rules = mesecon.rules.flat,
 			action_change = function(pos, _, rule_name, new_state)
-				update_real_portstates(pos, rule_name, new_state)
+				update_real_port_states(pos, rule_name, new_state)
 			end,
 		},
 	},
