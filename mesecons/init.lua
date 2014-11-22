@@ -47,14 +47,13 @@ mesecon.queue.funcs={} -- contains all ActionQueue functions
 -- Settings
 dofile(minetest.get_modpath("mesecons").."/settings.lua")
 
--- Presets (eg default rules)
-dofile(minetest.get_modpath("mesecons").."/presets.lua");
-
-
 -- Utilities like comparing positions,
 -- adding positions and rules,
 -- mostly things that make the source look cleaner
 dofile(minetest.get_modpath("mesecons").."/util.lua");
+
+-- Presets (eg default rules)
+dofile(minetest.get_modpath("mesecons").."/presets.lua");
 
 -- The ActionQueue
 -- Saves all the actions that have to be execute in the future

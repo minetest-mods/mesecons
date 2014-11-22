@@ -9,19 +9,19 @@ local pp_box_on = {
 }
 
 pp_on_timer = function (pos, elapsed)
-	local node   = minetest.get_node(pos)
-	local ppspec = minetest.registered_nodes[node.name].pressureplate
+	local node = minetest.get_node(pos)
+	local basename = minetest.registered_nodes[node.name].pressureplate_basename
 
 	-- This is a workaround for a strange bug that occurs when the server is started
 	-- For some reason the first time on_timer is called, the pos is wrong
-	if not ppspec then return end
+	if not basename then return end
 
 	local objs   = minetest.get_objects_inside_radius(pos, 1)
 	local two_below = mesecon:addPosRule(pos, {x = 0, y = -2, z = 0})
 
-	if objs[1] == nil and node.name == ppspec.onstate then
-		minetest.add_node(pos, {name = ppspec.offstate})
-		mesecon:receptor_off(pos)
+	if objs[1] == nil and node.name == basename .. "_on" then
+		minetest.add_node(pos, {name = basename .. "_off"})
+		mesecon:receptor_off(pos, mesecon.rules.pplate)
 		-- force deactivation of mesecon two blocks below (hacky)
 		if not mesecon:connected_to_receptor(two_below) then
 			mesecon:turnoff(two_below)
@@ -30,8 +30,8 @@ pp_on_timer = function (pos, elapsed)
 		for k, obj in pairs(objs) do
 			local objpos = obj:getpos()
 			if objpos.y > pos.y-1 and objpos.y < pos.y then
-				minetest.add_node(pos, {name=ppspec.onstate})
-				mesecon:receptor_on(pos)
+				minetest.add_node(pos, {name = basename .. "_on"})
+				mesecon:receptor_on(pos, mesecon.rules.pplate )
 				-- force activation of mesecon two blocks below (hacky)
 				mesecon:turnon(two_below)
 			end
@@ -49,66 +49,40 @@ end
 -- image:	inventory and wield image of the pressure plate
 -- recipe:	crafting recipe of the pressure plate
 
-function mesecon:register_pressure_plate(offstate, onstate, description, textures_off, textures_on, image_w, image_i, recipe)
-	local ppspec = {
-		offstate = offstate,
-		onstate  = onstate
-	}
-
-	minetest.register_node(offstate, {
+function mesecon:register_pressure_plate(basename, description, textures_off, textures_on, image_w, image_i, recipe)
+	mesecon.register_node(basename, {
 		drawtype = "nodebox",
-		tiles = textures_off,
 		inventory_image = image_i,
 		wield_image = image_w,
 		paramtype = "light",
-		selection_box = pp_box_off,
-		node_box = pp_box_off,
-		groups = {snappy = 2, oddly_breakable_by_hand = 3},
 	    	description = description,
-		pressureplate = ppspec,
+		pressureplate_basename = basename,
 		on_timer = pp_on_timer,
-		mesecons = {receptor = {
-			state = mesecon.state.off
-		}},
 		on_construct = function(pos)
 			minetest.get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
 		end,
-	})
-
-	minetest.register_node(onstate, {
-		drawtype = "nodebox",
-		tiles = textures_on,
-		paramtype = "light",
-		selection_box = pp_box_on,
+	},{
+		mesecons = {receptor = { state = mesecon.state.off, rules = mesecon.rules.pplate }},
+		node_box = pp_box_off,
+		selection_box = pp_box_off,
+		groups = {snappy = 2, oddly_breakable_by_hand = 3},
+		tiles = textures_off
+	},{
+		mesecons = {receptor = { state = mesecon.state.on, rules = mesecon.rules.pplate }},
 		node_box = pp_box_on,
+		selection_box = pp_box_on,
 		groups = {snappy = 2, oddly_breakable_by_hand = 3, not_in_creative_inventory = 1},
-		drop = offstate,
-		pressureplate = ppspec,
-		on_timer = pp_on_timer,
-		sounds = default.node_sound_wood_defaults(),
-		mesecons = {receptor = {
-			state = mesecon.state.on
-		}},
-		on_construct = function(pos)
-			minetest.get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
-		end,
-		after_dig_node = function(pos)
-			local two_below = mesecon:addPosRule(pos, {x = 0, y = -2, z = 0})
-			if not mesecon:connected_to_receptor(two_below) then
-				mesecon:turnoff(two_below)
-			end
-		end
+		tiles = textures_on
 	})
 
 	minetest.register_craft({
-		output = offstate,
+		output = basename .. "_off",
 		recipe = recipe,
 	})
 end
 
 mesecon:register_pressure_plate(
-	"mesecons_pressureplates:pressure_plate_wood_off",
-	"mesecons_pressureplates:pressure_plate_wood_on",
+	"mesecons_pressureplates:pressure_plate_wood",
 	"Wooden Pressure Plate",
 	{"jeija_pressure_plate_wood_off.png","jeija_pressure_plate_wood_off.png","jeija_pressure_plate_wood_off_edges.png"},
 	{"jeija_pressure_plate_wood_on.png","jeija_pressure_plate_wood_on.png","jeija_pressure_plate_wood_on_edges.png"},
@@ -117,8 +91,7 @@ mesecon:register_pressure_plate(
 	{{"group:wood", "group:wood"}})
 
 mesecon:register_pressure_plate(
-	"mesecons_pressureplates:pressure_plate_stone_off",
-	"mesecons_pressureplates:pressure_plate_stone_on",
+	"mesecons_pressureplates:pressure_plate_stone",
 	"Stone Pressure Plate",
 	{"jeija_pressure_plate_stone_off.png","jeija_pressure_plate_stone_off.png","jeija_pressure_plate_stone_off_edges.png"},
 	{"jeija_pressure_plate_stone_on.png","jeija_pressure_plate_stone_on.png","jeija_pressure_plate_stone_on_edges.png"},

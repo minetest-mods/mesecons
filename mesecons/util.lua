@@ -199,6 +199,9 @@ mesecon.mergetable = function(source, dest)
 	for k, v in pairs(source) do
 		dest[k] = dest[k] or v
 	end
+	for i, v in ipairs(source) do
+		dest[i] = dest[i] or v
+	end
 end
 
 mesecon.register_node = function(name, spec_common, spec_off, spec_on)
