@@ -11,8 +11,8 @@ minetest.register_node("mesecons_mese_fence:mese_fence", {
 	        fixed = {-1/7, -1/2, -1/7, 1/7, 1/2, 1/7},
 	},
 	groups = {snappy=3},
-	drop = 'mesecons_mese_fence:mese_fence'	
-	sounds = default.node_sound_wood_defaults(),
+	drop = 'mesecons_mese_fence:mese_fence',
+	--sounds = default.node_sound_wood_defaults(),
 	walkable = true,
 	mesecons = {conductor = {
 		state = mesecon.state.off,
@@ -24,7 +24,7 @@ minetest.register_node("mesecons_mese_fence:mese_fence", {
 			{x = 0, y = 0, z = -1},
 			{x = 0, y = 0, z = 1},
 		},
-		onstate = "mesecons_mese_fence:mese_fence_active"
+		onstate = "mesecons_mese_fence:mese_fence_active",
 	}}
 })
 
@@ -38,8 +38,8 @@ minetest.register_node("mesecons_mese_fence:mese_fence_active", {
 	        fixed = {-1/7, -1/2, -1/7, 1/7, 1/2, 1/7},
 	},
 	groups = {snappy=3},
-	drop = 'mesecons_mese_fence:mese_fence'
-	sounds = default.node_sound_wood_defaults(),
+	drop = 'mesecons_mese_fence:mese_fence',
+	--sounds = default.node_sound_wood_defaults(),
 	walkable = true,
 	mesecons = {conductor = {
 		state = mesecon.state.on,
@@ -51,7 +51,7 @@ minetest.register_node("mesecons_mese_fence:mese_fence_active", {
 			{x = 0, y = 0, z = -1},
 			{x = 0, y = 0, z = 1},
 		},
-		offstate = "mesecons_mese_fence:mese_fence"
+		offstate = "mesecons_mese_fence:mese_fence",
 	}}
 })
 
