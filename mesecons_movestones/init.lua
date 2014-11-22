@@ -67,7 +67,7 @@ minetest.register_node("mesecons_movestones:movestone", {
 			local direction=mesecon:get_movestone_direction(pos)
 			if not direction then return end
 			minetest.remove_node(pos)
-			mesecon:update_autoconnect(pos)
+			mesecon.update_autoconnect(pos)
 			minetest.add_entity(pos, "mesecons_movestones:movestone_entity")
 		end
 	}}
@@ -146,7 +146,7 @@ minetest.register_node("mesecons_movestones:sticky_movestone", {
 			local direction=mesecon:get_movestone_direction(pos)
 			if not direction then return end
 			minetest.remove_node(pos)
-			mesecon:update_autoconnect(pos)
+			mesecon.update_autoconnect(pos)
 			minetest.add_entity(pos, "mesecons_movestones:sticky_movestone_entity")
 		end
 	}}

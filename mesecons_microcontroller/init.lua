@@ -1,5 +1,7 @@
 EEPROM_SIZE = 255
 
+local microc_rules = {}
+
 for a = 0, 1 do
 for b = 0, 1 do
 for c = 0, 1 do
@@ -34,7 +36,7 @@ if (a == 0) then table.insert(input_rules, {x = -1, y = 0, z =  0, name = "A"}) 
 if (b == 0) then table.insert(input_rules, {x =  0, y = 0, z =  1, name = "B"}) end
 if (c == 0) then table.insert(input_rules, {x =  1, y = 0, z =  0, name = "C"}) end
 if (d == 0) then table.insert(input_rules, {x =  0, y = 0, z = -1, name = "D"}) end
-mesecon:add_rules(nodename, rules)
+microc_rules[nodename] = rules
 
 local mesecons = {effector =
 {
@@ -131,7 +133,7 @@ minetest.register_node(nodename, {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = mesecons,
 	after_dig_node = function (pos, node)
-		rules = mesecon:get_rules(node.name)
+		rules = microc_rules[node.name]
 		mesecon:receptor_off(pos, rules)
 	end,
 })
@@ -600,22 +602,22 @@ function yc_action_setports(pos, L, Lv)
 	local name = "mesecons_microcontroller:microcontroller"
 	local rules
 	if Lv.a ~= L.a then
-		rules = mesecon:get_rules(name.."0001")
+		rules = microc_rules[name.."0001"]
 		if L.a == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
 	end
 	if Lv.b ~= L.b then
-		rules = mesecon:get_rules(name.."0010")
+		rules = microc_rules[name.."0010"]
 		if L.b == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
 	end
 	if Lv.c ~= L.c then 
-		rules = mesecon:get_rules(name.."0100")
+		rules = microc_rules[name.."0100"]
 		if L.c == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
 	end
 	if Lv.d ~= L.d then 
-		rules = mesecon:get_rules(name.."1000")
+		rules = microc_rules[name.."1000"]
 		if L.d == true then mesecon:receptor_on(pos, rules)
 		else mesecon:receptor_off(pos, rules) end
 	end

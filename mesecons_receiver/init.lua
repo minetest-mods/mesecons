@@ -81,16 +81,8 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 	}}
 })
 
-mesecon:add_rules("receiver_pos", {{x = 2,  y = 0, z = 0}})
-
-mesecon:add_rules("receiver_pos_all", {
-{x = 2,  y = 0, z = 0},
-{x =-2,  y = 0, z = 0},
-{x = 0,  y = 0, z = 2},
-{x = 0,  y = 0, z =-2}})
-
 function mesecon:receiver_get_pos_from_rcpt(pos, param2)
-	local rules = mesecon:get_rules("receiver_pos")
+	local rules = {{x = 2,  y = 0, z = 0}}
 	if param2 == nil then param2 = minetest.get_node(pos).param2 end
 	if param2 == 2 then
 		rules = mesecon:rotate_rules_left(rules)
@@ -119,7 +111,7 @@ function mesecon:receiver_place(rcpt_pos)
 		else
 			minetest.add_node(pos, {name = "mesecons_receiver:receiver_off", param2 = node.param2})
 		end
-		mesecon:update_autoconnect(pos)
+		mesecon.update_autoconnect(pos)
 	end
 end
 
@@ -130,7 +122,7 @@ function mesecon:receiver_remove(rcpt_pos, dugnode)
 		minetest.dig_node(pos)
 		local node = {name = "mesecons:wire_00000000_off"}
 		minetest.add_node(pos, node)
-		mesecon:update_autoconnect(pos)
+		mesecon.update_autoconnect(pos)
 		mesecon.on_placenode(pos, node)
 	end
 end
@@ -149,7 +141,10 @@ end)
 
 minetest.register_on_placenode(function (pos, node)
 	if string.find(node.name, "mesecons:wire_") ~=nil then
-		rules = mesecon:get_rules("receiver_pos_all")
+		rules = {	{x = 2,  y = 0, z = 0},
+				{x =-2,  y = 0, z = 0},
+				{x = 0,  y = 0, z = 2},
+				{x = 0,  y = 0, z =-2}}
 		local i = 1
 		while rules[i] ~= nil do
 			np = {

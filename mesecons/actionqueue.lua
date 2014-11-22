@@ -14,7 +14,7 @@ function mesecon.queue:add_action(pos, func, params, time, overwritecheck, prior
 	priority = priority or 1
 	local action = {	pos=mesecon:tablecopy(pos),
 				func=func,
-				params=mesecon:tablecopy(params),
+				params=mesecon:tablecopy(params or {}),
 				time=time,
 				owcheck=(overwritecheck and mesecon:tablecopy(overwritecheck)) or nil,
 				priority=priority}

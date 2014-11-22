@@ -26,10 +26,6 @@
 -- mesecon:deactivate(pos, node, recdepth)		--> Deactivates the effector node at the specific pos (calls nodedef.mesecons.effector.action_off), "
 -- mesecon:changesignal(pos, node, rulename, newstate)	--> Changes     the effector node at the specific pos (calls nodedef.mesecons.effector.action_change), "
 
--- RULES
--- mesecon:add_rules(name, rules) | deprecated? --> Saves rules table by name
--- mesecon:get_rules(name, rules) | deprecated? --> Loads rules table with name
-
 -- CONDUCTORS
 -- mesecon:is_conductor(nodename)     --> Returns true if nodename is a conductor
 -- mesecon:is_conductor_on(node)  --> Returns true if node is a conductor with state = mesecon.state.on
@@ -242,18 +238,6 @@ function mesecon:changesignal(pos, node, rulename, newstate, recdepth)
 	end
 
 	mesecon.queue:add_action(pos, "change", {rulename, newstate}, nil, rulename, 1 / recdepth)
-end
-
--- #########
--- # Rules # "Database" for rulenames
--- #########
-
-function mesecon:add_rules(name, rules)
-	mesecon.rules[name] = rules
-end
-
-function mesecon:get_rules(name)
-	return mesecon.rules[name]
 end
 
 -- Conductors
@@ -548,7 +532,7 @@ function mesecon:rules_link(output, input, dug_outputrules) --output/input are p
 	return false
 end
 
-function mesecon:rules_link_rule_all(output, rule) --output/input are positions (outputrules optional, used if node has been dug), second return value: affected input rules
+function mesecon:rules_link_rule_all(output, rule)
 	local input = mesecon:addPosRule(output, rule)
 	local inputnode = minetest.get_node(input)
 	local inputrules = mesecon:get_any_inputrules (inputnode)

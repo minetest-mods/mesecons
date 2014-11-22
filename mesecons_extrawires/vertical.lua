@@ -69,7 +69,7 @@ end
 minetest.register_node("mesecons_extrawires:vertical_on", {
 	description = "Vertical mesecon",
 	drawtype = "nodebox",
-	tiles = {"wires_vertical_on.png"},
+	tiles = {"mesecons_wire_on.png"},
 	walkable = false,
 	paramtype = "light",
 	sunlight_propagates = true,
@@ -91,7 +91,7 @@ minetest.register_node("mesecons_extrawires:vertical_on", {
 minetest.register_node("mesecons_extrawires:vertical_off", {
 	description = "Vertical mesecon",
 	drawtype = "nodebox",
-	tiles = {"wires_vertical_off.png"},
+	tiles = {"mesecons_wire_off.png"},
 	walkable = false,
 	paramtype = "light",
 	sunlight_propagates = true,
@@ -113,7 +113,7 @@ minetest.register_node("mesecons_extrawires:vertical_off", {
 minetest.register_node("mesecons_extrawires:vertical_top_on", {
 	description = "Vertical mesecon",
 	drawtype = "nodebox",
-	tiles = {"wires_full_on.png","wires_full_on.png","wires_vertical_on.png"},
+	tiles = {"mesecons_wire_on.png"},
 	walkable = false,
 	paramtype = "light",
 	sunlight_propagates = true,
@@ -135,7 +135,7 @@ minetest.register_node("mesecons_extrawires:vertical_top_on", {
 minetest.register_node("mesecons_extrawires:vertical_top_off", {
 	description = "Vertical mesecon",
 	drawtype = "nodebox",
-	tiles = {"wires_full_off.png","wires_full_off.png","wires_vertical_off.png"},
+	tiles = {"mesecons_wire_off.png"},
 	walkable = false,
 	paramtype = "light",
 	sunlight_propagates = true,
@@ -158,7 +158,7 @@ minetest.register_node("mesecons_extrawires:vertical_top_off", {
 minetest.register_node("mesecons_extrawires:vertical_bottom_on", {
 	description = "Vertical mesecon",
 	drawtype = "nodebox",
-	tiles = {"wires_full_on.png","wires_full_on.png","wires_vertical_on.png"},
+	tiles = {"mesecons_wire_on.png"},
 	walkable = false,
 	paramtype = "light",
 	sunlight_propagates = true,
@@ -179,7 +179,7 @@ minetest.register_node("mesecons_extrawires:vertical_bottom_on", {
 minetest.register_node("mesecons_extrawires:vertical_bottom_off", {
 	description = "Vertical mesecon",
 	drawtype = "nodebox",
-	tiles = {"wires_full_off.png","wires_full_off.png","wires_vertical_off.png"},
+	tiles = {"mesecons_wire_off.png"},
 	walkable = false,
 	paramtype = "light",
 	sunlight_propagates = true,

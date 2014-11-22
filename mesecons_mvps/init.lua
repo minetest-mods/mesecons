@@ -42,9 +42,7 @@ end
 function mesecon:mvps_process_stack(stack)
 	-- update mesecons for placed nodes ( has to be done after all nodes have been added )
 	for _, n in ipairs(stack) do
-		nodeupdate(n.pos)
 		mesecon.on_placenode(n.pos, minetest.get_node(n.pos))
-		mesecon:update_autoconnect(n.pos)
 	end
 end
 
@@ -92,7 +90,6 @@ function mesecon:mvps_push(pos, dir, maximum) -- pos: pos of mvps; dir: directio
 	-- update mesecons for removed nodes ( has to be done after all nodes have been removed )
 	for _, n in ipairs(nodes) do
 		mesecon.on_dignode(n.pos, n.node)
-		mesecon:update_autoconnect(n.pos)
 	end
 
 	-- add nodes
@@ -121,7 +118,7 @@ end
 mesecon:register_on_mvps_move(function(moved_nodes)
 	for _, n in ipairs(moved_nodes) do
 		mesecon.on_placenode(n.pos, n.node)
-		mesecon:update_autoconnect(n.pos)
+		mesecon.update_autoconnect(n.pos)
 	end
 end)
 
@@ -140,7 +137,7 @@ function mesecon:mvps_pull_single(pos, dir) -- pos: pos of mvps; direction: dire
 		nodeupdate(np)
 		nodeupdate(pos)
 		mesecon.on_dignode(np, nn)
-		mesecon:update_autoconnect(np)
+		mesecon.update_autoconnect(np)
 		on_mvps_move({{pos = pos, oldpos = np, node = nn, meta = meta}})
 	end
 	return {{pos = np, node = {param2 = 0, name = "air"}}, {pos = pos, node = nn}}
@@ -188,7 +185,7 @@ function mesecon:mvps_pull_all(pos, direction) -- pos: pos of mvps; direction: d
 	and minetest.registered_nodes[lnode.name].liquidtype ~= "none")
 	minetest.remove_node(oldpos)
 	mesecon.on_dignode(oldpos, lnode2)
-	mesecon:update_autoconnect(oldpos)
+	mesecon.update_autoconnect(oldpos)
 	on_mvps_move(moved_nodes)
 end
 

@@ -193,3 +193,20 @@ function mesecon:cmpAny(t1, t2)
 
 	return true
 end
+
+-- does not overwrite values
+mesecon.mergetable = function(source, dest)
+	for k, v in pairs(source) do
+		dest[k] = dest[k] or v
+	end
+end
+
+mesecon.register_node = function(name, spec_common, spec_off, spec_on)
+	spec_common.drop = spec_common.drop or name .. "_off"
+
+	mesecon.mergetable(spec_common, spec_on);
+	mesecon.mergetable(spec_common, spec_off);
+
+	minetest.register_node(name .. "_on", spec_on)
+	minetest.register_node(name .. "_off", spec_off)
+end
