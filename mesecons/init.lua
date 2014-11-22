@@ -66,11 +66,6 @@ dofile(minetest.get_modpath("mesecons").."/actionqueue.lua");
 -- like calling action_on/off/change
 dofile(minetest.get_modpath("mesecons").."/internal.lua");
 
--- Deprecated stuff
--- To be removed in future releases
--- Currently there is nothing here
-dofile(minetest.get_modpath("mesecons").."/legacy.lua");
-
 -- API
 -- these are the only functions you need to remember
 
@@ -132,6 +127,10 @@ end
 
 
 print("[OK] Mesecons")
+
+-- Deprecated stuff
+-- To be removed in future releases
+dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 
 --The actual wires
 dofile(minetest.get_modpath("mesecons").."/wires.lua");
