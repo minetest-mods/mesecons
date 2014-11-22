@@ -79,7 +79,8 @@ local piston_on = function(pos, node)
 
 	local dir = piston_get_direction(pistonspec.dir, node)
 	local np = mesecon.addPosRule(pos, dir)
-	local success, stack, oldstack = mesecon.mvps_push(np, dir, PISTON_MAXIMUM_PUSH)
+	local maxpush = mesecon.setting("piston_max_push", 15)
+	local success, stack, oldstack = mesecon.mvps_push(np, dir, maxpush)
 	if success then
 		minetest.add_node(pos, {param2 = node.param2, name = pistonspec.onname})
 		minetest.add_node(np,  {param2 = node.param2, name = pistonspec.pusher})

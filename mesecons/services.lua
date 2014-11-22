@@ -61,7 +61,7 @@ mesecon.do_overheat = function(pos)
 	heat = heat + 1
 	meta:set_int("heat", heat)
 
-	if heat < OVERHEAT_MAX then
+	if heat < mesecon.setting("overheat_max", 20) then
 		mesecon.queue:add_action(pos, "cooldown", {}, 1, nil, 0)
 	else
 		return true

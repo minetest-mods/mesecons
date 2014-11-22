@@ -59,7 +59,7 @@ function mesecon.register_pressure_plate(basename, description, textures_off, te
 		pressureplate_basename = basename,
 		on_timer = pp_on_timer,
 		on_construct = function(pos)
-			minetest.get_node_timer(pos):start(PRESSURE_PLATE_INTERVAL)
+			minetest.get_node_timer(pos):start(mesecon.setting("pplate_interval", 0.1))
 		end,
 	},{
 		mesecons = {receptor = { state = mesecon.state.off, rules = mesecon.rules.pplate }},

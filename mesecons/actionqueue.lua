@@ -57,9 +57,12 @@ local get_highest_priority = function (actions)
 end
 
 local m_time = 0
+local resumetime = mesecon.setting("resumetime", 4)
 minetest.register_globalstep(function (dtime)
 	m_time = m_time + dtime
-	if (m_time < MESECONS_RESUMETIME) then return end -- don't even try if server has not been running for XY seconds
+	-- don't even try if server has not been running for XY seconds; resumetime = time to wait
+	-- after starting the server before processing the ActionQueue, don't set this too low
+	if (m_time < resumetime) then return end
 	local actions = mesecon.tablecopy(mesecon.queue.actions)
 	local actions_now={}
 

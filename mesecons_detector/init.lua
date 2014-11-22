@@ -23,7 +23,7 @@ end
 
 -- returns true if player was found, false if not
 local object_detector_scan = function (pos)
-	local objs = minetest.get_objects_inside_radius(pos, OBJECT_DETECTOR_RADIUS)
+	local objs = minetest.get_objects_inside_radius(pos, mesecon.setting("detector_radius", 6))
 	for k, obj in pairs(objs) do
 		local isname = obj:get_player_name() -- "" is returned if it is not a player; "" ~= nil!
 		local scanname = minetest.get_meta(pos):get_string("scanname")

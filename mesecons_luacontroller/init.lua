@@ -201,7 +201,8 @@ local create_environment = function(pos, mem, event)
 			tostring = tostring,
 			tonumber = tonumber,
 			heat = minetest.get_meta(pos):get_int("heat"),
-			heat_max = OVERHEAT_MAX,
+			-- overheat_max Unit: actions per second, checks are every 1 second
+			heat_max = mesecon.setting("overheat_max", 20),
 			string = {
 				byte = string.byte,
 				char = string.char,
