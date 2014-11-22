@@ -196,20 +196,23 @@ end
 
 -- does not overwrite values; number keys (ipairs) are appended, not overwritten
 mesecon.mergetable = function(source, dest)
+	local rval = mesecon.tablecopy(dest)
+
 	for k, v in pairs(source) do
-		dest[k] = dest[k] or v
+		rval[k] = dest[k] or mesecon.tablecopy(v)
+	end
+	for i, v in ipairs(source) do
+		table.insert(rval, mesecon.tablecopy(v))
 	end
 
-	for i, v in ipairs(source) do
-		table.insert(dest, v)
-	end
+	return rval
 end
 
 mesecon.register_node = function(name, spec_common, spec_off, spec_on)
 	spec_common.drop = spec_common.drop or name .. "_off"
 
-	mesecon.mergetable(spec_common, spec_on);
-	mesecon.mergetable(spec_common, spec_off);
+	spec_on = mesecon.mergetable(spec_common, spec_on);
+	spec_off = mesecon.mergetable(spec_common, spec_off);
 
 	minetest.register_node(name .. "_on", spec_on)
 	minetest.register_node(name .. "_off", spec_off)

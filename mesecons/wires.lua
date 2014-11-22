@@ -19,7 +19,7 @@ local wire_getconnect = function (from_pos, self_pos)
 			rules = mesecon.rules.default
 		else
 			rules = mesecon.get_any_inputrules(node) or {}
-			mesecon.mergetable(mesecon.get_any_outputrules(node) or {}, rules)
+			rules = mesecon.mergetable(mesecon.get_any_outputrules(node) or {}, rules)
 		end
 
 		for _, r in ipairs(mesecon.flattenrules(rules)) do
@@ -80,7 +80,7 @@ local update_on_place_dig = function (pos, node)
 		rules = mesecon.rules.default
 	else
 		rules = mesecon.get_any_inputrules(node) or {}
-		mesecon.mergetable(mesecon.get_any_outputrules(node) or {}, rules)
+		rules = mesecon.mergetable(mesecon.get_any_outputrules(node) or {}, rules)
 	end
 	if (not rules) then return end
 

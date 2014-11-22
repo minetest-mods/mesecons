@@ -39,7 +39,7 @@
 -- mesecon.is_power_off(pos)            --> Returns true if pos does not emit power in any way
 -- mesecon.turnon(pos, rulename)        --> Returns true  whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnon; Uses third parameter recdepth internally to determine how far away the current node is from the initial pos as it uses recursion
 -- mesecon.turnoff(pos, rulename)       --> Turns off whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnoff; Uses third parameter recdepth internally to determine how far away the current node is from the initial pos as it uses recursion
--- mesecon.connected_to_receptor(pos)   --> Returns true if pos is connected to a receptor directly or via conductors; calls itself if pos is a conductor --> recursive
+-- mesecon.connected_to_receptor(pos, link)   --> Returns true if pos is connected to a receptor directly or via conductors; calls itself if pos is a conductor --> recursive
 -- mesecon.rules_link(output, input, dug_outputrules) --> Returns true if outputposition + outputrules = inputposition and inputposition + inputrules = outputposition (if the two positions connect)
 -- mesecon.rules_link_anydir(outp., inp., d_outpr.)   --> Same as rules mesecon.rules_link but also returns true if output and input are swapped
 -- mesecon.is_powered(pos)              --> Returns true if pos is powered by a receptor or a conductor
@@ -179,8 +179,8 @@ end
 
 -- Activation:
 mesecon.queue:add_function("activate", function (pos, rulename)
-	node = minetest.get_node(pos)
-	effector = mesecon.get_effector(node.name)
+	local node = minetest.get_node(pos)
+	local effector = mesecon.get_effector(node.name)
 
 	if effector and effector.action_on then
 		effector.action_on(pos, node, rulename)
@@ -446,18 +446,18 @@ mesecon.queue:add_function("turnoff", function (pos, rulename, recdepth)
 end)
 
 
-function mesecon.connected_to_receptor(pos, rulename)
+function mesecon.connected_to_receptor(pos, link)
 	local node = minetest.get_node(pos)
 
 	-- Check if conductors around are connected
 	local rules = mesecon.get_any_inputrules(node)
 	if not rules then return false end
 
-	for _, rule in ipairs(mesecon.rule2meta(rulename, rules)) do
-		local rulenames = mesecon.rules_link_rule_all_inverted(pos, rule)
-		for _, rname in ipairs(rulenames) do
-			local np = mesecon.addPosRule(pos, rname)
-			if mesecon.find_receptor_on(np, {}, mesecon.invertRule(rname)) then
+	for _, rule in ipairs(mesecon.rule2meta(link, rules)) do
+		local links = mesecon.rules_link_rule_all_inverted(pos, rule)
+		for _, l in ipairs(links) do
+			local np = mesecon.addPosRule(pos, l)
+			if mesecon.find_receptor_on(np, mesecon.invertRule(l)) then
 				return true
 			end
 		end
@@ -466,49 +466,36 @@ function mesecon.connected_to_receptor(pos, rulename)
 	return false
 end
 
-function mesecon.find_receptor_on(pos, checked, rulename, recdepth)
-	recdepth = recdepth or 2
-	if (recdepth > STACK_SIZE) then return true end -- ignore request
-	local node = minetest.get_node(pos)
+function mesecon.find_receptor_on(pos, link)
+	local frontiers = {{pos = pos, link = link}}
+	local checked = {}
 
-	if mesecon.is_receptor_on(node.name) then
-		-- add current position to checked
-		table.insert(checked, {x=pos.x, y=pos.y, z=pos.z})
-		return true
-	end
+	-- List of positions that have been searched for onstate receptors
+	local depth = 1
+	while frontiers[depth] do
+		local f = frontiers[depth]
+		local node = minetest.get_node_or_nil(f.pos)
 
-	if mesecon.is_conductor(node.name) then
-		local rules = mesecon.conductor_get_rules(node)
-		local metaindex = mesecon.rule2metaindex(rulename, rules)
-		-- find out if node has already been checked (to prevent from endless loop)
-		for _, cp in ipairs(checked) do
-			if mesecon.cmpPos(cp, pos) and cp.metaindex == metaindex then
-				return false, checked
-			end
-		end
-		-- add current position to checked
-		table.insert(checked, {x=pos.x, y=pos.y, z=pos.z, metaindex = metaindex})
-		for _, rule in ipairs(mesecon.rule2meta(rulename, rules)) do
-			local rulenames = mesecon.rules_link_rule_all_inverted(pos, rule)
-			for _, rname in ipairs(rulenames) do
-				local np = mesecon.addPosRule(pos, rname)
-				if mesecon.find_receptor_on(np, checked, mesecon.invertRule(rname),
-					recdepth + 1) then
-					return true
+		if mesecon.is_receptor_on(node.name) then return true end
+		if mesecon.is_conductor_on(node, f.link) then
+			local rules = mesecon.conductor_get_rules(node)
+
+			-- call turnoff on neighbors: normal rules
+			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
+				local np = mesecon.addPosRule(f.pos, r)
+
+				local links = mesecon.rules_link_rule_all_inverted(f.pos, r)
+				for _, l in ipairs(links) do
+					if not checked[f.pos.x .. f.pos.y .. f.pos.z] then
+						table.insert(frontiers, {pos = np, link = l})
+						checked[f.pos.x .. f.pos.y .. f.pos.z] = true
+					end
 				end
 			end
+			
 		end
-	else
-		-- find out if node has already been checked (to prevent from endless loop)
-		for _, cp in ipairs(checked) do
-			if mesecon.cmpPos(cp, pos) then
-				return false, checked
-			end
-		end
-		table.insert(checked, {x=pos.x, y=pos.y, z=pos.z})
+		depth = depth + 1
 	end
-
-	return false
 end
 
 function mesecon.rules_link(output, input, dug_outputrules) --output/input are positions (outputrules optional, used if node has been dug), second return value: the name of the affected input rule
@@ -551,7 +538,7 @@ function mesecon.rules_link_rule_all(output, rule)
 		if  mesecon.cmpPos(mesecon.addPosRule(input, inputrule), output) then
 			if inputrule.sx == nil or rule.sx == nil
 			or mesecon.cmpSpecial(inputrule, rule) then
-				rules[#rules+1] = inputrule
+				table.insert(rules, inputrule)
 			end
 		end
 	end
@@ -572,7 +559,7 @@ function mesecon.rules_link_rule_all_inverted(input, rule)
 		if  mesecon.cmpPos(mesecon.addPosRule(output, outputrule), input) then
 			if outputrule.sx == nil or rule.sx == nil
 			or mesecon.cmpSpecial(outputrule, rule) then
-				rules[#rules+1] = mesecon.invertRule(outputrule)
+				table.insert(rules, mesecon.invertRule(outputrule))
 			end
 		end
 	end
