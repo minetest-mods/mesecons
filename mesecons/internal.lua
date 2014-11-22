@@ -22,9 +22,9 @@
 -- mesecon:effector_get_rules(node)  --> Returns the input rules of the effector (mesecon.rules.default if none specified)
 
 -- SIGNALS
--- mesecon:activate(pos, node, recdepth)		--> Activates   the effector node at the specific pos (calls nodedef.mesecons.effector.action_on), higher recdepths are executed later
--- mesecon:deactivate(pos, node, recdepth)		--> Deactivates the effector node at the specific pos (calls nodedef.mesecons.effector.action_off), "
--- mesecon:changesignal(pos, node, rulename, newstate)	--> Changes     the effector node at the specific pos (calls nodedef.mesecons.effector.action_change), "
+-- mesecon:activate(pos, node, depth)		--> Activates   the effector node at the specific pos (calls nodedef.mesecons.effector.action_on), higher depths are executed later
+-- mesecon:deactivate(pos, node, depth)		--> Deactivates the effector node at the specific pos (calls nodedef.mesecons.effector.action_off), higher depths are executed later
+-- mesecon:changesignal(pos, node, rulename, newstate, depth)	--> Changes     the effector node at the specific pos (calls nodedef.mesecons.effector.action_change), higher depths are executed later
 
 -- CONDUCTORS
 -- mesecon:is_conductor(nodename)     --> Returns true if nodename is a conductor
@@ -187,14 +187,14 @@ mesecon.queue:add_function("activate", function (pos, rulename)
 	end
 end)
 
-function mesecon:activate(pos, node, rulename, recdepth)
+function mesecon:activate(pos, node, rulename, depth)
 	if rulename == nil then
 		for _,rule in ipairs(mesecon:effector_get_rules(node)) do
-			mesecon:activate(pos, node, rule, recdepth + 1)
+			mesecon:activate(pos, node, rule, depth + 1)
 		end
 		return
 	end
-	mesecon.queue:add_action(pos, "activate", {rulename}, nil, rulename, 1 / recdepth)
+	mesecon.queue:add_action(pos, "activate", {rulename}, nil, rulename, 1 / depth)
 end
 
 
@@ -208,36 +208,36 @@ mesecon.queue:add_function("deactivate", function (pos, rulename)
 	end
 end)
 
-function mesecon:deactivate(pos, node, rulename, recdepth)
+function mesecon:deactivate(pos, node, rulename, depth)
 	if rulename == nil then
 		for _,rule in ipairs(mesecon:effector_get_rules(node)) do
-			mesecon:deactivate(pos, node, rule, recdepth + 1)
+			mesecon:deactivate(pos, node, rule, depth + 1)
 		end
 		return
 	end
-	mesecon.queue:add_action(pos, "deactivate", {rulename}, nil, rulename, 1 / recdepth)
+	mesecon.queue:add_action(pos, "deactivate", {rulename}, nil, rulename, 1 / depth)
 end
 
 
 -- Change
 mesecon.queue:add_function("change", function (pos, rulename, changetype)
-	node = minetest.get_node(pos)
-	effector = mesecon:get_effector(node.name)
+	local node = minetest.get_node(pos)
+	local effector = mesecon:get_effector(node.name)
 
 	if effector and effector.action_change then
 		effector.action_change(pos, node, rulename, changetype)
 	end
 end)
 
-function mesecon:changesignal(pos, node, rulename, newstate, recdepth)
+function mesecon:changesignal(pos, node, rulename, newstate, depth)
 	if rulename == nil then
 		for _,rule in ipairs(mesecon:effector_get_rules(node)) do
-			mesecon:changesignal(pos, node, rule, newstate, recdepth + 1)
+			mesecon:changesignal(pos, node, rule, newstate, depth + 1)
 		end
 		return
 	end
 
-	mesecon.queue:add_action(pos, "change", {rulename, newstate}, nil, rulename, 1 / recdepth)
+	mesecon.queue:add_action(pos, "change", {rulename, newstate}, nil, rulename, 1 / depth)
 end
 
 -- Conductors
@@ -349,50 +349,47 @@ function mesecon:is_power_off(pos, rulename)
 	return false
 end
 
-function mesecon:turnon(pos, rulename, recdepth)
-	recdepth = recdepth or 2
-	if (recdepth > STACK_SIZE) then return end
-	local node = minetest.get_node(pos)
+function mesecon:turnon(pos, link)
+	local frontiers = {{pos = pos, link = link}}
 
-	if(node.name == "ignore") then
-		-- try turning on later again
-		mesecon.queue:add_action(
-			pos, "turnon", {rulename, recdepth + 1}, nil, true)
-	end
-	
-	if mesecon:is_conductor_off(node, rulename) then
-		local rules = mesecon:conductor_get_rules(node)
+	local depth = 1
+	while frontiers[depth] do
+		local f = frontiers[depth]
+		local node = minetest.get_node_or_nil(f.pos)
 
-		if not rulename then
-			for _, rule in ipairs(mesecon:flattenrules(rules)) do
-				if mesecon:connected_to_receptor(pos, rule) then
-					mesecon:turnon(pos, rule, recdepth + 1)
+		-- area not loaded, postpone action
+		if not node then
+			mesecon.queue:add_action(f.pos, "turnon", {link}, nil, true)
+		end
+
+		if mesecon:is_conductor_off(node, f.link) then
+			local rules = mesecon:conductor_get_rules(node)
+
+			minetest.swap_node(f.pos, {name = mesecon:get_conductor_on(node, f.link),
+				param2 = node.param2})
+
+			-- call turnon on neighbors: normal rules
+			for _, r in ipairs(mesecon:rule2meta(f.link, rules)) do
+				local np = mesecon:addPosRule(f.pos, r)
+
+				-- area not loaded, postpone action
+				if not minetest.get_node_or_nil(np) then
+					mesecon.queue:add_action(np, "turnon", {rulename},
+						nil, true)
+				else
+					local links = mesecon:rules_link_rule_all(f.pos, r)
+					for _, l in ipairs(links) do
+						table.insert(frontiers, {pos = np, link = l})
+					end
 				end
 			end
-			return
-		end
-
-		minetest.swap_node(pos, {name = mesecon:get_conductor_on(node, rulename), param2 = node.param2})
-
-		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
-			local np = mesecon:addPosRule(pos, rule)
-			if(minetest.get_node(np).name == "ignore") then
-				-- try turning on later again
-				mesecon.queue:add_action(
-					np, "turnon", {rulename, recdepth + 1}, nil, true)
-			else
-				local rulenames = mesecon:rules_link_rule_all(pos, rule)
-
-				for _, rulename in ipairs(rulenames) do
-					mesecon:turnon(np, rulename, recdepth + 1)
-				end
+		elseif mesecon:is_effector(node.name) then
+			mesecon:changesignal(f.pos, node, f.link, mesecon.state.on, depth)
+			if mesecon:is_effector_off(node.name) then
+				mesecon:activate(f.pos, node, f.link, depth)
 			end
 		end
-	elseif mesecon:is_effector(node.name) then
-		mesecon:changesignal(pos, node, rulename, mesecon.state.on, recdepth)
-		if mesecon:is_effector_off(node.name) then
-			mesecon:activate(pos, node, rulename, recdepth)
-		end
+		depth = depth + 1
 	end
 end
 
@@ -400,41 +397,47 @@ mesecon.queue:add_function("turnon", function (pos, rulename, recdepth)
 	mesecon:turnon(pos, rulename, recdepth)
 end)
 
-function mesecon:turnoff(pos, rulename, recdepth)
-	recdepth = recdepth or 2
-	if (recdepth > STACK_SIZE) then return end
-	local node = minetest.get_node(pos)
+function mesecon:turnoff(pos, link)
+	local frontiers = {{pos = pos, link = link}}
 
-	if(node.name == "ignore") then
-		-- try turning on later again
-		mesecon.queue:add_action(
-			pos, "turnoff", {rulename, recdepth + 1}, nil, true)
-	end
+	local depth = 1
+	while frontiers[depth] do
+		local f = frontiers[depth]
+		local node = minetest.get_node_or_nil(f.pos)
 
-	if mesecon:is_conductor_on(node, rulename) then
-		local rules = mesecon:conductor_get_rules(node)
-		minetest.swap_node(pos, {name = mesecon:get_conductor_off(node, rulename), param2 = node.param2})
+		-- area not loaded, postpone action
+		if not node then
+			mesecon.queue:add_action(f.pos, "turnoff", {link}, nil, true)
+		end
 
-		for _, rule in ipairs(mesecon:rule2meta(rulename, rules)) do
-			local np = mesecon:addPosRule(pos, rule)
-			if(minetest.get_node(np).name == "ignore") then
-				-- try turning on later again
-				mesecon.queue:add_action(
-					np, "turnoff", {rulename, recdepth + 1}, nil, true)
-			else
-				local rulenames = mesecon:rules_link_rule_all(pos, rule)
+		if mesecon:is_conductor_on(node, f.link) then
+			local rules = mesecon:conductor_get_rules(node)
 
-				for _, rulename in ipairs(rulenames) do
-					mesecon:turnoff(np, rulename, recdepth + 1)
+			minetest.swap_node(f.pos, {name = mesecon:get_conductor_off(node, f.link),
+				param2 = node.param2})
+
+			-- call turnoff on neighbors: normal rules
+			for _, r in ipairs(mesecon:rule2meta(f.link, rules)) do
+				local np = mesecon:addPosRule(f.pos, r)
+
+				-- area not loaded, postpone action
+				if not minetest.get_node_or_nil(np) then
+					mesecon.queue:add_action(np, "turnoff", {rulename},
+						nil, true)
+				else
+					local links = mesecon:rules_link_rule_all(f.pos, r)
+					for _, l in ipairs(links) do
+						table.insert(frontiers, {pos = np, link = l})
+					end
 				end
 			end
+		elseif mesecon:is_effector(node.name) then
+			mesecon:changesignal(f.pos, node, f.link, mesecon.state.off, depth)
+			if mesecon:is_effector_on(node.name) and not mesecon:is_powered(f.pos) then
+				mesecon:deactivate(f.pos, node, f.link, depth)
+			end
 		end
-	elseif mesecon:is_effector(node.name) then
-		mesecon:changesignal(pos, node, rulename, mesecon.state.off, recdepth)
-		if mesecon:is_effector_on(node.name)
-		and not mesecon:is_powered(pos) then
-			mesecon:deactivate(pos, node, rulename, recdepth + 1)
-		end
+		depth = depth + 1
 	end
 end
 

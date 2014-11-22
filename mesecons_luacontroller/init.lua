@@ -83,7 +83,6 @@ local merge_portstates = function (ports, vports)
 end
 
 local generate_name = function (ports)
-	local overwrite = overwrite or {}
 	local d = ports.d and 1 or 0
 	local c = ports.c and 1 or 0
 	local b = ports.b and 1 or 0
@@ -271,7 +270,7 @@ local create_sandbox = function (code, env)
 	if code:byte(1) == 27 then
 		return _, "You Hacker You! Don't use binary code!"
 	end
-	f, msg = loadstring(code)
+	local f, msg = loadstring(code)
 	if not f then return _, msg end
 	setfenv(f, env)
 	return f
@@ -321,7 +320,7 @@ lc_update = function (pos, event)
 	-- create the sandbox and execute code
 	local chunk, msg = create_sandbox (code, env)
 	if not chunk then return msg end
-	local success, msg = pcall(f)
+	local success, msg = pcall(chunk)
 	if not success then return msg end
 	if ports_invalid(env.port) then return ports_invalid(env.port) end
 
