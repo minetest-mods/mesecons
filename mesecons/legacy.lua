@@ -27,3 +27,4 @@ function mesecon.receptor_off(self, pos, rules)
 	end
 	mesecon.queue:add_action(pos, "receptor_off", {rules}, nil, rules)
 end
+
