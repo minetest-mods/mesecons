@@ -1,50 +1,50 @@
 -- Internal.lua - The core of mesecons
 --
--- For more practical developer resources see mesecons.tk
+-- For more practical developer resources see http://mesecons.net/developers.php
 --
 -- Function overview
--- mesecon.get_effector(nodename)     --> Returns the mesecons.effector -specifictation in the nodedef by the nodename
--- mesecon.get_receptor(nodename)     --> Returns the mesecons.receptor -specifictation in the nodedef by the nodename
--- mesecon.get_conductor(nodename)    --> Returns the mesecons.conductor-specifictation in the nodedef by the nodename
--- mesecon.get_any_inputrules (node)  --> Returns the rules of a node if it is a conductor or an effector
--- mesecon.get_any_outputrules (node) --> Returns the rules of a node if it is a conductor or a receptor
+-- mesecon.get_effector(nodename)	--> Returns the mesecons.effector -specifictation in the nodedef by the nodename
+-- mesecon.get_receptor(nodename)	--> Returns the mesecons.receptor -specifictation in the nodedef by the nodename
+-- mesecon.get_conductor(nodename)	--> Returns the mesecons.conductor-specifictation in the nodedef by the nodename
+-- mesecon.get_any_inputrules (node)	--> Returns the rules of a node if it is a conductor or an effector
+-- mesecon.get_any_outputrules (node)	--> Returns the rules of a node if it is a conductor or a receptor
 
 -- RECEPTORS
--- mesecon.is_receptor(nodename)     --> Returns true if nodename is a receptor
--- mesecon.is_receptor_on(nodename)  --> Returns true if nodename is an receptor with state = mesecon.state.on
--- mesecon.is_receptor_off(nodename) --> Returns true if nodename is an receptor with state = mesecon.state.off
--- mesecon.receptor_get_rules(node)  --> Returns the rules of the receptor (mesecon.rules.default if none specified)
+-- mesecon.is_receptor(nodename)	--> Returns true if nodename is a receptor
+-- mesecon.is_receptor_on(nodename	--> Returns true if nodename is an receptor with state = mesecon.state.on
+-- mesecon.is_receptor_off(nodename)	--> Returns true if nodename is an receptor with state = mesecon.state.off
+-- mesecon.receptor_get_rules(node)	--> Returns the rules of the receptor (mesecon.rules.default if none specified)
 
 -- EFFECTORS
--- mesecon.is_effector(nodename)     --> Returns true if nodename is an effector
--- mesecon.is_effector_on(nodename)  --> Returns true if nodename is an effector with nodedef.mesecons.effector.action_off
--- mesecon.is_effector_off(nodename) --> Returns true if nodename is an effector with nodedef.mesecons.effector.action_on
--- mesecon.effector_get_rules(node)  --> Returns the input rules of the effector (mesecon.rules.default if none specified)
+-- mesecon.is_effector(nodename)	--> Returns true if nodename is an effector
+-- mesecon.is_effector_on(nodename)	--> Returns true if nodename is an effector with nodedef.mesecons.effector.action_off
+-- mesecon.is_effector_off(nodename)	--> Returns true if nodename is an effector with nodedef.mesecons.effector.action_on
+-- mesecon.effector_get_rules(node)	--> Returns the input rules of the effector (mesecon.rules.default if none specified)
 
 -- SIGNALS
--- mesecon.activate(pos, node, depth)		--> Activates   the effector node at the specific pos (calls nodedef.mesecons.effector.action_on), higher depths are executed later
--- mesecon.deactivate(pos, node, depth)		--> Deactivates the effector node at the specific pos (calls nodedef.mesecons.effector.action_off), higher depths are executed later
+-- mesecon.activate(pos, node, depth)				--> Activates   the effector node at the specific pos (calls nodedef.mesecons.effector.action_on), higher depths are executed later
+-- mesecon.deactivate(pos, node, depth)				--> Deactivates the effector node at the specific pos (calls nodedef.mesecons.effector.action_off), higher depths are executed later
 -- mesecon.changesignal(pos, node, rulename, newstate, depth)	--> Changes     the effector node at the specific pos (calls nodedef.mesecons.effector.action_change), higher depths are executed later
 
 -- CONDUCTORS
--- mesecon.is_conductor(nodename)     --> Returns true if nodename is a conductor
--- mesecon.is_conductor_on(node)  --> Returns true if node is a conductor with state = mesecon.state.on
--- mesecon.is_conductor_off(node) --> Returns true if node is a conductor with state = mesecon.state.off
--- mesecon.get_conductor_on(node_off) --> Returns the onstate  nodename of the conductor
--- mesecon.get_conductor_off(node_on) --> Returns the offstate nodename of the conductor
--- mesecon.conductor_get_rules(node)  --> Returns the input+output rules of a conductor (mesecon.rules.default if none specified)
+-- mesecon.is_conductor(nodename)	--> Returns true if nodename is a conductor
+-- mesecon.is_conductor_on(node		--> Returns true if node is a conductor with state = mesecon.state.on
+-- mesecon.is_conductor_off(node)	--> Returns true if node is a conductor with state = mesecon.state.off
+-- mesecon.get_conductor_on(node_off)	--> Returns the onstate  nodename of the conductor
+-- mesecon.get_conductor_off(node_on)	--> Returns the offstate nodename of the conductor
+-- mesecon.conductor_get_rules(node)	--> Returns the input+output rules of a conductor (mesecon.rules.default if none specified)
 
 -- HIGH-LEVEL Internals
--- mesecon.is_power_on(pos)             --> Returns true if pos emits power in any way
--- mesecon.is_power_off(pos)            --> Returns true if pos does not emit power in any way
--- mesecon.turnon(pos, rulename)        --> Returns true  whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnon; Uses third parameter recdepth internally to determine how far away the current node is from the initial pos as it uses recursion
--- mesecon.turnoff(pos, rulename)       --> Turns off whatever there is at pos. Calls itself for connected nodes (if pos is a conductor) --> recursive, the rulename is the name of the input rule that caused calling turnoff; Uses third parameter recdepth internally to determine how far away the current node is from the initial pos as it uses recursion
--- mesecon.connected_to_receptor(pos, link)   --> Returns true if pos is connected to a receptor directly or via conductors; calls itself if pos is a conductor --> recursive
--- mesecon.rules_link(output, input, dug_outputrules) --> Returns true if outputposition + outputrules = inputposition and inputposition + inputrules = outputposition (if the two positions connect)
--- mesecon.rules_link_anydir(outp., inp., d_outpr.)   --> Same as rules mesecon.rules_link but also returns true if output and input are swapped
--- mesecon.is_powered(pos)              --> Returns true if pos is powered by a receptor or a conductor
+-- mesecon.is_power_on(pos)				--> Returns true if pos emits power in any way
+-- mesecon.is_power_off(pos)				--> Returns true if pos does not emit power in any way
+-- mesecon.turnon(pos, link) 				--> link is the input rule that caused calling turnon, turns on every connected node, iterative
+-- mesecon.turnoff(pos, link)				--> link is the input rule that caused calling turnoff, turns off every connected node, iterative
+-- mesecon.connected_to_receptor(pos, link)		--> Returns true if pos is connected to a receptor directly or via conductors, iterative
+-- mesecon.rules_link(output, input, dug_outputrules)	--> Returns true if outputposition + outputrules = inputposition and inputposition + inputrules = outputposition (if the two positions connect)
+-- mesecon.rules_link_anydir(outp., inp., d_outpr.)	--> Same as rules mesecon.rules_link but also returns true if output and input are swapped
+-- mesecon.is_powered(pos)				--> Returns true if pos is powered by a receptor or a conductor
 
--- RULES ROTATION helpsers
+-- RULES ROTATION helpers
 -- mesecon.rotate_rules_right(rules)
 -- mesecon.rotate_rules_left(rules)
 -- mesecon.rotate_rules_up(rules)
@@ -82,7 +82,6 @@ function mesecon.get_any_outputrules (node)
 	elseif mesecon.is_receptor(node.name) then
 		return mesecon.receptor_get_rules(node)
 	end
-	return false
 end
 
 function mesecon.get_any_inputrules (node)
@@ -91,7 +90,11 @@ function mesecon.get_any_inputrules (node)
 	elseif mesecon.is_effector(node.name) then
 		return mesecon.effector_get_rules(node)
 	end
-	return false
+end
+
+function mesecon.get_any_rules (node)
+	return mesecon.mergetable(mesecon.get_any_inputrules(node) or {},
+		mesecon.get_any_outputrules(node) or {})
 end
 
 -- Receptors
@@ -200,8 +203,8 @@ end
 
 -- Deactivation
 mesecon.queue:add_function("deactivate", function (pos, rulename)
-	node = minetest.get_node(pos)
-	effector = mesecon.get_effector(node.name)
+	local node = minetest.get_node(pos)
+	local effector = mesecon.get_effector(node.name)
 
 	if effector and effector.action_off then
 		effector.action_off(pos, node, rulename)
@@ -360,9 +363,7 @@ function mesecon.turnon(pos, link)
 		-- area not loaded, postpone action
 		if not node then
 			mesecon.queue:add_action(f.pos, "turnon", {link}, nil, true)
-		end
-
-		if mesecon.is_conductor_off(node, f.link) then
+		elseif mesecon.is_conductor_off(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
 
 			minetest.swap_node(f.pos, {name = mesecon.get_conductor_on(node, f.link),
@@ -408,9 +409,7 @@ function mesecon.turnoff(pos, link)
 		-- area not loaded, postpone action
 		if not node then
 			mesecon.queue:add_action(f.pos, "turnoff", {link}, nil, true)
-		end
-
-		if mesecon.is_conductor_on(node, f.link) then
+		elseif mesecon.is_conductor_on(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
 
 			minetest.swap_node(f.pos, {name = mesecon.get_conductor_off(node, f.link),
@@ -476,6 +475,7 @@ function mesecon.find_receptor_on(pos, link)
 		local f = frontiers[depth]
 		local node = minetest.get_node_or_nil(f.pos)
 
+		if not node then return false end
 		if mesecon.is_receptor_on(node.name) then return true end
 		if mesecon.is_conductor_on(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
