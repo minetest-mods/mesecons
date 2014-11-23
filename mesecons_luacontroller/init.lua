@@ -160,7 +160,7 @@ local safe_serialize = function(value)
 	return minetest.serialize(deep_copy(value))
 end
 
-mesecon.queue:add_function("lc_interrupt", function (pos, iid, luac_id)
+mesecon.queue:add_function("lc_interrupt", function (pos, luac_id, iid)
 	-- There is no luacontroller anymore / it has been reprogrammed / replaced
 	if (minetest.get_meta(pos):get_int("luac_id") ~= luac_id) then return end
 	lc_update(pos, {type="interrupt", iid = iid})
@@ -169,8 +169,8 @@ end)
 local getinterrupt = function(pos)
 	local interrupt = function (time, iid) -- iid = interrupt id
 		if type(time) ~= "number" then return end
-		luac_id = minetest.get_meta(pos):get_int("luac_id")
-		mesecon.queue:add_action(pos, "lc_interrupt", {iid, luac_id}, time, iid, 1)
+		local luac_id = minetest.get_meta(pos):get_int("luac_id")
+		mesecon.queue:add_action(pos, "lc_interrupt", {luac_id, iid}, time, iid, 1)
 	end
 	return interrupt
 end
