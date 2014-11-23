@@ -33,7 +33,7 @@ local piston_down_rules =
 local piston_get_rules = function (node)
 	local rules = piston_rules
 	for i = 1, node.param2 do
-		rules = mesecon:rotate_rules_left(rules)
+		rules = mesecon.rotate_rules_left(rules)
 	end
 	return rules
 end
@@ -41,7 +41,7 @@ end
 piston_facedir_direction = function (node)
 	local rules = {{x = 0, y = 0, z = -1}}
 	for i = 1, node.param2 do
-		rules = mesecon:rotate_rules_left(rules)
+		rules = mesecon.rotate_rules_left(rules)
 	end
 	return rules[1]
 end
@@ -56,13 +56,14 @@ end
 
 local piston_remove_pusher = function(pos, node)
 	pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-	if pushername == pistonspec.pusher then --make sure there actually is a pusher (for compatibility reasons mainly)
+	dir = piston_get_direction(pistonspec.dir, node)
+	local pusherpos = mesecon.addPosRule(pos, dir)
+	local pushername = minetest.get_node(pusherpos).name
+
+	-- make sure there actually is a pusher (for compatibility reasons mainly)
+	if pushername ~= pistonspec.pusher then
 		return
 	end
-
-	dir = piston_get_direction(pistonspec.dir, node)
-	local pusherpos = mesecon:addPosRule(pos, dir)
-	local pushername = minetest.get_node(pusherpos).name
 
 	minetest.remove_node(pusherpos)
 	minetest.sound_play("piston_retract", {
@@ -77,8 +78,9 @@ local piston_on = function(pos, node)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
 
 	local dir = piston_get_direction(pistonspec.dir, node)
-	local np = mesecon:addPosRule(pos, dir)
-	local success, stack, oldstack = mesecon:mvps_push(np, dir, PISTON_MAXIMUM_PUSH)
+	local np = mesecon.addPosRule(pos, dir)
+	local maxpush = mesecon.setting("piston_max_push", 15)
+	local success, stack, oldstack = mesecon.mvps_push(np, dir, maxpush)
 	if success then
 		minetest.add_node(pos, {param2 = node.param2, name = pistonspec.onname})
 		minetest.add_node(np,  {param2 = node.param2, name = pistonspec.pusher})
@@ -87,8 +89,8 @@ local piston_on = function(pos, node)
 			max_hear_distance = 20,
 			gain = 0.3,
 		})
-		mesecon:mvps_process_stack (stack)
-		mesecon:mvps_move_objects  (np, dir, oldstack)
+		mesecon.mvps_process_stack (stack)
+		mesecon.mvps_move_objects  (np, dir, oldstack)
 	end
 end
 
@@ -99,9 +101,9 @@ local piston_off = function(pos, node)
 
 	if pistonspec.sticky then
 		dir = piston_get_direction(pistonspec.dir, node)
-		pullpos = mesecon:addPosRule(pos, dir)
-		stack = mesecon:mvps_pull_single(pullpos, dir)
-		mesecon:mvps_process_stack(pos, dir, stack)
+		pullpos = mesecon.addPosRule(pos, dir)
+		stack = mesecon.mvps_pull_single(pullpos, dir)
+		mesecon.mvps_process_stack(pos, dir, stack)
 	end
 end
 
@@ -692,14 +694,14 @@ local piston_pusher_up_down_get_stopper = function (node, dir, stack, stackid)
 	return true
 end
 
-mesecon:register_mvps_stopper("mesecons_pistons:piston_pusher_normal", piston_pusher_get_stopper)
-mesecon:register_mvps_stopper("mesecons_pistons:piston_pusher_sticky", piston_pusher_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_pusher_normal", piston_pusher_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_pusher_sticky", piston_pusher_get_stopper)
 
-mesecon:register_mvps_stopper("mesecons_pistons:piston_up_pusher_normal", piston_pusher_up_down_get_stopper)
-mesecon:register_mvps_stopper("mesecons_pistons:piston_up_pusher_sticky", piston_pusher_up_down_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_up_pusher_normal", piston_pusher_up_down_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_up_pusher_sticky", piston_pusher_up_down_get_stopper)
 
-mesecon:register_mvps_stopper("mesecons_pistons:piston_down_pusher_normal", piston_pusher_up_down_get_stopper)
-mesecon:register_mvps_stopper("mesecons_pistons:piston_down_pusher_sticky", piston_pusher_up_down_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_down_pusher_normal", piston_pusher_up_down_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_down_pusher_sticky", piston_pusher_up_down_get_stopper)
 
 
 -- Register pistons as stoppers if they would be seperated from the stopper
@@ -716,12 +718,12 @@ end
 local piston_get_stopper = function (node, dir, stack, stackid)
 	pistonspec = minetest.registered_nodes[node.name].mesecons_piston
 	dir = piston_get_direction(pistonspec.dir, node)
-	local pusherpos  = mesecon:addPosRule(stack[stackid].pos, dir)
+	local pusherpos  = mesecon.addPosRule(stack[stackid].pos, dir)
 	local pushernode = minetest.get_node(pusherpos)
 
 	if minetest.registered_nodes[node.name].mesecons_piston.pusher == pushernode.name then
 		for _, s in ipairs(stack) do
-			if  mesecon:cmpPos(s.pos, pusherpos) -- pusher is also to be pushed
+			if  mesecon.cmpPos(s.pos, pusherpos) -- pusher is also to be pushed
 			and s.node.param2 == node.param2 then
 				return false
 			end
@@ -730,14 +732,14 @@ local piston_get_stopper = function (node, dir, stack, stackid)
 	return true
 end
 
-mesecon:register_mvps_stopper("mesecons_pistons:piston_normal_on", piston_get_stopper)
-mesecon:register_mvps_stopper("mesecons_pistons:piston_sticky_on", piston_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_normal_on", piston_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_sticky_on", piston_get_stopper)
 
-mesecon:register_mvps_stopper("mesecons_pistons:piston_up_normal_on", piston_up_down_get_stopper)
-mesecon:register_mvps_stopper("mesecons_pistons:piston_up_sticky_on", piston_up_down_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_up_normal_on", piston_up_down_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_up_sticky_on", piston_up_down_get_stopper)
 
-mesecon:register_mvps_stopper("mesecons_pistons:piston_down_normal_on", piston_up_down_get_stopper)
-mesecon:register_mvps_stopper("mesecons_pistons:piston_down_sticky_on", piston_up_down_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_down_normal_on", piston_up_down_get_stopper)
+mesecon.register_mvps_stopper("mesecons_pistons:piston_down_sticky_on", piston_up_down_get_stopper)
 
 --craft recipes
 minetest.register_craft({

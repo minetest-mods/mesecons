@@ -2,7 +2,6 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 	description = "Noteblock",
 	tiles = {"mesecons_noteblock.png"},
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2},
-	drawtype = "allfaces_optional",
 	visual_scale = 1.3,
 	paramtype="light",
 	after_place_node = function(pos)

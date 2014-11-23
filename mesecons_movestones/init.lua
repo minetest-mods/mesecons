@@ -8,7 +8,7 @@
 -- Pushes all block in front of it
 -- Pull all blocks in its back
 
-function mesecon:get_movestone_direction(pos)
+function mesecon.get_movestone_direction(pos)
 	getactivated = 0
 	local lpos
 	local getactivated = 0
@@ -28,28 +28,28 @@ function mesecon:get_movestone_direction(pos)
 
 	lpos = {x=pos.x+1, y=pos.y, z=pos.z}
 	for n = 1, 3 do
-		if mesecon:is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+		if mesecon.is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
 			return {x=0, y=0, z=-1}
 		end
 	end
 
 	lpos = {x = pos.x-1, y = pos.y, z = pos.z}
 	for n=4, 6 do
-		if mesecon:is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+		if mesecon.is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
 			return {x=0, y=0, z=1}
 		end
 	end
 
 	lpos = {x = pos.x, y = pos.y, z = pos.z+1}
 	for n=7, 9 do
-		if mesecon:is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+		if mesecon.is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
 			return {x=-1, y=0, z=0}
 		end
 	end
 
 	lpos = {x = pos.x, y = pos.y, z = pos.z-1}
 	for n=10, 12 do
-		if mesecon:is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+		if mesecon.is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
 			return {x=1, y=0, z=0}
 		end
 	end
@@ -64,10 +64,10 @@ minetest.register_node("mesecons_movestones:movestone", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			local direction=mesecon:get_movestone_direction(pos)
+			local direction=mesecon.get_movestone_direction(pos)
 			if not direction then return end
 			minetest.remove_node(pos)
-			mesecon:update_autoconnect(pos)
+			mesecon.update_autoconnect(pos)
 			minetest.add_entity(pos, "mesecons_movestones:movestone_entity")
 		end
 	}}
@@ -89,15 +89,16 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 	on_step = function(self, dtime)
 		local pos = self.object:getpos()
 		pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
-		local direction = mesecon:get_movestone_direction(pos)
+		local direction = mesecon.get_movestone_direction(pos)
 
+		local maxpush = mesecon.setting("movestone_max_push", 50)
 		if not direction then -- no mesecon power
 			--push only solid nodes
 			local name = minetest.get_node(pos).name
 			if  name ~= "air" and name ~= "ignore"
 			and ((not minetest.registered_nodes[name])
 			or minetest.registered_nodes[name].liquidtype == "none") then
-				mesecon:mvps_push(pos, self.lastdir, MOVESTONE_MAXIMUM_PUSH)
+				mesecon.mvps_push(pos, self.lastdir, maxpush)
 			end
 			minetest.add_node(pos, {name="mesecons_movestones:movestone"})
 			self.object:remove()
@@ -105,14 +106,14 @@ minetest.register_entity("mesecons_movestones:movestone_entity", {
 		end
 
 		local success, stack, oldstack =
-			mesecon:mvps_push(pos, direction, MOVESTONE_MAXIMUM_PUSH)
+			mesecon.mvps_push(pos, direction, maxpush)
 		if not success then -- Too large stack/stopper in the way
 			minetest.add_node(pos, {name="mesecons_movestones:movestone"})
 			self.object:remove()
 			return
 		else
-			mesecon:mvps_process_stack (stack)
-			mesecon:mvps_move_objects  (pos, direction, oldstack)
+			mesecon.mvps_process_stack (stack)
+			mesecon.mvps_move_objects  (pos, direction, oldstack)
 			self.lastdir = direction
 		end
 
@@ -143,10 +144,10 @@ minetest.register_node("mesecons_movestones:sticky_movestone", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			local direction=mesecon:get_movestone_direction(pos)
+			local direction=mesecon.get_movestone_direction(pos)
 			if not direction then return end
 			minetest.remove_node(pos)
-			mesecon:update_autoconnect(pos)
+			mesecon.update_autoconnect(pos)
 			minetest.add_entity(pos, "mesecons_movestones:sticky_movestone_entity")
 		end
 	}}
@@ -175,7 +176,7 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 	on_step = function(self, dtime)
 		local pos = self.object:getpos()
 		pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
-		local direction = mesecon:get_movestone_direction(pos)
+		local direction = mesecon.get_movestone_direction(pos)
 
 		if not direction then -- no mesecon power
 			--push only solid nodes
@@ -183,9 +184,9 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 			if  name ~= "air" and name ~= "ignore"
 			and ((not minetest.registered_nodes[name])
 			or minetest.registered_nodes[name].liquidtype == "none") then
-				mesecon:mvps_push(pos, self.lastdir, MOVESTONE_MAXIMUM_PUSH)
+				mesecon.mvps_push(pos, self.lastdir, MOVESTONE_MAXIMUM_PUSH)
 				--STICKY
-				mesecon:mvps_pull_all(pos, self.lastdir)
+				mesecon.mvps_pull_all(pos, self.lastdir)
 			end
 			minetest.add_node(pos, {name="mesecons_movestones:sticky_movestone"})
 			self.object:remove()
@@ -193,24 +194,24 @@ minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
 		end
 
 		local success, stack, oldstack =
-			mesecon:mvps_push(pos, direction, MOVESTONE_MAXIMUM_PUSH)
+			mesecon.mvps_push(pos, direction, MOVESTONE_MAXIMUM_PUSH)
 		if not success then -- Too large stack/stopper in the way
 			minetest.add_node(pos, {name="mesecons_movestones:sticky_movestone"})
 			self.object:remove()
 			return
 		else
-			mesecon:mvps_process_stack (stack)
-			mesecon:mvps_move_objects  (pos, direction, oldstack)
+			mesecon.mvps_process_stack (stack)
+			mesecon.mvps_move_objects  (pos, direction, oldstack)
 			self.lastdir = direction
 		end
 
 		self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
 
 		--STICKY
-		mesecon:mvps_pull_all(pos, direction)
+		mesecon.mvps_pull_all(pos, direction)
 	end,
 })
 
 
-mesecon:register_mvps_unmov("mesecons_movestones:movestone_entity")
-mesecon:register_mvps_unmov("mesecons_movestones:sticky_movestone_entity")
+mesecon.register_mvps_unmov("mesecons_movestones:movestone_entity")
+mesecon.register_mvps_unmov("mesecons_movestones:sticky_movestone_entity")

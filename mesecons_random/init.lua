@@ -9,7 +9,7 @@ minetest.register_node("mesecons_random:removestone", {
 	mesecons = {effector = {
 		action_on = function (pos, node)
 			minetest.remove_node(pos)
-			mesecon:update_autoconnect(pos)
+			mesecon.update_autoconnect(pos)
 		end
 	}}
 })

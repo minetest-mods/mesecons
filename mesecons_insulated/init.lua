@@ -2,7 +2,7 @@ function insulated_wire_get_rules(node)
 	local rules = 	{{x = 1,  y = 0,  z = 0},
 			 {x =-1,  y = 0,  z = 0}}
 	if node.param2 == 1 or node.param2 == 3 then
-		return mesecon:rotate_rules_right(rules)
+		return mesecon.rotate_rules_right(rules)
 	end
 	return rules
 end
@@ -41,7 +41,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 
 minetest.register_node("mesecons_insulated:insulated_off", {
 	drawtype = "nodebox",
-	description = "insulated mesecons",
+	description = "Insulated Mesecon",
 	tiles = {
 		"jeija_insulated_wire_sides_off.png",
 		"jeija_insulated_wire_sides_off.png",
@@ -78,7 +78,3 @@ minetest.register_craft({
 		{"mesecons_materials:fiber", "mesecons_materials:fiber", "mesecons_materials:fiber"},
 	}
 })
-
-mesecon:add_rules("insulated", {
-{x = 1,  y = 0,  z = 0},
-{x =-1,  y = 0,  z = 0}})

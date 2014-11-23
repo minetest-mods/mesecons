@@ -15,7 +15,7 @@ local corner_get_rules = function (node)
 	 {x = 0,  y = 0,  z = -1}}
 
 	for i = 0, node.param2 do
-		rules = mesecon:rotate_rules_left(rules)
+		rules = mesecon.rotate_rules_left(rules)
 	end
 
 	return rules

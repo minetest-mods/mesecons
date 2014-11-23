@@ -8,12 +8,7 @@ local mesewire_rules =
 	{x = 0, y = 0, z =-1},
 }
 
-minetest.register_node(":default:mese", {
-	description = "Mese Block",
-	tiles = {minetest.registered_nodes["default:mese"].tiles[1]},
-	is_ground_content = true,
-	groups = {cracky=1},
-	sounds = default.node_sound_stone_defaults(),
+minetest.override_item("default:mese", {
 	mesecons = {conductor = {
 		state = mesecon.state.off,
 		onstate = "mesecons_extrawires:mese_powered",
