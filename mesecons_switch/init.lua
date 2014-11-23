@@ -2,7 +2,6 @@
 
 mesecon.register_node("mesecons_switch:mesecon_switch", {
 	paramtype2="facedir",
-	groups = {dig_immediate=2},
 	description="Switch",
 	sounds = default.node_sound_stone_defaults(),
 	on_punch = function (pos, node)
@@ -14,11 +13,13 @@ mesecon.register_node("mesecons_switch:mesecon_switch", {
 		minetest.sound_play("mesecons_switch", {pos=pos})
 	end
 },{
+	groups = {dig_immediate=2},
 	tiles = {	"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png",
 			"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png",
 			"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_off.png"},
 	mesecons = {receptor = { state = mesecon.state.off }}
 },{
+	groups = {dig_immediate=2, not_in_creative_inventory=1},
 	tiles = {	"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png",
 			"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_side.png",
 			"jeija_mesecon_switch_side.png", "jeija_mesecon_switch_on.png"},
