@@ -4,24 +4,15 @@
 -- (does not work with other liquids)
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
-	drawtype = "nodebox",
+	drawtype = "mesh",
+	mesh = "jeija_hydro_turbine.obj",
 	tiles = {"jeija_hydro_turbine_off.png"},
 	groups = {dig_immediate=2},
     	description="Water Turbine",
 	paramtype = "light",
 	selection_box = {
 		type = "fixed",
-		fixed = {{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
-			{-0.15, 0.5, -0.15, 0.15, 1.45, 0.15},
-			{-0.45, 1.15, -0.1, 0.45, 1.45, 0.1},
-			{-0.1, 1.15, -0.45, 0.1, 1.45, 0.45}},
-	},
-	node_box = {
-		type = "fixed",
-		fixed = {{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
-			{-0.15, 0.5, -0.15, 0.15, 1.45, 0.15},
-			{-0.45, 1.15, -0.1, 0.45, 1.45, 0.1},
-			{-0.1, 1.15, -0.45, 0.1, 1.45, 0.45}},
+		fixed = { -0.5, -0.5, -0.5, 0.5, 1.5, 0.5 },
 	},
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {receptor = {
@@ -30,7 +21,8 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 })
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
-	drawtype = "nodebox",
+	drawtype = "mesh",
+	mesh = "jeija_hydro_turbine.obj",
 	tiles = {"jeija_hydro_turbine_on.png"},
 	drop = "mesecons_hydroturbine:hydro_turbine_off 1",
 	groups = {dig_immediate=2,not_in_creative_inventory=1},
@@ -38,17 +30,7 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 	paramtype = "light",
 	selection_box = {
 		type = "fixed",
-		fixed = {{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
-			{-0.15, 0.5, -0.15, 0.15, 1.45, 0.15},
-			{-0.5, 1.15, -0.1, 0.5, 1.45, 0.1},
-			{-0.1, 1.15, -0.5, 0.1, 1.45, 0.5}},
-	},
-	node_box = {
-		type = "fixed",
-		fixed = {{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
-			{-0.15, 0.5, -0.15, 0.15, 1.45, 0.15},
-			{-0.5, 1.15, -0.1, 0.5, 1.45, 0.1},
-			{-0.1, 1.15, -0.5, 0.1, 1.45, 0.5}},
+		fixed = { -0.5, -0.5, -0.5, 0.5, 1.5, 0.5 },
 	},
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {receptor = {
