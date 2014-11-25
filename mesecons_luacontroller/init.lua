@@ -172,11 +172,6 @@ local function safe_print(param)
 	print(dump(param))
 end
 
-minetest.register_globalstep(function(dtime)
-	print_count = print_count - dtime
-end)
-
-
 local function remove_functions(x)
 	local tp = type(x)
 	if tp == "table" then
