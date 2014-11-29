@@ -1,222 +1,124 @@
-function gate_rotate_rules(node)
+local nodebox = {
+	type = "fixed",
+	fixed = {{-8/16, -8/16, -8/16, 8/16, -7/16, 8/16 }},
+}
+
+local function gate_rotate_rules(node, rules)
 	for rotations = 0, node.param2 - 1 do
 		rules = mesecon.rotate_rules_left(rules)
 	end
 	return rules
 end
 
-function gate_get_output_rules(node)
-	rules = {{x=1, y=0, z=0}}
-	return gate_rotate_rules(node)
+local function gate_get_output_rules(node)
+	return gate_rotate_rules(node, {{x=1, y=0, z=0}})
 end
 
-function gate_get_input_rules_oneinput(node)
-	rules = {{x=-1, y=0, z=0}, {x=1, y=0, z=0}}
-	return gate_rotate_rules(node)
+local function gate_get_input_rules_oneinput(node)
+	return gate_rotate_rules(node, {{x=-1, y=0, z=0}})
 end
 
-function gate_get_input_rules_twoinputs(node)
-	rules = {
-	{x=0, y=0, z=1},
-	{x=0, y=0, z=-1},
-	{x=1, y=0, z=0}}
-	return gate_rotate_rules(node)
+local function gate_get_input_rules_twoinputs(node)
+	return gate_rotate_rules(node, {{x=0, y=0, z=1, name="input1"},
+		{x=0, y=0, z=-1, name="input2"}})
 end
 
-function update_gate(pos, node, rulename, newstate)
-	yc_update_real_portstates(pos, node, rulename, newstate)
-	gate = get_gate(pos)
-	L = rotate_ports(
-		yc_get_real_portstates(pos),
-		minetest.get_node(pos).param2
-	)
-	if gate == "diode" then
-		set_gate(pos, L.a)
-	elseif gate == "not" then
-		set_gate(pos, not L.a)
-	elseif gate == "nand" then
-		set_gate(pos, not(L.b and L.d))
-	elseif gate == "and" then
-		set_gate(pos, L.b and L.d)
-	elseif gate == "xor" then
-		set_gate(pos, (L.b and not L.d) or (not L.b and L.d))
+local function set_gate(pos, node, state)
+	local gate = minetest.registered_nodes[node.name]
+
+	if mesecon.do_overheat(pos) then
+		minetest.remove_node(pos)
+		mesecon.receptor_off(pos, gate_get_output_rules(node))
+		minetest.add_item(pos, gate.drop)
+	elseif state then
+		minetest.swap_node(pos, {name = gate.onstate, param2=node.param2})
+		mesecon.receptor_on(pos, gate_get_output_rules(node))
+	else
+		minetest.swap_node(pos, {name = gate.offstate, param2=node.param2})
+		mesecon.receptor_off(pos, gate_get_output_rules(node))
 	end
 end
 
-function set_gate(pos, on)
-	gate = get_gate(pos)
-	local meta = minetest.get_meta(pos)
-	if on ~= gate_state(pos) then
-		if mesecon.do_overheat(pos) then
-			pop_gate(pos)
-		else
-			local node = minetest.get_node(pos)
-			if on then
-				minetest.swap_node(pos, {name = "mesecons_gates:"..gate.."_on", param2=node.param2})
-				mesecon.receptor_on(pos,
-				gate_get_output_rules(node))
-			else
-				minetest.swap_node(pos, {name = "mesecons_gates:"..gate.."_off", param2=node.param2})
-				mesecon.receptor_off(pos,
-				gate_get_output_rules(node))
-			end
-		end
-	end
-end
+local function update_gate(pos, node, link, newstate)
+	local gate = minetest.registered_nodes[node.name]
 
-function get_gate(pos)
-	return minetest.registered_nodes[minetest.get_node(pos).name].mesecons_gate
-end
-
-function gate_state(pos)
-	name = minetest.get_node(pos).name
-	return string.find(name, "_on") ~= nil
-end
-
-function pop_gate(pos)
-	gate = get_gate(pos)
-	minetest.remove_node(pos)
-	minetest.after(0.2, function (pos)
-		mesecon.receptor_off(pos, mesecon.rules.flat)
-	end , pos) -- wait for pending parsings
-	minetest.add_item(pos, "mesecons_gates:"..gate.."_off")
-end
-
-function rotate_ports(L, param2)
-	for rotations=0, param2-1 do
-		port = L.a
-		L.a = L.b
-		L.b = L.c
-		L.c = L.d
-		L.d = port
-	end
-	return L
-end
-
-gates = {
-{name = "diode", inputnumber = 1}, 
-{name = "not"  , inputnumber = 1}, 
-{name = "nand" , inputnumber = 2},
-{name = "and"  , inputnumber = 2},
-{name = "xor"  , inputnumber = 2}}
-
-local onoff, drop, nodename, description, groups
-for _, gate in ipairs(gates) do
 	if gate.inputnumber == 1 then
-		get_rules = gate_get_input_rules_oneinput
+		set_gate(pos, node, gate.assess(newstate == "on"))
 	elseif gate.inputnumber == 2 then
-		get_rules = gate_get_input_rules_twoinputs
-	end
-	for on = 0, 1 do
-		nodename = "mesecons_gates:"..gate.name
-		if on == 1 then
-			onoff = "on"
-			drop = nodename.."_off"
-			nodename = nodename.."_"..onoff
-			description = "You hacker you!"
-			groups = {dig_immediate=2, not_in_creative_inventory=1, overheat = 1}
-		else
-			onoff = "off"
-			drop = nil
-			nodename = nodename.."_"..onoff
-			description = gate.name.." Gate"
-			groups = {dig_immediate=2, overheat = 1}
-		end
+		local meta = minetest.get_meta(pos)
+		meta:set_int(link.name, newstate == "on" and 1 or 0)
 
-		tiles = "jeija_microcontroller_bottom.png^"..
-			"jeija_gate_"..onoff..".png^"..
-			"jeija_gate_"..gate.name..".png"
-
-		node_box = {
-			type = "fixed",
-			fixed = {
-				{-8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
-			},
-		}
-
-		local mesecon_state
-		if on == 1 then
-			mesecon_state = mesecon.state.on
-		else
-			mesecon_state = mesecon.state.off
-		end
-
-		minetest.register_node(nodename, {
-			description = description,
-			paramtype = "light",
-			paramtype2 = "facedir",
-			drawtype = "nodebox",
-			tiles = {tiles},
-			inventory_image = tiles,
-			selection_box = node_box,
-			node_box = node_box,
-			walkable = true,
-			on_construct = function(pos)
-				local meta = minetest.get_meta(pos)
-				update_gate(pos)
-			end,
-			groups = groups,
-			drop = drop,
-			sounds = default.node_sound_stone_defaults(),
-			mesecons_gate = gate.name,
-			mesecons =
-			{
-				receptor =
-				{
-					state = mesecon_state,
-					rules = gate_get_output_rules
-				},
-				effector =
-				{
-					rules = get_rules,
-					action_change = update_gate
-				}
-			}
-		})
+		local val1 = meta:get_int("input1") == 1
+		local val2 = meta:get_int("input2") == 1
+		set_gate(pos, node, gate.assess(val1, val2))
 	end
 end
 
-minetest.register_craft({
-	output = 'mesecons_gates:diode_off',
-	recipe = {
-		{'', '', ''},
-		{'mesecons:mesecon', 'mesecons_torch:mesecon_torch_on', 'mesecons_torch:mesecon_torch_on'},
-		{'', '', ''},
-	},
-})
+function register_gate(name, inputnumber, assess, recipe)
+	local get_inputrules = inputnumber == 2 and gate_get_input_rules_twoinputs or
+		gate_get_input_rules_oneinput
+	local description = "Mesecons Logic Gate: "..name
 
-minetest.register_craft({
-	output = 'mesecons_gates:not_off',
-	recipe = {
-		{'', '', ''},
-		{'mesecons:mesecon', 'mesecons_torch:mesecon_torch_on', 'mesecons:mesecon'},
-		{'', '', ''},
-	},
-})
+	local basename = "mesecons_gates:"..name
+	mesecon.register_node(basename, {
+		description = description,
+		inventory_image = "jeija_gate_off.png^jeija_gate_"..name..".png",
+		paramtype = "light",
+		paramtype2 = "facedir",
+		drawtype = "nodebox",
+		drop = basename.."_off",
+		selection_box = nodebox,
+		node_box = nodebox,
+		walkable = true,
+		sounds = default.node_sound_stone_defaults(),
+		assess = assess,
+		onstate = basename.."_on",
+		offstate = basename.."_off",
+		inputnumber = inputnumber
+	},{
+		tiles = {"jeija_microcontroller_bottom.png^".."jeija_gate_off.png^"..
+			"jeija_gate_"..name..".png"},
+		groups = {dig_immediate = 2},
+		mesecons = { receptor = {
+			state = "off",
+			rules = gate_get_output_rules
+		}, effector = {
+			rules = get_inputrules,
+			action_change = update_gate
+		}}
+	},{
+		tiles = {"jeija_microcontroller_bottom.png^".."jeija_gate_on.png^"..
+			"jeija_gate_"..name..".png"},
+		groups = {dig_immediate = 2, not_in_creative_inventory = 1},
+		mesecons = { receptor = {
+			state = "on",
+			rules = gate_get_output_rules
+		}, effector = {
+			rules = get_inputrules,
+			action_change = update_gate
+		}}
+	})
 
-minetest.register_craft({
-	output = 'mesecons_gates:and_off',
-	recipe = {
-		{'mesecons:mesecon', '', ''},
-		{'', 'mesecons_materials:silicon', 'mesecons:mesecon'},
-		{'mesecons:mesecon', '', ''},
-	},
-})
+	minetest.register_craft({output = basename.."_off", recipe = recipe})
+end
 
-minetest.register_craft({
-	output = 'mesecons_gates:nand_off',
-	recipe = {
-		{'mesecons:mesecon', '', ''},
-		{'', 'mesecons_materials:silicon', 'mesecons_torch:mesecon_torch_on'},
-		{'mesecons:mesecon', '', ''},
-	},
-})
+register_gate("diode", 1, function (input) return input end,
+	{{"mesecons:mesecon", "mesecons_torch:mesecon_torch_on", "mesecons_torch:mesecon_torch_on"}})
 
-minetest.register_craft({
-	output = 'mesecons_gates:xor_off',
-	recipe = {
-		{'mesecons:mesecon', '', ''},
-		{'', 'mesecons_materials:silicon', 'mesecons_materials:silicon'},
-		{'mesecons:mesecon', '', ''},
-	},
-})
+register_gate("not", 1, function (input) return not input end,
+	{{"mesecons:mesecon", "mesecons_torch:mesecon_torch_on", "mesecons:mesecon"}})
+
+register_gate("and", 2, function (val1, val2) return val1 and val2 end,
+	{{"mesecons:mesecon", "", ""},
+	 {"", "mesecons_materials:silicon", "mesecons:mesecon"},
+	 {"mesecons:mesecon", "", ""}})
+
+register_gate("nand", 2, function (val1, val2) return not (val1 and val2) end,
+	{{"mesecons:mesecon", "", ""},
+	 {"", "mesecons_materials:silicon", "mesecons_torch:mesecon_torch_on"},
+	 {"mesecons:mesecon", "", ""}})
+
+register_gate("xor", 2, function (val1, val2) return (val1 or val2) and not (val1 and val2) end,
+	{{"mesecons:mesecon", "", ""},
+	 {"", "mesecons_materials:silicon", "mesecons_materials:silicon"},
+	 {"mesecons:mesecon", "", ""}})

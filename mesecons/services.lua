@@ -27,12 +27,27 @@ mesecon.on_placenode = function (pos, node)
 
 	-- Effectors: Send changesignal and activate or deactivate
 	if mesecon.is_effector(node.name) then
-		if mesecon.is_powered(pos) then
-			mesecon.changesignal(pos, node, mesecon.effector_get_rules(node), "on", 1)
-			mesecon.activate(pos, node, nil, 1)
+		local powered_rules = {}
+		local unpowered_rules = {}
+
+		-- for each input rule, check if powered
+		for _, r in ipairs(mesecon.effector_get_rules(node)) do
+			local powered = mesecon.is_powered(pos, r)
+			if powered then table.insert(powered_rules, r)
+			else table.insert(unpowered_rules, r) end
+
+			local state = powered and mesecon.state.on or mesecon.state.off
+			mesecon.changesignal(pos, node, r, state, 1)
+		end
+
+		if (#powered_rules > 0) then
+			for _, r in ipairs(powered_rules) do
+				mesecon.activate(pos, node, r, 1)
+			end
 		else
-			mesecon.changesignal(pos, node, mesecon.effector_get_rules(node), "off", 1)
-			mesecon.deactivate(pos, node, nil, 1)
+			for _, r in ipairs(unpowered_rules) do
+				mesecon.deactivate(pos, node, r, 1)
+			end
 		end
 	end
 end

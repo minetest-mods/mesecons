@@ -240,7 +240,10 @@ function mesecon.changesignal(pos, node, rulename, newstate, depth)
 		return
 	end
 
-	mesecon.queue:add_action(pos, "change", {rulename, newstate}, nil, rulename, 1 / depth)
+	-- Include "change" in overwritecheck so that it cannot be overwritten
+	-- by "active" / "deactivate" that will be called upon the node at the same time.
+	local overwritecheck = {"change", rulename}
+	mesecon.queue:add_action(pos, "change", {rulename, newstate}, nil, overwritecheck, 1 / depth)
 end
 
 -- Conductors
@@ -514,10 +517,7 @@ function mesecon.rules_link(output, input, dug_outputrules) --output/input are p
 			for _, inputrule in ipairs(mesecon.flattenrules(inputrules)) do
 				-- Check if input accepts from output
 				if  mesecon.cmpPos(mesecon.addPosRule(input, inputrule), output) then
-					if inputrule.sx == nil or outputrule.sx == nil
-					or mesecon.cmpSpecial(inputrule, outputrule) then
-						return true, inputrule
-					end
+					return true, inputrule
 				end
 			end
 		end
@@ -537,10 +537,7 @@ function mesecon.rules_link_rule_all(output, rule)
 	for _, inputrule in ipairs(mesecon.flattenrules(inputrules)) do
 		-- Check if input accepts from output
 		if  mesecon.cmpPos(mesecon.addPosRule(input, inputrule), output) then
-			if inputrule.sx == nil or rule.sx == nil
-			or mesecon.cmpSpecial(inputrule, rule) then
-				table.insert(rules, inputrule)
-			end
+			table.insert(rules, inputrule)
 		end
 	end
 	return rules
@@ -558,10 +555,7 @@ function mesecon.rules_link_rule_all_inverted(input, rule)
 	
 	for _, outputrule in ipairs(mesecon.flattenrules(outputrules)) do
 		if  mesecon.cmpPos(mesecon.addPosRule(output, outputrule), input) then
-			if outputrule.sx == nil or rule.sx == nil
-			or mesecon.cmpSpecial(outputrule, rule) then
-				table.insert(rules, mesecon.invertRule(outputrule))
-			end
+			table.insert(rules, mesecon.invertRule(outputrule))
 		end
 	end
 	return rules
@@ -612,20 +606,11 @@ end
 function mesecon.rotate_rules_right(rules)
 	local nr = {}
 	for i, rule in ipairs(rules) do
-		if rule.sx then
-			table.insert(nr, {
-				x = -rule.z, 
-				y =  rule.y, 
-				z =  rule.x,
-				sx = -rule.sz, 
-				sy =  rule.sy, 
-				sz =  rule.sx})
-		else
-			table.insert(nr, {
-				x = -rule.z, 
-				y =  rule.y, 
-				z =  rule.x})
-		end
+		table.insert(nr, {
+			x = -rule.z, 
+			y =  rule.y, 
+			z =  rule.x,
+			name = rule.name})
 	end
 	return nr
 end
@@ -633,20 +618,11 @@ end
 function mesecon.rotate_rules_left(rules)
 	local nr = {}
 	for i, rule in ipairs(rules) do
-		if rule.sx then
-			table.insert(nr, {
-				x =  rule.z, 
-				y =  rule.y, 
-				z = -rule.x,
-				sx =  rule.sz, 
-				sy =  rule.sy, 
-				sz = -rule.sx})
-		else
-			table.insert(nr, {
-				x =  rule.z, 
-				y =  rule.y, 
-				z = -rule.x})
-		end
+		table.insert(nr, {
+			x =  rule.z, 
+			y =  rule.y, 
+			z = -rule.x,
+			name = rule.name})
 	end
 	return nr
 end
@@ -654,20 +630,11 @@ end
 function mesecon.rotate_rules_down(rules)
 	local nr = {}
 	for i, rule in ipairs(rules) do
-		if rule.sx then
-			table.insert(nr, {
-				x = -rule.y, 
-				y =  rule.x, 
-				z =  rule.z,
-				sx = -rule.sy, 
-				sy =  rule.sx, 
-				sz =  rule.sz})
-		else
-			table.insert(nr, {
-				x = -rule.y, 
-				y =  rule.x, 
-				z =  rule.z})
-		end
+		table.insert(nr, {
+			x = -rule.y, 
+			y =  rule.x, 
+			z =  rule.z,
+			name = rule.name})
 	end
 	return nr
 end
@@ -675,20 +642,11 @@ end
 function mesecon.rotate_rules_up(rules)
 	local nr = {}
 	for i, rule in ipairs(rules) do
-		if rule.sx then
-			table.insert(nr, {
-				x =  rule.y, 
-				y = -rule.x, 
-				z =  rule.z,
-				sx =  rule.sy, 
-				sy = -rule.sx, 
-				sz =  rule.sz})
-		else
-			table.insert(nr, {
-				x =  rule.y, 
-				y = -rule.x, 
-				z =  rule.z})
-		end
+		table.insert(nr, {
+			x =  rule.y, 
+			y = -rule.x, 
+			z =  rule.z,
+			name = rule.name})
 	end
 	return nr
 end
