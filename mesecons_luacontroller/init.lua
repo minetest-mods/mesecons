@@ -133,6 +133,23 @@ local function set_port_states(pos, ports)
 	local new_name = generate_name(ports)
 
 	if name ~= new_name and vports then
+		-- Problem:
+		-- We need to place the new node first so that when turning
+		-- off some port, it won't stay on because the rules indicate
+		-- there is an onstate output port there.
+		-- When turning the output off then, it will however cause feedback
+		-- so that the luacontroller will receive an "off" event by turning
+		-- its output off.
+		-- Solution / Workaround:
+		-- Remember which output was turned off and ignore next "off" event.
+		local meta = minetest.get_meta(pos)
+		local ign = minetest.deserialize(meta:get_string("ignore_offevents")) or {}
+		if ports.a and not vports.a and not mesecon.is_powered(pos, rules.a) then ign.A = true end
+		if ports.b and not vports.b and not mesecon.is_powered(pos, rules.b) then ign.B = true end
+		if ports.c and not vports.c and not mesecon.is_powered(pos, rules.c) then ign.C = true end
+		if ports.d and not vports.d and not mesecon.is_powered(pos, rules.d) then ign.D = true end
+		meta:set_string("ignore_offevents", minetest.serialize(ign))
+
 		minetest.swap_node(pos, {name = new_name, param2 = node.param2})
 
 		if ports.a ~= vports.a then set_port(pos, rules.a, ports.a) end
@@ -163,6 +180,19 @@ local function overheat(pos, meta)
 	end
 end
 
+------------------------
+-- Ignored off events --
+------------------------
+
+local function ignore_event(event, meta)
+	if event.type ~= "off" then return false end
+	local ignore_offevents = minetest.deserialize(meta:get_string("ignore_offevents")) or {}
+	if ignore_offevents[event.pin.name] then
+		ignore_offevents[event.pin.name] = nil
+		meta:set_string("ignore_offevents", minetest.serialize(ignore_offevents))
+		return true
+	end
+end
 
 -------------------------
 -- Parsing and running --
@@ -361,6 +391,7 @@ end
 local function run(pos, event)
 	local meta = minetest.get_meta(pos)
 	if overheat(pos) then return end
+	if ignore_event(event, meta) then return end
 
 	-- Load code & mem from meta
 	local mem  = load_memory(meta)
@@ -499,7 +530,7 @@ for d = 0, 1 do
 			rules = input_rules[cid],
 			action_change = function (pos, _, rule_name, new_state)
 				update_real_port_states(pos, rule_name, new_state)
-				run(pos, {type=new_state,  pin=rule_name})
+				run(pos, {type=new_state, pin=rule_name})
 			end,
 		},
 		receptor = {

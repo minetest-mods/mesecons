@@ -598,7 +598,7 @@ function mesecon.is_powered(pos, rule)
 			local nn = minetest.get_node(np)
 			if (mesecon.is_conductor_on (nn, mesecon.invertRule(rname))
 			or mesecon.is_receptor_on (nn.name)) then
-				sourcepos.insert(np)
+				table.insert(sourcepos, np)
 			end
 		end
 	end
