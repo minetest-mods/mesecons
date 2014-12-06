@@ -1,8 +1,8 @@
 rcvboxes = {
-	{ -3/16, -3/16   , -8/16       , 3/16,     3/16, -13/32       }, -- the smaller bump	
-	{ -1/32, -1/32   , -3/2        , 1/32,     1/32, -1/2         }, -- the wire through the block
-	{ -2/32, -.5-1/32, -.5         , 2/32,    0    , -.5002+3/32  }, -- the vertical wire bit
-	{ -2/32, -17/32  , -7/16+0.002 , 2/32,   -14/32,  16/32+0.001 }  -- the horizontal wire
+	{ -3/16, -3/16, -8/16       , 3/16,  3/16  , -13/32       }, -- the smaller bump	
+	{ -1/32, -1/32, -3/2        , 1/32,  1/32  , -1/2         }, -- the wire through the block
+	{ -2/32, -1/2 , -.5         , 2/32,  0     , -.5002+3/32  }, -- the vertical wire bit
+	{ -2/32, -1/2 , -7/16+0.002 , 2/32,  -14/32,  16/32+0.001 }  -- the horizontal wire
 }
 
 local receiver_get_rules = function (node)
