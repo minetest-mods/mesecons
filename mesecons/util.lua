@@ -6,18 +6,6 @@ function mesecon.move_node(pos, newpos)
 	minetest.get_meta(pos):from_table(meta)
 end
 
---[[ new functions:
-mesecon.flattenrules(allrules)
-mesecon.rule2bit(findrule, allrules)
-mesecon.rule2meta(findrule, allrules)
-dec2bin(n)
-mesecon.getstate(nodename, states)
-mesecon.getbinstate(nodename, states)
-mesecon.get_bit(binary, bit)
-mesecon.set_bit(binary, bit, value)
-mesecon.invertRule(r)
---]]
-
 function mesecon.flattenrules(allrules)
 --[[
 	{
@@ -101,21 +89,12 @@ function mesecon.rule2meta(findrule, allrules)
 	return allrules[index]
 end
 
-if convert_base then
-	print(
-		"base2dec is tonumber(num,base1)\n"..
-		"commonlib needs dec2base(num,base2)\n"..
-		"and it needs base2base(num,base1,base2),\n"..
-		"which is dec2base(tonumber(num,base1),base2)"
-	)
-else
-	function dec2bin(n)
-		local x, y = math.floor(n / 2), n % 2
-		if (n > 1) then
-			return dec2bin(x)..y
-		else
-			return ""..y
-		end
+function mesecon.dec2bin(n)
+	local x, y = math.floor(n / 2), n % 2
+	if (n > 1) then
+		return mesecon.dec2bin(x)..y
+	else
+		return ""..y
 	end
 end
 
@@ -129,7 +108,7 @@ function mesecon.getstate(nodename, states)
 end
 
 function mesecon.getbinstate(nodename, states)
-	return dec2bin(mesecon.getstate(nodename, states)-1)
+	return mesecon.dec2bin(mesecon.getstate(nodename, states)-1)
 end
 
 function mesecon.get_bit(binary,bit)
@@ -141,11 +120,11 @@ end
 function mesecon.set_bit(binary,bit,value)
 	if value == "1" then
 		if not mesecon.get_bit(binary,bit) then
-			return dec2bin(tonumber(binary,2)+math.pow(2,bit-1))
+			return mesecon.dec2bin(tonumber(binary,2)+math.pow(2,bit-1))
 		end
 	elseif value == "0" then
 		if mesecon.get_bit(binary,bit) then
-			return dec2bin(tonumber(binary,2)-math.pow(2,bit-1))
+			return mesecon.dec2bin(tonumber(binary,2)-math.pow(2,bit-1))
 		end
 	end
 	return binary
