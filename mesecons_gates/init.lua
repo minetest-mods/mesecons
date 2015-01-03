@@ -78,7 +78,7 @@ function register_gate(name, inputnumber, assess, recipe)
 	},{
 		tiles = {"jeija_microcontroller_bottom.png^".."jeija_gate_off.png^"..
 			"jeija_gate_"..name..".png"},
-		groups = {dig_immediate = 2},
+		groups = {dig_immediate = 2, overheat = 1},
 		mesecons = { receptor = {
 			state = "off",
 			rules = gate_get_output_rules
@@ -89,7 +89,7 @@ function register_gate(name, inputnumber, assess, recipe)
 	},{
 		tiles = {"jeija_microcontroller_bottom.png^".."jeija_gate_on.png^"..
 			"jeija_gate_"..name..".png"},
-		groups = {dig_immediate = 2, not_in_creative_inventory = 1},
+		groups = {dig_immediate = 2, not_in_creative_inventory = 1, overheat = 1},
 		mesecons = { receptor = {
 			state = "on",
 			rules = gate_get_output_rules
