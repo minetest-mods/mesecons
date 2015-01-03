@@ -22,18 +22,12 @@ pp_on_timer = function (pos, elapsed)
 	if objs[1] == nil and node.name == basename .. "_on" then
 		minetest.add_node(pos, {name = basename .. "_off"})
 		mesecon.receptor_off(pos, mesecon.rules.pplate)
-		-- force deactivation of mesecon two blocks below (hacky)
-		if not mesecon.connected_to_receptor(two_below) then
-			mesecon.turnoff(two_below)
-		end
 	else
 		for k, obj in pairs(objs) do
 			local objpos = obj:getpos()
 			if objpos.y > pos.y-1 and objpos.y < pos.y then
 				minetest.add_node(pos, {name = basename .. "_on"})
 				mesecon.receptor_on(pos, mesecon.rules.pplate )
-				-- force activation of mesecon two blocks below (hacky)
-				mesecon.turnon(two_below)
 			end
 		end
 	end
