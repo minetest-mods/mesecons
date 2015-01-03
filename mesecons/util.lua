@@ -59,7 +59,6 @@ end
 
 function mesecon.rule2metaindex(findrule, allrules)
 	--get the metarule the rule is in, or allrules
-
 	if allrules[1].x then
 		return nil
 	end
@@ -78,6 +77,8 @@ function mesecon.rule2metaindex(findrule, allrules)
 end
 
 function mesecon.rule2meta(findrule, allrules)
+	if #allrules == 0 then return {} end
+
 	local index = mesecon.rule2metaindex(findrule, allrules)
 	if index == nil then
 		if allrules[1].x then
