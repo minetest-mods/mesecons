@@ -9,9 +9,7 @@
 -- Pull all blocks in its back
 
 function mesecon.get_movestone_direction(pos)
-	getactivated = 0
 	local lpos
-	local getactivated = 0
 	local rules = {
 		{x=0,  y=1,  z=-1},
 		{x=0,  y=0,  z=-1},
