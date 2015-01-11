@@ -9,21 +9,26 @@ local object_detector_make_formspec = function (pos)
 	meta:set_string("formspec", "size[9,2.5]" ..
 		"field[0.3,  0;9,2;scanname;Name of player to scan for (empty for any):;${scanname}]"..
 		"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
-		"button_exit[7,0.75;2,3;;Save]")
+		"field[4.5,1.5;2,2;radius;Radius:;${radius}]"..
+		"button_exit[7,0.75;2,3;save;Save]")
 end
 
 local object_detector_on_receive_fields = function(pos, formname, fields)
-	if not fields.scanname or not fields.digiline_channel then return end;
+	if not fields.save then return end
 
 	local meta = minetest.get_meta(pos)
 	meta:set_string("scanname", fields.scanname)
 	meta:set_string("digiline_channel", fields.digiline_channel)
+	local radius = math.max(1, math.min(32, fields.radius))
+	meta:set_float("radius", radius)
 	object_detector_make_formspec(pos)
 end
 
 -- returns true if player was found, false if not
 local object_detector_scan = function (pos)
-	local objs = minetest.get_objects_inside_radius(pos, mesecon.setting("detector_radius", 6))
+	local radius = meta:get_float("radius")
+	if radius == 0 then radius = 6 end
+	local objs = minetest.get_objects_inside_radius(pos, radius)
 	for k, obj in pairs(objs) do
 		local isname = obj:get_player_name() -- "" is returned if it is not a player; "" ~= nil!
 		local scanname = minetest.get_meta(pos):get_string("scanname")
