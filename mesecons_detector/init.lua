@@ -2,7 +2,6 @@ local GET_COMMAND = "GET"
 
 -- Object detector
 -- Detects players in a certain radius
--- The radius can be specified in mesecons/settings.lua
 
 local object_detector_make_formspec = function (pos)
 	local meta = minetest.get_meta(pos)
@@ -19,24 +18,31 @@ local object_detector_on_receive_fields = function(pos, formname, fields)
 	local meta = minetest.get_meta(pos)
 	meta:set_string("scanname", fields.scanname)
 	meta:set_string("digiline_channel", fields.digiline_channel)
-	local radius = math.max(1, math.min(32, fields.radius))
+	local max_radius = mesecon.setting("object_detector_max_radius")
+	local radius = math.max(1, math.min(max_radius, fields.radius))
 	meta:set_float("radius", radius)
 	object_detector_make_formspec(pos)
 end
 
--- returns true if player was found, false if not
-local object_detector_scan = function (pos)
+-- Returns names of players found
+local object_detector_scan = function (pos, meta)
 	local radius = meta:get_float("radius")
 	if radius == 0 then radius = 6 end
 	local objs = minetest.get_objects_inside_radius(pos, radius)
+	local ret = {}
 	for k, obj in pairs(objs) do
-		local isname = obj:get_player_name() -- "" is returned if it is not a player; "" ~= nil!
-		local scanname = minetest.get_meta(pos):get_string("scanname")
-		if (isname == scanname and isname ~= "") or (isname  ~= "" and scanname == "") then -- player with scanname found or not scanname specified
-			return true
+		-- "" is returned if it is not a player; "" ~= nil!
+		local name = obj:get_player_name()
+		local scan_name = meta:get_string("scanname")
+		-- If a player with scan_name found or not scan_name specified
+		if name ~= "" and name == scan_name or scan_name == "" then
+			table.insert(ret, name)
+			if name == scan_name then
+				break
+			end
 		end
 	end
-	return false
+	return ret
 end
 
 -- set player name when receiving a digiline signal on a specific channel
@@ -45,12 +51,14 @@ local object_detector_digiline = {
 		action = function (pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
 			local active_channel = meta:get_string("digiline_channel")
-			if channel == active_channel then
-				meta:set_string("scanname", msg)
-				object_detector_make_formspec(pos)
+			if channel ~= active_channel or type(msg) ~= "string" then
+				return
 			end
+			meta:set_string("scanname", msg)
+			object_detector_make_formspec(pos)
 		end,
-	}
+	},
+	receptor = {}
 }
 
 minetest.register_node("mesecons_detector:object_detector_off", {
@@ -94,26 +102,28 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_abm(
-	{nodenames = {"mesecons_detector:object_detector_off"},
+minetest.register_abm({
+	nodenames = {"mesecons_detector:object_detector_on",
+		"mesecons_detector:object_detector_off"},
 	interval = 1.0,
 	chance = 1,
-	action = function(pos)
-		if object_detector_scan(pos) then
-			minetest.swap_node(pos, {name = "mesecons_detector:object_detector_on"})
+	action = function(pos, node)
+		local was_on = node.name:sub(-2) == "on"
+		local meta = minetest.get_meta(pos)
+		local objs = object_detector_scan(pos, meta)
+		local nobjs = #objs
+
+		if was_on and nobjs == 0 then
+			minetest.swap_node(pos, {name="mesecons_detector:object_detector_off"})
+			mesecon.receptor_off(pos, mesecon.rules.pplate)
+		elseif not was_on and nobjs > 0 then
+			minetest.swap_node(pos, {name="mesecons_detector:object_detector_on"})
 			mesecon.receptor_on(pos, mesecon.rules.pplate)
 		end
-	end,
-})
 
-minetest.register_abm(
-	{nodenames = {"mesecons_detector:object_detector_on"},
-	interval = 1.0,
-	chance = 1,
-	action = function(pos)
-		if not object_detector_scan(pos) then
-			minetest.swap_node(pos, {name = "mesecons_detector:object_detector_off"})
-			mesecon.receptor_off(pos, mesecon.rules.pplate)
+		local channel = meta:get_string("digiline_channel")
+		if (was_on or nobjs > 0) and channel ~= "" then
+			digiline:receptor_send(pos, digiline.rules.default, channel, objs)
 		end
 	end,
 })
@@ -154,15 +164,16 @@ local node_detector_digiline = {
 		action = function (pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
 			local active_channel = meta:get_string("digiline_channel")
-			if channel == active_channel then
-				if msg == GET_COMMAND then
-					local frontpos = vector.subtract(pos, minetest.facedir_to_dir(node.param2))
-					local name = minetest.get_node(frontpos).name
-					digiline:receptor_send(pos, digiline.rules.default, channel, name)
-				else
-					meta:set_string("scanname", msg)
-					node_detector_make_formspec(pos)
-				end
+			if channel ~= active_channel then
+				return
+			end
+			if msg == GET_COMMAND then
+				local frontpos = vector.subtract(pos, minetest.facedir_to_dir(node.param2))
+				local name = minetest.get_node(frontpos).name
+				digiline:receptor_send(pos, digiline.rules.default, channel, name)
+			elseif type(msg) == "string" then
+				meta:set_string("scanname", msg)
+				node_detector_make_formspec(pos)
 			end
 		end,
 	},
