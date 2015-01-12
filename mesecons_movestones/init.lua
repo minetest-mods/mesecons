@@ -53,6 +53,69 @@ function mesecon.get_movestone_direction(pos)
 	end
 end
 
+function mesecon.register_movestone_entity(is_sticky)
+	local node_name = "mesecons_movestones:"..(is_sticky and "sticky_" or "").."movestone"
+	local texture_png = (is_sticky and "jeija_sticky_movestone.png" or "jeija_movestone_arrows.png")
+	minetest.register_entity(node_name.."_entity", {
+		physical = false,
+		visual = "sprite",
+		textures = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", texture_png, texture_png},
+		collisionbox = {-0.5,-0.5,-0.5, 0.5, 0.5, 0.5},
+		visual = "cube",
+		lastdir = {x=0, y=0, z=0},
+
+		on_punch = function(self, hitter)
+			self.object:remove()
+			hitter:get_inventory():add_item("main", node_name)
+		end,
+
+		on_step = function(self, dtime)
+			local pos = self.object:getpos()
+			pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
+			local direction = mesecon.get_movestone_direction(pos)
+
+			local maxpush = mesecon.setting("movestone_max_push", 50)
+			if not direction then -- no mesecon power
+				--push only solid nodes
+				local name = minetest.get_node(pos).name
+				if  name ~= "air" and name ~= "ignore"
+				and ((not minetest.registered_nodes[name])
+				or minetest.registered_nodes[name].liquidtype == "none") then
+					mesecon.mvps_push(pos, self.lastdir, maxpush)
+					if is_sticky then
+						mesecon.mvps_pull_all(pos, self.lastdir)
+					end
+				end
+				local nn = {name=node_name}
+				minetest.add_node(pos, nn)
+				self.object:remove()
+				mesecon.on_placenode(pos, nn)
+				return
+			end
+
+			local success, stack, oldstack =
+				mesecon.mvps_push(pos, direction, maxpush)
+			if not success then -- Too large stack/stopper in the way
+				local nn = {name=node_name}
+				minetest.add_node(pos, nn)
+				self.object:remove()
+				mesecon.on_placenode(pos, nn)
+				return
+			else
+				mesecon.mvps_process_stack (stack)
+				mesecon.mvps_move_objects  (pos, direction, oldstack)
+				self.lastdir = direction
+			end
+
+			self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
+
+			if is_sticky then
+				mesecon.mvps_pull_all(pos, direction)
+			end
+		end
+	})
+end
+
 minetest.register_node("mesecons_movestones:movestone", {
 	tiles = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_arrows.png", "jeija_movestone_arrows.png"},
 	paramtype2 = "facedir",
@@ -71,57 +134,7 @@ minetest.register_node("mesecons_movestones:movestone", {
 	}}
 })
 
-minetest.register_entity("mesecons_movestones:movestone_entity", {
-	physical = false,
-	visual = "sprite",
-	textures = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_arrows.png", "jeija_movestone_arrows.png"},
-	collisionbox = {-0.5,-0.5,-0.5, 0.5, 0.5, 0.5},
-	visual = "cube",
-	lastdir = {x=0, y=0, z=0},
-
-	on_punch = function(self, hitter)
-		self.object:remove()
-		hitter:get_inventory():add_item("main", "mesecons_movestones:movestone")
-	end,
-
-	on_step = function(self, dtime)
-		local pos = self.object:getpos()
-		pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
-		local direction = mesecon.get_movestone_direction(pos)
-
-		local maxpush = mesecon.setting("movestone_max_push", 50)
-		if not direction then -- no mesecon power
-			--push only solid nodes
-			local name = minetest.get_node(pos).name
-			if  name ~= "air" and name ~= "ignore"
-			and ((not minetest.registered_nodes[name])
-			or minetest.registered_nodes[name].liquidtype == "none") then
-				mesecon.mvps_push(pos, self.lastdir, maxpush)
-			end
-			local nn = {name="mesecons_movestones:movestone"}
-			minetest.add_node(pos, nn)
-			self.object:remove()
-			mesecon.on_placenode(pos, nn)
-			return
-		end
-
-		local success, stack, oldstack =
-			mesecon.mvps_push(pos, direction, maxpush)
-		if not success then -- Too large stack/stopper in the way
-			local nn = {name="mesecons_movestones:movestone"}
-			minetest.add_node(pos, nn)
-			self.object:remove()
-			mesecon.on_placenode(pos, nn)
-			return
-		else
-			mesecon.mvps_process_stack (stack)
-			mesecon.mvps_move_objects  (pos, direction, oldstack)
-			self.lastdir = direction
-		end
-
-		self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
-	end,
-})
+mesecon.register_movestone_entity(false)
 
 minetest.register_craft({
 	output = "mesecons_movestones:movestone 2",
@@ -162,62 +175,7 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
-	physical = false,
-	visual = "sprite",
-	textures = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_sticky_movestone.png", "jeija_sticky_movestone.png"},
-	collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
-	visual = "cube",
-	lastdir = {x=0, y=0, z=0},
-
-	on_punch = function(self, hitter)
-		self.object:remove()
-		hitter:get_inventory():add_item("main", 'mesecons_movestones:sticky_movestone')
-	end,
-
-	on_step = function(self, dtime)
-		local pos = self.object:getpos()
-		pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
-		local direction = mesecon.get_movestone_direction(pos)
-
-		if not direction then -- no mesecon power
-			--push only solid nodes
-			local name = minetest.get_node(pos).name
-			if  name ~= "air" and name ~= "ignore"
-			and ((not minetest.registered_nodes[name])
-			or minetest.registered_nodes[name].liquidtype == "none") then
-				mesecon.mvps_push(pos, self.lastdir,
-					mesecon.setting("movestone_max_push", 50))
-				--STICKY
-				mesecon.mvps_pull_all(pos, self.lastdir)
-			end
-			local nn = {name="mesecons_movestones:sticky_movestone"}
-			minetest.add_node(pos, nn)
-			self.object:remove()
-			mesecon.on_placenode(pos, nn)
-			return
-		end
-
-		local success, stack, oldstack =
-			mesecon.mvps_push(pos, direction, mesecon.setting("movestone_max_push", 50))
-		if not success then -- Too large stack/stopper in the way
-			local nn = {name="mesecons_movestones:sticky_movestone"}
-			minetest.add_node(pos, nn)
-			self.object:remove()
-			mesecon.on_placenode(pos, nn)
-			return
-		else
-			mesecon.mvps_process_stack (stack)
-			mesecon.mvps_move_objects  (pos, direction, oldstack)
-			self.lastdir = direction
-		end
-
-		self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
-
-		--STICKY
-		mesecon.mvps_pull_all(pos, direction)
-	end,
-})
+mesecon.register_movestone_entity(true)
 
 
 mesecon.register_mvps_unmov("mesecons_movestones:movestone_entity")
