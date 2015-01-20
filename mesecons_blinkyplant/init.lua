@@ -47,5 +47,5 @@ minetest.register_craft({
 	output = "mesecons_blinkyplant:blinky_plant_off 1",
 	recipe = {	{"","group:mesecon_conductor_craftable",""},
 			{"","group:mesecon_conductor_craftable",""},
-			{"default:sapling","default:sapling","default:sapling"}}
+			{"group:sapling","group:sapling","group:sapling"}}
 })
