@@ -51,39 +51,30 @@ meseconify_door("doors:door_glass")
 meseconify_door("doors:door_obsidian_glass")
 
 -- Trapdoor
-local function punch(pos)
-	local meta = minetest.get_meta(pos)
-	local state = meta:get_int("state")
-	local me = minetest.get_node(pos)
-	local tmp_node
-	local tmp_node2
+local function trapdoor_switch(pos, node)
+	local state = minetest.get_meta(pos):get_int("state")
+
 	if state == 1 then
-		state = 0
 		minetest.sound_play("doors_door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
-		tmp_node = {name="doors:trapdoor", param1=me.param1, param2=me.param2}
+		minetest.set_node(pos, {name="doors:trapdoor", param2 = node.param2})
 	else
-		state = 1
 		minetest.sound_play("doors_door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
-		tmp_node = {name="doors:trapdoor_open", param1=me.param1, param2=me.param2}
+		minetest.set_node(pos, {name="doors:trapdoor_open", param2 = node.param2})
 	end
-	minetest.set_node(pos, tmp_node)
-	meta:set_int("state", state)
+
+	minetest.get_meta(pos):set_int("state", state == 1 and 0 or 1)
 end
 
 minetest.override_item("doors:trapdoor", {
 	mesecons = {effector = {
-		action_on = function(pos)
-			punch(pos)
-		end,
-		rules = mesecon.rules.pplate
+		action_on = trapdoor_switch,
+		action_off = trapdoor_switch
 	}},
 })
 
 minetest.override_item("doors:trapdoor_open", {
 	mesecons = {effector = {
-		action_off = function(pos)
-			punch(pos)
-		end,
-		rules = mesecon.rules.pplate
+		action_on = trapdoor_switch,
+		action_off = trapdoor_switch
 	}},
 })
