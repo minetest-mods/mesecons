@@ -61,8 +61,14 @@ mesecon.noteblock_play = function (pos, param2)
 	if block_below_name == "default:glass" then
 		soundname="mesecons_noteblock_hihat"
 	end
+	if block_below_name == "default:steelblock" then
+		soundname=soundname.."2" -- Go up an octave.
+	end
 	if block_below_name == "default:stone" then
 		soundname="mesecons_noteblock_kick"
+	end
+	if block_below_name == "default:lava_source" then
+		soundname="fire_large"
 	end
 	if block_below_name == "default:chest" then
 		soundname="mesecons_noteblock_snare"
@@ -72,6 +78,9 @@ mesecon.noteblock_play = function (pos, param2)
 	end
 	if block_below_name == "default:wood" then
 		soundname="mesecons_noteblock_litecrash"
+	end
+	if block_below_name == "tnt:tnt" then
+		soundname="tnt_explode"
 	end
 	minetest.sound_play(soundname,
 	{pos = pos, gain = 1.0, max_hear_distance = 32,})
