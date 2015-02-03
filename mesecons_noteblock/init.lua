@@ -79,7 +79,7 @@ mesecon.noteblock_play = function (pos, param2)
 	if block_below_name == "default:wood" then
 		soundname="mesecons_noteblock_litecrash"
 	end
-	if block_below_name == "tnt:gunpowder" then
+	if block_below_name == "default:coalblock" then
 		soundname="tnt_explode"
 	end
 	minetest.sound_play(soundname,
