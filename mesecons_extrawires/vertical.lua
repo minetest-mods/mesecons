@@ -104,6 +104,10 @@ mesecon.register_node("mesecons_extrawires:vertical", {
 	}}
 })
 
+minetest.override_item("mesecons_extrawires:vertical_off", {
+	groups = {dig_immediate=3, mesecon_conductor_craftable=1},
+})
+
 -- Vertical wire top
 mesecon.register_node("mesecons_extrawires:vertical_top", {
 	description = "Vertical mesecon",

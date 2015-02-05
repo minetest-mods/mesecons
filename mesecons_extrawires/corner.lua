@@ -64,7 +64,7 @@ minetest.register_node("mesecons_extrawires:corner_off", {
 	sunlight_propagates = true,
 	selection_box = corner_selectionbox,
 	node_box = corner_nodebox,
-	groups = {dig_immediate = 3},
+	groups = {dig_immediate = 3, mesecon_conductor_craftable = 1},
 	mesecons = {conductor = 
 	{
 		state = mesecon.state.off,
