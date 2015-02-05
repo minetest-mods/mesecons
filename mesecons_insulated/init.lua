@@ -62,7 +62,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 		type = "fixed",
 		fixed = { -16/32-0.001, -17/32, -3/32, 16/32+0.001, -13/32, 3/32 }
 	},
-	groups = {dig_immediate = 3},
+	groups = {dig_immediate = 3, mesecon_conductor_craftable = 1},
 	mesecons = {conductor = {
 		state = mesecon.state.off,
 		onstate = "mesecons_insulated:insulated_on",
