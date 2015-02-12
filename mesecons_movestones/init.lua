@@ -116,18 +116,26 @@ function mesecon.register_movestone_entity(is_sticky)
 			if not direction then -- no mesecon power
 				--push only solid nodes
 				local name = minetest.get_node(pos).name
+				local push_success = true
 				if  name ~= "air" and name ~= "ignore"
 				and ((not minetest.registered_nodes[name])
 				or minetest.registered_nodes[name].liquidtype == "none") then
-					mesecon.mvps_push(pos, self.lastdir, maxpush)
-					if is_sticky then
+					push_success = mesecon.mvps_push(pos, self.lastdir, maxpush)
+					if is_sticky and push_success then
 						mesecon.mvps_pull_all(pos, self.lastdir)
 					end
 				end
 				local nn = {name=node_name}
-				minetest.add_node(pos, nn)
-				self.object:remove()
-				mesecon.on_placenode(pos, nn)
+				if push_success then
+					minetest.add_node(pos, nn)
+					self.object:remove()
+					mesecon.on_placenode(pos, nn)
+				else
+					local prevpos = mesecon.addPosRule(pos, vector.multiply(self.lastdir, -1))
+					minetest.add_node(prevpos, nn)
+					self.object:remove()
+					-- no call to on_placenode, as we don't want to create an endless loop.
+				end
 				return
 			end
 
@@ -135,9 +143,9 @@ function mesecon.register_movestone_entity(is_sticky)
 				mesecon.mvps_push(pos, direction, maxpush)
 			if not success then -- Too large stack/stopper in the way
 				local nn = {name=node_name}
-				minetest.add_node(pos, nn)
+				local prevpos = mesecon.addPosRule(pos, vector.multiply(direction, -1))
+				minetest.add_node(prevpos, nn)
 				self.object:remove()
-				mesecon.on_placenode(pos, nn)
 				return
 			else
 				mesecon.mvps_process_stack (stack)
