@@ -56,6 +56,36 @@ end
 function mesecon.register_movestone_entity(is_sticky)
 	local node_name = "mesecons_movestones:"..(is_sticky and "sticky_" or "").."movestone"
 	local texture_png = (is_sticky and "jeija_sticky_movestone.png" or "jeija_movestone_arrows.png")
+	local roundpos = function(pos)
+		return {x=math.floor(pos.x+0.5), y=math.floor(pos.y+0.5), z=math.floor(pos.z+0.5)}
+	end
+	--this method returns oldpos, changed by less than 1.5
+	local addmaxone = function(oldpos, roundedpos, pos)
+		local fraction = pos - roundedpos
+		--oldpos was rounded, so we add the newest fraction we know (may be negative)
+		local ret = oldpos + fraction
+		--the rounded difference.
+		local diff = roundedpos - oldpos
+		if diff >= 1 then
+			diff = 1
+		end
+		if diff <= -1 then
+			diff = -1
+		end
+		--in no-lag situations, we return
+		-- ret + diff
+		-- = oldpos + fraction + roundedpos - oldpos
+		-- = fraction + roundedpos
+		-- = pos - roundedpos + roundedpos = pos
+		return ret + diff
+	end
+	local vecaddmaxone = function(oldpos, pos)
+		local rpos = roundpos(pos)
+		return {
+			x=addmaxone(oldpos.x, rpos.x, pos.x),
+			y=addmaxone(oldpos.y, rpos.y, pos.y),
+			z=addmaxone(oldpos.z, rpos.z, pos.z)}
+	end
 	minetest.register_entity(node_name.."_entity", {
 		physical = false,
 		visual = "sprite",
@@ -63,6 +93,11 @@ function mesecon.register_movestone_entity(is_sticky)
 		collisionbox = {-0.5,-0.5,-0.5, 0.5, 0.5, 0.5},
 		visual = "cube",
 		lastdir = {x=0, y=0, z=0},
+		lastpos = {x=0, y=0, z=0},
+
+		on_activate = function(self, staticdata, dtime_s)
+			self.lastpos = roundpos(self.object:getpos())
+		end,
 
 		on_punch = function(self, hitter)
 			self.object:remove()
@@ -71,7 +106,10 @@ function mesecon.register_movestone_entity(is_sticky)
 
 		on_step = function(self, dtime)
 			local pos = self.object:getpos()
-			pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
+			local unroundedpos = vecaddmaxone(self.lastpos, pos)
+			pos = roundpos(unroundedpos)
+
+			self.lastpos = pos
 			local direction = mesecon.get_movestone_direction(pos)
 
 			local maxpush = mesecon.setting("movestone_max_push", 50)
@@ -107,6 +145,7 @@ function mesecon.register_movestone_entity(is_sticky)
 				self.lastdir = direction
 			end
 
+			self.object:setpos(unroundedpos)
 			self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
 
 			if is_sticky then
