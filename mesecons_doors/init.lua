@@ -20,6 +20,8 @@ local function on_rightclick(pos, dir, check_name, replace, replace_dir, params)
 end
 
 local function meseconify_door(name)
+	if not minetest.registered_items[name] then return end
+
 	local function toggle_state1 (pos, node)
 		on_rightclick(pos, 1, name.."_t_1", name.."_b_2", name.."_t_2", {1,2,3,0})
 	end
@@ -65,16 +67,18 @@ local function trapdoor_switch(pos, node)
 	minetest.get_meta(pos):set_int("state", state == 1 and 0 or 1)
 end
 
-minetest.override_item("doors:trapdoor", {
-	mesecons = {effector = {
-		action_on = trapdoor_switch,
-		action_off = trapdoor_switch
-	}},
-})
+if minetest.registered_nodes["doors:trapdoor"] then
+	minetest.override_item("doors:trapdoor", {
+		mesecons = {effector = {
+			action_on = trapdoor_switch,
+			action_off = trapdoor_switch
+		}},
+	})
 
-minetest.override_item("doors:trapdoor_open", {
-	mesecons = {effector = {
-		action_on = trapdoor_switch,
-		action_off = trapdoor_switch
-	}},
-})
+	minetest.override_item("doors:trapdoor_open", {
+		mesecons = {effector = {
+			action_on = trapdoor_switch,
+			action_off = trapdoor_switch
+		}},
+	})
+end
