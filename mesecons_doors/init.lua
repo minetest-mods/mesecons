@@ -20,6 +20,10 @@ local function on_rightclick(pos, dir, check_name, replace, replace_dir, params)
 end
 
 local function meseconify_door(name)
+	if not minetest.registered_nodes[name] then
+		return
+	end
+
 	local function toggle_state1 (pos, node)
 		on_rightclick(pos, 1, name.."_t_1", name.."_b_2", name.."_t_2", {1,2,3,0})
 	end
@@ -49,6 +53,10 @@ meseconify_door("doors:door_wood")
 meseconify_door("doors:door_steel")
 meseconify_door("doors:door_glass")
 meseconify_door("doors:door_obsidian_glass")
+
+if not minetest.registered_nodes["doors:trapdoor"] then
+	return
+end
 
 -- Trapdoor
 local function trapdoor_switch(pos, node)
