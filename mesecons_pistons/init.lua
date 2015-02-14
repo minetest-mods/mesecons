@@ -89,8 +89,8 @@ local piston_on = function(pos, node)
 			max_hear_distance = 20,
 			gain = 0.3,
 		})
-		mesecon.mvps_process_stack (stack)
-		mesecon.mvps_move_objects  (np, dir, oldstack)
+		mesecon.mvps_process_stack(stack)
+		mesecon.mvps_move_objects(np, dir, oldstack)
 	end
 end
 

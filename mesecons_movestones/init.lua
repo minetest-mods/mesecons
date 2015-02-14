@@ -9,9 +9,7 @@
 -- Pull all blocks in its back
 
 function mesecon.get_movestone_direction(pos)
-	getactivated = 0
 	local lpos
-	local getactivated = 0
 	local rules = {
 		{x=0,  y=1,  z=-1},
 		{x=0,  y=0,  z=-1},
@@ -55,75 +53,75 @@ function mesecon.get_movestone_direction(pos)
 	end
 end
 
-minetest.register_node("mesecons_movestones:movestone", {
-	tiles = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_arrows.png", "jeija_movestone_arrows.png"},
-	paramtype2 = "facedir",
-	legacy_facedir_simple = true,
-	groups = {cracky=3},
-    	description="Movestone",
-	sounds = default.node_sound_stone_defaults(),
-	mesecons = {effector = {
-		action_on = function (pos, node)
-			local direction=mesecon.get_movestone_direction(pos)
-			if not direction then return end
-			minetest.remove_node(pos)
-			mesecon.on_dignode(pos, node)
-			minetest.add_entity(pos, "mesecons_movestones:movestone_entity")
+function mesecon.register_movestone(name, def, is_sticky)
+	local timer_interval = 1 / mesecon.setting("movestone_speed", 3)
+	local name_active = name.."_active"
+
+	local function movestone_move (pos)
+		if minetest.get_node(pos).name ~= name_active then
+			return
+		end
+
+		local direction = mesecon.get_movestone_direction(pos)
+		if not direction then return end
+		local frontpos = vector.add(pos, direction)
+		local backpos = vector.subtract(pos, direction)
+
+		-- ### Step 1: Push nodes in front ###
+		local maxpush = mesecon.setting("movestone_max_push", 50)
+		local maxpull = mesecon.setting("movestone_max_pull", 50)
+		local success, stack, oldstack = mesecon.mvps_push(frontpos, direction, maxpush)
+		if success then 
+			mesecon.mvps_process_stack(stack)
+			mesecon.mvps_move_objects(frontpos, direction, oldstack)
+		-- Too large stack/stopper in the way: try again very soon
+		else
+			minetest.after(0.05, movestone_move, pos)
+			return
+		end
+
+		-- ### Step 2: Move the movestone ###
+		local node = minetest.get_node(pos)
+		minetest.set_node(frontpos, node)
+		minetest.remove_node(pos)
+		mesecon.on_dignode(pos, node)
+		mesecon.on_placenode(frontpos, node)
+		minetest.after(timer_interval, movestone_move, frontpos)
+
+		-- ### Step 3: If sticky, pull stack behind ###
+		if is_sticky then
+			mesecon.mvps_pull_all(backpos, direction, maxpull)
+		end
+	end
+
+	def.mesecons = {effector = {
+		action_on = function (pos)
+			if minetest.get_node(pos).name ~= name_active then
+				minetest.set_node(pos, {name = name_active})
+				movestone_move(pos)
+			end
+		end,
+		action_off = function (pos)
+			minetest.set_node(pos, {name = name})
 		end
 	}}
-})
 
-minetest.register_entity("mesecons_movestones:movestone_entity", {
-	physical = false,
-	visual = "sprite",
-	textures = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_arrows.png", "jeija_movestone_arrows.png"},
-	collisionbox = {-0.5,-0.5,-0.5, 0.5, 0.5, 0.5},
-	visual = "cube",
-	lastdir = {x=0, y=0, z=0},
+	def.drop = name
 
-	on_punch = function(self, hitter)
-		self.object:remove()
-		hitter:get_inventory():add_item("main", "mesecons_movestones:movestone")
-	end,
+	minetest.register_node(name, def)
 
-	on_step = function(self, dtime)
-		local pos = self.object:getpos()
-		pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
-		local direction = mesecon.get_movestone_direction(pos)
+	-- active node only
+	local def_active = table.copy(def)
+	def_active.groups.not_in_creative_inventory = 1
+	minetest.register_node(name_active, def_active)
+end
 
-		local maxpush = mesecon.setting("movestone_max_push", 50)
-		if not direction then -- no mesecon power
-			--push only solid nodes
-			local name = minetest.get_node(pos).name
-			if  name ~= "air" and name ~= "ignore"
-			and ((not minetest.registered_nodes[name])
-			or minetest.registered_nodes[name].liquidtype == "none") then
-				mesecon.mvps_push(pos, self.lastdir, maxpush)
-			end
-			local nn = {name="mesecons_movestones:movestone"}
-			minetest.add_node(pos, nn)
-			self.object:remove()
-			mesecon.on_placenode(pos, nn)
-			return
-		end
-
-		local success, stack, oldstack =
-			mesecon.mvps_push(pos, direction, maxpush)
-		if not success then -- Too large stack/stopper in the way
-			local nn = {name="mesecons_movestones:movestone"}
-			minetest.add_node(pos, nn)
-			self.object:remove()
-			mesecon.on_placenode(pos, nn)
-			return
-		else
-			mesecon.mvps_process_stack (stack)
-			mesecon.mvps_move_objects  (pos, direction, oldstack)
-			self.lastdir = direction
-		end
-
-		self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
-	end,
-})
+mesecon.register_movestone("mesecons_movestones:movestone", {
+	tiles = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_arrows.png", "jeija_movestone_arrows.png"},
+	groups = {cracky=3},
+    	description="Movestone",
+	sounds = default.node_sound_stone_defaults()
+}, false)
 
 minetest.register_craft({
 	output = "mesecons_movestones:movestone 2",
@@ -134,28 +132,14 @@ minetest.register_craft({
 	}
 })
 
-
-
 -- STICKY_MOVESTONE
-
-minetest.register_node("mesecons_movestones:sticky_movestone", {
+mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
 	tiles = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_sticky_movestone.png", "jeija_sticky_movestone.png"},
 	inventory_image = minetest.inventorycube("jeija_sticky_movestone.png", "jeija_movestone_side.png", "jeija_movestone_side.png"),
-	paramtype2 = "facedir",
-	legacy_facedir_simple = true,
 	groups = {cracky=3},
     	description="Sticky Movestone",
 	sounds = default.node_sound_stone_defaults(),
-	mesecons = {effector = {
-		action_on = function (pos, node)
-			local direction=mesecon.get_movestone_direction(pos)
-			if not direction then return end
-			minetest.remove_node(pos)
-			mesecon.on_dignode(pos, node)
-			minetest.add_entity(pos, "mesecons_movestones:sticky_movestone_entity")
-		end
-	}}
-})
+}, true)
 
 minetest.register_craft({
 	output = "mesecons_movestones:sticky_movestone 2",
@@ -164,63 +148,6 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_entity("mesecons_movestones:sticky_movestone_entity", {
-	physical = false,
-	visual = "sprite",
-	textures = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_sticky_movestone.png", "jeija_sticky_movestone.png"},
-	collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
-	visual = "cube",
-	lastdir = {x=0, y=0, z=0},
-
-	on_punch = function(self, hitter)
-		self.object:remove()
-		hitter:get_inventory():add_item("main", 'mesecons_movestones:sticky_movestone')
-	end,
-
-	on_step = function(self, dtime)
-		local pos = self.object:getpos()
-		pos.x, pos.y, pos.z = math.floor(pos.x+0.5), math.floor(pos.y+0.5), math.floor(pos.z+0.5)
-		local direction = mesecon.get_movestone_direction(pos)
-
-		if not direction then -- no mesecon power
-			--push only solid nodes
-			local name = minetest.get_node(pos).name
-			if  name ~= "air" and name ~= "ignore"
-			and ((not minetest.registered_nodes[name])
-			or minetest.registered_nodes[name].liquidtype == "none") then
-				mesecon.mvps_push(pos, self.lastdir,
-					mesecon.setting("movestone_max_push", 50))
-				--STICKY
-				mesecon.mvps_pull_all(pos, self.lastdir)
-			end
-			local nn = {name="mesecons_movestones:sticky_movestone"}
-			minetest.add_node(pos, nn)
-			self.object:remove()
-			mesecon.on_placenode(pos, nn)
-			return
-		end
-
-		local success, stack, oldstack =
-			mesecon.mvps_push(pos, direction, mesecon.setting("movestone_max_push", 50))
-		if not success then -- Too large stack/stopper in the way
-			local nn = {name="mesecons_movestones:sticky_movestone"}
-			minetest.add_node(pos, nn)
-			self.object:remove()
-			mesecon.on_placenode(pos, nn)
-			return
-		else
-			mesecon.mvps_process_stack (stack)
-			mesecon.mvps_move_objects  (pos, direction, oldstack)
-			self.lastdir = direction
-		end
-
-		self.object:setvelocity({x=direction.x*2, y=direction.y*2, z=direction.z*2})
-
-		--STICKY
-		mesecon.mvps_pull_all(pos, direction)
-	end,
-})
-
-
-mesecon.register_mvps_unmov("mesecons_movestones:movestone_entity")
-mesecon.register_mvps_unmov("mesecons_movestones:sticky_movestone_entity")
+-- Don't allow pushing movestones while they're active
+mesecon.register_mvps_stopper("mesecons_movestones:movestone_active")
+mesecon.register_mvps_stopper("mesecons_movestones:sticky_movestone_active")
