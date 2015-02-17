@@ -63,7 +63,10 @@ function mesecon.register_movestone(name, def, is_sticky)
 		end
 
 		local direction = mesecon.get_movestone_direction(pos)
-		if not direction then return end
+		if not direction then
+			minetest.set_node(pos, {name = name})
+			return
+		end
 		local frontpos = vector.add(pos, direction)
 		local backpos = vector.subtract(pos, direction)
 
