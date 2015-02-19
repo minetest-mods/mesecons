@@ -2,7 +2,18 @@
 
 mesecon.mvps_stoppers = {}
 mesecon.on_mvps_move = {}
+mesecon.mvps_unmov = {}
 
+--- Objects (entities) that cannot be moved
+function mesecon.register_mvps_unmov(objectname)
+	mesecon.mvps_unmov[objectname] = true;
+end
+
+function mesecon.is_mvps_unmov(objectname)
+	return mesecon.mvps_unmov[objectname]
+end
+
+-- Nodes that cannot be pushed / pulled by movestones, pistons
 function mesecon.is_mvps_stopper(node, pushdir, stack, stackid)
 	local get_stopper = mesecon.mvps_stoppers[node.name]
 	if type (get_stopper) == "function" then
@@ -172,7 +183,7 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 
 	for _, obj in ipairs(objects_to_move) do
 		local entity = obj:get_luaentity()
-		if not entity then
+		if not entity or not mesecon.is_mvps_unmov(entity.name) then
 			local np = mesecon.addPosRule(obj:getpos(), dir)
 
 			--move only if destination is not solid
