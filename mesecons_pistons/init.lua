@@ -100,9 +100,10 @@ local piston_off = function(pos, node)
 	piston_remove_pusher(pos, node)
 
 	if pistonspec.sticky then
+		local maxpull = mesecon.setting("piston_max_pull", 15)
 		local dir = piston_get_direction(pistonspec.dir, node)
-		local pullpos = mesecon.addPosRule(pos, dir)
-		local stack = mesecon.mvps_pull_single(pullpos, dir)
+		local pullpos = vector.add(pos, vector.multiply(dir, 2))
+		local stack = mesecon.mvps_pull_single(pullpos, vector.multiply(dir, -1), maxpull)
 		mesecon.mvps_process_stack(pos, dir, stack)
 	end
 end
