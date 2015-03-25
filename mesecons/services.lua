@@ -94,33 +94,35 @@ mesecon.queue:add_function("cooldown", function (pos)
 end)
 
 
--- Overriding the mods chatcommand
+if mesecon.setting("override_mods_chatcommand", 1) == 1 then
 
-local get_modnames = minetest.get_modnames
-local all_modnames
-local function get_mods_list()
-	all_modnames = get_modnames()
-	local count = #all_modnames
-	local n = 1
-	while n <= count do
-		if string.sub(all_modnames[n], 1, 9) == "mesecons_" then
-			table.remove(all_modnames, n)
-			count = count-1
-		else
-			n = n+1
+	-- Overriding the mods chatcommand
+	local get_modnames = minetest.get_modnames
+	local all_modnames
+	local function get_mods_list()
+		all_modnames = get_modnames()
+		local count = #all_modnames
+		local n = 1
+		while n <= count do
+			if string.sub(all_modnames[n], 1, 9) == "mesecons_" then
+				table.remove(all_modnames, n)
+				count = count-1
+			else
+				n = n+1
+			end
 		end
+		return all_modnames
 	end
-	return all_modnames
-end
 
-local function get_newmodnames()
-	return all_modnames or get_mods_list()
-end
+	local function get_newmodnames()
+		return all_modnames or get_mods_list()
+	end
 
-local old_function = minetest.chatcommands["mods"].func
-minetest.chatcommands["mods"].func = function(a,b)
-	minetest.get_modnames = get_newmodnames
-	local v1,v2 = old_function(a,b)
-	minetest.get_modnames = get_modnames
-	return v1,v2
+	local old_function = minetest.chatcommands["mods"].func
+	minetest.chatcommands["mods"].func = function(a,b)
+		minetest.get_modnames = get_newmodnames
+		local v1,v2 = old_function(a,b)
+		minetest.get_modnames = get_modnames
+		return v1,v2
+	end
 end
