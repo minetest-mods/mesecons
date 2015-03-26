@@ -135,8 +135,12 @@ end
 
 -- returns true if player was found, false if not
 local node_detector_scan = function (pos)
-	local node = minetest.get_node(pos)
-	local frontpos = vector.subtract(pos, minetest.facedir_to_dir(node.param2))
+	if not pos then return end
+	local node = minetest.get_node_or_nil(pos)
+	if not node then return end
+	local scandir = minetest.facedir_to_dir(node.param2)
+	if not scandir then return end
+	local frontpos = vector.subtract(pos, scandir)
 	local frontnode = minetest.get_node(frontpos)
 	local meta = minetest.get_meta(pos)
 	return (frontnode.name == meta:get_string("scanname")) or
