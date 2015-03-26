@@ -338,20 +338,116 @@ local function timeout()
 	error("Code timed out!")
 end
 
+--A VERY minimalistic lexer, does what it needs to for this job and no more.
+--For now, block comments aren't implemented, but are detected.
+local function lexLua(code)
+    local lexElements={}
+    --Find keywords, whitespace, strings, and then everything else is "unknownchar"
+    
+    --Keywords and numbers.
+    function lexElements.keyword(str)
+        return str:match("^[%w_]+")
+    end
+    function lexElements.whitespace(str)
+        return str:match("^%s+")
+    end
+    --Unimplemented stuff goes here.
+    function lexElements.cleanup(str)
+        return str:match("^.+")
+    end
+    function lexElements.string(str)
+        --Now parse a string.
+        local quoteType=str:sub(1,1)
+        if quoteType~="\"" and quoteType~="\'" then return nil end
+        local inEscape=true
+        local rstr=""
+        for i=1,str:len() do
+            local c=str:sub(1,1)
+            if inEscape then
+                rstr=rstr..c
+                inEscape=false
+            else
+                if c==quoteType then return rstr..quoteType end
+                if c=="\\" then inEscape=true end
+                rstr=rstr..c
+            end
+        end
+        return nil --unfinished string
+    end
+    function lexElements.blockcomment(str)
+        local a=str:match("^--%[%[")
+        if not a then return nil end
+        local s=str:find("--%]%]")
+        if not s then return nil end
+        return str:sub(1,s+3)
+    end
+    function lexElements.linecomment(str)
+        return str:match("^--[^\r\n]+")
+    end
+    local lexElementsOrder={"keyword","whitespace","string","blockcomment","linecomment","cleanup"}
+    local lexResults={}
+    while code:len()>0 do
+        --Because break doesn't exist.
+        local function parseElem()
+            for _,v in ipairs(lexElementsOrder) do
+                local t,e=lexElements[v](code)
+                if t then
+                    code=code:sub(t:len()+1)
+                    table.insert(lexResults,{v,t})
+                    return nil
+                end
+                if e then
+                    return e
+                end
+            end
+            return "no match"
+        end
+        local err=parseElem()
+        if err then return nil,"Lexer Error:"..err..": "..code:sub(1,32) end
+    end
+    return lexResults
+end
 
 local function code_prohibited(code)
 	-- LuaJIT doesn't increment the instruction counter when running
 	-- loops, so we have to sanitize inputs if we're using LuaJIT.
 	if not jit then
-		return false
+		return code
 	end
-	local prohibited = {"while", "for", "do", "repeat", "until", "goto"}
-	code = " "..code.." "
-	for _, p in ipairs(prohibited) do
-		if string.find(code, "[^%w_]"..p.."[^%w_]") then
-			return "Prohibited command: "..p
-		end
-	end
+    --Find the following constructs, and place dummies where (dummy) is:
+    --while ... do (dummy)
+    --for ... do (dummy)
+    --repeat (dummy)
+    
+    -- This only exists in Lua 5.2
+    --(dummy) goto
+    
+    local lexed,err=lexLua(code)
+    local rcode=""
+    if err then
+        return nil,"Couldn't lex code:"..err
+    end
+    for _,v in ipairs(lexed) do
+        --remove useless stuff since we're going over it anyway.
+        if v[1]=="whitespace" then v[2]="\r\n" end
+        if v[1]=="blockcomment" then v[2]="" end
+        if v[1]=="linecomment" then v[2]="" end
+        --Code injection so we can safely use every feature in Lua. The only purpose of the lexer is to filter stuff that would break this, really.
+        --(the old method would stop you from using keywords in strings.)
+        --You can also replace this with coroutine.yield, but that's best left to a computercraft-style mod.
+        local dummy="(function() end)()"
+        if v[2]=="do" then
+            v[2]="do "..dummy
+        end
+        if v[2]=="repeat" then
+            v[2]="repeat "..dummy
+        end
+        if v[2]=="goto" then
+            v[2]=dummy.." goto"
+        end
+        rcode=rcode..v[2]
+    end
+    return rcode
 end
 
 
@@ -400,9 +496,9 @@ local function run(pos, event)
 	-- Load code & mem from meta
 	local mem  = load_memory(meta)
 	local code = meta:get_string("code")
-
-	local err = code_prohibited(code)
-	if err then return err end
+    local err
+	code,err = code_prohibited(code)
+	if not code then return err end
 
 	-- Create environment
 	local env = create_environment(pos, mem, event)
