@@ -245,9 +245,11 @@ end
 
 
 local safe_globals = {
-	"assert", "error", "ipairs", "next", "pairs", "pcall", "select",
-	"tonumber", "tostring", "type", "unpack", "_VERSION", "xpcall",
+	"assert", "error", "ipairs", "next", "pairs", "select",
+	"tonumber", "tostring", "type", "unpack", "_VERSION", 
 }
+--This error is used as a signal to pcall, because otherwise someone could deliberately set off a timeout to disable the debug hooks.
+local timeout_error="Code timed out!"
 local function create_environment(pos, mem, event)
 	-- Gather variables for the environment
 	local vports = minetest.registered_nodes[minetest.get_node(pos).name].virtual_portstates
@@ -329,20 +331,41 @@ local function create_environment(pos, mem, event)
 		env[name] = _G[name]
 	end
 
+    env.pcall=function(...)
+        local pcr={pcall(...)}
+        if not pcr[1] then
+            if pcr[2]~=timeout_error then
+                error(pcr[2])
+            end
+        end
+        return unpack(pcr)
+    end
+    
+    --Only input differs-this wrapper exists to catch certain outputs that shouldn't be caught by a (x)pcall
+    
+    env.xpcall=function(...)
+        local pcr={xpcall(...)}
+        if not pcr[1] then
+            if pcr[2]~=timeout_error then
+                error(pcr[2])
+            end
+        end
+        return unpack(pcr)
+    end
+
 	return env
 end
 
 
 local function timeout()
 	debug.sethook()  -- Clear hook
-	error("Code timed out!")
+	error(timeout_error)
 end
 
 --A VERY minimalistic lexer, does what it needs to for this job and no more.
---For now, block comments aren't implemented, but are detected.
 local function lexLua(code)
     local lexElements={}
-    --Find keywords, whitespace, strings, and then everything else is "unknownchar"
+    --Find keywords, whitespace, strings, and then everything else is "cleanup"
     
     --Keywords and numbers.
     function lexElements.keyword(str)
@@ -353,7 +376,7 @@ local function lexLua(code)
     end
     --Unimplemented stuff goes here.
     function lexElements.cleanup(str)
-        return str:match("^.+")
+        return str:match("^.")
     end
     function lexElements.string(str)
         --Now parse a string.
