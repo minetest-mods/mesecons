@@ -470,7 +470,6 @@ local function code_prohibited(code)
         end
         rcode=rcode..v[2]
     end
-    print(rcode)
     return rcode
 end
 
