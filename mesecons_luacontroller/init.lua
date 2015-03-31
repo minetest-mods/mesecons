@@ -385,14 +385,13 @@ local function lexLua(code)
         local inEscape=true
         local rstr=""
         for i=1,str:len() do
-            local c=str:sub(1,1)
+            local c=str:sub(i,i)
+            rstr=rstr..c
             if inEscape then
-                rstr=rstr..c
                 inEscape=false
             else
-                if c==quoteType then return rstr..quoteType end
+                if c==quoteType then return rstr end
                 if c=="\\" then inEscape=true end
-                rstr=rstr..c
             end
         end
         return nil --unfinished string
