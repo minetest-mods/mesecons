@@ -398,14 +398,14 @@ local function lexLua(code)
         return nil --unfinished string
     end
     function lexElements.blockcomment(str)
-        local a=str:match("^--%[%[")
+        local a=str:match("^%-%-%[%[")
         if not a then return nil end
-        local s=str:find("--%]%]")
+        local s=str:find("%-%-%]%]")
         if not s then return nil end
         return str:sub(1,s+3)
     end
     function lexElements.linecomment(str)
-        return str:match("^--[^\r\n]+")
+        return str:match("^%-%-[^\r\n]+")
     end
     local lexElementsOrder={"keyword","whitespace","string","blockcomment","linecomment","cleanup"}
     local lexResults={}
@@ -470,6 +470,7 @@ local function code_prohibited(code)
         end
         rcode=rcode..v[2]
     end
+    print(rcode)
     return rcode
 end
 
