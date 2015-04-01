@@ -341,18 +341,6 @@ local function create_environment(pos, mem, event)
         return unpack(pcr)
     end
     
-    --Only input differs-this wrapper exists to catch certain outputs that shouldn't be caught by a (x)pcall
-    
-    env.xpcall=function(...)
-        local pcr={xpcall(...)}
-        if not pcr[1] then
-            if pcr[2]~=timeout_error then
-                error(pcr[2])
-            end
-        end
-        return unpack(pcr)
-    end
-
 	return env
 end
 
