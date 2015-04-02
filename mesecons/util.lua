@@ -185,16 +185,41 @@ function mesecon.mergetable(source, dest)
 end
 
 function mesecon.register_node(name, spec_common, spec_off, spec_on)
-	spec_common.drop = spec_common.drop or name .. "_off"
+	-- names of the en- and disabled nodes
+	local name_off = name .. "_off"
+	local name_on = name .. "_on"
+
+	spec_common.drop = spec_common.drop or name_off
 	spec_common.__mesecon_basename = name
+
+	-- allow e.g. worldedit to use the //p command on swtiches
+	local punch_func = spec_common.on_punch
+	spec_common.on_punch = nil
+
 	spec_on.__mesecon_state = "on"
 	spec_off.__mesecon_state = "off"
 
 	spec_on = mesecon.mergetable(spec_common, spec_on);
 	spec_off = mesecon.mergetable(spec_common, spec_off);
 
-	minetest.register_node(name .. "_on", spec_on)
-	minetest.register_node(name .. "_off", spec_off)
+	minetest.register_node(name_on, spec_on)
+	minetest.register_node(name_off, spec_off)
+
+	-- add back the punch function if there's node
+	if punch_func then
+		local old_punch = minetest.registered_nodes[name_on].on_punch
+		minetest.override_item(name_on, {
+			on_punch = function(...)
+				return punch_func(...) or old_punch(...)
+			end
+		})
+		old_punch = minetest.registered_nodes[name_off].on_punch
+		minetest.override_item(name_off, {
+			on_punch = function(...)
+				return punch_func(...) or old_punch(...)
+			end
+		})
+	end
 end
 
 -- swap onstate and offstate nodes, returns new state
