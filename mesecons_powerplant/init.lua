@@ -9,7 +9,7 @@ minetest.register_node("mesecons_powerplant:power_plant", {
 	paramtype = "light",
 	walkable = false,
 	groups = {dig_immediate=3, mesecon = 2},
-	light_source = LIGHT_MAX-9,
+	light_source = default.LIGHT_MAX-9,
     	description="Power Plant",
 	selection_box = {
 		type = "fixed",
