@@ -31,7 +31,7 @@ function mesecon.lightstone_add(name, base_item, texture_off, texture_on)
 	tiles = {texture_on},
 	groups = {cracky=2,not_in_creative_inventory=1, mesecon = 2},
 	drop = "mesecons_lightstone:lightstone_" .. name .. "_off",
-	light_source = LIGHT_MAX-2,
+	light_source = default.LIGHT_MAX-2,
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		rules = lightstone_rules,

@@ -76,7 +76,7 @@ minetest.register_node("mesecons_torch:mesecon_torch_on", {
 	paramtype2 = "wallmounted",
 	selection_box = torch_selectionbox,
 	groups = {dig_immediate=3},
-	light_source = LIGHT_MAX-5,
+	light_source = default.LIGHT_MAX-5,
 	description="Mesecon Torch",
 	mesecons = {receptor = {
 		state = mesecon.state.on,
