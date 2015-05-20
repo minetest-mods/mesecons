@@ -6,11 +6,16 @@
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 	drawtype = "mesh",
 	mesh = "jeija_hydro_turbine.obj",
-	tiles = {"jeija_hydro_turbine_off.png"},
+	tiles = {
+		"jeija_hydro_turbine_sides_off.png",
+		"jeija_hydro_turbine_top_bottom.png",
+		"jeija_hydro_turbine_turbine_top_bottom.png",
+		"jeija_hydro_turbine_turbine_misc.png"
+	},
 	inventory_image = "jeija_hydro_turbine_inv.png",
 	wield_scale = {x=0.75, y=0.75, z=0.75},
 	groups = {dig_immediate=2},
-    	description="Water Turbine",
+	description="Water Turbine",
 	paramtype = "light",
 	selection_box = {
 		type = "fixed",
@@ -26,7 +31,12 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 	drawtype = "mesh",
 	mesh = "jeija_hydro_turbine.obj",
 	wield_scale = {x=0.75, y=0.75, z=0.75},
-	tiles = {"jeija_hydro_turbine_on.png"},
+	tiles = {
+		"jeija_hydro_turbine_sides_on.png",
+		"jeija_hydro_turbine_top_bottom.png",
+		"jeija_hydro_turbine_turbine_top_bottom.png",
+		"jeija_hydro_turbine_turbine_misc.png"
+	},
 	inventory_image = "jeija_hydro_turbine_inv.png",
 	drop = "mesecons_hydroturbine:hydro_turbine_off 1",
 	groups = {dig_immediate=2,not_in_creative_inventory=1},
