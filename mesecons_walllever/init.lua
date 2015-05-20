@@ -24,7 +24,12 @@ mesecon.register_node("mesecons_walllever:wall_lever", {
 		minetest.sound_play("mesecons_lever", {pos=pos})
 	end
 },{
-	tiles = { "jeija_wall_lever_off.png" },
+	tiles = {
+		"jeija_wall_lever_lever_light_off.png",
+		"jeija_wall_lever_front.png",
+		"jeija_wall_lever_front_bump.png",
+		"jeija_wall_lever_back_edges.png"
+	},
 	mesh="jeija_wall_lever_off.obj",
 	mesecons = {receptor = {
 		rules = mesecon.rules.buttonlike_get,
@@ -32,7 +37,12 @@ mesecon.register_node("mesecons_walllever:wall_lever", {
 	}},
 	groups = {dig_immediate = 2, mesecon_needs_receiver = 1}
 },{
-	tiles = { "jeija_wall_lever_on.png" },
+	tiles = {
+		"jeija_wall_lever_lever_light_on.png",
+		"jeija_wall_lever_front.png",
+		"jeija_wall_lever_front_bump.png",
+		"jeija_wall_lever_back_edges.png"
+	},
 	mesh="jeija_wall_lever_on.obj",
 	mesecons = {receptor = {
 		rules = mesecon.rules.buttonlike_get,
