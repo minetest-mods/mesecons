@@ -4,7 +4,7 @@
 -- All sides sticky block
 minetest.register_node("mesecons_stickyblocks:sticky_block_all", {
 	description = "All-sides sticky block",
-	tiles = {"default_grass_footsteps.png"},
+	tiles = {"default_grass.png^default_footprint.png"},
 	groups = {dig_immediate=2},
 	mvps_sticky = function (pos, node)
 		local connected = {}
