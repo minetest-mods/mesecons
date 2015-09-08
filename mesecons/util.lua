@@ -129,7 +129,7 @@ function mesecon.set_bit(binary,bit,value)
 		end
 	end
 	return binary
-	
+
 end
 
 function mesecon.invertRule(r)
@@ -228,7 +228,7 @@ function mesecon.flipstate(pos, node)
 	local newstate
 	if (nodedef.__mesecon_state == "on") then newstate = "off" end
 	if (nodedef.__mesecon_state == "off") then newstate = "on" end
-		
+
 	minetest.swap_node(pos, {name = nodedef.__mesecon_basename .. "_" .. newstate,
 		param2 = node.param2})
 

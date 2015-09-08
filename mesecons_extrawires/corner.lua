@@ -10,7 +10,7 @@ local corner_selectionbox = {
 }
 
 local corner_get_rules = function (node)
-	local rules = 
+	local rules =
 	{{x = 1,  y = 0,  z =  0},
 	 {x = 0,  y = 0,  z = -1}}
 
@@ -39,7 +39,7 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 	node_box = corner_nodebox,
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons_extrawires:corner_off",
-	mesecons = {conductor = 
+	mesecons = {conductor =
 	{
 		state = mesecon.state.on,
 		rules = corner_get_rules,
@@ -65,7 +65,7 @@ minetest.register_node("mesecons_extrawires:corner_off", {
 	selection_box = corner_selectionbox,
 	node_box = corner_nodebox,
 	groups = {dig_immediate = 3},
-	mesecons = {conductor = 
+	mesecons = {conductor =
 	{
 		state = mesecon.state.off,
 		rules = corner_get_rules,

@@ -135,7 +135,7 @@ nid_inc = function (nid)
 	end
 
 	-- BUT: Skip impossible nodeids:
-	if ((nid[0] == 0 and nid[4] == 1) or (nid[1] == 0 and nid[5] == 1) 
+	if ((nid[0] == 0 and nid[4] == 1) or (nid[1] == 0 and nid[5] == 1)
 	or (nid[2] == 0 and nid[6] == 1) or (nid[3] == 0 and nid[7] == 1)) then
 		return nid_inc(nid)
 	end

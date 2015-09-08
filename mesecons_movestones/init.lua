@@ -74,7 +74,7 @@ function mesecon.register_movestone(name, def, is_sticky)
 		local maxpush = mesecon.setting("movestone_max_push", 50)
 		local maxpull = mesecon.setting("movestone_max_pull", 50)
 		local success, stack, oldstack = mesecon.mvps_push(frontpos, direction, maxpush)
-		if success then 
+		if success then
 			mesecon.mvps_process_stack(stack)
 			mesecon.mvps_move_objects(frontpos, direction, oldstack)
 		-- Too large stack/stopper in the way: try again very soon

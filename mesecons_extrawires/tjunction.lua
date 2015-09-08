@@ -10,7 +10,7 @@ local tjunction_selectionbox = {
 }
 
 local tjunction_get_rules = function (node)
-	local rules = 
+	local rules =
 	{{x = 0,  y = 0,  z =  1},
 	 {x = 1,  y = 0,  z =  0},
 	 {x = 0,  y = 0,  z = -1}}
@@ -40,7 +40,7 @@ minetest.register_node("mesecons_extrawires:tjunction_on", {
 	node_box = tjunction_nodebox,
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons_extrawires:tjunction_off",
-	mesecons = {conductor = 
+	mesecons = {conductor =
 	{
 		state = mesecon.state.on,
 		rules = tjunction_get_rules,
@@ -66,7 +66,7 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 	selection_box = tjunction_selectionbox,
 	node_box = tjunction_nodebox,
 	groups = {dig_immediate = 3},
-	mesecons = {conductor = 
+	mesecons = {conductor =
 	{
 		state = mesecon.state.off,
 		rules = tjunction_get_rules,
