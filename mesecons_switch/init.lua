@@ -4,7 +4,7 @@ mesecon.register_node("mesecons_switch:mesecon_switch", {
 	paramtype2="facedir",
 	description="Switch",
 	sounds = default.node_sound_stone_defaults(),
-	on_punch = function (pos, node)
+	on_rightclick = function (pos, node)
 		if(mesecon.flipstate(pos, node) == "on") then
 			mesecon.receptor_on(pos)
 		else
