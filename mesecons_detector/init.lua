@@ -182,10 +182,10 @@ minetest.register_node("mesecons_detector:node_detector_off", {
 	on_receive_fields = node_detector_on_receive_fields,
 	after_place_node = function (pos, placer)
 		local placer_pos = placer:getpos()
-		
+
 		--correct for the player's height
 		if placer:is_player() then placer_pos.y = placer_pos.y + 1.5 end
-		
+
 		--correct for 6d facedir
 		if placer_pos then
 			local dir = {
@@ -217,10 +217,10 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 	on_receive_fields = node_detector_on_receive_fields,
 	after_place_node = function (pos, placer)
 		local placer_pos = placer:getpos()
-		
+
 		--correct for the player's height
 		if placer:is_player() then placer_pos.y = placer_pos.y + 1.5 end
-		
+
 		--correct for 6d facedir
 		if placer_pos then
 			local dir = {

@@ -247,7 +247,7 @@ end
 
 local safe_globals = {
 	"assert", "error", "ipairs", "next", "pairs", "pcall", "select",
-	"tonumber", "tostring", "type", "unpack", "_VERSION", "xpcall", 
+	"tonumber", "tostring", "type", "unpack", "_VERSION", "xpcall",
 }
 local function create_environment(pos, mem, event)
 	-- Gather variables for the environment

@@ -496,7 +496,7 @@ function mesecon.find_receptor_on(pos, link)
 					end
 				end
 			end
-			
+
 		end
 		depth = depth + 1
 	end
@@ -533,7 +533,7 @@ function mesecon.rules_link_rule_all(output, rule)
 		return {}
 	end
 	local rules = {}
-	
+
 	for _, inputrule in ipairs(mesecon.flattenrules(inputrules)) do
 		-- Check if input accepts from output
 		if  mesecon.cmpPos(mesecon.addPosRule(input, inputrule), output) then
@@ -552,7 +552,7 @@ function mesecon.rules_link_rule_all_inverted(input, rule)
 		return {}
 	end
 	local rules = {}
-	
+
 	for _, outputrule in ipairs(mesecon.flattenrules(outputrules)) do
 		if  mesecon.cmpPos(mesecon.addPosRule(output, outputrule), input) then
 			table.insert(rules, mesecon.invertRule(outputrule))
@@ -607,8 +607,8 @@ function mesecon.rotate_rules_right(rules)
 	local nr = {}
 	for i, rule in ipairs(rules) do
 		table.insert(nr, {
-			x = -rule.z, 
-			y =  rule.y, 
+			x = -rule.z,
+			y =  rule.y,
 			z =  rule.x,
 			name = rule.name})
 	end
@@ -619,8 +619,8 @@ function mesecon.rotate_rules_left(rules)
 	local nr = {}
 	for i, rule in ipairs(rules) do
 		table.insert(nr, {
-			x =  rule.z, 
-			y =  rule.y, 
+			x =  rule.z,
+			y =  rule.y,
 			z = -rule.x,
 			name = rule.name})
 	end
@@ -631,8 +631,8 @@ function mesecon.rotate_rules_down(rules)
 	local nr = {}
 	for i, rule in ipairs(rules) do
 		table.insert(nr, {
-			x = -rule.y, 
-			y =  rule.x, 
+			x = -rule.y,
+			y =  rule.x,
 			z =  rule.z,
 			name = rule.name})
 	end
@@ -643,8 +643,8 @@ function mesecon.rotate_rules_up(rules)
 	local nr = {}
 	for i, rule in ipairs(rules) do
 		table.insert(nr, {
-			x =  rule.y, 
-			y = -rule.x, 
+			x =  rule.y,
+			y = -rule.x,
 			z =  rule.z,
 			name = rule.name})
 	end

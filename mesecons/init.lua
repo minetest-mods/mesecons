@@ -30,7 +30,7 @@
 --		action_change = function
 --		rules = rules/get_rules
 --	},
---	conductor = 
+--	conductor =
 --	{
 --		state = mesecon.state.on/off
 --		offstate = opposite state (for state = on only)
