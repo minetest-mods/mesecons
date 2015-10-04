@@ -15,7 +15,7 @@ mesecon.register_node("mesecons_walllever:wall_lever", {
 		fixed = { -8/16, -8/16, 3/16, 8/16, 8/16, 8/16 },
 	},
 	sounds = default.node_sound_wood_defaults(),
-	on_punch = function (pos, node)
+	on_rightclick = function (pos, node)
 		if(mesecon.flipstate(pos, node) == "on") then
 			mesecon.receptor_on(pos, mesecon.rules.buttonlike_get(node))
 		else
