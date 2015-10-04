@@ -13,9 +13,9 @@ local function on_rightclick(pos, dir, check_name, replace, replace_dir, params)
 	minetest.swap_node(pos, {name = replace, param2 = p2})
 
 	if (minetest.get_meta(pos):get_int("right") ~= 0) == (params[1] ~= 3) then
-		minetest.sound_play("door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
+		minetest.sound_play("doors_door_close", {pos = pos, gain = 0.3, max_hear_distance = 10})
 	else
-		minetest.sound_play("door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
+		minetest.sound_play("doors_door_open", {pos = pos, gain = 0.3, max_hear_distance = 10})
 	end
 end
 
