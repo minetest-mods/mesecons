@@ -163,19 +163,18 @@ end
 -----------------
 -- Overheating --
 -----------------
-
-local function overheat_off(pos)
-	mesecon.receptor_off(pos, mesecon.rules.flat)
+local function burn_controller(pos)
+	local node = minetest.get_node(pos)
+	node.name = BASENAME.."_burnt"
+	minetest.swap_node(pos, node)
+	minetest.get_meta(pos):set_string("lc_memory", "");
+	-- Wait for pending operations
+	minetest.after(0.2, mesecon.receptor_off, pos, mesecon.rules.flat)
 end
-
 
 local function overheat(pos, meta)
 	if mesecon.do_overheat(pos) then -- If too hot
-		local node = minetest.get_node(pos)
-		node.name = BASENAME.."_burnt"
-		minetest.swap_node(pos, node)
-		-- Wait for pending operations
-		minetest.after(0.2, overheat_off, pos)
+		burn_controller(pos)
 		return true
 	end
 end
@@ -379,12 +378,17 @@ local function load_memory(meta)
 end
 
 
-local function save_memory(meta, mem)
-	meta:set_string("lc_memory",
-		minetest.serialize(
-			remove_functions(mem)
-		)
-	)
+local function save_memory(pos, meta, mem)
+	local memstring = minetest.serialize(remove_functions(mem))
+	local memsize_max = mesecon.setting("luacontroller_memsize", 100000)
+
+	if (#memstring <= memsize_max) then
+		meta:set_string("lc_memory", memstring)
+	else
+		print("Error: Luacontroller memory overflow. "..memsize_max.." bytes available, "
+				..#memstring.." required. Controller overheats.")
+		burn_controller(pos)
+	end
 end
 
 
@@ -412,15 +416,17 @@ local function run(pos, event)
 		return "Ports set are invalid."
 	end
 
-	save_memory(meta, env.mem)
-
 	-- Actually set the ports
 	set_port_states(pos, env.port)
+
+	-- Save memory. This may burn the luacontroller if a memory overflow occurs.
+	save_memory(pos, meta, env.mem)
 end
 
 mesecon.queue:add_function("lc_interrupt", function (pos, luac_id, iid)
-	-- There is no luacontroller anymore / it has been reprogrammed / replaced
+	-- There is no luacontroller anymore / it has been reprogrammed / replaced / burnt
 	if (minetest.get_meta(pos):get_int("luac_id") ~= luac_id) then return end
+	if (minetest.registered_nodes[minetest.get_node(pos).name].is_burnt) then return end
 	run(pos, {type="interrupt", iid = iid})
 end)
 
@@ -595,6 +601,7 @@ minetest.register_node(BASENAME .. "_burnt", {
 		"jeija_microcontroller_sides.png"
 	},
 	inventory_image = "jeija_luacontroller_burnt_top.png",
+	is_burnt = true,
 	paramtype = "light",
 	groups = {dig_immediate=2, not_in_creative_inventory=1},
 	drop = BASENAME.."0000",
