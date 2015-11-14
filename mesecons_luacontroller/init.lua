@@ -1,8 +1,8 @@
---		______
---	   |
---	   |
---	   |		__	   ___  _   __		 _  _
--- |   | |	   |  | |\ |  |  |_| |  | |  |  |_ |_|
+--        ______
+--       |
+--       |
+--       |        __       ___  _   __         _  _
+-- |   | |       |  | |\ |  |  |_| |  | |  |  |_ |_|
 -- |___| |______ |__| | \|  |  | \ |__| |_ |_ |_ |\
 -- |
 -- |
@@ -55,7 +55,7 @@ local function update_real_port_states(pos, rule_name, new_state)
 		L[i] = n % 2
 		n = math.floor(n / 2)
 	end
-	--				   (0,-1) (-1,0)	  (1,0) (0,1)
+	--                   (0,-1) (-1,0)      (1,0) (0,1)
 	local pos_to_side = {  4,	 1,   nil,   3,	2 }
 	if rule_name.x == nil then
 		for _, rname in ipairs(rule_name) do
