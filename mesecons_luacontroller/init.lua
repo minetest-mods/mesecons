@@ -370,12 +370,12 @@ end
 
 
 local function code_prohibited(code)
-	-- LuaJIT doesn't increment the instruction counter when running
-	-- loops, so we have to sanitize inputs if we're using LuaJIT.
+	-- LuaJIT only increments the instruction counter on certain
+	-- operations, so we have to sanitize inputs if we're using LuaJIT.
 	if not jit then
 		return false
 	end
-	local prohibited = {"while", "for", "do", "repeat", "until", "goto"}
+	local prohibited = {"while", "for", "do", "repeat", "until", "goto", "function"}
 	code = " "..code.." "
 	for _, p in ipairs(prohibited) do
 		if string.find(code, "[^%w_]"..p.."[^%w_]") then
