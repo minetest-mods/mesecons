@@ -37,6 +37,10 @@ local rules = {
 	d = {x =  0, y = 0, z = -1, name="D"},
 }
 
+-- This error message is used as a signal to pcall, because
+-- otherwise you could catch a timeout error with pcall.
+local timeout_error = "Code timed out!"
+
 
 ------------------
 -- Action stuff --
@@ -245,9 +249,10 @@ end
 
 
 local safe_globals = {
-	"assert", "error", "ipairs", "next", "pairs", "pcall", "select",
-	"tonumber", "tostring", "type", "unpack", "_VERSION", "xpcall",
+	"assert", "error", "ipairs", "next", "pairs", "select",
+	"tonumber", "tostring", "type", "unpack", "_VERSION",
 }
+
 local function create_environment(pos, mem, event)
 	-- Gather variables for the environment
 	local vports = minetest.registered_nodes[minetest.get_node(pos).name].virtual_portstates
@@ -329,13 +334,38 @@ local function create_environment(pos, mem, event)
 		env[name] = _G[name]
 	end
 
+	-- Make sure pcall and xpcall don't catch timeouts
+
+	function env.pcall(...)
+		local res = {pcall(...)}
+		if not res[1] and res[2] == timeout_error then
+			error(timeout_error)
+		end
+		return unpack(res)
+	end
+
+	local function err_handler_wrapper(func)
+		return function(err, ...)
+			if err == timeout_error then return err end
+			return func(err, ...)
+		end
+	end
+
+	function env.xpcall(f, err_handler, ...)
+		local res = {xpcall(f, err_handler_wrapper(err_handler), ...)}
+		if not res[1] and res[2] == timeout_error then
+			error(timeout_error)
+		end
+		return unpack(res)
+	end
+
 	return env
 end
 
 
 local function timeout()
 	debug.sethook()  -- Clear hook
-	error("Code timed out!")
+	error(timeout_error)
 end
 
 
