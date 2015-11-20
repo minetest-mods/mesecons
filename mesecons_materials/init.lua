@@ -1,12 +1,12 @@
---GLUE
+-- Glue and fiber
 minetest.register_craftitem("mesecons_materials:glue", {
-	image = "jeija_glue.png",
+	image = "mesecons_glue.png",
 	on_place_on_ground = minetest.craftitem_place_item,
     	description="Glue",
 })
 
 minetest.register_craftitem("mesecons_materials:fiber", {
-	image = "jeija_fiber.png",
+	image = "mesecons_fiber.png",
 	on_place_on_ground = minetest.craftitem_place_item,
     	description="Fiber",
 })
@@ -27,7 +27,7 @@ minetest.register_craft({
 
 -- Silicon
 minetest.register_craftitem("mesecons_materials:silicon", {
-	image = "jeija_silicon.png",
+	image = "mesecons_silicon.png",
 	on_place_on_ground = minetest.craftitem_place_item,
     	description="Silicon",
 })

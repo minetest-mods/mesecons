@@ -1,0 +1,62 @@
+{
+	"Conductors" : {
+		"Mesecon" : "mesecons/doc/mesecon",
+		"Insulated Wire" : "mesecons_insulated/doc/insulated",
+		"T-Junction" : "mesecons_extrawires/doc/tjunction",
+		"Crossing" : "mesecons_extrawires/doc/crossing",
+		"Corner" : "mesecons_extrawires/doc/corner",
+		"Vertical Wire" : "mesecons_extrawires/doc/vertical",
+		"Mese" : "mesecons_extrawires/doc/mese"
+	},
+	"Receptors" : {
+		"Power Plant" : "mesecons_powerplant/doc/powerplant",
+		"Blinky Plant" : "mesecons_blinkyplant/doc/blinkyplant",
+		"Switch" : "mesecons_switch/doc/switch",
+		"Object Detector" : "mesecons_detector/doc/objectdetector",
+		"Node Detector" : "mesecons_detector/doc/nodedetector",
+		"Wall Lever" : "mesecons_walllever/doc/walllever",
+		"Pressure Plate" : "mesecons_pressureplates/doc/pressureplate_wood",
+		"Pressure Plate" : "mesecons_pressureplates/doc/pressureplate_stone",
+		"Water Turbine" : "mesecons_hydroturbine/doc/waterturbine",
+		"Solar Panel" : "mesecons_solarpanel/doc/solarpanel",
+		"Wall Button" : "mesecons_button/doc/button"
+	},
+	"Effectors" : {
+		"Noteblock" : "mesecons_noteblock/doc/noteblock",
+		"Lamp" : "mesecons_lamp/doc/lamp",
+		"Piston" : "mesecons_pistons/doc/piston",
+		"Sticky Piston" : "mesecons_pistons/doc/piston_sticky",
+		"Movestone" : "mesecons_movestones/doc/movestone",
+		"Sticky Movestone" : "mesecons_movestones/doc/movestone_sticky",
+		"Removestone" : "mesecons_random/doc/removestone",
+		"Ghoststone" : "mesecons_random/doc/ghoststone",
+		"Command Block" : "mesecons_commandblock/doc/commandblock",
+		"Lightstones" : {
+			"Dark Grey" : "mesecons_lightstone/doc/lightstone_darkgrey",
+			"Light Grey" : "mesecons_lightstone/doc/lightstone_lightgrey",
+			"Green" : "mesecons_lightstone/doc/lightstone_green",
+			"Red" : "mesecons_lightstone/doc/lightstone_red",
+			"Blue" : "mesecons_lightstone/doc/lightstone_blue",
+			"Yellow" : "mesecons_lightstone/doc/lightstone_yellow"
+		}
+	},
+	"Logic" : {
+		"Luacontroller" : "mesecons_luacontroller/doc/luacontroller",
+		"Torch" : "mesecons_torch/doc/torch",
+		"Delayer" : "mesecons_delayer/doc/delayer",
+		"Gates" : {
+			"Diode" : "mesecons_gates/doc/diode",
+			"NOT Gate" : "mesecons_gates/doc/not",
+			"AND Gate" : "mesecons_gates/doc/and",
+			"NAND Gate" : "mesecons_gates/doc/nand",
+			"OR Gate" : "mesecons_gates/doc/or",
+			"NOR Gate" : "mesecons_gates/doc/nor",
+			"XOR Gate" : "mesecons_gates/doc/xor"
+		}
+	},
+	"Crafts" : {
+		"Silicon" : "mesecons_materials/doc/silicon",
+		"Glue" : "mesecons_materials/doc/glue",
+		"Fiber" : "mesecons_materials/doc/fiber"
+	}
+}
