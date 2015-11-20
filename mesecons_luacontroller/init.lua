@@ -378,7 +378,7 @@ end
 local function code_prohibited(code)
 	-- LuaJIT only increments the instruction counter on certain
 	-- operations, so we have to sanitize inputs if we're using LuaJIT.
-	if not jit then
+	if not rawget(_G, "jit") then
 		return false
 	end
 	local prohibited = {"while", "for", "do", "repeat", "until", "goto", "function"}
