@@ -336,9 +336,14 @@ local function create_environment(pos, mem, event)
 
 	-- Make sure pcall and xpcall don't catch timeouts
 
+	local function is_timeout(err)
+		local tel = #timeout_error
+		return err:sub(-tel, -1) == timeout_error
+	end
+
 	function env.pcall(...)
 		local res = {pcall(...)}
-		if not res[1] and res[2] == timeout_error then
+		if not res[1] and is_timeout(res[2]) then
 			error(timeout_error)
 		end
 		return unpack(res)
@@ -346,14 +351,15 @@ local function create_environment(pos, mem, event)
 
 	local function err_handler_wrapper(func)
 		return function(err, ...)
-			if err == timeout_error then return err end
+			if is_timeout(err) then return err end
 			return func(err, ...)
 		end
 	end
 
 	function env.xpcall(f, err_handler, ...)
-		local res = {xpcall(f, err_handler_wrapper(err_handler), ...)}
-		if not res[1] and res[2] == timeout_error then
+		err_handler = err_handler_wrapper(err_handler)
+		local res = {xpcall(f, err_handler, ...)}
+		if not res[1] and is_timeout(res[2]) then
 			error(timeout_error)
 		end
 		return unpack(res)
