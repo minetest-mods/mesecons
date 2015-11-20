@@ -344,7 +344,7 @@ local function create_environment(pos, mem, event)
 	function env.pcall(...)
 		local res = {pcall(...)}
 		if not res[1] and is_timeout(res[2]) then
-			error(timeout_error)
+			error(timeout_error, 0)
 		end
 		return unpack(res)
 	end
@@ -360,7 +360,7 @@ local function create_environment(pos, mem, event)
 		err_handler = err_handler_wrapper(err_handler)
 		local res = {xpcall(f, err_handler, ...)}
 		if not res[1] and is_timeout(res[2]) then
-			error(timeout_error)
+			error(timeout_error, 0)
 		end
 		return unpack(res)
 	end
@@ -371,7 +371,7 @@ end
 
 local function timeout()
 	debug.sethook()  -- Clear hook
-	error(timeout_error)
+	error(timeout_error, 2)
 end
 
 
@@ -403,7 +403,7 @@ local function create_sandbox(code, env)
 		debug.sethook(timeout, "", 10000)
 		local ok, ret = pcall(f, ...)
 		debug.sethook()  -- Clear hook
-		if not ok then error(ret) end
+		if not ok then error(ret, 0) end
 		return ret
 	end
 end
