@@ -125,7 +125,7 @@ register_gate("xor", 2, function (val1, val2) return (val1 or val2) and not (val
 
 register_gate("nor", 2, function (val1, val2) return not (val1 or val2) end,
 	{{"mesecons:mesecon", "", ""},
-	 {"", "mesecons_materials:mesecon_torch_on", "mesecons_materials:silicon"},
+	 {"", "mesecons:mesecon", "mesecons_torch:mesecon_torch_on"},
 	 {"mesecons:mesecon", "", ""}})
 
 register_gate("or", 2, function (val1, val2) return (val1 or val2) end,
