@@ -201,6 +201,10 @@ local function safe_print(param)
 	print(dump(param))
 end
 
+local function safe_date()
+	return(os.date("*t",os.time()))
+end
+
 local function remove_functions(x)
 	local tp = type(x)
 	if tp == "table" then
@@ -321,6 +325,7 @@ local function create_environment(pos, mem, event)
 			clock = os.clock,
 			difftime = os.difftime,
 			time = os.time,
+			datetable = safe_date,
 		},
 	}
 	env._G = env
