@@ -20,31 +20,53 @@ local function on_rightclick(pos, dir, check_name, replace, replace_dir, params)
 end
 
 local function meseconify_door(name)
-	if not minetest.registered_items[name] then return end
+	if minetest.registered_items[name .. "_b_1"] then
+		-- old style double-node doors
+		local function toggle_state1 (pos, node)
+			on_rightclick(pos, 1, name.."_t_1", name.."_b_2", name.."_t_2", {1,2,3,0})
+		end
 
-	local function toggle_state1 (pos, node)
-		on_rightclick(pos, 1, name.."_t_1", name.."_b_2", name.."_t_2", {1,2,3,0})
+		local function toggle_state2 (pos, node)
+			on_rightclick(pos, 1, name.."_t_2", name.."_b_1", name.."_t_1", {3,0,1,2})
+		end
+
+		minetest.override_item(name.."_b_1", {
+			mesecons = {effector = {
+				action_on = toggle_state1,
+				action_off = toggle_state1,
+				rules = mesecon.rules.pplate
+			}},
+		})
+
+		minetest.override_item(name.."_b_2", {
+			mesecons = {effector = {
+				action_on = toggle_state2,
+				action_off = toggle_state2,
+				rules = mesecon.rules.pplate
+			}},
+		})
+	elseif minetest.registered_items[name .. "_a"] then
+		-- new style mesh node based doors
+		local override = {
+			mesecons = { effector = {
+				action_on = function(pos, node)
+					local door = doors.get(pos)
+					if door then
+						door:open()
+					end
+				end,
+				action_off = function(pos, node)
+					local door = doors.get(pos)
+					if door then
+						door:close()
+					end
+				end,
+				rules = mesecon.rules.pplate
+			}},
+		}
+		minetest.override_item(name .. "_a", override)
+		minetest.override_item(name .. "_b", override)
 	end
-
-	local function toggle_state2 (pos, node)
-		on_rightclick(pos, 1, name.."_t_2", name.."_b_1", name.."_t_1", {3,0,1,2})
-	end
-
-	minetest.override_item(name.."_b_1", {
-		mesecons = {effector = {
-			action_on = toggle_state1,
-			action_off = toggle_state1,
-			rules = mesecon.rules.pplate
-		}},
-	})
-
-	minetest.override_item(name.."_b_2", {
-		mesecons = {effector = {
-			action_on = toggle_state2,
-			action_off = toggle_state2,
-			rules = mesecon.rules.pplate
-		}},
-	})
 end
 
 meseconify_door("doors:door_wood")
@@ -67,18 +89,41 @@ local function trapdoor_switch(pos, node)
 	minetest.get_meta(pos):set_int("state", state == 1 and 0 or 1)
 end
 
-if minetest.registered_nodes["doors:trapdoor"] then
-	minetest.override_item("doors:trapdoor", {
+if doors and doors.get then
+	local override = {
 		mesecons = {effector = {
-			action_on = trapdoor_switch,
-			action_off = trapdoor_switch
+			action_on = function(pos, node)
+				local door = doors.get(pos)
+				if door then
+					door:open()
+				end
+			end,
+			action_off = function(pos, node)
+				local door = doors.get(pos)
+				if door then
+					door:close()
+				end
+			end,
 		}},
-	})
+	}
+	minetest.override_item("doors:trapdoor", override)
+	minetest.override_item("doors:trapdoor_open", override)
+	minetest.override_item("doors:trapdoor_steel", override)
+	minetest.override_item("doors:trapdoor_steel_open", override)
+else
+	if minetest.registered_nodes["doors:trapdoor"] then
+		minetest.override_item("doors:trapdoor", {
+			mesecons = {effector = {
+				action_on = trapdoor_switch,
+				action_off = trapdoor_switch
+			}},
+		})
 
-	minetest.override_item("doors:trapdoor_open", {
-		mesecons = {effector = {
-			action_on = trapdoor_switch,
-			action_off = trapdoor_switch
-		}},
-	})
+		minetest.override_item("doors:trapdoor_open", {
+			mesecons = {effector = {
+				action_on = trapdoor_switch,
+				action_off = trapdoor_switch
+			}},
+		})
+	end
 end
