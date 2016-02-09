@@ -19,6 +19,12 @@ function mesecon.is_mvps_stopper(node, pushdir, stack, stackid)
 	if type (get_stopper) == "function" then
 		get_stopper = get_stopper(node, pushdir, stack, stackid)
 	end
+	if get_stopper == nil
+	and not minetest.registered_nodes[node.name] then
+		-- unknown nodes must be stoppers
+		mesecon.mvps_stoppers[node.name] = true
+		get_stopper = true
+	end
 	return get_stopper
 end
 
@@ -53,7 +59,8 @@ local function node_replaceable(name)
 	if replaceable_cache[name] ~= nil then
 		return replaceable_cache[name]
 	end
-	local replaceable = not minetest.registered_nodes[name] or minetest.registered_nodes[name].buildable_to or false
+	--local replaceable = not minetest.registered_nodes[name] or minetest.registered_nodes[name].buildable_to or false
+	local replaceable = (minetest.registered_nodes[name] and minetest.registered_nodes[name].buildable_to) or false
 	replaceable_cache[name] = replaceable
 	return replaceable
 end
