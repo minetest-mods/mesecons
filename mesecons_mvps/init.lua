@@ -47,6 +47,17 @@ function mesecon.mvps_process_stack(stack)
 	end
 end
 
+-- tests if the node can't be pushed
+local replaceable_cache = {air = true, ignore = false}
+local function node_replaceable(name)
+	if replaceable_cache[name] ~= nil then
+		return replaceable_cache[name]
+	end
+	local replaceable = not minetest.registered_nodes[name] or minetest.registered_nodes[name].buildable_to or false
+	replaceable_cache[name] = replaceable
+	return replaceable
+end
+
 function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	-- determine the number of nodes to be pushed
 	local nodes = {}
@@ -56,9 +67,7 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 		local np = frontiers[1]
 		local nn = minetest.get_node(np)
 
-		if nn.name ~= "air"
-		and minetest.registered_nodes[nn.name]
-		and minetest.registered_nodes[nn.name].liquidtype == "none" then
+		if not node_replaceable(nn.name) then
 			table.insert(nodes, {node = nn, pos = np})
 			if #nodes > maximum then return nil end
 
