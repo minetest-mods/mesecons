@@ -175,7 +175,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 
 	-- add nodes
 	for _, n in ipairs(nodes) do
-		local np = mesecon.addPosRule(n.pos, movedir)
+		local np = vector.add(n.pos, movedir)
 
 		minetest.add_node(np, n.node)
 		minetest.get_meta(np):from_table(n.meta)
@@ -186,7 +186,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	for i in ipairs(nodes) do
 		moved_nodes[i] = {}
 		moved_nodes[i].oldpos = nodes[i].pos
-		nodes[i].pos = mesecon.addPosRule(nodes[i].pos, movedir)
+		nodes[i].pos = vector.add(nodes[i].pos, movedir)
 		moved_nodes[i].pos = nodes[i].pos
 		moved_nodes[i].node = nodes[i].node
 		moved_nodes[i].meta = nodes[i].meta
@@ -207,12 +207,8 @@ end)
 function mesecon.mvps_move_objects(pos, dir, nodestack)
 	local objects_to_move = {}
 
-	-- Move object at tip of stack
-	local pushpos = mesecon.addPosRule(pos, -- get pos at tip of stack
-		{x = dir.x * #nodestack,
-		 y = dir.y * #nodestack,
-		 z = dir.z * #nodestack})
-
+	-- Move object at tip of stack, pushpos is position at tip of stack
+	local pushpos = vector.add(pos, vector.multiply(dir, #nodestack))
 
 	local objects = minetest.get_objects_inside_radius(pushpos, 1)
 	for _, obj in ipairs(objects) do
@@ -223,7 +219,7 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 	if tonumber(minetest.setting_get("movement_gravity")) > 0 and dir.y == 0 then
 		-- If gravity positive and dir horizontal, push players standing on the stack
 		for _, n in ipairs(nodestack) do
-			local p_above = mesecon.addPosRule(n.pos, {x=0, y=1, z=0})
+			local p_above = vector.add(n.pos, {x=0, y=1, z=0})
 			local objects = minetest.get_objects_inside_radius(p_above, 1)
 			for _, obj in ipairs(objects) do
 				table.insert(objects_to_move, obj)
@@ -234,7 +230,7 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 	for _, obj in ipairs(objects_to_move) do
 		local entity = obj:get_luaentity()
 		if not entity or not mesecon.is_mvps_unmov(entity.name) then
-			local np = mesecon.addPosRule(obj:getpos(), dir)
+			local np = vector.add(obj:getpos(), dir)
 
 			--move only if destination is not solid
 			local nn = minetest.get_node(np)

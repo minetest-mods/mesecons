@@ -23,7 +23,7 @@ function mesecon.queue:add_action(pos, func, params, time, overwritecheck, prior
 	-- Otherwise, add the action to the queue
 	if overwritecheck then -- check if old action has to be overwritten / removed:
 		for i, ac in ipairs(mesecon.queue.actions) do
-			if(mesecon.cmpPos(pos, ac.pos)
+			if(vector.equals(pos, ac.pos)
 			and mesecon.cmpAny(overwritecheck, ac.owcheck)) then
 				toremove = i
 				break

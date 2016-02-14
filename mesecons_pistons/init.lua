@@ -57,7 +57,7 @@ end
 local piston_remove_pusher = function(pos, node)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
 	local dir = piston_get_direction(pistonspec.dir, node)
-	local pusherpos = mesecon.addPosRule(pos, dir)
+	local pusherpos = vector.add(pos, dir)
 	local pushername = minetest.get_node(pusherpos).name
 
 	-- make sure there actually is a pusher (for compatibility reasons mainly)
@@ -78,7 +78,7 @@ local piston_on = function(pos, node)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
 
 	local dir = piston_get_direction(pistonspec.dir, node)
-	local np = mesecon.addPosRule(pos, dir)
+	local np = vector.add(pos, dir)
 	local maxpush = mesecon.setting("piston_max_push", 15)
 	local success, stack, oldstack = mesecon.mvps_push(np, dir, maxpush)
 	if success then
@@ -719,12 +719,12 @@ end
 local piston_get_stopper = function (node, dir, stack, stackid)
 	pistonspec = minetest.registered_nodes[node.name].mesecons_piston
 	dir = piston_get_direction(pistonspec.dir, node)
-	local pusherpos  = mesecon.addPosRule(stack[stackid].pos, dir)
+	local pusherpos  = vector.add(stack[stackid].pos, dir)
 	local pushernode = minetest.get_node(pusherpos)
 
 	if minetest.registered_nodes[node.name].mesecons_piston.pusher == pushernode.name then
 		for _, s in ipairs(stack) do
-			if  mesecon.cmpPos(s.pos, pusherpos) -- pusher is also to be pushed
+			if  vector.equals(s.pos, pusherpos) -- pusher is also to be pushed
 			and s.node.param2 == node.param2 then
 				return false
 			end

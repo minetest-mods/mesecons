@@ -374,7 +374,7 @@ function mesecon.turnon(pos, link)
 
 			-- call turnon on neighbors: normal rules
 			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
-				local np = mesecon.addPosRule(f.pos, r)
+				local np = vector.add(f.pos, r)
 
 				-- area not loaded, postpone action
 				if not minetest.get_node_or_nil(np) then
@@ -420,7 +420,7 @@ function mesecon.turnoff(pos, link)
 
 			-- call turnoff on neighbors: normal rules
 			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
-				local np = mesecon.addPosRule(f.pos, r)
+				local np = vector.add(f.pos, r)
 
 				-- area not loaded, postpone action
 				if not minetest.get_node_or_nil(np) then
@@ -458,7 +458,7 @@ function mesecon.connected_to_receptor(pos, link)
 	for _, rule in ipairs(mesecon.rule2meta(link, rules)) do
 		local links = mesecon.rules_link_rule_all_inverted(pos, rule)
 		for _, l in ipairs(links) do
-			local np = mesecon.addPosRule(pos, l)
+			local np = vector.add(pos, l)
 			if mesecon.find_receptor_on(np, mesecon.invertRule(l)) then
 				return true
 			end
@@ -485,7 +485,7 @@ function mesecon.find_receptor_on(pos, link)
 
 			-- call turnoff on neighbors: normal rules
 			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
-				local np = mesecon.addPosRule(f.pos, r)
+				local np = vector.add(f.pos, r)
 
 				local links = mesecon.rules_link_rule_all_inverted(f.pos, r)
 				for _, l in ipairs(links) do
@@ -513,10 +513,10 @@ function mesecon.rules_link(output, input, dug_outputrules) --output/input are p
 
 	for _, outputrule in ipairs(mesecon.flattenrules(outputrules)) do
 		-- Check if output sends to input
-		if mesecon.cmpPos(mesecon.addPosRule(output, outputrule), input) then
+		if vector.equals(vector.add(output, outputrule), input) then
 			for _, inputrule in ipairs(mesecon.flattenrules(inputrules)) do
 				-- Check if input accepts from output
-				if  mesecon.cmpPos(mesecon.addPosRule(input, inputrule), output) then
+				if  vector.equals(vector.add(input, inputrule), output) then
 					return true, inputrule
 				end
 			end
@@ -526,7 +526,7 @@ function mesecon.rules_link(output, input, dug_outputrules) --output/input are p
 end
 
 function mesecon.rules_link_rule_all(output, rule)
-	local input = mesecon.addPosRule(output, rule)
+	local input = vector.add(output, rule)
 	local inputnode = minetest.get_node(input)
 	local inputrules = mesecon.get_any_inputrules (inputnode)
 	if not inputrules then
@@ -536,7 +536,7 @@ function mesecon.rules_link_rule_all(output, rule)
 
 	for _, inputrule in ipairs(mesecon.flattenrules(inputrules)) do
 		-- Check if input accepts from output
-		if  mesecon.cmpPos(mesecon.addPosRule(input, inputrule), output) then
+		if  vector.equals(vector.add(input, inputrule), output) then
 			table.insert(rules, inputrule)
 		end
 	end
@@ -545,7 +545,7 @@ end
 
 function mesecon.rules_link_rule_all_inverted(input, rule)
 	--local irule = mesecon.invertRule(rule)
-	local output = mesecon.addPosRule(input, rule)
+	local output = vector.add(input, rule)
 	local outputnode = minetest.get_node(output)
 	local outputrules = mesecon.get_any_outputrules (outputnode)
 	if not outputrules then
@@ -554,7 +554,7 @@ function mesecon.rules_link_rule_all_inverted(input, rule)
 	local rules = {}
 
 	for _, outputrule in ipairs(mesecon.flattenrules(outputrules)) do
-		if  mesecon.cmpPos(mesecon.addPosRule(output, outputrule), input) then
+		if  vector.equals(vector.add(output, outputrule), input) then
 			table.insert(rules, mesecon.invertRule(outputrule))
 		end
 	end
@@ -577,7 +577,7 @@ function mesecon.is_powered(pos, rule)
 		for _, rule in ipairs(mesecon.flattenrules(rules)) do
 			local rulenames = mesecon.rules_link_rule_all_inverted(pos, rule)
 			for _, rname in ipairs(rulenames) do
-				local np = mesecon.addPosRule(pos, rname)
+				local np = vector.add(pos, rname)
 				local nn = minetest.get_node(np)
 				if (mesecon.is_conductor_on (nn, mesecon.invertRule(rname))
 				or mesecon.is_receptor_on (nn.name)) then
@@ -588,7 +588,7 @@ function mesecon.is_powered(pos, rule)
 	else
 		local rulenames = mesecon.rules_link_rule_all_inverted(pos, rule)
 		for _, rname in ipairs(rulenames) do
-			local np = mesecon.addPosRule(pos, rname)
+			local np = vector.add(pos, rname)
 			local nn = minetest.get_node(np)
 			if (mesecon.is_conductor_on (nn, mesecon.invertRule(rname))
 			or mesecon.is_receptor_on (nn.name)) then

@@ -91,7 +91,7 @@ minetest.register_abm({
 	action = function(pos, node)
 		local is_powered = false
 		for _, rule in ipairs(torch_get_input_rules(node)) do
-			local src = mesecon.addPosRule(pos, rule)
+			local src = vector.add(pos, rule)
 			if mesecon.is_power_on(src) then
 				is_powered = true
 			end

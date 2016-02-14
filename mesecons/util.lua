@@ -50,7 +50,7 @@ function mesecon.rule2bit(findrule, allrules)
 	end
 	for m,metarule in ipairs( allrules) do
 	for _,    rule in ipairs(metarule ) do
-		if mesecon.cmpPos(findrule, rule) then
+		if vector.equals(findrule, rule) then
 			return m
 		end
 	end
@@ -69,7 +69,7 @@ function mesecon.rule2metaindex(findrule, allrules)
 
 	for m, metarule in ipairs( allrules) do
 	for _,     rule in ipairs(metarule ) do
-		if mesecon.cmpPos(findrule, rule) then
+		if vector.equals(findrule, rule) then
 			return m
 		end
 	end
@@ -133,15 +133,7 @@ function mesecon.set_bit(binary,bit,value)
 end
 
 function mesecon.invertRule(r)
-	return {x = -r.x, y = -r.y, z = -r.z}
-end
-
-function mesecon.addPosRule(p, r)
-	return {x = p.x + r.x, y = p.y + r.y, z = p.z + r.z}
-end
-
-function mesecon.cmpPos(p1, p2)
-	return (p1.x == p2.x and p1.y == p2.y and p1.z == p2.z)
+	return vector.multiply(r, -1)
 end
 
 function mesecon.tablecopy(table) -- deep table copy

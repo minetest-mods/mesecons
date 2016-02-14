@@ -17,7 +17,7 @@ pp_on_timer = function (pos, elapsed)
 	if not basename then return end
 
 	local objs   = minetest.get_objects_inside_radius(pos, 1)
-	local two_below = mesecon.addPosRule(pos, {x = 0, y = -2, z = 0})
+	local two_below = vector.add(pos, vector.new(0, -2, 0))
 
 	if objs[1] == nil and node.name == basename .. "_on" then
 		minetest.add_node(pos, {name = basename .. "_off"})

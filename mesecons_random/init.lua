@@ -66,10 +66,10 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 		offstate = "mesecons_random:ghoststone"
 	}},
 	on_construct = function(pos)
-		--remove shadow
-		pos2 = {x = pos.x, y = pos.y + 1, z = pos.z}
-		if ( minetest.get_node(pos2).name == "air" ) then
-			minetest.dig_node(pos2)
+		-- remove shadow
+		shadowpos = vector.add(pos, vector.new(0, 1, 0))
+		if (minetest.get_node(shadowpos).name == "air") then
+			minetest.dig_node(shadowpos)
 		end
 	end
 })

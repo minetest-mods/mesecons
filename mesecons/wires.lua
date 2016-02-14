@@ -22,7 +22,7 @@ local wire_getconnect = function (from_pos, self_pos)
 		end
 
 		for _, r in ipairs(mesecon.flattenrules(rules)) do
-			if (mesecon.cmpPos(mesecon.addPosRule(self_pos, r), from_pos)) then
+			if (vector.equals(vector.add(self_pos, r), from_pos)) then
 				return true
 			end
 		end
@@ -35,7 +35,7 @@ local wire_updateconnect = function (pos)
 	local connections = {}
 
 	for _, r in ipairs(mesecon.rules.default) do
-		if wire_getconnect(pos, mesecon.addPosRule(pos, r)) then
+		if wire_getconnect(pos, vector.add(pos, r)) then
 			table.insert(connections, r)
 		end
 	end
@@ -83,7 +83,7 @@ local update_on_place_dig = function (pos, node)
 	if (not rules) then return end
 
 	for _, r in ipairs(mesecon.flattenrules(rules)) do
-		local np = mesecon.addPosRule(pos, r)
+		local np = vector.add(pos, r)
 		if minetest.registered_nodes[minetest.get_node(np).name]
 		and minetest.registered_nodes[minetest.get_node(np).name].mesecon_wire then
 			wire_updateconnect(np)
