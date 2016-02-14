@@ -82,8 +82,8 @@ local piston_on = function(pos, node)
 	local maxpush = mesecon.setting("piston_max_push", 15)
 	local success, stack, oldstack = mesecon.mvps_push(np, dir, maxpush)
 	if success then
-		minetest.add_node(pos, {param2 = node.param2, name = pistonspec.onname})
-		minetest.add_node(np,  {param2 = node.param2, name = pistonspec.pusher})
+		minetest.set_node(pos, {param2 = node.param2, name = pistonspec.onname})
+		minetest.set_node(np,  {param2 = node.param2, name = pistonspec.pusher})
 		minetest.sound_play("piston_extend", {
 			pos = pos,
 			max_hear_distance = 20,
@@ -96,7 +96,7 @@ end
 
 local piston_off = function(pos, node)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-	minetest.add_node(pos, {param2 = node.param2, name = pistonspec.offname})
+	minetest.set_node(pos, {param2 = node.param2, name = pistonspec.offname})
 	piston_remove_pusher(pos, node)
 
 	if pistonspec.sticky then
@@ -118,9 +118,9 @@ local piston_orientate = function(pos, placer)
 	local node = minetest.get_node(pos)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
 	if pitch > 55 then --looking upwards
-		minetest.add_node(pos, {name=pistonspec.piston_down})
+		minetest.set_node(pos, {name=pistonspec.piston_down})
 	elseif pitch < -55 then --looking downwards
-		minetest.add_node(pos, {name=pistonspec.piston_up})
+		minetest.set_node(pos, {name=pistonspec.piston_up})
 	end
 end
 

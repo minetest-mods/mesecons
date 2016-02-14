@@ -20,13 +20,13 @@ pp_on_timer = function (pos, elapsed)
 	local two_below = vector.add(pos, vector.new(0, -2, 0))
 
 	if objs[1] == nil and node.name == basename .. "_on" then
-		minetest.add_node(pos, {name = basename .. "_off"})
+		minetest.set_node(pos, {name = basename .. "_off"})
 		mesecon.receptor_off(pos, mesecon.rules.pplate)
 	elseif node.name == basename .. "_off" then
 		for k, obj in pairs(objs) do
 			local objpos = obj:getpos()
 			if objpos.y > pos.y-1 and objpos.y < pos.y then
-				minetest.add_node(pos, {name = basename .. "_on"})
+				minetest.set_node(pos, {name = basename .. "_on"})
 				mesecon.receptor_on(pos, mesecon.rules.pplate )
 			end
 		end

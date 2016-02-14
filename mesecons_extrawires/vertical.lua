@@ -53,13 +53,13 @@ local vertical_updatepos = function (pos)
 
 		local basename = "mesecons_extrawires:vertical_"
 		if above and below then -- above and below: vertical mesecon
-			minetest.add_node(pos, {name = basename .. namestate})
+			minetest.set_node(pos, {name = basename .. namestate})
 		elseif above and not below then -- above only: bottom
-			minetest.add_node(pos, {name = basename .. "bottom_" .. namestate})
+			minetest.set_node(pos, {name = basename .. "bottom_" .. namestate})
 		elseif not above and below then -- below only: top
-			minetest.add_node(pos, {name = basename .. "top_" .. namestate})
+			minetest.set_node(pos, {name = basename .. "top_" .. namestate})
 		else -- no vertical wire above, no vertical wire below: use bottom
-			minetest.add_node(pos, {name = basename .. "bottom_" .. namestate})
+			minetest.set_node(pos, {name = basename .. "bottom_" .. namestate})
 		end
 		mesecon.update_autoconnect(pos)
 	end

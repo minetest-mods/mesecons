@@ -5,7 +5,7 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 	on_punch = function(pos, node) -- change sound when punched
 		node.param2 = (node.param2+1)%12
 		mesecon.noteblock_play(pos, node.param2)
-		minetest.add_node(pos, node)
+		minetest.set_node(pos, node)
 	end,
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector = { -- play sound when activated

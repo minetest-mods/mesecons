@@ -177,7 +177,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	for _, n in ipairs(nodes) do
 		local np = vector.add(n.pos, movedir)
 
-		minetest.add_node(np, n.node)
+		minetest.set_node(np, n.node)
 		minetest.get_meta(np):from_table(n.meta)
 	end
 
