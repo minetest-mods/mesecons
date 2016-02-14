@@ -15,10 +15,16 @@ end
 
 -- Nodes that cannot be pushed / pulled by movestones, pistons
 function mesecon.is_mvps_stopper(node, pushdir, stack, stackid)
+	-- unknown nodes are always stoppers
+	if not minetest.registered_nodes[node.name] then
+		return true
+	end
+
 	local get_stopper = mesecon.mvps_stoppers[node.name]
 	if type (get_stopper) == "function" then
 		get_stopper = get_stopper(node, pushdir, stack, stackid)
 	end
+
 	return get_stopper
 end
 
@@ -47,6 +53,17 @@ function mesecon.mvps_process_stack(stack)
 	end
 end
 
+-- tests if the node can be pushed into, e.g. air, water, grass
+local function node_replaceable(name)
+	if name == "ignore" then return true end
+
+	if minetest.registered_nodes[name] then
+		return minetest.registered_nodes[name].buildable_to or false
+	end
+
+	return false
+end
+
 function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	-- determine the number of nodes to be pushed
 	local nodes = {}
@@ -56,9 +73,7 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 		local np = frontiers[1]
 		local nn = minetest.get_node(np)
 
-		if nn.name ~= "air"
-		and minetest.registered_nodes[nn.name]
-		and minetest.registered_nodes[nn.name].liquidtype == "none" then
+		if not node_replaceable(nn.name) then
 			table.insert(nodes, {node = nn, pos = np})
 			if #nodes > maximum then return nil end
 
