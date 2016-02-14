@@ -4,16 +4,15 @@ local GET_COMMAND = "GET"
 -- Detects players in a certain radius
 -- The radius can be specified in mesecons/settings.lua
 
-local object_detector_make_formspec = function (pos)
-	local meta = minetest.get_meta(pos)
-	meta:set_string("formspec", "size[9,2.5]" ..
+local function object_detector_make_formspec(pos)
+	minetest.get_meta(pos):set_string("formspec", "size[9,2.5]" ..
 		"field[0.3,  0;9,2;scanname;Name of player to scan for (empty for any):;${scanname}]"..
 		"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
 		"button_exit[7,0.75;2,3;;Save]")
 end
 
-local object_detector_on_receive_fields = function(pos, formname, fields)
-	if not fields.scanname or not fields.digiline_channel then return end;
+local function object_detector_on_receive_fields(pos, _, fields)
+	if not fields.scanname or not fields.digiline_channel then return end
 
 	local meta = minetest.get_meta(pos)
 	meta:set_string("scanname", fields.scanname)
@@ -22,25 +21,35 @@ local object_detector_on_receive_fields = function(pos, formname, fields)
 end
 
 -- returns true if player was found, false if not
-local object_detector_scan = function (pos)
+local function object_detector_scan(pos)
 	local objs = minetest.get_objects_inside_radius(pos, mesecon.setting("detector_radius", 6))
-	for k, obj in pairs(objs) do
-		local isname = obj:get_player_name() -- "" is returned if it is not a player; "" ~= nil!
-		local scanname = minetest.get_meta(pos):get_string("scanname")
-		if (isname == scanname and isname ~= "") or (isname  ~= "" and scanname == "") then -- player with scanname found or not scanname specified
-			return true
+
+	-- abort if no scan results were found
+	if next(objs) == nil then return false end
+
+	local scanname = minetest.get_meta(pos):get_string("scanname")
+	local every_player = scanname == ""
+	for _, obj in pairs(objs) do
+		-- "" is returned if it is not a player; "" ~= nil; so only handle objects with foundname ~= ""
+		local foundname = obj:get_player_name()
+
+		if foundname ~= "" then
+			-- return true if scanning for any player or if specific playername was detected
+			if scanname == "" or foundname == scanname then
+				return true
+			end
 		end
 	end
+
 	return false
 end
 
 -- set player name when receiving a digiline signal on a specific channel
 local object_detector_digiline = {
 	effector = {
-		action = function (pos, node, channel, msg)
+		action = function(pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
-			local active_channel = meta:get_string("digiline_channel")
-			if channel == active_channel then
+			if channel == meta:get_string("digiline_channel") then
 				meta:set_string("scanname", msg)
 				object_detector_make_formspec(pos)
 			end
@@ -89,43 +98,44 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_abm(
-	{nodenames = {"mesecons_detector:object_detector_off"},
-	interval = 1.0,
+minetest.register_abm({
+	nodenames = {"mesecons_detector:object_detector_off"},
+	interval = 1,
 	chance = 1,
-	action = function(pos)
-		if object_detector_scan(pos) then
-			minetest.swap_node(pos, {name = "mesecons_detector:object_detector_on"})
-			mesecon.receptor_on(pos, mesecon.rules.pplate)
-		end
+	action = function(pos, node)
+		if not object_detector_scan(pos) then return end
+
+		node.name = "mesecons_detector:object_detector_on"
+		minetest.swap_node(pos, node)
+		mesecon.receptor_on(pos, mesecon.rules.pplate)
 	end,
 })
 
-minetest.register_abm(
-	{nodenames = {"mesecons_detector:object_detector_on"},
-	interval = 1.0,
+minetest.register_abm({
+	nodenames = {"mesecons_detector:object_detector_on"},
+	interval = 1,
 	chance = 1,
-	action = function(pos)
-		if not object_detector_scan(pos) then
-			minetest.swap_node(pos, {name = "mesecons_detector:object_detector_off"})
-			mesecon.receptor_off(pos, mesecon.rules.pplate)
-		end
+	action = function(pos, node)
+		if object_detector_scan(pos) then return end
+
+		node.name = "mesecons_detector:object_detector_off"
+		minetest.swap_node(pos, node)
+		mesecon.receptor_off(pos, mesecon.rules.pplate)
 	end,
 })
 
 -- Node detector
 -- Detects the node in front of it
 
-local node_detector_make_formspec = function (pos)
-	local meta = minetest.get_meta(pos)
-	meta:set_string("formspec", "size[9,2.5]" ..
+local function node_detector_make_formspec(pos)
+	minetest.get_meta(pos):set_string("formspec", "size[9,2.5]" ..
 		"field[0.3,  0;9,2;scanname;Name of node to scan for (empty for any):;${scanname}]"..
 		"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
 		"button_exit[7,0.75;2,3;;Save]")
 end
 
-local node_detector_on_receive_fields = function(pos, formname, fields)
-	if not fields.scanname or not fields.digiline_channel then return end;
+local function node_detector_on_receive_fields(pos, _, fields)
+	if not fields.scanname or not fields.digiline_channel then return end
 
 	local meta = minetest.get_meta(pos)
 	meta:set_string("scanname", fields.scanname)
@@ -133,40 +143,58 @@ local node_detector_on_receive_fields = function(pos, formname, fields)
 	node_detector_make_formspec(pos)
 end
 
--- returns true if player was found, false if not
-local node_detector_scan = function (pos)
-	if not pos then return end
+-- returns true if node was found, false if not
+local function node_detector_scan(pos)
 	local node = minetest.get_node_or_nil(pos)
 	if not node then return end
-	local scandir = minetest.facedir_to_dir(node.param2)
-	if not scandir then return end
-	local frontpos = vector.subtract(pos, scandir)
-	local frontnode = minetest.get_node(frontpos)
-	local meta = minetest.get_meta(pos)
-	return (frontnode.name == meta:get_string("scanname")) or
-		(frontnode.name ~= "air" and frontnode.name ~= "ignore" and meta:get_string("scanname") == "")
+
+	local frontname = minetest.get_node(
+		vector.subtract(pos, minetest.facedir_to_dir(node.param2))
+	).name
+	local scanname = minetest.get_meta(pos):get_string("scanname")
+
+	return (frontname == scanname) or
+		(frontname ~= "air" and frontname ~= "ignore" and scanname == "")
 end
 
 -- set player name when receiving a digiline signal on a specific channel
 local node_detector_digiline = {
 	effector = {
-		action = function (pos, node, channel, msg)
+		action = function(pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
-			local active_channel = meta:get_string("digiline_channel")
-			if channel == active_channel then
-				if msg == GET_COMMAND then
-					local frontpos = vector.subtract(pos, minetest.facedir_to_dir(node.param2))
-					local name = minetest.get_node(frontpos).name
-					digiline:receptor_send(pos, digiline.rules.default, channel, name)
-				else
-					meta:set_string("scanname", msg)
-					node_detector_make_formspec(pos)
-				end
+			if channel ~= meta:get_string("digiline_channel") then return end
+
+			if msg == GET_COMMAND then
+				local nodename = minetest.get_node(
+					vector.subtract(pos, minetest.facedir_to_dir(node.param2))
+				).name
+
+				digiline:receptor_send(pos, digiline.rules.default, channel, nodename)
+			else
+				meta:set_string("scanname", msg)
+				node_detector_make_formspec(pos)
 			end
 		end,
 	},
 	receptor = {}
 }
+
+local function after_place_node_detector(pos, placer)
+	local placer_pos = placer:getpos()
+	if not placer_pos then
+		return
+	end
+
+	--correct for the player's height
+	if placer:is_player() then
+		placer_pos.y = placer_pos.y + 1.625
+	end
+
+	--correct for 6d facedir
+	local node = minetest.get_node(pos)
+	node.param2 = minetest.dir_to_facedir(vector.subtract(pos, placer_pos), true)
+	minetest.set_node(pos, node)
+end
 
 minetest.register_node("mesecons_detector:node_detector_off", {
 	tiles = {"default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "jeija_node_detector_off.png"},
@@ -180,25 +208,7 @@ minetest.register_node("mesecons_detector:node_detector_off", {
 	}},
 	on_construct = node_detector_make_formspec,
 	on_receive_fields = node_detector_on_receive_fields,
-	after_place_node = function (pos, placer)
-		local placer_pos = placer:getpos()
-
-		--correct for the player's height
-		if placer:is_player() then placer_pos.y = placer_pos.y + 1.5 end
-
-		--correct for 6d facedir
-		if placer_pos then
-			local dir = {
-				x = pos.x - placer_pos.x,
-				y = pos.y - placer_pos.y,
-				z = pos.z - placer_pos.z
-			}
-			local node = minetest.get_node(pos)
-			node.param2 = minetest.dir_to_facedir(dir, true)
-			minetest.set_node(pos, node)
-			minetest.log("action", "real (6d) facedir: " .. node.param2)
-		end
-	end,
+	after_place_node = after_place_node_detector,
 	sounds = default.node_sound_stone_defaults(),
 	digiline = node_detector_digiline
 })
@@ -215,25 +225,7 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 	}},
 	on_construct = node_detector_make_formspec,
 	on_receive_fields = node_detector_on_receive_fields,
-	after_place_node = function (pos, placer)
-		local placer_pos = placer:getpos()
-
-		--correct for the player's height
-		if placer:is_player() then placer_pos.y = placer_pos.y + 1.5 end
-
-		--correct for 6d facedir
-		if placer_pos then
-			local dir = {
-				x = pos.x - placer_pos.x,
-				y = pos.y - placer_pos.y,
-				z = pos.z - placer_pos.z
-			}
-			local node = minetest.get_node(pos)
-			node.param2 = minetest.dir_to_facedir(dir, true)
-			minetest.set_node(pos, node)
-			minetest.log("action", "real (6d) facedir: " .. node.param2)
-		end
-	end,
+	after_place_node = after_place_node_detector,
 	sounds = default.node_sound_stone_defaults(),
 	digiline = node_detector_digiline
 })
@@ -247,26 +239,28 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_abm(
-	{nodenames = {"mesecons_detector:node_detector_off"},
-	interval = 1.0,
+minetest.register_abm({
+	nodenames = {"mesecons_detector:node_detector_off"},
+	interval = 1,
 	chance = 1,
 	action = function(pos, node)
-		if node_detector_scan(pos) then
-			minetest.swap_node(pos, {name = "mesecons_detector:node_detector_on", param2 = node.param2})
-			mesecon.receptor_on(pos)
-		end
+		if not node_detector_scan(pos) then return end
+
+		node.name = "mesecons_detector:node_detector_on"
+		minetest.swap_node(pos, node)
+		mesecon.receptor_on(pos)
 	end,
 })
 
-minetest.register_abm(
-	{nodenames = {"mesecons_detector:node_detector_on"},
-	interval = 1.0,
+minetest.register_abm({
+	nodenames = {"mesecons_detector:node_detector_on"},
+	interval = 1,
 	chance = 1,
 	action = function(pos, node)
-		if not node_detector_scan(pos) then
-			minetest.swap_node(pos, {name = "mesecons_detector:node_detector_off", param2 = node.param2})
-			mesecon.receptor_off(pos)
-		end
+		if node_detector_scan(pos) then return end
+
+		node.name = "mesecons_detector:node_detector_off"
+		minetest.swap_node(pos, node)
+		mesecon.receptor_off(pos)
 	end,
 })
