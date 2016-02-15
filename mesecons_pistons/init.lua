@@ -117,10 +117,16 @@ local piston_orientate = function(pos, placer)
 
 	local node = minetest.get_node(pos)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-	if pitch > 55 then --looking upwards
-		minetest.set_node(pos, {name=pistonspec.piston_down})
-	elseif pitch < -55 then --looking downwards
-		minetest.set_node(pos, {name=pistonspec.piston_up})
+
+	-- looking upwards (pitch > 55) / looking downwards (pitch < -55)
+	local nn = nil
+	if pitch > 55 then nn = {name = pistonspec.piston_down} end
+	if pitch < -55 then nn = {name = pistonspec.piston_up} end
+
+	if nn then
+		minetest.set_node(pos, nn)
+		-- minetest.after, because on_placenode for unoriented piston must be processed first
+		minetest.after(0, mesecon.on_placenode, pos, nn)
 	end
 end
 
