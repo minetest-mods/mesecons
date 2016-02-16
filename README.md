@@ -22,7 +22,7 @@ OK, I want in.
 --------------
 Go get it!
 
-[DOWNLOADS PAGE](http://mesecons.net/downloads.php)
+[DOWNLOAD IT NOW](https://github.com/Jeija/minetest-mod-mesecons/archive/master.zip)
 
 Now go ahead and install it like any other Minetest mod. Don't know how? Check out [the wonderful page about it](http://wiki.minetest.com/wiki/Mods) over at the Minetest Wiki. For your convenience, here's a quick summary:
 
@@ -39,7 +39,7 @@ How do I use this thing?
 ------------------------
 How about a [quick overview video](https://www.youtube.com/watch?v=6kmeQj6iW5k)?
 
-Or maybe a [comprehensive reference](http://mesecons.net/items.php) is your style?
+Or maybe a [comprehensive reference](http://mesecons.net/items.html) is your style?
 
 An overview for the very newest of new beginners? How does [this one](http://uberi.mesecons.net/projects/MeseconsBasics/index.html) look?
 
