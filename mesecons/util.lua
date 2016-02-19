@@ -201,3 +201,75 @@ function mesecon.flipstate(pos, node)
 
 	return newstate
 end
+
+-- File writing / reading utilities
+local wpath = minetest.get_worldpath()
+function mesecon.file2table(filename)
+	local f = io.open(wpath..DIR_DELIM..filename, "r")
+	if f == nil then return {} end
+	local t = f:read("*all")
+	f:close()
+	if t == "" or t == nil then return {} end
+	return minetest.deserialize(t)
+end
+
+function mesecon.table2file(filename, table)
+	local f = io.open(wpath..DIR_DELIM..filename, "w")
+	f:write(minetest.serialize(table))
+	f:close()
+end
+
+-- Forceloading: Force server to load area if node is nil
+local BLOCKSIZE = 16
+
+-- convert node position --> block hash
+local function hash_blockpos(pos)
+	return minetest.hash_node_position({
+		x = math.floor(pos.x/BLOCKSIZE),
+		y = math.floor(pos.y/BLOCKSIZE),
+		z = math.floor(pos.z/BLOCKSIZE)
+	})
+end
+
+-- convert block hash --> node position
+local function unhash_blockpos(hash)
+	return vector.multiply(minetest.get_position_from_hash(hash), BLOCKSIZE)
+end
+
+mesecon.forceloaded_blocks = {}
+
+-- get node and force-load area
+function mesecon.get_node_force(pos)
+	local hash = hash_blockpos(pos)
+
+	if mesecon.forceloaded_blocks[hash] == nil then
+		-- if no more forceload spaces are available, try again next time
+		if minetest.forceload_block(pos) then
+			mesecon.forceloaded_blocks[hash] = 0
+		end
+	else
+		mesecon.forceloaded_blocks[hash] = 0
+	end
+
+	return minetest.get_node_or_nil(pos)
+end
+
+minetest.register_globalstep(function (dtime)
+	for hash, time in pairs(mesecon.forceloaded_blocks) do
+		-- unload forceloaded blocks after 10 minutes without usage
+		if (time > mesecon.setting("forceload_timeout", 600)) then
+			minetest.forceload_free_block(unhash_blockpos(hash))
+			mesecon.forceloaded_blocks[hash] = nil
+		else
+			mesecon.forceloaded_blocks[hash] = time + dtime
+		end
+	end
+end)
+
+-- Store and read the forceloaded blocks to / from a file
+-- so that those blocks are remembered when the game
+-- is restarted
+mesecon.forceloaded_blocks = mesecon.file2table("mesecon_forceloaded")
+minetest.register_on_shutdown(function()
+	mesecon.table2file("mesecon_forceloaded", mesecon.forceloaded_blocks)
+end)
