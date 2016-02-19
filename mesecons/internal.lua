@@ -381,7 +381,6 @@ function mesecon.turnon(pos, link)
 
 		-- area not loaded, postpone action
 		if not node then
-			print("Mesecons: Postponing action!")
 			mesecon.queue:add_action(f.pos, "turnon", {link}, nil, true)
 		elseif mesecon.is_conductor_off(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
