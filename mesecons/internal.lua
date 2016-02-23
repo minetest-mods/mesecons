@@ -357,7 +357,7 @@ end
 
 function mesecon.is_power_on(pos, rulename)
 	local node = mesecon.get_node_force(pos)
-	if mesecon.is_conductor_on(node, rulename) or mesecon.is_receptor_on(node.name) then
+	if node and (mesecon.is_conductor_on(node, rulename) or mesecon.is_receptor_on(node.name)) then
 		return true
 	end
 	return false
@@ -365,7 +365,7 @@ end
 
 function mesecon.is_power_off(pos, rulename)
 	local node = mesecon.get_node_force(pos)
-	if mesecon.is_conductor_off(node, rulename) or mesecon.is_receptor_off(node.name) then
+	if node and (mesecon.is_conductor_off(node, rulename) or mesecon.is_receptor_off(node.name)) then
 		return true
 	end
 	return false
