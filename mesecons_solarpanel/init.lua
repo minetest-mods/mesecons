@@ -74,8 +74,8 @@ minetest.register_abm(
 	{nodenames = {"mesecons_solarpanel:solar_panel_off"},
 	interval = 1,
 	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		local light = minetest.get_node_light(pos, nil)
+	action = function(pos, node)
+		local light = minetest.get_node_light(pos)
 
 		if light >= 12 then
 			node.name = "mesecons_solarpanel:solar_panel_on"
@@ -89,8 +89,8 @@ minetest.register_abm(
 	{nodenames = {"mesecons_solarpanel:solar_panel_on"},
 	interval = 1,
 	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		local light = minetest.get_node_light(pos, nil)
+	action = function(pos, node)
+		local light = minetest.get_node_light(pos)
 
 		if light < 12 then
 			node.name = "mesecons_solarpanel:solar_panel_off"
