@@ -37,6 +37,10 @@ local rules = {
 	d = {x =  0, y = 0, z = -1, name="D"},
 }
 
+-- This error message is used as a signal to pcall, because
+-- otherwise you could catch a timeout error with pcall.
+local timeout_error = "Code timed out!"
+
 
 ------------------
 -- Action stuff --
@@ -249,9 +253,10 @@ end
 
 
 local safe_globals = {
-	"assert", "error", "ipairs", "next", "pairs", "pcall", "select",
-	"tonumber", "tostring", "type", "unpack", "_VERSION", "xpcall",
+	"assert", "error", "ipairs", "next", "pairs", "select",
+	"tonumber", "tostring", "type", "unpack", "_VERSION",
 }
+
 local function create_environment(pos, mem, event)
 	-- Gather variables for the environment
 	local vports = minetest.registered_nodes[minetest.get_node(pos).name].virtual_portstates
@@ -334,23 +339,54 @@ local function create_environment(pos, mem, event)
 		env[name] = _G[name]
 	end
 
+	-- Make sure pcall and xpcall don't catch timeouts
+
+	local function is_timeout(err)
+		local tel = #timeout_error
+		return err:sub(-tel, -1) == timeout_error
+	end
+
+	function env.pcall(...)
+		local res = {pcall(...)}
+		if not res[1] and is_timeout(res[2]) then
+			error(timeout_error, 0)
+		end
+		return unpack(res)
+	end
+
+	local function err_handler_wrapper(func)
+		return function(err, ...)
+			if is_timeout(err) then return err end
+			return func(err, ...)
+		end
+	end
+
+	function env.xpcall(f, err_handler, ...)
+		err_handler = err_handler_wrapper(err_handler)
+		local res = {xpcall(f, err_handler, ...)}
+		if not res[1] and is_timeout(res[2]) then
+			error(timeout_error, 0)
+		end
+		return unpack(res)
+	end
+
 	return env
 end
 
 
 local function timeout()
 	debug.sethook()  -- Clear hook
-	error("Code timed out!")
+	error(timeout_error, 2)
 end
 
 
 local function code_prohibited(code)
-	-- LuaJIT doesn't increment the instruction counter when running
-	-- loops, so we have to sanitize inputs if we're using LuaJIT.
-	if not jit then
+	-- LuaJIT only increments the instruction counter on certain
+	-- operations, so we have to sanitize inputs if we're using LuaJIT.
+	if not rawget(_G, "jit") then
 		return false
 	end
-	local prohibited = {"while", "for", "do", "repeat", "until", "goto"}
+	local prohibited = {"while", "for", "do", "repeat", "until", "goto", "function"}
 	code = " "..code.." "
 	for _, p in ipairs(prohibited) do
 		if string.find(code, "[^%w_]"..p.."[^%w_]") then
@@ -372,7 +408,7 @@ local function create_sandbox(code, env)
 		debug.sethook(timeout, "", 10000)
 		local ok, ret = pcall(f, ...)
 		debug.sethook()  -- Clear hook
-		if not ok then error(ret) end
+		if not ok then error(ret, 0) end
 		return ret
 	end
 end
