@@ -95,13 +95,13 @@ if doors and doors.get then
 			action_on = function(pos, node)
 				local door = doors.get(pos)
 				if door then
-					door:toggle()
+					door:open()
 				end
 			end,
 			action_off = function(pos, node)
 				local door = doors.get(pos)
 				if door then
-					door:toggle()
+					door:close()
 				end
 			end,
 		}},
