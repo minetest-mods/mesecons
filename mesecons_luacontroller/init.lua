@@ -350,7 +350,7 @@ local function code_prohibited(code)
 	if not jit then
 		return false
 	end
-	local prohibited = {"while", "for", "do", "repeat", "until", "goto"}
+	local prohibited = {"while", "for", "repeat", "until", "goto", "function"}
 	code = " "..code.." "
 	for _, p in ipairs(prohibited) do
 		if string.find(code, "[^%w_]"..p.."[^%w_]") then
