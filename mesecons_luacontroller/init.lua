@@ -205,6 +205,16 @@ local function safe_date()
 	return(os.date("*t",os.time()))
 end
 
+-- string.rep(str, n) with a high value for n can be used to DoS
+-- the server. Therefore, limit max. length of generated string.
+local function safe_string_rep(str, n)
+	if #str * n > mesecon.setting("luacontroller_string_rep_max", 64000) then
+		error("string.rep: string length overflow", 2)
+	end
+
+	return string.rep(str, n)
+end
+
 local function remove_functions(x)
 	local tp = type(x)
 	if tp == "table" then
@@ -275,11 +285,10 @@ local function create_environment(pos, mem, event)
 			byte = string.byte,
 			char = string.char,
 			format = string.format,
-			gsub = string.gsub,
 			len = string.len,
 			lower = string.lower,
 			upper = string.upper,
-			rep = string.rep,
+			rep = safe_string_rep,
 			reverse = string.reverse,
 			sub = string.sub,
 		},
@@ -339,7 +348,6 @@ end
 
 
 local function timeout()
-	debug.sethook()  -- Clear hook
 	error("Code timed out!", 2)
 end
 
