@@ -209,6 +209,7 @@ end
 -- the server. Therefore, limit max. length of generated string.
 local function safe_string_rep(str, n)
 	if #str * n > mesecon.setting("luacontroller_string_rep_max", 64000) then
+		debug.sethook() -- Clear hook
 		error("string.rep: string length overflow", 2)
 	end
 
@@ -348,6 +349,7 @@ end
 
 
 local function timeout()
+	debug.sethook() -- Clear hook
 	error("Code timed out!", 2)
 end
 
