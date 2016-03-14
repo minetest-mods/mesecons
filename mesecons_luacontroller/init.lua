@@ -354,6 +354,65 @@ local function timeout()
 end
 
 
+local function strip_squarebrackets(code, pos)
+	if code:byte(pos) ~= 91 then return end -- [
+	pos = pos + 1
+	local start = pos
+	while code:byte(pos) == 61 do -- =
+		pos = pos + 1
+	end
+	if code:byte(pos) ~= 91 then return end -- [
+	local _, last = code:find('%]'..string.rep('=', pos-start)..'%]', pos + 1)
+	last = last or #code
+	return code:sub(1, start - 1) .. " " .. code:sub(last + 1, #code)
+end
+
+
+local function strip_strings_and_comments(code)
+	local i = 1
+	local len = #code
+	local start, new
+	while i <= len do
+		local c = code:byte(i)
+		if c == 34 or c == 39 then
+			-- " or '
+			start = i
+			i = i + 1
+			while i <= len and code:byte(i) ~= c do
+				if code:byte(i) == 92 then i = i + 1 end -- \ 
+				i = i + 1
+			end
+			code = code:sub(1, start - 1) .. " " .. code:sub(i + 1, #code)
+			i = start
+			len = #code
+		elseif c == 91 then
+			-- [=...[ ... ]=...]
+			new = strip_squarebrackets(code, i)
+			if new then
+				code = new
+				len = #code
+			else
+				i = i + 1
+			end
+		elseif c == 45 and code:byte(i + 1) == 45 then
+			-- --
+			i = i + 2
+			new = strip_squarebrackets(code, i)
+			if new then
+				code = new
+			else
+				start = code:find("[\r\n]", i) or #code
+				code = code:sub(1, i - 1) .. code:sub(start + 1, #code)
+			end
+			len = #code
+		else
+			i = i + 1
+		end
+	end
+	return code
+end
+
+
 local function code_prohibited(code)
 	-- LuaJIT doesn't increment the instruction counter when running
 	-- loops, so we have to sanitize inputs if we're using LuaJIT.
@@ -361,7 +420,7 @@ local function code_prohibited(code)
 		return false
 	end
 	local prohibited = {"while", "for", "repeat", "until", "goto"}
-	code = " "..code.." "
+	code = " "..strip_strings_and_comments(code).." "
 	for _, p in ipairs(prohibited) do
 		if string.find(code, "[^%w_]"..p.."[^%w_]") then
 			return "Prohibited command: "..p
