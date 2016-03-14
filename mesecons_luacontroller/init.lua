@@ -354,22 +354,6 @@ local function timeout()
 end
 
 
-local function code_prohibited(code)
-	-- LuaJIT doesn't increment the instruction counter when running
-	-- loops, so we have to sanitize inputs if we're using LuaJIT.
-	if not rawget(_G, "jit") then
-		return false
-	end
-	local prohibited = {"while", "for", "repeat", "until", "goto"}
-	code = " "..code.." "
-	for _, p in ipairs(prohibited) do
-		if string.find(code, "[^%w_]"..p.."[^%w_]") then
-			return "Prohibited command: "..p
-		end
-	end
-end
-
-
 local function create_sandbox(code, env)
 	if code:byte(1) == 27 then
 		return nil, "Binary code prohibited."
@@ -377,6 +361,9 @@ local function create_sandbox(code, env)
 	local f, msg = loadstring(code)
 	if not f then return nil, msg end
 	setfenv(f, env)
+	if rawget(_G, "jit") then
+		jit.off(f, true)
+	end
 
 	return function(...)
 		-- Normal Lua: Use instruction counter to stop execution
@@ -385,17 +372,7 @@ local function create_sandbox(code, env)
 		-- of function keyword. However, LuaJIT still doesn't trigger
 		-- lines events when using infinite loops.
 		local maxevents = mesecon.setting("luacontroller_maxevents", 10000)
-		if not rawget(_G, "jit") then
-			debug.sethook(timeout, "", maxevents)
-		else
-			local events = 0
-			debug.sethook(function ()
-				events = events + 1
-				if events > maxevents then
-					timeout()
-				end
-			end, "c")
-		end
+		debug.sethook(timeout, "", maxevents)
 		local ok, ret = pcall(f, ...)
 		debug.sethook()  -- Clear hook
 		if not ok then error(ret, 0) end
@@ -431,9 +408,6 @@ local function run(pos, event)
 	-- Load code & mem from meta
 	local mem  = load_memory(meta)
 	local code = meta:get_string("code")
-
-	local err = code_prohibited(code)
-	if err then return err end
 
 	-- Create environment
 	local env = create_environment(pos, mem, event)
