@@ -399,7 +399,7 @@ local function strip_strings_and_comments(code)
 			if new then
 				code = new
 			else
-				start = code:find("\n", i) or #code
+				start = code:find("[\r\n]", i) or #code
 				code = code:sub(1, i - 1) .. code:sub(start + 1, #code)
 			end
 			len = #code
