@@ -362,7 +362,7 @@ local function strip_squarebrackets(code, pos)
 	if code:byte(pos) ~= 91 then return end -- [
 	local _, last = code:find('%]'..string.rep('=', pos-start)..'%]', pos + 1)
 	last = last or #code
-	return code:sub(1, start - 1)..code:sub(last + 1, #code)
+	return code:sub(1, start - 1) .. " " .. code:sub(last + 1, #code)
 end
 
 
@@ -380,7 +380,7 @@ local function strip_strings_and_comments(code)
 				if code:byte(i) == 92 then i = i + 1 end -- \ 
 				i = i + 1
 			end
-			code = code:sub(1, start - 1) .. code:sub(i + 1, #code)
+			code = code:sub(1, start - 1) .. " " .. code:sub(i + 1, #code)
 			i = start
 			len = #code
 		elseif c == 91 then
@@ -400,7 +400,7 @@ local function strip_strings_and_comments(code)
 				code = new
 			else
 				start = code:find("\n", i) or #code
-				code = code:sub(1, i - 1)..code:sub(start + 1, #code)
+				code = code:sub(1, i - 1) .. code:sub(start + 1, #code)
 			end
 			len = #code
 		else
