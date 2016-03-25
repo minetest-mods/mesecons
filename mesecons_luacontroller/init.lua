@@ -216,6 +216,17 @@ local function safe_string_rep(str, n)
 	return string.rep(str, n)
 end
 
+-- string.find with a pattern can be used to DoS the server.
+-- Therefore, limit string.find to patternless matching.
+local function safe_string_find(...)
+	if (select(4, ...)) ~= true then
+		debug.sethook() -- Clear hook
+		error("string.find: 'plain' parameter must always be true in a LuaController")
+	end
+
+	return string.find(...)
+end
+
 local function remove_functions(x)
 	local tp = type(x)
 	if tp == "table" then
@@ -292,6 +303,7 @@ local function create_environment(pos, mem, event)
 			rep = safe_string_rep,
 			reverse = string.reverse,
 			sub = string.sub,
+			find = safe_string_find,
 		},
 		math = {
 			abs = math.abs,
