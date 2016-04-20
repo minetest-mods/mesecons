@@ -229,23 +229,36 @@ end
 
 local function remove_functions(x)
 	local tp = type(x)
-	if tp == "table" then
-		for key, value in pairs(x) do
-			local key_t, val_t = type(key), type(value)
-			if key_t == "function" or val_t == "function" then
-				x[key] = nil
-			else
-				if key_t == "table" then
-					remove_functions(key)
-				end
-				if val_t == "table" then
-					remove_functions(value)
+	if tp == "function" then
+		return nil
+	end
+
+	local seen = {}
+
+	local function rfuncs(x)
+		if seen[x] then return end
+		seen[x] = true
+
+		local tp = type(x)
+		if tp == "table" then
+			for key, value in pairs(x) do
+				local key_t, val_t = type(key), type(value)
+				if key_t == "function" or val_t == "function" then
+					x[key] = nil
+				else
+					if key_t == "table" then
+						rfuncs(key)
+					end
+					if val_t == "table" then
+						rfuncs(value)
+					end
 				end
 			end
 		end
-	elseif tp == "function" then
-		return nil
 	end
+
+	rfuncs(x)
+
 	return x
 end
 
