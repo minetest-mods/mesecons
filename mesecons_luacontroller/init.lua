@@ -229,23 +229,35 @@ end
 
 local function remove_functions(x)
 	local tp = type(x)
-	if tp == "table" then
+	if tp == "function" then
+		return nil
+	end
+
+	-- Make sure to not serialize the same table multiple times, otherwise
+	-- writing mem.test = mem in the LuaController will lead to infinite recursion
+	local seen = {}
+
+	local function rfuncs(x)
+		if seen[x] then return end
+		seen[x] = true
+		if type(x) ~= "table" then return end
+
 		for key, value in pairs(x) do
-			local key_t, val_t = type(key), type(value)
-			if key_t == "function" or val_t == "function" then
+			if type(key) == "function" or type(value) == "function" then
 				x[key] = nil
 			else
-				if key_t == "table" then
-					remove_functions(key)
+				if type(key) == "table" then
+					rfuncs(key)
 				end
-				if val_t == "table" then
-					remove_functions(value)
+				if type(value) == "table" then
+					rfuncs(value)
 				end
 			end
 		end
-	elseif tp == "function" then
-		return nil
 	end
+
+	rfuncs(x)
+
 	return x
 end
 
