@@ -43,7 +43,7 @@ minetest.register_chatcommand("hp", {
 })
 
 local function initialize_data(meta)
-	local commands = meta:get_string("commands")
+	local commands = minetest.formspec_escape(meta:get_string("commands"))
 	meta:set_string("formspec",
 		"invsize[9,5;]" ..
 		"textarea[0.5,0.5;8.5,4;commands;Commands;"..commands.."]" ..
