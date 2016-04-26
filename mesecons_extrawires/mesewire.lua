@@ -16,15 +16,21 @@ minetest.override_item("default:mese", {
 	}}
 })
 
-minetest.register_node("mesecons_extrawires:mese_powered", {
-	tiles = {minetest.registered_nodes["default:mese"].tiles[1].."^[brighten"},
-	is_ground_content = true,
-	groups = {cracky=1, not_in_creative_inventory = 1},
-	sounds = default.node_sound_stone_defaults(),
+-- Copy node definition of powered mese from normal mese
+-- and brighten texture tiles to indicate mese is powered
+local powered_def = mesecon.mergetable(minetest.registered_nodes["default:mese"], {
+	drop = "default:mese",
+	light_source = 5,
 	mesecons = {conductor = {
 		state = mesecon.state.on,
 		offstate = "default:mese",
 		rules = mesewire_rules
 	}},
-	drop = "default:mese"
+	groups = {cracky = 1, not_in_creative_inventory = 1}
 })
+
+for i, v in pairs(powered_def.tiles) do
+	powered_def.tiles[i] = v .. "^[brighten"
+end
+
+minetest.register_node("mesecons_extrawires:mese_powered", powered_def)
