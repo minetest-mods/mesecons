@@ -16,15 +16,27 @@ minetest.override_item("default:mese", {
 	}}
 })
 
-minetest.register_node("mesecons_extrawires:mese_powered", {
-	tiles = {minetest.registered_nodes["default:mese"].tiles[1].."^[brighten"},
-	is_ground_content = true,
-	groups = {cracky=1, not_in_creative_inventory = 1},
-	sounds = default.node_sound_stone_defaults(),
-	mesecons = {conductor = {
-		state = mesecon.state.on,
-		offstate = "default:mese",
-		rules = mesewire_rules
-	}},
-	drop = "default:mese"
-})
+local to_copy = {"use_texture_alpha", "post_effect_color", "walkable",
+	"pointable", "diggable", "climbable", "buildable_to", "light_source",
+	"damage_per_second", "sounds", "drawtype", "paramtype", "paramtype2",
+	"sunlight_propagates", "is_ground_content"}
+
+local origdef = minetest.registered_nodes["default:mese"]
+local def = {}
+for _,i in pairs(to_copy) do
+	def[i] = rawget(origdef, i)
+end
+def.tiles = {}
+for i,v in pairs(origdef.tiles) do
+	def.tiles[i] = v .. "^[brighten"
+end
+def.drop = "default:mese"
+def.groups = table.copy(origdef.groups)
+def.groups.not_in_creative_inventory = 1
+def.mesecons = {conductor = {
+	state = mesecon.state.on,
+	offstate = "default:mese",
+	rules = mesewire_rules
+}}
+
+minetest.register_node("mesecons_extrawires:mese_powered", def)
