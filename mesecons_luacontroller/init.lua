@@ -513,7 +513,7 @@ local function on_receive_fields(pos, form_name, fields, sender)
 		return
 	end
 	local name = sender:get_player_name()
-	if minetest.is_protected(pos, name) then
+	if minetest.is_protected(pos, name) and not minetest.check_player_privs(name, {protection_bypass=true}) then
 		minetest.record_protection_violation(pos, name)
 		return
 	end
