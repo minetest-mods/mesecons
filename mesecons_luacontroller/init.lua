@@ -508,8 +508,13 @@ local digiline = {
 		end
 	}
 }
-local function on_receive_fields(pos, form_name, fields)
+local function on_receive_fields(pos, form_name, fields, sender)
 	if not fields.program then
+		return
+	end
+	local name = sender:get_player_name()
+	if minetest.is_protected(pos, name) then
+		minetest.record_protection_violation(pos, name)
 		return
 	end
 	reset(pos)
