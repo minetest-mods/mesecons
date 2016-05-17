@@ -87,10 +87,6 @@ end
 
 
 mesecon.queue:add_function("cooldown", function (pos)
-	if minetest.get_item_group(minetest.get_node(pos).name, "overheat") == 0 then
-		return -- node has been moved, this one does not use overheating - ignore
-	end
-
 	local meta = minetest.get_meta(pos)
 	local heat = meta:get_int("heat")
 
