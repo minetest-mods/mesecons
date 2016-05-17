@@ -45,10 +45,10 @@ minetest.register_chatcommand("hp", {
 local function initialize_data(meta)
 	local commands = minetest.formspec_escape(meta:get_string("commands"))
 	meta:set_string("formspec",
-		"invsize[9,5;]" ..
+		"invsize[9,5.5;]" ..
 		"textarea[0.5,0.5;8.5,4;commands;Commands;"..commands.."]" ..
-		"label[1,3.8;@nearest, @farthest, and @random are replaced by\nthe respective player names]" ..
-		"button_exit[3.3,4.5;2,1;submit;Submit]")
+		"label[1,4.0;@nearest, @farthest, and @random are replaced by\nthe respective player names]" ..
+		"button_exit[3.5,4.85;2,1;submit;Submit]")
 	local owner = meta:get_string("owner")
 	if owner == "" then
 		owner = "not owned"
