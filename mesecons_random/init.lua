@@ -26,7 +26,7 @@ minetest.register_craft({
 -- GHOSTSTONE
 
 minetest.register_node("mesecons_random:ghoststone", {
-	description="ghoststone",
+	description="Ghoststone",
 	tiles = {"jeija_ghoststone.png"},
 	is_ground_content = true,
 	inventory_image = minetest.inventorycube("jeija_ghoststone_inv.png"),
