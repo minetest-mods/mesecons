@@ -96,6 +96,9 @@ local function resolve_commands(commands, pos)
 	local nearest, farthest = nil, nil
 	local min_distance, max_distance = math.huge, -1
 	local players = minetest.get_connected_players()
+	if #players == 0 then
+		return commands
+	end
 	for index, player in pairs(players) do
 		local distance = vector.distance(pos, player:getpos())
 		if distance < min_distance then
