@@ -76,7 +76,7 @@ function mesecon.get_conductor(nodename)
 	end
 end
 
-function mesecon.get_any_outputrules (node)
+function mesecon.get_any_outputrules(node)
 	if not node then return nil end
 
 	if mesecon.is_conductor(node.name) then
@@ -86,7 +86,7 @@ function mesecon.get_any_outputrules (node)
 	end
 end
 
-function mesecon.get_any_inputrules (node)
+function mesecon.get_any_inputrules(node)
 	if not node then return nil end
 
 	if mesecon.is_conductor(node.name) then
@@ -96,7 +96,7 @@ function mesecon.get_any_inputrules (node)
 	end
 end
 
-function mesecon.get_any_rules (node)
+function mesecon.get_any_rules(node)
 	return mesecon.mergetable(mesecon.get_any_inputrules(node) or {},
 		mesecon.get_any_outputrules(node) or {})
 end
@@ -381,27 +381,38 @@ function mesecon.turnon(pos, link)
 
 		-- area not loaded, postpone action
 		if not node then
-			mesecon.queue:add_action(f.pos, "turnon", {link}, nil, true)
+			mesecon.queue:add_action(f.pos, "turnon", {f.link}, nil, true)
 		elseif mesecon.is_conductor_off(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
 
-			minetest.swap_node(f.pos, {name = mesecon.get_conductor_on(node, f.link),
-				param2 = node.param2})
+			-- Success: If false, at least one neighboring node is unloaded,
+			-- postpone turning on action
+			local success = true
+			local neighborlinks = {}
 
-			-- call turnon on neighbors: normal rules
+			-- call turnon on neighbors
 			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
 				local np = vector.add(f.pos, r)
 
-				-- area not loaded, postpone action
+				-- Neighboring node not loaded, postpone turning on current node
+				-- since we can't even know if neighboring node has matching rules
 				if not mesecon.get_node_force(np) then
-					mesecon.queue:add_action(np, "turnon", {rulename},
-						nil, true)
+					success = false
+					break
 				else
-					local links = mesecon.rules_link_rule_all(f.pos, r)
-					for _, l in ipairs(links) do
-						table.insert(frontiers, {pos = np, link = l})
-					end
+					neighborlinks[minetest.hash_node_position(np)] = mesecon.rules_link_rule_all(f.pos, r)
 				end
+			end
+
+			if success then
+				minetest.swap_node(f.pos, {name = mesecon.get_conductor_on(node, f.link),
+					param2 = node.param2})
+
+				for npos, l in pairs(neighborlinks) do
+					table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
+				end
+			else
+				mesecon.queue:add_action(f.pos, "turnon", {f.link}, nil, true)
 			end
 		elseif mesecon.is_effector(node.name) then
 			mesecon.changesignal(f.pos, node, f.link, mesecon.state.on, depth)
@@ -413,7 +424,7 @@ function mesecon.turnon(pos, link)
 	end
 end
 
-mesecon.queue:add_function("turnon", function (pos, rulename, recdepth)
+mesecon.queue:add_function("turnon", function(pos, rulename, recdepth)
 	mesecon.turnon(pos, rulename, recdepth)
 end)
 
@@ -427,27 +438,38 @@ function mesecon.turnoff(pos, link)
 
 		-- area not loaded, postpone action
 		if not node then
-			mesecon.queue:add_action(f.pos, "turnoff", {link}, nil, true)
+			mesecon.queue:add_action(f.pos, "turnoff", {f.link}, nil, true)
 		elseif mesecon.is_conductor_on(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
 
-			minetest.swap_node(f.pos, {name = mesecon.get_conductor_off(node, f.link),
-				param2 = node.param2})
+			-- Success: If false, at least one neighboring node is unloaded,
+			-- postpone turning on action
+			local success = true
+			local neighborlinks = {}
 
-			-- call turnoff on neighbors: normal rules
+			-- call turnoff on neighbors
 			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
 				local np = vector.add(f.pos, r)
 
-				-- area not loaded, postpone action
+				-- Neighboring node not loaded, postpone turning off current node
+				-- since we can't even know if neighboring node has matching rules
 				if not mesecon.get_node_force(np) then
-					mesecon.queue:add_action(np, "turnoff", {rulename},
-						nil, true)
+					success = false
+					break
 				else
-					local links = mesecon.rules_link_rule_all(f.pos, r)
-					for _, l in ipairs(links) do
-						table.insert(frontiers, {pos = np, link = l})
-					end
+					neighborlinks[minetest.hash_node_position(np)] = mesecon.rules_link_rule_all(f.pos, r)
 				end
+			end
+
+			if success then
+				minetest.swap_node(f.pos, {name = mesecon.get_conductor_off(node, f.link),
+					param2 = node.param2})
+
+				for npos, l in pairs(neighborlinks) do
+					table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
+				end
+			else
+				mesecon.queue:add_action(f.pos, "turnoff", {f.link}, nil, true)
 			end
 		elseif mesecon.is_effector(node.name) then
 			mesecon.changesignal(f.pos, node, f.link, mesecon.state.off, depth)
@@ -459,7 +481,7 @@ function mesecon.turnoff(pos, link)
 	end
 end
 
-mesecon.queue:add_function("turnoff", function (pos, rulename, recdepth)
+mesecon.queue:add_function("turnoff", function(pos, rulename, recdepth)
 	mesecon.turnoff(pos, rulename, recdepth)
 end)
 
@@ -523,8 +545,8 @@ function mesecon.rules_link(output, input, dug_outputrules) --output/input are p
 	local outputnode = mesecon.get_node_force(output)
 	local inputnode = mesecon.get_node_force(input)
 
-	local outputrules = dug_outputrules or mesecon.get_any_outputrules (outputnode)
-	local inputrules = mesecon.get_any_inputrules (inputnode)
+	local outputrules = dug_outputrules or mesecon.get_any_outputrules(outputnode)
+	local inputrules = mesecon.get_any_inputrules(inputnode)
 	if not outputrules or not inputrules then
 		return
 	end
@@ -547,7 +569,7 @@ end
 function mesecon.rules_link_rule_all(output, rule)
 	local input = vector.add(output, rule)
 	local inputnode = mesecon.get_node_force(input)
-	local inputrules = mesecon.get_any_inputrules (inputnode)
+	local inputrules = mesecon.get_any_inputrules(inputnode)
 	if not inputrules then
 		return {}
 	end
@@ -567,7 +589,7 @@ function mesecon.rules_link_rule_all_inverted(input, rule)
 	--local irule = mesecon.invertRule(rule)
 	local output = vector.add(input, rule)
 	local outputnode = mesecon.get_node_force(output)
-	local outputrules = mesecon.get_any_outputrules (outputnode)
+	local outputrules = mesecon.get_any_outputrules(outputnode)
 	if not outputrules then
 		return {}
 	end
