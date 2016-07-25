@@ -394,7 +394,7 @@ function mesecon.turnon(pos, link)
 
 				-- area not loaded, postpone action
 				if not mesecon.get_node_force(np) then
-					mesecon.queue:add_action(np, "turnon", {rulename},
+					mesecon.queue:add_action(np, "turnon", {link},
 						nil, true)
 				else
 					local links = mesecon.rules_link_rule_all(f.pos, r)
@@ -440,7 +440,7 @@ function mesecon.turnoff(pos, link)
 
 				-- area not loaded, postpone action
 				if not mesecon.get_node_force(np) then
-					mesecon.queue:add_action(np, "turnoff", {rulename},
+					mesecon.queue:add_action(np, "turnoff", {link},
 						nil, true)
 				else
 					local links = mesecon.rules_link_rule_all(f.pos, r)
