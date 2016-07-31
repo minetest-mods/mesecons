@@ -408,8 +408,11 @@ function mesecon.turnon(pos, link)
 				minetest.swap_node(f.pos, {name = mesecon.get_conductor_on(node, f.link),
 					param2 = node.param2})
 
-				for npos, l in pairs(neighborlinks) do
-					table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
+				for npos, links in pairs(neighborlinks) do
+					-- links = all links to node, l = each single link
+					for _, l in ipairs(links) do
+						table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
+					end
 				end
 			else
 				mesecon.queue:add_action(f.pos, "turnon", {f.link}, nil, true)
@@ -465,8 +468,11 @@ function mesecon.turnoff(pos, link)
 				minetest.swap_node(f.pos, {name = mesecon.get_conductor_off(node, f.link),
 					param2 = node.param2})
 
-				for npos, l in pairs(neighborlinks) do
-					table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
+				for npos, links in pairs(neighborlinks) do
+					-- links = all links to node, l = each single link
+					for _, l in ipairs(links) do
+						table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
+					end
 				end
 			else
 				mesecon.queue:add_action(f.pos, "turnoff", {f.link}, nil, true)
