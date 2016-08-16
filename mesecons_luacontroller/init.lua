@@ -20,8 +20,6 @@
 -- The Sandbox
 -- The whole code of the controller runs in a sandbox,
 -- a very restricted environment.
--- However, as this does not prevent you from using e.g. loops,
--- we need to check for these prohibited commands first.
 -- Actually the only way to damage the server is to
 -- use too much memory from the sandbox.
 -- You can add more functions to the environment
