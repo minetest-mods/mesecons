@@ -379,42 +379,25 @@ function mesecon.turnon(pos, link)
 		local f = frontiers[depth]
 		local node = mesecon.get_node_force(f.pos)
 
-		-- area not loaded, postpone action
 		if not node then
-			mesecon.queue:add_action(f.pos, "turnon", {f.link}, nil, true)
+			-- Area does not exist; do nothing
 		elseif mesecon.is_conductor_off(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
-
-			-- Success: If false, at least one neighboring node is unloaded,
-			-- postpone turning on action
-			local success = true
 			local neighborlinks = {}
 
 			-- call turnon on neighbors
 			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
 				local np = vector.add(f.pos, r)
-
-				-- Neighboring node not loaded, postpone turning on current node
-				-- since we can't even know if neighboring node has matching rules
-				if not mesecon.get_node_force(np) then
-					success = false
-					break
-				else
-					neighborlinks[minetest.hash_node_position(np)] = mesecon.rules_link_rule_all(f.pos, r)
-				end
+				neighborlinks[minetest.hash_node_position(np)] = mesecon.rules_link_rule_all(f.pos, r)
 			end
 
-			if success then
-				mesecon.swap_node_force(f.pos, mesecon.get_conductor_on(node, f.link))
+			mesecon.swap_node_force(f.pos, mesecon.get_conductor_on(node, f.link))
 
-				for npos, links in pairs(neighborlinks) do
-					-- links = all links to node, l = each single link
-					for _, l in ipairs(links) do
-						table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
-					end
+			for npos, links in pairs(neighborlinks) do
+				-- links = all links to node, l = each single link
+				for _, l in ipairs(links) do
+					table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
 				end
-			else
-				mesecon.queue:add_action(f.pos, "turnon", {f.link}, nil, true)
 			end
 		elseif mesecon.is_effector(node.name) then
 			mesecon.changesignal(f.pos, node, f.link, mesecon.state.on, depth)
@@ -440,40 +423,24 @@ function mesecon.turnoff(pos, link)
 
 		-- area not loaded, postpone action
 		if not node then
-			mesecon.queue:add_action(f.pos, "turnoff", {f.link}, nil, true)
+			-- Area does not exist; do nothing
 		elseif mesecon.is_conductor_on(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
-
-			-- Success: If false, at least one neighboring node is unloaded,
-			-- postpone turning on action
-			local success = true
 			local neighborlinks = {}
 
 			-- call turnoff on neighbors
 			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
 				local np = vector.add(f.pos, r)
-
-				-- Neighboring node not loaded, postpone turning off current node
-				-- since we can't even know if neighboring node has matching rules
-				if not mesecon.get_node_force(np) then
-					success = false
-					break
-				else
-					neighborlinks[minetest.hash_node_position(np)] = mesecon.rules_link_rule_all(f.pos, r)
-				end
+				neighborlinks[minetest.hash_node_position(np)] = mesecon.rules_link_rule_all(f.pos, r)
 			end
 
-			if success then
-				mesecon.swap_node_force(f.pos, mesecon.get_conductor_off(node, f.link))
+			mesecon.swap_node_force(f.pos, mesecon.get_conductor_off(node, f.link))
 
-				for npos, links in pairs(neighborlinks) do
-					-- links = all links to node, l = each single link
-					for _, l in ipairs(links) do
-						table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
-					end
+			for npos, links in pairs(neighborlinks) do
+				-- links = all links to node, l = each single link
+				for _, l in ipairs(links) do
+					table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
 				end
-			else
-				mesecon.queue:add_action(f.pos, "turnoff", {f.link}, nil, true)
 			end
 		elseif mesecon.is_effector(node.name) then
 			mesecon.changesignal(f.pos, node, f.link, mesecon.state.off, depth)
