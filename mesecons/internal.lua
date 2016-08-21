@@ -405,8 +405,7 @@ function mesecon.turnon(pos, link)
 			end
 
 			if success then
-				minetest.swap_node(f.pos, {name = mesecon.get_conductor_on(node, f.link),
-					param2 = node.param2})
+				mesecon.swap_node_force(f.pos, mesecon.get_conductor_on(node, f.link))
 
 				for npos, links in pairs(neighborlinks) do
 					-- links = all links to node, l = each single link
@@ -465,8 +464,7 @@ function mesecon.turnoff(pos, link)
 			end
 
 			if success then
-				minetest.swap_node(f.pos, {name = mesecon.get_conductor_off(node, f.link),
-					param2 = node.param2})
+				mesecon.swap_node_force(f.pos, mesecon.get_conductor_off(node, f.link))
 
 				for npos, links in pairs(neighborlinks) do
 					-- links = all links to node, l = each single link

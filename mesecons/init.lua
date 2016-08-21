@@ -70,6 +70,8 @@ dofile(minetest.get_modpath("mesecons").."/internal.lua");
 -- these are the only functions you need to remember
 
 mesecon.queue:add_function("receptor_on", function (pos, rules)
+	mesecon.vm_begin()
+
 	rules = rules or mesecon.rules.default
 
 	-- if area (any of the rule targets) is not loaded, keep trying and call this again later
@@ -90,6 +92,8 @@ mesecon.queue:add_function("receptor_on", function (pos, rules)
 			mesecon.turnon(np, rulename)
 		end
 	end
+
+	mesecon.vm_commit()
 end)
 
 function mesecon.receptor_on(pos, rules)
@@ -97,6 +101,8 @@ function mesecon.receptor_on(pos, rules)
 end
 
 mesecon.queue:add_function("receptor_off", function (pos, rules)
+	mesecon.vm_begin()
+
 	rules = rules or mesecon.rules.default
 
 	-- if area (any of the rule targets) is not loaded, keep trying and call this again later
@@ -119,6 +125,8 @@ mesecon.queue:add_function("receptor_off", function (pos, rules)
 			end
 		end
 	end
+
+	mesecon.vm_commit()
 end)
 
 function mesecon.receptor_off(pos, rules)
