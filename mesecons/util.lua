@@ -236,43 +236,25 @@ local function unhash_blockpos(hash)
 	return vector.multiply(minetest.get_position_from_hash(hash), BLOCKSIZE)
 end
 
-mesecon.forceloaded_blocks = {}
-
 -- get node and force-load area
 function mesecon.get_node_force(pos)
-	local hash = hash_blockpos(pos)
-
-	if mesecon.forceloaded_blocks[hash] == nil then
-		-- if no more forceload spaces are available, try again next time
-		if minetest.forceload_block(pos) then
-			mesecon.forceloaded_blocks[hash] = 0
-		end
-	else
-		mesecon.forceloaded_blocks[hash] = 0
+	local node = minetest.get_node_or_nil(pos)
+	if node == nil then
+		-- Node is not currently loaded; use a VoxelManipulator to prime
+		-- the mapblock cache and try again.
+		minetest.get_voxel_manip(pos, pos)
+		node = minetest.get_node_or_nil(pos)
 	end
-
-	return minetest.get_node_or_nil(pos)
+	return node
 end
 
-minetest.register_globalstep(function (dtime)
-	for hash, time in pairs(mesecon.forceloaded_blocks) do
-		-- unload forceloaded blocks after 10 minutes without usage
-		if (time > mesecon.setting("forceload_timeout", 600)) then
-			minetest.forceload_free_block(unhash_blockpos(hash))
-			mesecon.forceloaded_blocks[hash] = nil
-		else
-			mesecon.forceloaded_blocks[hash] = time + dtime
-		end
-	end
-end)
-
--- Store and read the forceloaded blocks to / from a file
--- so that those blocks are remembered when the game
--- is restarted
-mesecon.forceloaded_blocks = mesecon.file2table("mesecon_forceloaded")
-minetest.register_on_shutdown(function()
-	mesecon.table2file("mesecon_forceloaded", mesecon.forceloaded_blocks)
-end)
+-- Un-forceload any forceloaded mapblocks from older versions of Mesecons which
+-- used forceloading instead of VoxelManipulators.
+local old_forceloaded_blocks = mesecon.file2table("mesecon_forceloaded")
+for hash, _ in pairs(old_forceloaded_blocks) do
+	minetest.forceload_free_block(unhash_blockpos(hash))
+end
+os.remove(wpath..DIR_DELIM.."mesecon_forceloaded")
 
 -- Autoconnect Hooks
 -- Nodes like conductors may change their appearance and their connection rules
