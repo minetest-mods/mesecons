@@ -236,16 +236,131 @@ local function unhash_blockpos(hash)
 	return vector.multiply(minetest.get_position_from_hash(hash), BLOCKSIZE)
 end
 
--- get node and force-load area
-function mesecon.get_node_force(pos)
-	local node = minetest.get_node_or_nil(pos)
-	if node == nil then
-		-- Node is not currently loaded; use a VoxelManipulator to prime
-		-- the mapblock cache and try again.
-		minetest.get_voxel_manip(pos, pos)
-		node = minetest.get_node_or_nil(pos)
+-- Maps from a hashed mapblock position (as returned by hash_blockpos) to a
+-- table.
+--
+-- Contents of the table are:
+-- “vm” → the VoxelManipulator
+-- “va” → the VoxelArea
+-- “data” → the data array
+-- “param1” → the param1 array
+-- “param2” → the param2 array
+-- “dirty” → true if data has been modified
+--
+-- Nil if no VM-based transaction is in progress.
+local vm_cache = nil
+
+-- Starts a VoxelManipulator-based transaction.
+--
+-- During a VM transaction, calls to vm_get_node and vm_swap_node operate on a
+-- cached copy of the world loaded via VoxelManipulators. That cache can later
+-- be committed to the real map by means of vm_commit or discarded by means of
+-- vm_abort.
+function mesecon.vm_begin()
+	vm_cache = {}
+end
+
+-- Finishes a VoxelManipulator-based transaction, freeing the VMs and map data
+-- and writing back any modified areas.
+function mesecon.vm_commit()
+	for hash, tbl in pairs(vm_cache) do
+		if tbl.dirty then
+			local vm = tbl.vm
+			vm:set_data(tbl.data)
+			vm:write_to_map()
+			vm:update_map()
+		end
 	end
-	return node
+	vm_cache = nil
+end
+
+-- Finishes a VoxelManipulator-based transaction, freeing the VMs and throwing
+-- away any modified areas.
+function mesecon.vm_abort()
+	vm_cache = nil
+end
+
+-- Gets the cache entry covering a position, populating it if necessary.
+local function vm_get_or_create_entry(pos)
+	local hash = hash_blockpos(pos)
+	local tbl = vm_cache[hash]
+	if not tbl then
+		local vm = minetest.get_voxel_manip(pos, pos)
+		local min_pos, max_pos = vm:get_emerged_area()
+		local va = VoxelArea:new{MinEdge = min_pos, MaxEdge = max_pos}
+		tbl = {vm = vm, va = va, data = vm:get_data(), param1 = vm:get_light_data(), param2 = vm:get_param2_data(), dirty = false}
+		vm_cache[hash] = tbl
+	end
+	return tbl
+end
+
+-- Gets the node at a given position during a VoxelManipulator-based
+-- transaction.
+function mesecon.vm_get_node(pos)
+	local tbl = vm_get_or_create_entry(pos)
+	local index = tbl.va:indexp(pos)
+	local node_value = tbl.data[index]
+	if node_value == core.CONTENT_IGNORE then
+		return nil
+	else
+		local node_param1 = tbl.param1[index]
+		local node_param2 = tbl.param2[index]
+		return {name = minetest.get_name_from_content_id(node_value), param1 = node_param1, param2 = node_param2}
+	end
+end
+
+-- Sets a node’s name during a VoxelManipulator-based transaction.
+--
+-- Existing param1, param2, and metadata are left alone.
+function mesecon.vm_swap_node(pos, name)
+	local tbl = vm_get_or_create_entry(pos)
+	local index = tbl.va:indexp(pos)
+	tbl.data[index] = minetest.get_content_id(name)
+	tbl.dirty = true
+end
+
+-- Gets the node at a given position, regardless of whether it is loaded or
+-- not, respecting a transaction if one is in progress.
+--
+-- Outside a VM transaction, if the mapblock is not loaded, it is pulled into
+-- the server’s main map data cache and then accessed from there.
+--
+-- Inside a VM transaction, the transaction’s VM cache is used.
+function mesecon.get_node_force(pos)
+	if vm_cache then
+		return mesecon.vm_get_node(pos)
+	else
+		local node = minetest.get_node_or_nil(pos)
+		if node == nil then
+			-- Node is not currently loaded; use a VoxelManipulator to prime
+			-- the mapblock cache and try again.
+			minetest.get_voxel_manip(pos, pos)
+			node = minetest.get_node_or_nil(pos)
+		end
+		return node
+	end
+end
+
+-- Swaps the node at a given position, regardless of whether it is loaded or
+-- not, respecting a transaction if one is in progress.
+--
+-- Outside a VM transaction, if the mapblock is not loaded, it is pulled into
+-- the server’s main map data cache and then accessed from there.
+--
+-- Inside a VM transaction, the transaction’s VM cache is used.
+--
+-- This function can only be used to change the node’s name, not its parameters
+-- or metadata.
+function mesecon.swap_node_force(pos, name)
+	if vm_cache then
+		return mesecon.vm_swap_node(pos, name)
+	else
+		-- This serves to both ensure the mapblock is loaded and also hand us
+		-- the old node table so we can preserve param2.
+		local node = mesecon.get_node_force(pos)
+		node.name = name
+		minetest.swap_node(pos, node)
+	end
 end
 
 -- Un-forceload any forceloaded mapblocks from older versions of Mesecons which
