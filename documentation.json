@@ -1,6 +1,6 @@
 {
 	"Conductors" : {
-		"Mesecon" : "mesecons/doc/mesecon",
+		"Mesecon" : "mesecons_wires/doc/mesecon",
 		"Insulated Wire" : "mesecons_insulated/doc/insulated",
 		"T-Junction" : "mesecons_extrawires/doc/tjunction",
 		"Crossing" : "mesecons_extrawires/doc/crossing",

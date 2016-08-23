@@ -1,7 +1,7 @@
 -- Dig and place services
 
-mesecon.on_placenode = function (pos, node)
-	mesecon.update_autoconnect(pos, node)
+mesecon.on_placenode = function(pos, node)
+	mesecon.execute_autoconnect_hooks_now(pos, node)
 
 	-- Receptors: Send on signal when active
 	if mesecon.is_receptor_on(node.name) then
@@ -52,16 +52,15 @@ mesecon.on_placenode = function (pos, node)
 	end
 end
 
-mesecon.on_dignode = function (pos, node)
+mesecon.on_dignode = function(pos, node)
 	if mesecon.is_conductor_on(node) then
 		mesecon.receptor_off(pos, mesecon.conductor_get_rules(node))
 	elseif mesecon.is_receptor_on(node.name) then
 		mesecon.receptor_off(pos, mesecon.receptor_get_rules(node))
 	end
-	mesecon.queue:add_action(pos, "update_autoconnect", {node})
-end
 
-mesecon.queue:add_function("update_autoconnect", mesecon.update_autoconnect)
+	mesecon.execute_autoconnect_hooks_queue(pos, node)
+end
 
 minetest.register_on_placenode(mesecon.on_placenode)
 minetest.register_on_dignode(mesecon.on_dignode)

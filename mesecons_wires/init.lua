@@ -91,10 +91,7 @@ local update_on_place_dig = function (pos, node)
 	end
 end
 
-function mesecon.update_autoconnect(pos, node)
-	if (not node) then node = minetest.get_node(pos) end
-	update_on_place_dig(pos, node)
-end
+mesecon.register_autoconnect_hook("wire", update_on_place_dig)
 
 -- ############################
 -- ## Wire node registration ##
@@ -204,7 +201,7 @@ register_wires = function()
 			groups_off["not_in_creative_inventory"] = 1
 		end
 
-		mesecon.register_node("mesecons:wire_"..nodeid, {
+		mesecon.register_node(":mesecons:wire_"..nodeid, {
 			description = "Mesecon",
 			drawtype = "nodebox",
 			inventory_image = "mesecons_wire_inv.png",

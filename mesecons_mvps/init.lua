@@ -200,7 +200,6 @@ end
 mesecon.register_on_mvps_move(function(moved_nodes)
 	for _, n in ipairs(moved_nodes) do
 		mesecon.on_placenode(n.pos, n.node)
-		mesecon.update_autoconnect(n.pos)
 	end
 end)
 

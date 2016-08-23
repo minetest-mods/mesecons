@@ -132,8 +132,5 @@ print("[OK] Mesecons")
 -- To be removed in future releases
 dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 
---The actual wires
-dofile(minetest.get_modpath("mesecons").."/wires.lua");
-
 --Services like turnoff receptor on dignode and so on
 dofile(minetest.get_modpath("mesecons").."/services.lua");

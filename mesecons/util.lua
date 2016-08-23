@@ -273,3 +273,34 @@ mesecon.forceloaded_blocks = mesecon.file2table("mesecon_forceloaded")
 minetest.register_on_shutdown(function()
 	mesecon.table2file("mesecon_forceloaded", mesecon.forceloaded_blocks)
 end)
+
+-- Autoconnect Hooks
+-- Nodes like conductors may change their appearance and their connection rules
+-- right after being placed or after being dug, e.g. the default wires use this
+-- to automatically connect to linking nodes after placement.
+-- After placement, the update function will be executed immediately so that the
+-- possibly changed rules can be taken into account when recalculating the circuit.
+-- After digging, the update function will be queued and executed after
+-- recalculating the circuit. The update function must take care of updating the
+-- node at the given position itself, but also all of the other nodes the given
+-- position may have (had) a linking connection to.
+mesecon.autoconnect_hooks = {}
+
+-- name: A unique name for the hook, e.g. "foowire". Used to name the actionqueue function.
+-- fct: The update function with parameters function(pos, node)
+function mesecon.register_autoconnect_hook(name, fct)
+	mesecon.autoconnect_hooks[name] = fct
+	mesecon.queue:add_function("autoconnect_hook_"..name, fct)
+end
+
+function mesecon.execute_autoconnect_hooks_now(pos, node)
+	for _, fct in pairs(mesecon.autoconnect_hooks) do
+		fct(pos, node)
+	end
+end
+
+function mesecon.execute_autoconnect_hooks_queue(pos, node)
+	for name in pairs(mesecon.autoconnect_hooks) do
+		mesecon.queue:add_action(pos, "autoconnect_hook_"..name, {node})
+	end
+end
