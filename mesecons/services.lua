@@ -1,5 +1,14 @@
 -- Dig and place services
 
+-- Stub to "fake" updating conductors if not installed
+-- If it is installed, that mod handles these
+if not minetest.get_modpath("mesecons_conductors") then
+	mesecon.update_autoconnect = function()
+		return
+	end
+	mesecon.queue:add_function("update_autoconnect", mesecon.update_autoconnect)
+end
+
 mesecon.on_placenode = function (pos, node)
 	mesecon.update_autoconnect(pos, node)
 
@@ -60,8 +69,6 @@ mesecon.on_dignode = function (pos, node)
 	end
 	mesecon.queue:add_action(pos, "update_autoconnect", {node})
 end
-
-mesecon.queue:add_function("update_autoconnect", mesecon.update_autoconnect)
 
 minetest.register_on_placenode(mesecon.on_placenode)
 minetest.register_on_dignode(mesecon.on_dignode)
