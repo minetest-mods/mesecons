@@ -96,6 +96,8 @@ function mesecon.update_autoconnect(pos, node)
 	update_on_place_dig(pos, node)
 end
 
+mesecon.queue:add_function("update_autoconnect", mesecon.update_autoconnect)
+
 -- ############################
 -- ## Wire node registration ##
 -- ############################
@@ -204,7 +206,7 @@ register_wires = function()
 			groups_off["not_in_creative_inventory"] = 1
 		end
 
-		mesecon.register_node("mesecons:wire_"..nodeid, {
+		mesecon.register_node(":mesecons:wire_"..nodeid, {
 			description = "Mesecon",
 			drawtype = "nodebox",
 			inventory_image = "mesecons_wire_inv.png",
