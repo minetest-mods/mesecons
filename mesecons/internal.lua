@@ -37,10 +37,6 @@
 -- HIGH-LEVEL Internals
 -- mesecon.is_power_on(pos)				--> Returns true if pos emits power in any way
 -- mesecon.is_power_off(pos)				--> Returns true if pos does not emit power in any way
--- mesecon.turnon(pos, link) 				--> link is the input rule that caused calling turnon, turns on every connected node, iterative
--- mesecon.turnoff(pos, link)				--> link is the input rule that caused calling turnoff, turns off every connected node, iterative
--- mesecon.connected_to_receptor(pos, link)		--> Returns true if pos is connected to a receptor directly or via conductors, iterative
--- mesecon.rules_link(output, input, dug_outputrules)	--> Returns true if outputposition + outputrules = inputposition and inputposition + inputrules = outputposition (if the two positions connect)
 -- mesecon.is_powered(pos)				--> Returns true if pos is powered by a receptor or a conductor
 
 -- RULES ROTATION helpers
@@ -475,6 +471,8 @@ function mesecon.turnoff(pos, link)
 	return true
 end
 
+-- Get all linking inputrules of inputnode (effector or conductor) that is connected to
+-- outputnode (receptor or conductor) at position `output` and has an output in direction `rule`
 function mesecon.rules_link_rule_all(output, rule)
 	local input = vector.add(output, rule)
 	local inputnode = mesecon.get_node_force(input)
@@ -494,8 +492,9 @@ function mesecon.rules_link_rule_all(output, rule)
 	return rules
 end
 
+-- Get all linking outputnodes of outputnode (receptor or conductor) that is connected to
+-- inputnode (effector or conductor) at position `input` and has an input in direction `rule`
 function mesecon.rules_link_rule_all_inverted(input, rule)
-	--local irule = mesecon.invertRule(rule)
 	local output = vector.add(input, rule)
 	local outputnode = mesecon.get_node_force(output)
 	local outputrules = mesecon.get_any_outputrules(outputnode)

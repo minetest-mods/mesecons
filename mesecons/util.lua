@@ -219,7 +219,7 @@ function mesecon.table2file(filename, table)
 	f:close()
 end
 
--- Forceloading: Force server to load area if node is nil
+-- Block position "hashing" (convert to integer) functions for voxelmanip cache
 local BLOCKSIZE = 16
 
 -- convert node position --> block hash
@@ -362,14 +362,6 @@ function mesecon.swap_node_force(pos, name)
 		minetest.swap_node(pos, node)
 	end
 end
-
--- Un-forceload any forceloaded mapblocks from older versions of Mesecons which
--- used forceloading instead of VoxelManipulators.
-local old_forceloaded_blocks = mesecon.file2table("mesecon_forceloaded")
-for hash, _ in pairs(old_forceloaded_blocks) do
-	minetest.forceload_free_block(unhash_blockpos(hash))
-end
-os.remove(wpath..DIR_DELIM.."mesecon_forceloaded")
 
 -- Autoconnect Hooks
 -- Nodes like conductors may change their appearance and their connection rules
