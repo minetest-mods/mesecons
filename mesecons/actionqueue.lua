@@ -87,7 +87,11 @@ minetest.register_globalstep(function (dtime)
 end)
 
 function mesecon.queue:execute(action)
-	mesecon.queue.funcs[action.func](action.pos, unpack(action.params))
+	-- ignore if action queue function name doesn't exist,
+	-- (e.g. in case the action queue savegame was written by an old mesecons version)
+	if mesecon.queue.funcs[action.func] then
+		mesecon.queue.funcs[action.func](action.pos, unpack(action.params))
+	end
 end
 
 

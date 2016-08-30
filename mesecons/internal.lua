@@ -375,30 +375,24 @@ function mesecon.turnon(pos, link)
 	local frontiers = {{pos = pos, link = link}}
 
 	local depth = 1
-	while frontiers[depth] do
-		local f = frontiers[depth]
+	while frontiers[1] do
+		local f = table.remove(frontiers, 1)
 		local node = mesecon.get_node_force(f.pos)
 
 		if not node then
 			-- Area does not exist; do nothing
 		elseif mesecon.is_conductor_off(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
-			local neighborlinks = {}
 
 			-- call turnon on neighbors
 			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
 				local np = vector.add(f.pos, r)
-				neighborlinks[minetest.hash_node_position(np)] = mesecon.rules_link_rule_all(f.pos, r)
+				for _, l in ipairs(mesecon.rules_link_rule_all(f.pos, r)) do
+					table.insert(frontiers, {pos = np, link = l})
+				end
 			end
 
 			mesecon.swap_node_force(f.pos, mesecon.get_conductor_on(node, f.link))
-
-			for npos, links in pairs(neighborlinks) do
-				-- links = all links to node, l = each single link
-				for _, l in ipairs(links) do
-					table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
-				end
-			end
 		elseif mesecon.is_effector(node.name) then
 			mesecon.changesignal(f.pos, node, f.link, mesecon.state.on, depth)
 			if mesecon.is_effector_off(node.name) then
@@ -409,39 +403,28 @@ function mesecon.turnon(pos, link)
 	end
 end
 
-mesecon.queue:add_function("turnon", function(pos, rulename, recdepth)
-	mesecon.turnon(pos, rulename, recdepth)
-end)
-
 function mesecon.turnoff(pos, link)
 	local frontiers = {{pos = pos, link = link}}
 
 	local depth = 1
-	while frontiers[depth] do
-		local f = frontiers[depth]
+	while frontiers[1] do
+		local f = table.remove(frontiers, 1)
 		local node = mesecon.get_node_force(f.pos)
 
-		-- area not loaded, postpone action
 		if not node then
 			-- Area does not exist; do nothing
 		elseif mesecon.is_conductor_on(node, f.link) then
 			local rules = mesecon.conductor_get_rules(node)
-			local neighborlinks = {}
 
 			-- call turnoff on neighbors
 			for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
 				local np = vector.add(f.pos, r)
-				neighborlinks[minetest.hash_node_position(np)] = mesecon.rules_link_rule_all(f.pos, r)
+				for _, l in ipairs(mesecon.rules_link_rule_all(f.pos, r)) do
+					table.insert(frontiers, {pos = np, link = l})
+				end
 			end
 
 			mesecon.swap_node_force(f.pos, mesecon.get_conductor_off(node, f.link))
-
-			for npos, links in pairs(neighborlinks) do
-				-- links = all links to node, l = each single link
-				for _, l in ipairs(links) do
-					table.insert(frontiers, {pos = minetest.get_position_from_hash(npos), link = l})
-				end
-			end
 		elseif mesecon.is_effector(node.name) then
 			mesecon.changesignal(f.pos, node, f.link, mesecon.state.off, depth)
 			if mesecon.is_effector_on(node.name) and not mesecon.is_powered(f.pos) then
@@ -451,11 +434,6 @@ function mesecon.turnoff(pos, link)
 		depth = depth + 1
 	end
 end
-
-mesecon.queue:add_function("turnoff", function(pos, rulename, recdepth)
-	mesecon.turnoff(pos, rulename, recdepth)
-end)
-
 
 function mesecon.connected_to_receptor(pos, link)
 	local node = mesecon.get_node_force(pos)
