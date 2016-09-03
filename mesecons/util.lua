@@ -255,9 +255,10 @@ function mesecon.get_node_force(pos)
 end
 
 minetest.register_globalstep(function (dtime)
+	local timeout = mesecon.setting("forceload_timeout", 600)
 	for hash, time in pairs(mesecon.forceloaded_blocks) do
 		-- unload forceloaded blocks after 10 minutes without usage
-		if (time > mesecon.setting("forceload_timeout", 600)) then
+		if (time > timeout) then
 			minetest.forceload_free_block(unhash_blockpos(hash))
 			mesecon.forceloaded_blocks[hash] = nil
 		else
