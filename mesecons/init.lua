@@ -74,17 +74,7 @@ mesecon.queue:add_function("receptor_on", function (pos, rules)
 
 	rules = rules or mesecon.rules.default
 
-	-- if area (any of the rule targets) is not loaded, keep trying and call this again later
-	for _, rule in ipairs(mesecon.flattenrules(rules)) do
-		local np = vector.add(pos, rule)
-		-- if area is not loaded, keep trying
-		if minetest.get_node_or_nil(np) == nil then
-			mesecon.queue:add_action(pos, "receptor_on", {rules}, nil, rules)
-			return
-		end
-	end
-
-	-- execute action
+	-- Call turnon on all linking positions
 	for _, rule in ipairs(mesecon.flattenrules(rules)) do
 		local np = vector.add(pos, rule)
 		local rulenames = mesecon.rules_link_rule_all(pos, rule)
@@ -103,15 +93,7 @@ end
 mesecon.queue:add_function("receptor_off", function (pos, rules)
 	rules = rules or mesecon.rules.default
 
-	-- if area (any of the rule targets) is not loaded, keep trying and call this again later
-	for _, rule in ipairs(mesecon.flattenrules(rules)) do
-		local np = vector.add(pos, rule)
-		if minetest.get_node_or_nil(np) == nil then
-			mesecon.queue:add_action(pos, "receptor_off", {rules}, nil, rules)
-			return
-		end
-	end
-
+	-- Call turnoff on all linking positions
 	for _, rule in ipairs(mesecon.flattenrules(rules)) do
 		local np = vector.add(pos, rule)
 		local rulenames = mesecon.rules_link_rule_all(pos, rule)
