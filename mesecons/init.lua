@@ -3,7 +3,7 @@
 -- |  \/  | |___ ____  |___ |      |    | | \  | |____
 -- |      | |        | |    |      |    | |  \ |     |
 -- |      | |___ ____| |___ |____  |____| |   \| ____|
--- by Jeija, Uberi (Temperest), sfan5, VanessaE
+-- by Jeija, Uberi (Temperest), sfan5, VanessaE, Hawk777 and contributors
 --
 --
 --
@@ -11,7 +11,7 @@
 -- See the documentation on the forum for additional information, especially about crafting
 --
 --
--- For developer documentation see the Developers' section on mesecons.TK
+-- For basic development resources, see http://mesecons.net/developers.html
 --
 --
 --

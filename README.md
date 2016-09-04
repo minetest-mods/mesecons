@@ -53,6 +53,7 @@ These awesome people made Mesecons possible!
 
 | Contributor     | Contribution                     |
 | --------------- | -------------------------------- |
+| Hawk777         | Code for VoxelManip caching      |
 | Jat15           | Various tweaks.                  |
 | Jeija           | **Main developer! Everything.**  |
 | Jordach         | Noteblock sounds.                |
