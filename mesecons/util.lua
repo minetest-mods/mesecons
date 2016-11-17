@@ -231,11 +231,6 @@ local function hash_blockpos(pos)
 	})
 end
 
--- convert block hash --> node position
-local function unhash_blockpos(hash)
-	return vector.multiply(minetest.get_position_from_hash(hash), BLOCKSIZE)
-end
-
 -- Maps from a hashed mapblock position (as returned by hash_blockpos) to a
 -- table.
 --
