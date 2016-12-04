@@ -26,28 +26,28 @@ function mesecon.get_movestone_direction(pos)
 
 	lpos = {x=pos.x+1, y=pos.y, z=pos.z}
 	for n = 1, 3 do
-		if mesecon.is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+		if mesecon.is_power_on(lpos, rules[n]) then
 			return {x=0, y=0, z=-1}
 		end
 	end
 
 	lpos = {x = pos.x-1, y = pos.y, z = pos.z}
 	for n=4, 6 do
-		if mesecon.is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+		if mesecon.is_power_on(lpos, rules[n]) then
 			return {x=0, y=0, z=1}
 		end
 	end
 
 	lpos = {x = pos.x, y = pos.y, z = pos.z+1}
 	for n=7, 9 do
-		if mesecon.is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+		if mesecon.is_power_on(lpos, rules[n]) then
 			return {x=-1, y=0, z=0}
 		end
 	end
 
 	lpos = {x = pos.x, y = pos.y, z = pos.z-1}
 	for n=10, 12 do
-		if mesecon.is_power_on(lpos, rules[n].x, rules[n].y, rules[n].z) then
+		if mesecon.is_power_on(lpos, rules[n]) then
 			return {x=1, y=0, z=0}
 		end
 	end
