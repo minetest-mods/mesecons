@@ -280,6 +280,12 @@ local function get_digiline_send(pos)
 end
 
 
+function mesecon.program_luac()
+	-- This is a placeholder that will be redefined later.
+	-- It needs to be global so that the redefinition will be "noticed" by the function below.
+end
+
+
 local safe_globals = {
 	"assert", "error", "ipairs", "next", "pairs", "select",
 	"tonumber", "tostring", "type", "unpack", "_VERSION"
@@ -303,6 +309,7 @@ local function create_environment(pos, mem, event)
 		print = safe_print,
 		interrupt = get_interrupt(pos),
 		digiline_send = get_digiline_send(pos),
+		pos = pos,
 		string = {
 			byte = string.byte,
 			char = string.char,
@@ -359,6 +366,10 @@ local function create_environment(pos, mem, event)
 			time = os.time,
 			datetable = safe_date,
 		},
+		program = function(code)
+			assert(type(code) == "string","Program is not a string")
+			mesecon.program_luac(pos,code)
+		end,
 	}
 	env._G = env
 
@@ -442,12 +453,15 @@ local function run(pos, event)
 	if type(env.port) ~= "table" then
 		return "Ports set are invalid."
 	end
+	if code == meta:get_string("code") then
+		-- LuaC was not reprogrammed
 
-	-- Actually set the ports
-	set_port_states(pos, env.port)
+		-- Actually set the ports
+		set_port_states(pos, env.port)
 
-	-- Save memory. This may burn the luacontroller if a memory overflow occurs.
-	save_memory(pos, meta, env.mem)
+		-- Save memory. This may burn the luacontroller if a memory overflow occurs.
+		save_memory(pos, meta, env.mem)
+	end
 end
 
 mesecon.queue:add_function("lc_interrupt", function (pos, luac_id, iid)
@@ -476,6 +490,15 @@ local function reset(pos)
 	set_port_states(pos, {a=false, b=false, c=false, d=false})
 end
 
+function mesecon.program_luac(pos, code)
+	reset(pos)
+	reset_meta(pos, code)
+	local err = run(pos, {type="program"})
+	if err then
+		print(err)
+		reset_meta(pos, code, err)
+	end
+end
 
 -----------------------
 -- Node Registration --
@@ -515,13 +538,7 @@ local function on_receive_fields(pos, form_name, fields, sender)
 		minetest.record_protection_violation(pos, name)
 		return
 	end
-	reset(pos)
-	reset_meta(pos, fields.code)
-	local err = run(pos, {type="program"})
-	if err then
-		print(err)
-		reset_meta(pos, fields.code, err)
-	end
+	mesecon.program_luac(pos,fields.code)
 end
 
 for a = 0, 1 do -- 0 = off  1 = on
