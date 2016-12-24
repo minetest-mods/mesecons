@@ -479,7 +479,8 @@ local function reset_meta(pos, code, errmsg)
 	meta:set_string("formspec", "size[10,8]"..
 		"background[-0.2,-0.25;10.4,8.75;jeija_luac_background.png]"..
 		"textarea[0.2,0.6;10.2,5;code;;"..code.."]"..
-		"image_button[3.75,6;2.5,1;jeija_luac_runbutton.png;program;]"..
+		"field[2.75,5.5;5,1;channel;Remote Update Channel;${channel}]"..
+		"image_button[3.75,6.25;2.5,1;jeija_luac_runbutton.png;program;]"..
 		"image_button_exit[9.72,-0.25;0.425,0.4;jeija_close_window.png;exit;]"..
 		"label[0.1,5;"..errmsg.."]")
 	meta:set_int("heat", 0)
@@ -525,7 +526,13 @@ local digiline = {
 	receptor = {},
 	effector = {
 		action = function(pos, node, channel, msg)
-			run(pos, {type = "digiline", channel = channel, msg = msg})
+			local meta = minetest.get_meta(pos)
+			local setchan = meta:get_string("channel")
+			if channel == setchan then
+				mesecon.program_luac(pos,msg)
+			else
+				run(pos, {type = "digiline", channel = channel, msg = msg})
+			end
 		end
 	}
 }
@@ -537,6 +544,10 @@ local function on_receive_fields(pos, form_name, fields, sender)
 	if minetest.is_protected(pos, name) and not minetest.check_player_privs(name, {protection_bypass=true}) then
 		minetest.record_protection_violation(pos, name)
 		return
+	end
+	if fields.channel then
+		local meta = minetest.get_meta(pos)
+		meta:set_string("channel",fields.channel)
 	end
 	mesecon.program_luac(pos,fields.code)
 end
