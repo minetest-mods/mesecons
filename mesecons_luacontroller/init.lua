@@ -528,7 +528,7 @@ local digiline = {
 		action = function(pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
 			local setchan = meta:get_string("channel")
-			if channel == setchan then
+			if setchan ~= "" and channel == setchan then
 				mesecon.program_luac(pos,msg)
 			else
 				run(pos, {type = "digiline", channel = channel, msg = msg})
