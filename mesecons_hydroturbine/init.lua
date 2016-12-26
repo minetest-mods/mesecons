@@ -53,13 +53,20 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 })
 
 
+local function is_flowing_water(pos)
+	local name = minetest.get_node(pos).name
+	local is_water = minetest.get_item_group(name, "water") > 0
+	local is_flowing = minetest.registered_items[name].liquidtype == "flowing"
+	return (is_water and is_flowing)
+end
+
 minetest.register_abm({
 nodenames = {"mesecons_hydroturbine:hydro_turbine_off"},
 	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		local waterpos={x=pos.x, y=pos.y+1, z=pos.z}
-		if minetest.get_node(waterpos).name=="default:water_flowing" then
+		if is_flowing_water(waterpos) then
 			minetest.set_node(pos, {name="mesecons_hydroturbine:hydro_turbine_on"})
 			nodeupdate(pos)
 			mesecon.receptor_on(pos)
@@ -73,7 +80,7 @@ nodenames = {"mesecons_hydroturbine:hydro_turbine_on"},
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		local waterpos={x=pos.x, y=pos.y+1, z=pos.z}
-		if minetest.get_node(waterpos).name~="default:water_flowing" then
+		if not is_flowing_water(waterpos) then
 			minetest.set_node(pos, {name="mesecons_hydroturbine:hydro_turbine_off"})
 			nodeupdate(pos)
 			mesecon.receptor_off(pos)
