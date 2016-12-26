@@ -41,12 +41,19 @@ mesecon.rules.alldirs =
 
 mesecon.rules.buttonlike_get = function(node)
 	local rules = mesecon.rules.buttonlike
-	if node.param2 == 2 then
+	local dir = minetest.facedir_to_dir(node.param2)
+	if dir.x == 1 then
+		-- No action needed
+	elseif dir.z == -1 then
 		rules=mesecon.rotate_rules_left(rules)
-	elseif node.param2 == 3 then
+	elseif dir.x == -1 then
 		rules=mesecon.rotate_rules_right(mesecon.rotate_rules_right(rules))
-	elseif node.param2 == 0 then
+	elseif dir.z == 1 then
 		rules=mesecon.rotate_rules_right(rules)
+	elseif dir.y == -1 then
+		rules=mesecon.rotate_rules_up(rules)
+	elseif dir.y == 1 then
+		rules=mesecon.rotate_rules_down(rules)
 	end
 	return rules
 end
