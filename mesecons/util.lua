@@ -179,6 +179,10 @@ end
 function mesecon.register_node(name, spec_common, spec_off, spec_on)
 	spec_common.drop = spec_common.drop or name .. "_off"
 	spec_common.__mesecon_basename = name
+	if spec_common.mesecon_wire then
+		-- Prevent wires from being rotated
+		spec_common.on_rotate = false
+	end
 	spec_on.__mesecon_state = "on"
 	spec_off.__mesecon_state = "off"
 
