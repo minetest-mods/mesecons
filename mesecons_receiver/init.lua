@@ -28,16 +28,8 @@ local receiver_get_rules = function (node)
 	return rules
 end
 
-minetest.register_node("mesecons_receiver:receiver_on", {
+mesecon.register_node("mesecons_receiver:receiver", {
 	drawtype = "nodebox",
-	tiles = {
-		"receiver_top_on.png",
-		"receiver_bottom_on.png",
-		"receiver_lr_on.png",
-		"receiver_lr_on.png",
-		"receiver_fb_on.png",
-		"receiver_fb_on.png",
-	},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
@@ -52,17 +44,8 @@ minetest.register_node("mesecons_receiver:receiver_on", {
 	},
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
-	mesecons = {conductor = {
-		state = mesecon.state.on,
-		rules = receiver_get_rules,
-		offstate = "mesecons_receiver:receiver_off"
-	}}
-})
-
-
-minetest.register_node("mesecons_receiver:receiver_off", {
-	drawtype = "nodebox",
-	description = "You hacker you",
+},
+{
 	tiles = {
 		"receiver_top_off.png",
 		"receiver_bottom_off.png",
@@ -71,136 +54,111 @@ minetest.register_node("mesecons_receiver:receiver_off", {
 		"receiver_fb_off.png",
 		"receiver_fb_off.png",
 	},
+	mesecons = {conductor = {
+		state = mesecon.state.off,
+		rules = receiver_get_rules,
+		onstate = "mesecons_receiver:receiver_on"
+	}}
+},
+{
+	tiles = {
+		"receiver_top_on.png",
+		"receiver_bottom_on.png",
+		"receiver_lr_on.png",
+		"receiver_lr_on.png",
+		"receiver_fb_on.png",
+		"receiver_fb_on.png",
+	},
+	mesecons = {conductor = {
+		state = mesecon.state.on,
+		rules = receiver_get_rules,
+		offstate = "mesecons_receiver:receiver_off"
+	}}
+})
+
+mesecon.register_node("mesecons_receiver:receiver_up", {
+	drawtype = "nodebox",
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
 	walkable = false,
 	selection_box = {
              	type = "fixed",
-		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }
+		fixed = up_rcvboxes
 	},
 	node_box = {
 		type = "fixed",
-		fixed = rcvboxes
+		fixed = up_rcvboxes
 	},
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
+},
+{
+	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
 		state = mesecon.state.off,
-		rules = receiver_get_rules,
-		onstate = "mesecons_receiver:receiver_on"
+		rules = {{x=1, y=0, z=0},
+			{x=-1, y=0, z=0},
+			{x=0,  y=0, z=1},
+			{x=0,  y=0, z=-1},
+			{x=0,  y=1, z=0},
+			{x=0,  y=2, z=0}},
+		onstate = "mesecons_receiver:receiver_up_on"
 	}}
-})
-
-minetest.register_node("mesecons_receiver:receiver_up_on", {
-	drawtype = "nodebox",
+},
+{
 	tiles = {"mesecons_wire_on.png"},
-	paramtype = "light",
-	sunlight_propagates = true,
-	walkable = false,
-	selection_box = {
-             	type = "fixed",
-		fixed = up_rcvboxes
-	},
-	node_box = {
-		type = "fixed",
-		fixed = up_rcvboxes
-	},
-	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
-	drop = "mesecons:wire_00000000_off",
 	mesecons = {conductor = {
 		state = mesecon.state.on,
 		rules = {{x=1, y=0, z=0},
 			{x=-1, y=0, z=0},
-			{x=0, y=0, z=1},
-			{x=0, y=0, z=-1},
-			{x=0, y=1, z=0},
-			{x=0, y=2, z=0}},
+			{x=0,  y=0, z=1},
+			{x=0,  y=0, z=-1},
+			{x=0,  y=1, z=0},
+			{x=0,  y=2, z=0}},
 		offstate = "mesecons_receiver:receiver_up_off"
 	}}
 })
 
-minetest.register_node("mesecons_receiver:receiver_up_off", {
+mesecon.register_node("mesecons_receiver:receiver_down", {
 	drawtype = "nodebox",
-	description = "You hacker you",
-	tiles = {"mesecons_wire_off.png"},
 	paramtype = "light",
+	paramtype2 = "facedir",
 	sunlight_propagates = true,
 	walkable = false,
 	selection_box = {
              	type = "fixed",
-		fixed = up_rcvboxes
+		fixed = down_rcvboxes
 	},
 	node_box = {
 		type = "fixed",
-		fixed = up_rcvboxes
+		fixed = down_rcvboxes
 	},
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
+},
+{
+	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
 		state = mesecon.state.off,
-		rules = {{x=1, y=0, z=0},
-			{x=-1, y=0, z=0},
+		rules = {{x=1,y=0, z=0},
+			{x=-1,y=0, z=0},
 			{x=0, y=0, z=1},
 			{x=0, y=0, z=-1},
-			{x=0, y=1, z=0},
-			{x=0, y=2, z=0}},
-		onstate = "mesecons_receiver:receiver_up_on"
+			{x=0, y=-2,z=0}},
+		onstate = "mesecons_receiver:receiver_down_on"
 	}}
-})
-
-minetest.register_node("mesecons_receiver:receiver_down_on", {
-	drawtype = "nodebox",
+},
+{
 	tiles = {"mesecons_wire_on.png"},
-	paramtype = "light",
-	sunlight_propagates = true,
-	walkable = false,
-	selection_box = {
-             	type = "fixed",
-		fixed = down_rcvboxes
-	},
-	node_box = {
-		type = "fixed",
-		fixed = down_rcvboxes
-	},
-	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
-	drop = "mesecons:wire_00000000_off",
 	mesecons = {conductor = {
 		state = mesecon.state.on,
 		rules = {{x=1,y=0, z=0},
 			{x=-1,y=0, z=0},
-			{x=0,y=0, z=1},
-			{x=0,y=0, z=-1},
-			{x=0,y=-2, z=0}},
+			{x=0, y=0, z=1},
+			{x=0, y=0, z=-1},
+			{x=0, y=-2,z=0}},
 		offstate = "mesecons_receiver:receiver_down_off"
-	}}
-})
-
-minetest.register_node("mesecons_receiver:receiver_down_off", {
-	drawtype = "nodebox",
-	description = "You hacker you",
-	tiles = {"mesecons_wire_off.png"},
-	paramtype = "light",
-	sunlight_propagates = true,
-	walkable = false,
-	selection_box = {
-             	type = "fixed",
-		fixed = down_rcvboxes
-	},
-	node_box = {
-		type = "fixed",
-		fixed = down_rcvboxes
-	},
-	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
-	drop = "mesecons:wire_00000000_off",
-	mesecons = {conductor = {
-		state = mesecon.state.off,
-		rules = {{x=1,y=0, z=0},
-			{x=-1,y=0, z=0},
-			{x=0,y=0, z=1},
-			{x=0,y=0, z=-1},
-			{x=0,y=-2, z=0}},
-		onstate = "mesecons_receiver:receiver_down_on"
 	}}
 })
 
@@ -287,7 +245,7 @@ minetest.register_on_placenode(function (pos, node)
 	end
 end)
 
-function mesecon.buttonlike_onrotate(pos,node,_,_,newparam2)
-	minetest.after(0,mesecon.receiver_remove,pos,node)
-	minetest.after(0,mesecon.receiver_place,pos)
+function mesecon.buttonlike_onrotate(pos, node, _, _, newparam2)
+	minetest.after(0, mesecon.receiver_remove, pos, node)
+	minetest.after(0, mesecon.receiver_place, pos)
 end
