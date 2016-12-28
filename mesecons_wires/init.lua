@@ -200,7 +200,6 @@ register_wires = function()
 		if nodeid ~= "00000000" then
 			groups_off["not_in_creative_inventory"] = 1
 		end
-
 		mesecon.register_node(":mesecons:wire_"..nodeid, {
 			description = "Mesecon",
 			drawtype = "nodebox",
@@ -212,6 +211,7 @@ register_wires = function()
 			selection_box = selectionbox,
 			node_box = nodebox,
 			walkable = false,
+			on_rotate = false,
 			drop = "mesecons:wire_00000000_off",
 			mesecon_wire = true
 		}, {tiles = tiles_off, mesecons = meseconspec_off, groups = groups_off},

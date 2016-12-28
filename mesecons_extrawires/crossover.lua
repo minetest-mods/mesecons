@@ -41,6 +41,7 @@ minetest.register_node("mesecons_extrawires:crossover_off", {
 			{ -3/32, -17/32, 6/32, 3/32, -13/32, 16/32+0.001 },
 		},
 	},
+	on_rotate = screwdriver.rotate_simple,
 	groups = {dig_immediate=3, mesecon=3},
 	mesecons = {
 		conductor = {
@@ -77,6 +78,7 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 			{ -3/32, -17/32, 6/32, 3/32, -13/32, 16/32+0.001 },
 		},
 	},
+	on_rotate = screwdriver.rotate_simple,
 	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
 	mesecons = {
 		conductor = {
@@ -113,6 +115,7 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 			{ -3/32, -17/32, 6/32, 3/32, -13/32, 16/32+0.001 },
 		},
 	},
+	on_rotate = screwdriver.rotate_simple,
 	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
 	mesecons = {
 		conductor = {
@@ -149,6 +152,7 @@ minetest.register_node("mesecons_extrawires:crossover_on", {
 			{ -3/32, -17/32, 6/32, 3/32, -13/32, 16/32+0.001 },
 		},
 	},
+	on_rotate = screwdriver.rotate_simple,
 	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
 	mesecons = {
 		conductor = {

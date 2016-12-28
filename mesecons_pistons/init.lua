@@ -12,10 +12,10 @@ local piston_get_rules = function (node)
 		{x=0,  y=-1, z=1},
 		{x=0,  y=1,  z=-1},
 		{x=0,  y=-1, z=-1}}
-	local pusher_dir = vector.multiply(minetest.facedir_to_dir(node.param2),-1)
+	local pusher_dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 	for k,v in ipairs(all_rules) do
-		if vector.equals(v,pusher_dir) then
-			table.remove(all_rules,k)
+		if vector.equals(v, pusher_dir) then
+			table.remove(all_rules, k)
 		end
 	end
 	return all_rules
@@ -31,7 +31,7 @@ end
 
 local piston_remove_pusher = function(pos, node)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-	local dir = vector.multiply(minetest.facedir_to_dir(node.param2),-1)
+	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 	local pusherpos = vector.add(pos, dir)
 	local pushername = minetest.get_node(pusherpos).name
 
@@ -51,7 +51,7 @@ end
 
 local piston_on = function(pos, node)
 	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-	local dir = vector.multiply(minetest.facedir_to_dir(node.param2),-1)
+	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 	local np = vector.add(pos, dir)
 	local maxpush = mesecon.setting("piston_max_push", 15)
 	local success, stack, oldstack = mesecon.mvps_push(np, dir, maxpush)
@@ -74,18 +74,18 @@ local piston_off = function(pos, node)
 	piston_remove_pusher(pos, node)
 	if pistonspec.sticky then
 		local maxpull = mesecon.setting("piston_max_pull", 15)
-		local dir = vector.multiply(minetest.facedir_to_dir(node.param2),-1)
+		local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 		local pullpos = vector.add(pos, vector.multiply(dir, 2))
 		local stack = mesecon.mvps_pull_single(pullpos, vector.multiply(dir, -1), maxpull)
 		mesecon.mvps_process_stack(pos, dir, stack)
 	end
 end
 
-local piston_onrotate = function(pos,node,_,_,newparam2)
+local piston_onrotate = function(pos, node, _, _, newparam2)
 	local node_copy = minetest.get_node(pos)
-	minetest.after(0,mesecon.on_dignode,pos,node)
+	minetest.after(0, mesecon.on_dignode, pos, node)
 	node_copy.param2 = newparam2
-	minetest.after(0,mesecon.on_placenode,pos,node_copy)
+	minetest.after(0, mesecon.on_placenode, pos, node_copy)
 end
 
 local pt = 3/16 -- pusher thickness
@@ -342,85 +342,3 @@ minetest.register_craft({
 	}
 })
 
--- LBMs to convert old pistons to use facedir instead of separate up/down nodes
-minetest.register_lbm({
-	label = "Convert up pistons to use facedir",
-	name = "mesecons_pistons:update_up_pistons",
-	nodenames = {"mesecons_pistons:piston_up_normal_on","mesecons_pistons:piston_up_normal_off",
-			"mesecons_pistons:piston_up_sticky_on","mesecons_pistons:piston_up_sticky_off"},
-	action = function(pos,node)
-		if string.find(node.name,"sticky") then
-			if string.sub(node.name,-3,-1) == "_on" then
-				node.name = "mesecons_pistons:piston_sticky_on"
-			else
-				node.name = "mesecons_pistons:piston_sticky_off"
-			end
-		else
-			if string.sub(node.name,-3,-1) == "_on" then
-				node.name = "mesecons_pistons:piston_normal_on"
-			else
-				node.name = "mesecons_pistons:piston_normal_off"
-			end
-		end
-		local dir = {x=0,y=-1,z=0}
-		node.param2 = minetest.dir_to_facedir(dir,true)
-		minetest.swap_node(pos,node)
-	end
-})
-
-minetest.register_lbm({
-	label = "Convert down pistons to use facedir",
-	name = "mesecons_pistons:update_down_pistons",
-	nodenames = {"mesecons_pistons:piston_down_normal_on","mesecons_pistons:piston_down_normal_off",
-			"mesecons_pistons:piston_down_sticky_on","mesecons_pistons:piston_down_sticky_off"},
-	action = function(pos,node)
-		if string.find(node.name,"sticky") then
-			if string.sub(node.name,-3,-1) == "_on" then
-				node.name = "mesecons_pistons:piston_sticky_on"
-			else
-				node.name = "mesecons_pistons:piston_sticky_off"
-			end
-		else
-			if string.sub(node.name,-3,-1) == "_on" then
-				node.name = "mesecons_pistons:piston_normal_on"
-			else
-				node.name = "mesecons_pistons:piston_normal_off"
-			end
-		end
-		local dir = {x=0,y=1,z=0}
-		node.param2 = minetest.dir_to_facedir(dir,true)
-		minetest.swap_node(pos,node)
-	end
-})
-
-minetest.register_lbm({
-	label = "Convert up piston pushers to use facedir",
-	name = "mesecons_pistons:update_up_pushers",
-	nodenames = {"mesecons_pistons:piston_up_pusher_normal","mesecons_pistons:piston_up_pusher_sticky"},
-	action = function(pos,node)
-		if string.find(node.name,"sticky") then
-			node.name = "mesecons_pistons:piston_pusher_sticky"
-		else
-			node.name = "mesecons_pistons:piston_pusher_normal"
-		end
-		local dir = {x=0,y=-1,z=0}
-		node.param2 = minetest.dir_to_facedir(dir,true)
-		minetest.swap_node(pos,node)
-	end
-})
-
-minetest.register_lbm({
-	label = "Convert down piston pushers to use facedir",
-	name = "mesecons_pistons:update_down_pushers",
-	nodenames = {"mesecons_pistons:piston_down_pusher_normal","mesecons_pistons:piston_down_pusher_sticky"},
-	action = function(pos,node)
-		if string.find(node.name,"sticky") then
-			node.name = "mesecons_pistons:piston_pusher_sticky"
-		else
-			node.name = "mesecons_pistons:piston_pusher_normal"
-		end
-		local dir = {x=0,y=1,z=0}
-		node.param2 = minetest.dir_to_facedir(dir,true)
-		minetest.swap_node(pos,node)
-	end
-})
