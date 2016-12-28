@@ -273,9 +273,23 @@ end
 local function get_digiline_send(pos)
 	if not digiline then return end
 	return function(channel, msg)
+		-- Make sure channel is string, number or boolean
+		if (type(channel) ~= "string" and type(channel) ~= "number" and type(channel) ~= "boolean") then
+			return false
+		end
+
+		-- No sending functions over the wire and make sure serialized version
+		-- of the data is not insanely long to prevent DoS-like attacks
+		msg = mesecon.tablecopy_stripfunctions(msg)
+		local msg_ser = minetest.serialize(msg)
+		if #msg_ser > mesecon.setting("luacontroller_digiline_maxlen", 50000) then
+			return false
+		end
+
 		minetest.after(0, function()
 			digiline:receptor_send(pos, digiline.rules.default, channel, msg)
 		end)
+		return true
 	end
 end
 
@@ -284,6 +298,7 @@ local safe_globals = {
 	"assert", "error", "ipairs", "next", "pairs", "select",
 	"tonumber", "tostring", "type", "unpack", "_VERSION"
 }
+
 local function create_environment(pos, mem, event)
 	-- Gather variables for the environment
 	local vports = minetest.registered_nodes[minetest.get_node(pos).name].virtual_portstates

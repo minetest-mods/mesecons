@@ -151,6 +151,22 @@ function mesecon.tablecopy(table) -- deep table copy
 	return newtable
 end
 
+function mesecon.tablecopy_stripfunctions(table) -- deep table copy, but remove all functions
+	if type(table) == "function" then return nil end -- functions become nil
+	if type(table) ~= "table" then return table end -- no need to copy
+	local newtable = {}
+
+	for idx, item in pairs(table) do
+		if type(item) == "table" then
+			newtable[idx] = mesecon.tablecopy(item)
+		elseif type(item) ~= "function" then
+			newtable[idx] = item
+		end
+	end
+
+	return newtable
+end
+
 function mesecon.cmpAny(t1, t2)
 	if type(t1) ~= type(t2) then return false end
 	if type(t1) ~= "table" and type(t2) ~= "table" then return t1 == t2 end
