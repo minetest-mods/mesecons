@@ -305,8 +305,8 @@ local piston_up_down_get_stopper = function (node, dir, stack, stackid)
 end
 
 local piston_get_stopper = function (node, dir, stack, stackid)
-	pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-	dir = piston_get_direction(pistonspec.dir, node)
+	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
+	local dir = pistonspec.dir(node)
 	local pusherpos  = vector.add(stack[stackid].pos, dir)
 	local pushernode = minetest.get_node(pusherpos)
 
