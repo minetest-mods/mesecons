@@ -157,10 +157,12 @@ function mesecon.tablecopy_stripfunctions(table) -- deep table copy, but remove 
 	local newtable = {}
 
 	for idx, item in pairs(table) do
-		if type(item) == "table" then
-			newtable[idx] = mesecon.tablecopy(item)
-		elseif type(item) ~= "function" then
-			newtable[idx] = item
+		if type(idx) ~= "function" then
+			if type(item) == "table" then
+				newtable[idx] = mesecon.tablecopy_stripfunctions(item)
+			elseif type(item) ~= "function" then
+				newtable[idx] = item
+			end
 		end
 	end
 
