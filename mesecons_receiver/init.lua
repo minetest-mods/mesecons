@@ -6,13 +6,23 @@ local rcvboxes = {
 }
 
 local down_rcvboxes = {
-	{-8/16, -8/16, -8/16, 8/16, -7/16, 8/16},
-	{-1/16, -8/16, -1/16, 1/16, -24/16, 1/16},
+	{-6/16, -8/16, -6/16, 6/16, -7/16, 6/16}, -- Top plate
+	{-2/16, -6/16, -2/16, 2/16, -7/16, 2/16}, -- Bump
+	{-1/16, -8/16, -1/16, 1/16, -24/16, 1/16}, -- Wire through the block
+	{-1/16, -8/16, 6/16,  1/16, -7/16, 8/16}, -- Plate extension (North)
+	{-1/16, -8/16, -6/16, 1/16, -7/16, -8/16}, -- Plate extension (South)
+	{-8/16, -8/16, 1/16, -6/16, -7/16, -1/16}, -- Plate extension (West)
+	{6/16,  -8/16, 1/16,  8/16, -7/16, -1/16}, -- Plate extension (East)
 }
 
 local up_rcvboxes = {
-	{-8/16, -8/16, -8/16, 8/16, -7/16, 8/16},
-	{-1/16, -7/16, -1/16, 1/16, 24/16, 1/16},
+	{-6/16, -8/16, -6/16, 6/16, -7/16, 6/16}, -- Top plate
+	{-2/16, -6/16, -2/16, 2/16, -7/16, 2/16}, -- Bump
+	{-1/16, -6/16, -1/16, 1/16, 24/16, 1/16}, -- Wire through the block
+	{-1/16, -8/16, 6/16,  1/16, -7/16, 8/16}, -- Plate extension (North)
+	{-1/16, -8/16, -6/16, 1/16, -7/16, -8/16}, -- Plate extension (South)
+	{-8/16, -8/16, 1/16, -6/16, -7/16, -1/16}, -- Plate extension (West)
+	{6/16,  -8/16, 1/16,  8/16, -7/16, -1/16}, -- Plate extension (East)
 }
 
 local receiver_get_rules = function (node)
@@ -44,8 +54,8 @@ mesecon.register_node("mesecons_receiver:receiver", {
 	},
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
-},
-{
+	},
+	{
 	tiles = {
 		"receiver_top_off.png",
 		"receiver_bottom_off.png",
@@ -59,8 +69,8 @@ mesecon.register_node("mesecons_receiver:receiver", {
 		rules = receiver_get_rules,
 		onstate = "mesecons_receiver:receiver_on"
 	}}
-},
-{
+	},
+	{
 	tiles = {
 		"receiver_top_on.png",
 		"receiver_bottom_on.png",
@@ -92,8 +102,8 @@ mesecon.register_node("mesecons_receiver:receiver_up", {
 	},
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
-},
-{
+	},
+	{
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
 		state = mesecon.state.off,
@@ -105,8 +115,8 @@ mesecon.register_node("mesecons_receiver:receiver_up", {
 			{x=0,  y=2, z=0}},
 		onstate = "mesecons_receiver:receiver_up_on"
 	}}
-},
-{
+	},
+	{
 	tiles = {"mesecons_wire_on.png"},
 	mesecons = {conductor = {
 		state = mesecon.state.on,
@@ -170,27 +180,27 @@ function mesecon.receiver_get_pos_from_rcpt(pos, param2)
 	if dir.x == 1 then
 		-- No action needed
 	elseif dir.z == -1 then
-		rules=mesecon.rotate_rules_left(rules)
+		rules = mesecon.rotate_rules_left(rules)
 	elseif dir.x == -1 then
-		rules=mesecon.rotate_rules_right(mesecon.rotate_rules_right(rules))
+		rules = mesecon.rotate_rules_right(mesecon.rotate_rules_right(rules))
 	elseif dir.z == 1 then
-		rules=mesecon.rotate_rules_right(rules)
+		rules = mesecon.rotate_rules_right(rules)
 	elseif dir.y == -1 then
-		rules=mesecon.rotate_rules_up(rules)
+		rules = mesecon.rotate_rules_up(rules)
 		rcvtype = "mesecons_receiver:receiver_up_off"
 	elseif dir.y == 1 then
-		rules=mesecon.rotate_rules_down(rules)
+		rules = mesecon.rotate_rules_down(rules)
 		rcvtype = "mesecons_receiver:receiver_down_off"
 	end
 	local np = {	x = pos.x + rules[1].x,
 			y = pos.y + rules[1].y,
 			z = pos.z + rules[1].z}
-	return np,rcvtype
+	return np, rcvtype
 end
 
 function mesecon.receiver_place(rcpt_pos)
 	local node = minetest.get_node(rcpt_pos)
-	local pos,rcvtype = mesecon.receiver_get_pos_from_rcpt(rcpt_pos, node.param2)
+	local pos, rcvtype = mesecon.receiver_get_pos_from_rcpt(rcpt_pos, node.param2)
 	local nn = minetest.get_node(pos)
 	local param2 = minetest.dir_to_facedir(minetest.facedir_to_dir(node.param2))
 
