@@ -189,7 +189,10 @@ minetest.register_node("mesecons_commandblock:commandblock_off", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = commandblock_action_on
-	}}
+	}},
+	-- doc support:
+	_doc_items_longdesc = "There is no crafting recipe as this should only be available for server admins."..
+		" Quite similar to the Minecraft counterpart. Executes server commands.",
 })
 
 minetest.register_node("mesecons_commandblock:commandblock_on", {
@@ -206,3 +209,8 @@ minetest.register_node("mesecons_commandblock:commandblock_on", {
 		action_off = commandblock_action_off
 	}}
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_commandblock:commandblock_off", "nodes", "mesecons_commandblock:commandblock_on")
+end

@@ -71,8 +71,15 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 		state = mesecon.state.off,
 		rules = tjunction_get_rules,
 		onstate = "mesecons_extrawires:tjunction_on"
-	}}
+	}},
+	-- doc support:
+	_doc_items_longdesc = "Insulated T-Junctions are conductors that only conduct between the inputs (also not up or down)."
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_extrawires:tjunction_off", "nodes", "mesecons_extrawires:tjunction_on")
+end
 
 minetest.register_craft({
 	output = "mesecons_extrawires:tjunction_off 3",

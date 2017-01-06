@@ -59,6 +59,16 @@ boxes = {{ -6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },		-- the main slab
 	 { -8/16, -8/16, -1/16, -6/16, -7/16, 1/16 },		-- the two wire stubs
 	 { 6/16, -8/16, -1/16, 8/16, -7/16, 1/16 }}
 
+-- doc support:
+local _doc_items_entry_create = true
+local _doc_items_longdesc = "The delayer delays the signal from the input for a determined time."..
+	" The time can be set by punching the delayer. Possible delays are: 0.1 seconds, 0.3 seconds, 0.5 seconds and 1 second."..
+	" You may try to use it for creating songs with the noteblock."
+if i ~= 1 then
+	_doc_items_entry_create = false
+	_doc_items_longdesc = nil
+end
+
 minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), {
 	description = "Delayer",
 	drawtype = "nodebox",
@@ -112,9 +122,13 @@ minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), {
 			rules = delayer_get_input_rules,
 			action_on = delayer_activate
 		}
-	}
+	},
+	-- doc support:
+	_doc_items_create_entry = _doc_items_entry_create,
+	_doc_items_longdesc = _doc_items_longdesc
 })
-
+_doc_items_entry_create = nil
+_doc_items_longdesc = nil
 
 minetest.register_node("mesecons_delayer:delayer_on_"..tostring(i), {
 	description = "You hacker you",
@@ -166,8 +180,19 @@ minetest.register_node("mesecons_delayer:delayer_on_"..tostring(i), {
 			rules = delayer_get_input_rules,
 			action_off = delayer_deactivate
 		}
-	}
+	},
+	-- doc support:
+	_doc_items_create_entry = false
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	if i ~= 1 then
+		doc.add_entry_alias("nodes", "mesecons_delayer:delayer_off_1", "nodes", "mesecons_delayer:delayer_off_"..tostring(i))
+	end
+	doc.add_entry_alias("nodes", "mesecons_delayer:delayer_off_1", "nodes", "mesecons_delayer:delayer_on_"..tostring(i))
+end
+
 end
 
 minetest.register_craft({

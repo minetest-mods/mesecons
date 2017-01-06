@@ -169,6 +169,16 @@ mesecon.register_node("mesecons_receiver:receiver_down", {
 	}}
 })
 
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons:wire_00000000_off", "nodes", "mesecons_receiver:receiver_down_on")
+	doc.add_entry_alias("nodes", "mesecons:wire_00000000_off", "nodes", "mesecons_receiver:receiver_down_off")
+	doc.add_entry_alias("nodes", "mesecons:wire_00000000_off", "nodes", "mesecons_receiver:receiver_up_on")
+	doc.add_entry_alias("nodes", "mesecons:wire_00000000_off", "nodes", "mesecons_receiver:receiver_up_off")
+	doc.add_entry_alias("nodes", "mesecons:wire_00000000_off", "nodes", "mesecons_receiver:receiver_on")
+	doc.add_entry_alias("nodes", "mesecons:wire_00000000_off", "nodes", "mesecons_receiver:receiver_off")
+end
+
 function mesecon.receiver_get_pos_from_rcpt(pos, param2)
 	local rules = {{x = 2,  y = 0, z = 0}}
 	if param2 == nil then param2 = minetest.get_node(pos).param2 end

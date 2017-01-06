@@ -25,7 +25,9 @@ function mesecon.lightstone_add(name, base_item, texture_off, texture_on)
 			action_on = function (pos, node)
 				minetest.swap_node(pos, {name = "mesecons_lightstone:lightstone_" .. name .. "_on", param2 = node.param2})
 			end,
-		}}
+		}},
+		-- doc support:
+		_doc_items_longdesc = "Effector, glows " .. name .. " when powered."
 	})
 	minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_on", {
 	tiles = {texture_on},
@@ -40,6 +42,11 @@ function mesecon.lightstone_add(name, base_item, texture_off, texture_on)
 		end,
 	}}
 	})
+
+	-- doc support:
+	if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+		doc.add_entry_alias("nodes", "mesecons_lightstone:lightstone_" .. name .. "_off", "nodes", "mesecons_lightstone:lightstone_" .. name .. "_on")
+	end
 
 	minetest.register_craft({
 		output = "mesecons_lightstone:lightstone_" .. name .. "_off",

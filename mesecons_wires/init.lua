@@ -217,6 +217,20 @@ register_wires = function()
 		}, {tiles = tiles_off, mesecons = meseconspec_off, groups = groups_off},
 		{tiles = tiles_on, mesecons = meseconspec_on, groups = groups_on})
 
+		-- doc support:
+		if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+			if nodeid ~= "00000000" then
+				minetest.override_item("mesecons:wire_"..nodeid.."_off", {_doc_items_create_entry = false})
+				doc.add_entry_alias("nodes", "mesecons:wire_00000000_off", "nodes", "mesecons:wire_"..nodeid.."_off")
+			else
+				minetest.override_item("mesecons:wire_"..nodeid.."_off", {
+					_doc_items_longdesc = "Mesecons are the wires, use them to connect effectors with receptors."
+				})
+			end
+			minetest.override_item("mesecons:wire_"..nodeid.."_on", {_doc_items_create_entry = false})
+			doc.add_entry_alias("nodes", "mesecons:wire_00000000_off", "nodes", "mesecons:wire_"..nodeid.."_on")
+		end
+
 		if (nid_inc(nid) == false) then return end
 	end
 end
