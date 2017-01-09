@@ -73,7 +73,7 @@ function mesecon.register_movestone(name, def, is_sticky)
 		-- ### Step 1: Push nodes in front ###
 		local maxpush = mesecon.setting("movestone_max_push", 50)
 		local maxpull = mesecon.setting("movestone_max_pull", 50)
-		local success, stack, oldstack = mesecon.mvps_push(frontpos, direction, maxpush)
+		local success, stack, oldstack = mesecon.mvps_push(pos, frontpos, direction, maxpush)
 		if success then
 			mesecon.mvps_process_stack(stack)
 			mesecon.mvps_move_objects(frontpos, direction, oldstack)
@@ -85,15 +85,18 @@ function mesecon.register_movestone(name, def, is_sticky)
 
 		-- ### Step 2: Move the movestone ###
 		local node = minetest.get_node(pos)
+		local owner = minetest.get_meta(pos):get_string("owner")
 		minetest.set_node(frontpos, node)
 		minetest.remove_node(pos)
 		mesecon.on_dignode(pos, node)
 		mesecon.on_placenode(frontpos, node)
+		minetest.get_meta(frontpos):set_string("owner", owner)
+		minetest.get_meta(frontpos):set_string("infotext", "Movestone (owned by "..owner..")")
 		minetest.after(timer_interval, movestone_move, frontpos)
 
 		-- ### Step 3: If sticky, pull stack behind ###
 		if is_sticky then
-			mesecon.mvps_pull_all(backpos, direction, maxpull)
+			mesecon.mvps_pull_all(pos, backpos, direction, maxpull)
 		end
 	end
 
@@ -123,7 +126,11 @@ mesecon.register_movestone("mesecons_movestones:movestone", {
 	tiles = {"jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_side.png", "jeija_movestone_arrows.png", "jeija_movestone_arrows.png"},
 	groups = {cracky=3},
     	description="Movestone",
-	sounds = default.node_sound_stone_defaults()
+	sounds = default.node_sound_stone_defaults(),
+	after_place_node = function(pos, player)
+		minetest.get_meta(pos):set_string("owner", player:get_player_name())
+		minetest.get_meta(pos):set_string("infotext", "Movestone (owned by "..player:get_player_name()..")")
+	end,
 }, false)
 
 minetest.register_craft({
@@ -142,6 +149,10 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
 	groups = {cracky=3},
     	description="Sticky Movestone",
 	sounds = default.node_sound_stone_defaults(),
+	after_place_node = function(pos, player)
+		minetest.get_meta(pos):set_string("owner", player:get_player_name())
+		minetest.get_meta(pos):set_string("infotext", "Movestone (owned by "..player:get_player_name()..")")
+	end,
 }, true)
 
 minetest.register_craft({
