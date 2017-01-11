@@ -93,3 +93,11 @@ mesecon.queue:add_function("cooldown", function (pos)
 		meta:set_int("heat", heat - 1)
 	end
 end)
+
+-- "Shim" for simple rotation, will result in the following item in nodedefs using it:
+-- "on_rotate = screwdriver.rotate_simple" if screwdriver mod is installed
+-- "on_rotate = nil" (essentially not present) if screwdriver mod is missing
+
+if screwdriver then
+	mesecon.rotate_simple = screwdriver.rotate_simple
+end
