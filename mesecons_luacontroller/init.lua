@@ -278,9 +278,11 @@ local function get_digiline_send(pos)
 			return false
 		end
 
-		-- No sending functions over the wire and make sure serialized version
-		-- of the data is not insanely long to prevent DoS-like attacks
-		msg = mesecon.tablecopy_stripfunctions(msg)
+		-- It is technically possible to send functions over the wire since
+		-- the high performance impact of stripping those from the data has
+		-- been decided to not be worth the added realism.
+		-- Make sure serialized version of the data is not insanely long to
+		-- prevent DoS-like attacks
 		local msg_ser = minetest.serialize(msg)
 		if #msg_ser > mesecon.setting("luacontroller_digiline_maxlen", 50000) then
 			return false
