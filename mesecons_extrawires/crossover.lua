@@ -1,4 +1,4 @@
-function crossover_get_rules(node)
+local function crossover_get_rules(node)
 	return {
 		{--first wire
 			{x=-1,y=0,z=0},

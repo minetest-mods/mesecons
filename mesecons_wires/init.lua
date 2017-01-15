@@ -140,7 +140,7 @@ nid_inc = function (nid)
 	return i <= 8
 end
 
-register_wires = function()
+local function register_wires()
 	local nid = {}
 	while true do
 		-- Create group specifiction and nodeid string (see note above for details)

@@ -54,7 +54,7 @@ local function update_gate(pos, node, link, newstate)
 	end
 end
 
-function register_gate(name, inputnumber, assess, recipe)
+local function register_gate(name, inputnumber, assess, recipe)
 	local get_inputrules = inputnumber == 2 and gate_get_input_rules_twoinputs or
 		gate_get_input_rules_oneinput
 	local description = "Mesecons Logic Gate: "..name

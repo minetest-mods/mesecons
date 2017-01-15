@@ -2,7 +2,7 @@
 -- A lamp is "is an electrical device used to create artificial light" (wikipedia)
 -- guess what?
 
-mesecon_lamp_box = {
+local mesecon_lamp_box = {
 	type = "wallmounted",
 	wall_top = {-0.3125,0.375,-0.3125,0.3125,0.5,0.3125},
 	wall_bottom = {-0.3125,-0.5,-0.3125,0.3125,-0.375,0.3125},

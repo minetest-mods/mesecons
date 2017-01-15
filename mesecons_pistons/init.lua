@@ -1,6 +1,6 @@
 -- Get mesecon rules of pistons
-piston_rules =
-{{x=0,  y=0,  z=1}, --everything apart from z- (pusher side)
+local piston_rules = {
+ {x=0,  y=0,  z=1}, --everything apart from z- (pusher side)
  {x=1,  y=0,  z=0},
  {x=-1, y=0,  z=0},
  {x=1,  y=1,  z=0},
@@ -8,29 +8,32 @@ piston_rules =
  {x=-1, y=1,  z=0},
  {x=-1, y=-1, z=0},
  {x=0,  y=1,  z=1},
- {x=0,  y=-1, z=1}}
+ {x=0,  y=-1, z=1}
+}
 
-local piston_up_rules =
-{{x=0,  y=0,  z=-1}, --everything apart from y+ (pusher side)
+local piston_up_rules = {
+ {x=0,  y=0,  z=-1}, --everything apart from y+ (pusher side)
  {x=1,  y=0,  z=0},
  {x=-1, y=0,  z=0},
  {x=0,  y=0,  z=1},
  {x=1,  y=-1, z=0},
  {x=-1, y=-1, z=0},
  {x=0,  y=-1, z=1},
- {x=0,  y=-1, z=-1}}
+ {x=0,  y=-1, z=-1}
+}
 
-local piston_down_rules =
-{{x=0,  y=0,  z=-1}, --everything apart from y- (pusher side)
+local piston_down_rules = {
+ {x=0,  y=0,  z=-1}, --everything apart from y- (pusher side)
  {x=1,  y=0,  z=0},
  {x=-1, y=0,  z=0},
  {x=0,  y=0,  z=1},
  {x=1,  y=1, z=0},
  {x=-1, y=1, z=0},
  {x=0,  y=1, z=1},
- {x=0,  y=1, z=-1}}
+ {x=0,  y=1, z=-1}
+}
 
-local piston_get_rules = function (node)
+local function piston_get_rules(node)
 	local rules = piston_rules
 	for i = 1, node.param2 do
 		rules = mesecon.rotate_rules_left(rules)
@@ -38,7 +41,7 @@ local piston_get_rules = function (node)
 	return rules
 end
 
-piston_facedir_direction = function (node)
+local function piston_facedir_direction(node)
 	local rules = {{x = 0, y = 0, z = -1}}
 	for i = 1, node.param2 do
 		rules = mesecon.rotate_rules_left(rules)
@@ -46,7 +49,7 @@ piston_facedir_direction = function (node)
 	return rules[1]
 end
 
-piston_get_direction = function(dir, node)
+local function piston_get_direction(dir, node)
 	if type(dir) == "function" then
 		return dir(node)
 	else
