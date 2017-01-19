@@ -130,7 +130,7 @@ minetest.register_node(nodename, {
 		"button_exit[3.5,1;2,3;program;Program]")
 		meta:set_string("infotext", "Programmed Microcontroller")
 		yc.reset (pos)
-		update(pos)
+		yc.update(pos)
 	end,
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = mesecons,
