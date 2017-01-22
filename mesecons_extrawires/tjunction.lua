@@ -50,7 +50,7 @@ minetest.register_node("mesecons_extrawires:tjunction_on", {
 
 minetest.register_node("mesecons_extrawires:tjunction_off", {
 	drawtype = "nodebox",
-	description = "T-junction",
+	description = "Insulated Mesecon T-junction",
 	tiles = {
 		"jeija_insulated_wire_tjunction_tb_off.png",
 		"jeija_insulated_wire_tjunction_tb_off.png^[transformR180",

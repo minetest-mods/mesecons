@@ -19,7 +19,7 @@ local crossover_states = {
 }
 
 minetest.register_node("mesecons_extrawires:crossover_off", {
-	description = "Insulated Crossover",
+	description = "Insulated Mesecon Crossover",
 	drawtype = "mesh",
 	mesh = "mesecons_extrawires_crossover.b3d",
 	tiles = {

@@ -49,7 +49,7 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 
 minetest.register_node("mesecons_extrawires:corner_off", {
 	drawtype = "nodebox",
-	description = "Mesecon Corner",
+	description = "Insulated Mesecon Corner",
 	tiles = {
 		"jeija_insulated_wire_curved_tb_off.png",
 		"jeija_insulated_wire_curved_tb_off.png^[transformR270",
