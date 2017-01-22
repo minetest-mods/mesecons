@@ -157,7 +157,7 @@ plg.to_formspec_string = function(is)
 	local function dropdown_action(x, y, name, val)
 		local s = "dropdown[" .. tostring(x) .. "," .. tostring(y) .. ";"
 				.. "1.125,0.5;" .. name .. ";" -- the height seems to be ignored?
-		s = s .. " ,AND, OR,NOT,XOR;"
+		s = s .. " , AND, OR, NOT, XOR,NAND,   =,XNOR;"
 		if val == nil then
 			return s .. "0]" -- actually selects no field at all
 		end
@@ -166,6 +166,9 @@ plg.to_formspec_string = function(is)
 			["or"] = 2,
 			["not"] = 3,
 			["xor"] = 4,
+			["nand"] = 5,
+			["buf"] = 6,
+			["xnor"] = 7,
 		}
 		return s .. tostring(1 + mapping[val]) .. "]"
 	end
@@ -214,10 +217,13 @@ plg.from_formspec_fields = function(fields)
 			return nil
 		end
 		local mapping = {
-			["AND"] = "and",
-			[" OR"] = "or",
-			["NOT"] = "not",
-			["XOR"] = "xor",
+			[" AND"] = "and",
+			["  OR"] = "or",
+			[" NOT"] = "not",
+			[" XOR"] = "xor",
+			["NAND"] = "nand",
+			["   ="] = "buf",
+			["XNOR"] = "xnor",
 		}
 		return mapping[s]
 	end

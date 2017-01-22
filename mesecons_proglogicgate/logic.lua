@@ -16,10 +16,13 @@ lg.serialize = function(t)
 			return " "
 		end
 		local mapping = {
+			["&"] = "and",
 			["or"] = "|",
-			["and"] = "&",
-			["xor"] = "^",
 			["not"] = "~",
+			["xor"] = "^",
+			["nand"] = "?", --dunno
+			["buf"] = "_",
+			["xnor"] = "=",
 		}
 		return mapping[s]
 	end
@@ -47,10 +50,13 @@ lg.deserialize = function(s)
 	end
 	local function _action(c)
 		local mapping = {
-			["|"] = "or",
 			["&"] = "and",
-			["^"] = "xor",
+			["|"] = "or",
 			["~"] = "not",
+			["^"] = "xor",
+			["?"] = "nand",
+			["_"] = "buf",
+			["="] = "xnor",
 			[" "] = nil,
 		}
 		return mapping[c]
@@ -106,9 +112,9 @@ lg.validate_single = function(t, i)
 	-- check for completeness
 	if elem.action == nil then
 		return {i = i, msg = "Gate type required"}
-	elseif elem.action == "not" then
+	elseif elem.action == "not" or elem.action == "buf" then
 		if elem.op1 ~= nil or elem.op2 == nil or elem.dst == nil then
-			return {i = i, msg = "NOT requires second operand (only) and destination"}
+			return {i = i, msg = "Second operand (only) and destination required"}
 		end
 	else
 		if elem.op1 == nil or elem.op2 == nil or elem.dst == nil then
@@ -159,8 +165,14 @@ lg.interpret = function(t, a, b, c, d)
 			return v1 or v2
 		elseif s == "not" then
 			return not v2
-		else -- s == "xor"
+		elseif s == "xor" then
 			return v1 ~= v2
+		elseif s == "nand" then
+			return not (v1 and v2)
+		elseif s == "buf" then
+			return v2
+		else -- s == "xnor"
+			return v1 == v2
 		end
 	end
 	local function _op(t, regs, io_in)
