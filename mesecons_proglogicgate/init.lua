@@ -62,10 +62,10 @@ plg.register_nodes({
 	tiles = {
 		"", -- replaced later
 		"jeija_microcontroller_bottom.png",
-		"jeija_microcontroller_sides.png",
-		"jeija_microcontroller_sides.png",
-		"jeija_microcontroller_sides.png",
-		"jeija_microcontroller_sides.png"
+		"jeija_proglogicgate_sides.png",
+		"jeija_proglogicgate_sides.png",
+		"jeija_proglogicgate_sides.png",
+		"jeija_proglogicgate_sides.png"
 	},
 	inventory_image = "", -- replaced later
 	sunlight_propagates = true,
