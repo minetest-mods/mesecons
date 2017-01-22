@@ -3,7 +3,6 @@ local lcore = dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/l
 local plg = {}
 plg.rules = {}
 
-
 plg.register_nodes = function(template)
 	-- each loop is for one of the 4 IO ports
 	for a = 0, 1 do
@@ -291,16 +290,36 @@ plg.ports_changed = function(pos, rule, newstate)
 	)
 end
 
-plg.getports = function(pos) -- gets states of INPUT
+plg.getports = function(pos) -- gets merged states of INPUT & OUTPUT
+	local sin, sout
+
 	local s = minetest.get_meta(pos):get_string("portstates")
 	if s == nil then
-		return false, false, false, false
+		sin = {false, false, false, false}
+	else
+		sin = {
+			s:sub(1, 1) == "1",
+			s:sub(2, 2) == "1",
+			s:sub(3, 3) == "1",
+			s:sub(4, 4) == "1",
+		}
 	end
+
+	local name = minetest.get_node(pos).name
+	assert(name:find("mesecons_proglogicgate:gate") == 1)
+	local off = #"mesecons_proglogicgate:gate"
+	sout = {
+		name:sub(off+4, off+4) == "1",
+		name:sub(off+3, off+3) == "1",
+		name:sub(off+2, off+2) == "1",
+		name:sub(off+1, off+1) == "1",
+	}
+
 	return unpack({
-		s:sub(1, 1) == "1",
-		s:sub(2, 2) == "1",
-		s:sub(3, 3) == "1",
-		s:sub(4, 4) == "1",
+		sin[1] or sout[1],
+		sin[2] or sout[2],
+		sin[3] or sout[3],
+		sin[4] or sout[4],
 	})
 end
 

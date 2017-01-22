@@ -95,7 +95,7 @@ lg.validate_single = function(t, i)
 		end
 		return false
 	end
-	local function compare_op(t1, t2)
+	local function compare_op(t1, t2, allow_same_io)
 		if t1 == nil or t2 == nil then
 			return false
 		elseif t1.type ~= t2.type then
@@ -104,7 +104,7 @@ lg.validate_single = function(t, i)
 		if t1.type == "reg" and t1.n == t2.n then
 			return true
 		elseif t1.type == "io" and t1.port == t2.port then
-			return true
+			return not allow_same_io
 		end
 		return false
 	end
@@ -125,7 +125,7 @@ lg.validate_single = function(t, i)
 	if compare_op(elem.op1, elem.op2) then
 		return {i = i, msg = "Operands cannot be identical"}
 	end
-	if compare_op(elem.op1, elem.dst) or compare_op(elem.op2, elem.dst) then
+	if compare_op(elem.op1, elem.dst, true) or compare_op(elem.op2, elem.dst, true) then
 		return {i = i, msg = "Destination and operands must be different"}
 	end
 	-- check whether operands point to defined registers
