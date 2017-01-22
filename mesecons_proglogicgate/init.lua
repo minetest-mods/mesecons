@@ -3,6 +3,7 @@ local lcore = dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/l
 local plg = {}
 plg.rules = {}
 
+
 plg.register_nodes = function(template)
 	-- each loop is for one of the 4 IO ports
 	for a = 0, 1 do
@@ -108,8 +109,10 @@ plg.register_nodes({
 		else
 			meta:set_int("valid", 0)
 			meta:set_string("infotext", "Programmable Logic Gate")
-			form = form .. plg.red_box_around(err.i)
-					.. "label[0.25,8.25;" .. minetest.colorize("#ff0000", err.msg) .. "]"
+			local fmsg = minetest.colorize("#ff0000", minetest.formspec_escape(err.msg))
+			form = form .. plg.red_box_around(err.i) ..
+				"label[0.25,8.25;The gate configuration is erroneous in the marked area:]"..
+				"label[0.25,8.5;" .. fmsg .. "]"
 		end
 
 		meta:set_string("formspec", form)
