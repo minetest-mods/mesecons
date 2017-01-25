@@ -43,6 +43,7 @@
 	"Logic" : {
 		"Luacontroller" : "mesecons_luacontroller/doc/luacontroller",
 		"Programmable Logic Gates" : "mesecons_proglogicgate/doc/proglogicgate",
+		"FPGA Programmer" : "mesecons_proglogicgate/doc/programmer",
 		"Torch" : "mesecons_torch/doc/torch",
 		"Delayer" : "mesecons_delayer/doc/delayer",
 		"Gates" : {

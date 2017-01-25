@@ -1,7 +1,8 @@
-local lcore = dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/logic.lua")
-
 local plg = {}
 plg.rules = {}
+
+local lcore = dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/logic.lua")
+dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/tool.lua")(plg)
 
 
 plg.register_nodes = function(template)
@@ -100,25 +101,7 @@ plg.register_nodes({
 		local is = plg.from_formspec_fields(fields)
 
 		meta:set_string("instr", lcore.serialize(is))
-		local form = plg.to_formspec_string(is)
-
-		local err = lcore.validate(is)
-		if err == nil then
-			meta:set_int("valid", 1)
-			meta:set_string("infotext", "Programmable Logic Gate (functional)")
-		else
-			meta:set_int("valid", 0)
-			meta:set_string("infotext", "Programmable Logic Gate")
-			local fmsg = minetest.colorize("#ff0000", minetest.formspec_escape(err.msg))
-			form = form .. plg.red_box_around(err.i) ..
-				"label[0.25,8.25;The gate configuration is erroneous in the marked area:]"..
-				"label[0.25,8.5;" .. fmsg .. "]"
-		end
-
-		meta:set_string("formspec", form)
-
-		plg.setports(pos, false, false, false, false)
-		plg.update(pos)
+		plg.update_formspec(pos, is)
 	end,
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {
@@ -239,6 +222,33 @@ plg.from_formspec_fields = function(fields)
 		is[#is + 1] = cur
 	end
 	return is
+end
+
+plg.update_formspec = function(pos, is)
+	if type(is) == "string" then -- serialized string
+		is = lcore.deserialize(is)
+	end
+	local meta = minetest.get_meta(pos)
+	local form = plg.to_formspec_string(is)
+
+	local err = lcore.validate(is)
+	if err == nil then
+		meta:set_int("valid", 1)
+		meta:set_string("infotext", "Programmable Logic Gate (functional)")
+	else
+		meta:set_int("valid", 0)
+		meta:set_string("infotext", "Programmable Logic Gate")
+		local fmsg = minetest.colorize("#ff0000", minetest.formspec_escape(err.msg))
+		form = form .. plg.red_box_around(err.i) ..
+			"label[0.25,8.25;The gate configuration is erroneous in the marked area:]"..
+			"label[0.25,8.5;" .. fmsg .. "]"
+	end
+
+	meta:set_string("formspec", form)
+
+	-- reset ports and run programmed logic
+	plg.setports(pos, false, false, false, false)
+	plg.update(pos)
 end
 
 plg.red_box_around = function(i)
