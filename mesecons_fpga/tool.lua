@@ -21,7 +21,7 @@ minetest.register_tool("mesecons_fpga:programmer", {
 			return itemstack
 		end
 		itemstack:set_metadata(meta:get_string("instr"))
-		minetest.chat_send_player(placer:get_player_name(), "FPGA circuit configuration was copied!")
+		minetest.chat_send_player(placer:get_player_name(), "FPGA gate configuration was successfully copied!")
 		
 		return itemstack
 	end,
@@ -37,14 +37,14 @@ minetest.register_tool("mesecons_fpga:programmer", {
 
 		local imeta = itemstack:get_metadata()
 		if imeta == "" then
-			minetest.chat_send_player(user:get_player_name(), "Use shift+right-click to copy a circuit configuration first.")
+			minetest.chat_send_player(user:get_player_name(), "Use shift+right-click to copy a gate configuration first.")
 			return itemstack
 		end
 
 		local meta = minetest.get_meta(pos)
 		meta:set_string("instr", imeta)
 		plg.update_formspec(pos, imeta)
-		minetest.chat_send_player(user:get_player_name(), "Circuit configuration was successfully written to FPGA!")
+		minetest.chat_send_player(user:get_player_name(), "Gate configuration was successfully written to FPGA!")
 
 		return itemstack
 	end
