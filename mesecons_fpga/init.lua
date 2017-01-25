@@ -12,11 +12,11 @@ plg.register_nodes = function(template)
 	for c = 0, 1 do
 	for d = 0, 1 do
 		local ndef = table.copy(template)
-		local nodename = "mesecons_proglogicgate:gate"
+		local nodename = "mesecons_fpga:fpga"
 				.. tostring(d) .. tostring(c) .. tostring(b) .. tostring(a)
 
 		-- build top texture string
-		local texture = "jeija_proglogicgate_top.png"
+		local texture = "jeija_fpga_top.png"
 		if a == 1 then texture = texture .. "^jeija_microcontroller_LED_A.png" end
 		if b == 1 then texture = texture .. "^jeija_microcontroller_LED_B.png" end
 		if c == 1 then texture = texture .. "^jeija_microcontroller_LED_C.png" end
@@ -58,22 +58,22 @@ plg.register_nodes = function(template)
 end
 
 plg.register_nodes({
-	description = "Programmable Logic Gate",
+	description = "FPGA",
 	drawtype = "nodebox",
 	tiles = {
 		"", -- replaced later
 		"jeija_microcontroller_bottom.png",
-		"jeija_proglogicgate_sides.png",
-		"jeija_proglogicgate_sides.png",
-		"jeija_proglogicgate_sides.png",
-		"jeija_proglogicgate_sides.png"
+		"jeija_fpga_sides.png",
+		"jeija_fpga_sides.png",
+		"jeija_fpga_sides.png",
+		"jeija_fpga_sides.png"
 	},
 	inventory_image = "", -- replaced later
 	sunlight_propagates = true,
 	paramtype = "light",
 	walkable = true,
 	groups = {dig_immediate = 2, mesecon = 3},
-	drop = "mesecons_proglogicgate:gate0000",
+	drop = "mesecons_fpga:fpga0000",
 	selection_box = {
 		type = "fixed",
 		fixed = { -8/16, -8/16, -8/16, 8/16, -5/16, 8/16 },
@@ -93,7 +93,7 @@ plg.register_nodes({
 		meta:set_string("instr", lcore.serialize(is))
 		meta:set_int("valid", 0)
 		meta:set_string("formspec", plg.to_formspec_string(is))
-		meta:set_string("infotext", "Programmable Logic Gate")
+		meta:set_string("infotext", "FPGA")
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		if fields.program == nil then return end -- we only care when the user clicks "Program"
@@ -234,10 +234,10 @@ plg.update_formspec = function(pos, is)
 	local err = lcore.validate(is)
 	if err == nil then
 		meta:set_int("valid", 1)
-		meta:set_string("infotext", "Programmable Logic Gate (functional)")
+		meta:set_string("infotext", "FPGA (functional)")
 	else
 		meta:set_int("valid", 0)
-		meta:set_string("infotext", "Programmable Logic Gate")
+		meta:set_string("infotext", "FPGA")
 		local fmsg = minetest.colorize("#ff0000", minetest.formspec_escape(err.msg))
 		form = form .. plg.red_box_around(err.i) ..
 			"label[0.25,8.25;The gate configuration is erroneous in the marked area:]"..
@@ -319,8 +319,8 @@ plg.getports = function(pos) -- gets merged states of INPUT & OUTPUT
 	end
 
 	local name = minetest.get_node(pos).name
-	assert(name:find("mesecons_proglogicgate:gate") == 1)
-	local off = #"mesecons_proglogicgate:gate"
+	assert(name:find("mesecons_fpga:fpga") == 1)
+	local off = #"mesecons_fpga:fpga"
 	sout = {
 		name:sub(off+4, off+4) == "1",
 		name:sub(off+3, off+3) == "1",
@@ -337,7 +337,7 @@ plg.getports = function(pos) -- gets merged states of INPUT & OUTPUT
 end
 
 plg.setports = function(pos, A, B, C, D) -- sets states of OUTPUT
-	local base = "mesecons_proglogicgate:gate"
+	local base = "mesecons_fpga:fpga"
 
 	local name = base
 			.. (D and "1" or "0") .. (C and "1" or "0")
@@ -364,7 +364,7 @@ end
 
 
 minetest.register_craft({
-	output = "mesecons_proglogicgate:gate0000 2",
+	output = "mesecons_fpga:fpga0000 2",
 	recipe = {
 		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable'},
 		{'mesecons_materials:silicon', 'mesecons_materials:silicon'},

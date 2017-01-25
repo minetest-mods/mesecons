@@ -1,9 +1,9 @@
 return function(plg)
 
 
-minetest.register_tool("mesecons_proglogicgate:programmer", {
+minetest.register_tool("mesecons_fpga:programmer", {
 	description = "FPGA Programmer",
-	inventory_image = "jeija_proglogicgate_programmer.png",
+	inventory_image = "jeija_fpga_programmer.png",
 	stack_max = 1,
 	on_place = function(itemstack, placer, pointed_thing)
 		if pointed_thing.type ~= "node" then
@@ -11,7 +11,7 @@ minetest.register_tool("mesecons_proglogicgate:programmer", {
 		end
 
 		local pos = pointed_thing.under
-		if minetest.get_node(pos).name:find("mesecons_proglogicgate:gate") ~= 1 then
+		if minetest.get_node(pos).name:find("mesecons_fpga:fpga") ~= 1 then
 			return itemstack
 		end
 
@@ -31,7 +31,7 @@ minetest.register_tool("mesecons_proglogicgate:programmer", {
 		end
 
 		local pos = pointed_thing.under
-		if minetest.get_node(pos).name:find("mesecons_proglogicgate:gate") ~= 1 then
+		if minetest.get_node(pos).name:find("mesecons_fpga:fpga") ~= 1 then
 			return itemstack
 		end
 
@@ -51,7 +51,7 @@ minetest.register_tool("mesecons_proglogicgate:programmer", {
 })
 
 minetest.register_craft({
-	output = "mesecons_proglogicgate:programmer",
+	output = "mesecons_fpga:programmer",
 	recipe = {
 		{'group:mesecon_conductor_craftable'},
 		{'mesecons_materials:silicon'},
