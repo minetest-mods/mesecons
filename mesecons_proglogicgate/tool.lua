@@ -50,5 +50,13 @@ minetest.register_tool("mesecons_proglogicgate:programmer", {
 	end
 })
 
+minetest.register_craft({
+	output = "mesecons_proglogicgate:programmer",
+	recipe = {
+		{'group:mesecon_conductor_craftable'},
+		{'mesecons_materials:silicon'},
+	}
+})
+
 
 end

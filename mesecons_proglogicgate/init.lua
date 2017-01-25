@@ -371,5 +371,3 @@ minetest.register_craft({
 		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable'},
 	}
 })
-
-print("[OK] mesecons > " .. minetest.get_current_modname())
