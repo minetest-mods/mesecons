@@ -16,7 +16,7 @@ lg.serialize = function(t)
 			return " "
 		end
 		local mapping = {
-			["&"] = "and",
+			["and"] = "&",
 			["or"] = "|",
 			["not"] = "~",
 			["xor"] = "^",
