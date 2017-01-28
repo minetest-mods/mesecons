@@ -158,8 +158,9 @@ plg.to_formspec_string = function(is)
 		return s .. tostring(1 + mapping[val]) .. "]"
 	end
 	local s = "size[9,9]"..
+		"label[3.4,-0.15;FPGA gate configuration]"..
 		"button_exit[7,7.5;2,2.5;program;Program]"..
-		"box[4.2,0;0.03,8;#ffffff]"..
+		"box[4.2,0.5;0.03,7;#ffffff]"..
 		"label[0.25,0.25;op. 1]"..
 		"label[1.0,0.25;gate type]"..
 		"label[2.125,0.25;op. 2]"..
