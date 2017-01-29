@@ -400,6 +400,9 @@ local function create_sandbox(code, env)
 	local f, msg = loadstring(code)
 	if not f then return nil, msg end
 	setfenv(f, env)
+	if rawget(_G, "jit") then
+		jit.off(f, true)
+	end
 
 	-- Turn off JIT optimization for user code so that count
 	-- events are generated when adding debug hooks
