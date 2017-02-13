@@ -5,12 +5,12 @@
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 	drawtype = "mesh",
-	mesh = "jeija_hydro_turbine.obj",
+	mesh = "jeija_hydro_turbine_off.obj",
 	tiles = {
 		"jeija_hydro_turbine_sides_off.png",
 		"jeija_hydro_turbine_top_bottom.png",
-		"jeija_hydro_turbine_turbine_top_bottom.png",
-		"jeija_hydro_turbine_turbine_misc.png"
+		"jeija_hydro_turbine_turbine_top_bottom_off.png",
+		"jeija_hydro_turbine_turbine_misc_off.png"
 	},
 	inventory_image = "jeija_hydro_turbine_inv.png",
 	wield_scale = {x=0.75, y=0.75, z=0.75},
@@ -29,13 +29,15 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 	drawtype = "mesh",
-	mesh = "jeija_hydro_turbine.obj",
+	mesh = "jeija_hydro_turbine_on.obj",
 	wield_scale = {x=0.75, y=0.75, z=0.75},
 	tiles = {
 		"jeija_hydro_turbine_sides_on.png",
 		"jeija_hydro_turbine_top_bottom.png",
-		"jeija_hydro_turbine_turbine_top_bottom.png",
-		"jeija_hydro_turbine_turbine_misc.png"
+		{ name = "jeija_hydro_turbine_turbine_top_bottom_on.png",
+		    animation = {type = "vertical_frames", aspect_w = 128, aspect_h = 16, length = 1.6} },
+		{ name = "jeija_hydro_turbine_turbine_misc_on.png",
+		    animation = {type = "vertical_frames", aspect_w = 256, aspect_h = 32, length = 0.4} }
 	},
 	inventory_image = "jeija_hydro_turbine_inv.png",
 	drop = "mesecons_hydroturbine:hydro_turbine_off 1",
