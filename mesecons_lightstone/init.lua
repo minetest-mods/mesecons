@@ -14,11 +14,14 @@ local lightstone_rules = {
 	{x=0,  y=-1, z=0},
 }
 
-function mesecon.lightstone_add(name, base_item, texture_off, texture_on)
+function mesecon.lightstone_add(name, base_item, texture_off, texture_on, desc)
+	if not desc then
+		desc = name .. " Lighttone"
+	end
 	minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_off", {
 		tiles = {texture_off},
 		groups = {cracky=2, mesecon_effector_off = 1, mesecon = 2},
-		description=name.." Lightstone",
+		description = desc,
 		sounds = default.node_sound_stone_defaults(),
 		mesecons = {effector = {
 			rules = lightstone_rules,
@@ -52,9 +55,9 @@ function mesecon.lightstone_add(name, base_item, texture_off, texture_on)
 end
 
 
-mesecon.lightstone_add("red", "dye:red", "jeija_lightstone_red_off.png", "jeija_lightstone_red_on.png")
-mesecon.lightstone_add("green", "dye:green", "jeija_lightstone_green_off.png", "jeija_lightstone_green_on.png")
-mesecon.lightstone_add("blue", "dye:blue", "jeija_lightstone_blue_off.png", "jeija_lightstone_blue_on.png")
-mesecon.lightstone_add("gray", "dye:grey", "jeija_lightstone_gray_off.png", "jeija_lightstone_gray_on.png")
-mesecon.lightstone_add("darkgray", "dye:dark_grey", "jeija_lightstone_darkgray_off.png", "jeija_lightstone_darkgray_on.png")
-mesecon.lightstone_add("yellow", "dye:yellow", "jeija_lightstone_yellow_off.png", "jeija_lightstone_yellow_on.png")
+mesecon.lightstone_add("red", "dye:red", "jeija_lightstone_red_off.png", "jeija_lightstone_red_on.png", "Red Lightstone")
+mesecon.lightstone_add("green", "dye:green", "jeija_lightstone_green_off.png", "jeija_lightstone_green_on.png", "Green Lightstone")
+mesecon.lightstone_add("blue", "dye:blue", "jeija_lightstone_blue_off.png", "jeija_lightstone_blue_on.png", "Blue Lightstone")
+mesecon.lightstone_add("gray", "dye:grey", "jeija_lightstone_gray_off.png", "jeija_lightstone_gray_on.png", "Grey Lightstone")
+mesecon.lightstone_add("darkgray", "dye:dark_grey", "jeija_lightstone_darkgray_off.png", "jeija_lightstone_darkgray_on.png", "Dark Grey Lightstone")
+mesecon.lightstone_add("yellow", "dye:yellow", "jeija_lightstone_yellow_off.png", "jeija_lightstone_yellow_on.png", "Yellow Lightstone")

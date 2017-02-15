@@ -77,7 +77,7 @@ end
 
 -- Vertical wire
 mesecon.register_node("mesecons_extrawires:vertical", {
-	description = "Vertical mesecon",
+	description = "Vertical Mesecon",
 	drawtype = "nodebox",
 	walkable = false,
 	paramtype = "light",
