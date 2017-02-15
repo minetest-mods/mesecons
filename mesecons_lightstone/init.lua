@@ -16,7 +16,7 @@ local lightstone_rules = {
 
 function mesecon.lightstone_add(name, base_item, texture_off, texture_on, desc)
 	if not desc then
-		desc = name .. " Lighttone"
+		desc = name .. " Lightstone"
 	end
 	minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_off", {
 		tiles = {texture_off},
