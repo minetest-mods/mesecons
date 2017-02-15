@@ -41,7 +41,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 
 minetest.register_node("mesecons_insulated:insulated_off", {
 	drawtype = "nodebox",
-	description = "Insulated Straight Mesecon",
+	description = "Straight Insulated Mesecon",
 	tiles = {
 		"jeija_insulated_wire_sides_off.png",
 		"jeija_insulated_wire_sides_off.png",
