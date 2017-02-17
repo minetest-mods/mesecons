@@ -12,7 +12,7 @@
 -- ports = get_real_port_states(pos): gets if inputs are powered from outside
 -- newport = merge_port_states(state1, state2): just does result = state1 or state2 for every port
 -- set_port(pos, rule, state): activates/deactivates the mesecons according to the port states
--- set_port_states(pos, ports): Applies new port states to a LuaController at pos
+-- set_port_states(pos, ports): Applies new port states to a Luacontroller at pos
 -- run(pos): runs the code in the controller at pos
 -- reset_meta(pos, code, errmsg): performs a software-reset, installs new code and prints error messages
 -- resetn(pos): performs a hardware reset, turns off all ports
@@ -219,7 +219,7 @@ end
 local function safe_string_find(...)
 	if (select(4, ...)) ~= true then
 		debug.sethook() -- Clear hook
-		error("string.find: 'plain' (fourth parameter) must always be true in a LuaController")
+		error("string.find: 'plain' (fourth parameter) must always be true in a Luacontroller")
 	end
 
 	return string.find(...)
@@ -232,7 +232,7 @@ local function remove_functions(x)
 	end
 
 	-- Make sure to not serialize the same table multiple times, otherwise
-	-- writing mem.test = mem in the LuaController will lead to infinite recursion
+	-- writing mem.test = mem in the Luacontroller will lead to infinite recursion
 	local seen = {}
 
 	local function rfuncs(x)
@@ -308,8 +308,8 @@ local function create_environment(pos, mem, event)
 	for k, v in pairs(vports) do vports_copy[k] = v end
 	local rports = get_real_port_states(pos)
 
-	-- Create new library tables on each call to prevent one LuaController
-	-- from breaking a library and messing up other LuaControllers.
+	-- Create new library tables on each call to prevent one Luacontroller
+	-- from breaking a library and messing up other Luacontrollers.
 	local env = {
 		pin = merge_port_states(vports, rports),
 		port = vports_copy,
@@ -595,7 +595,7 @@ for d = 0, 1 do
 	}
 
 	minetest.register_node(node_name, {
-		description = "Lua Controller",
+		description = "Luacontroller",
 		drawtype = "nodebox",
 		tiles = {
 			top,
@@ -636,7 +636,7 @@ end
 end
 
 ------------------------------
--- Overheated LuaController --
+-- Overheated Luacontroller --
 ------------------------------
 
 minetest.register_node(BASENAME .. "_burnt", {
