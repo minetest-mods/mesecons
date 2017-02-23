@@ -145,7 +145,7 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
 }, true)
 
 minetest.register_craft({
-	output = "mesecons_movestones:sticky_movestone 2",
+	output = "mesecons_movestones:sticky_movestone",
 	recipe = {
 		{"mesecons_materials:glue", "mesecons_movestones:movestone", "mesecons_materials:glue"},
 	}
