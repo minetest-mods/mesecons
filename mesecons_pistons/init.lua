@@ -112,8 +112,10 @@ local piston_orientate = function(pos, placer)
 	-- not placed by player
 	if not placer then return end
 
-	minetest.get_meta(pos):set_string("owner", placer:get_player_name())
-	minetest.get_meta(pos):set_string("infotext", "Piston (owned by "..placer:get_player_name()..")")
+	local meta = minetest.get_meta(pos)
+
+	meta:set_string("owner", placer:get_player_name())
+	meta:set_string("infotext", "Piston (owned by "..placer:get_player_name()..")")
 
 	-- placer pitch in degrees
 	local pitch = placer:get_look_pitch() * (180 / math.pi)

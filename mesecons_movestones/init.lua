@@ -85,13 +85,15 @@ function mesecon.register_movestone(name, def, is_sticky)
 
 		-- ### Step 2: Move the movestone ###
 		local node = minetest.get_node(pos)
-		local owner = minetest.get_meta(pos):get_string("owner")
+		local meta = minetest.get_meta(pos)
+		local owner = meta:get_string("owner")
 		minetest.set_node(frontpos, node)
+		local frontmeta = minetest.get_meta(frontpos)
 		minetest.remove_node(pos)
 		mesecon.on_dignode(pos, node)
 		mesecon.on_placenode(frontpos, node)
-		minetest.get_meta(frontpos):set_string("owner", owner)
-		minetest.get_meta(frontpos):set_string("infotext", "Movestone (owned by "..owner..")")
+		frontmeta:set_string("owner", owner)
+		frontmeta:set_string("infotext", "Movestone (owned by "..owner..")")
 		minetest.after(timer_interval, movestone_move, frontpos)
 
 		-- ### Step 3: If sticky, pull stack behind ###
@@ -128,8 +130,9 @@ mesecon.register_movestone("mesecons_movestones:movestone", {
     	description="Movestone",
 	sounds = default.node_sound_stone_defaults(),
 	after_place_node = function(pos, player)
-		minetest.get_meta(pos):set_string("owner", player:get_player_name())
-		minetest.get_meta(pos):set_string("infotext", "Movestone (owned by "..player:get_player_name()..")")
+		local meta = minetest.get_meta(pos)
+		meta:set_string("owner", player:get_player_name())
+		meta:set_string("infotext", "Movestone (owned by "..player:get_player_name()..")")
 	end,
 }, false)
 
@@ -150,8 +153,9 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
     	description="Sticky Movestone",
 	sounds = default.node_sound_stone_defaults(),
 	after_place_node = function(pos, player)
-		minetest.get_meta(pos):set_string("owner", player:get_player_name())
-		minetest.get_meta(pos):set_string("infotext", "Movestone (owned by "..player:get_player_name()..")")
+		local meta = minetest.get_meta(pos)
+		meta:set_string("owner", player:get_player_name())
+		meta:set_string("infotext", "Movestone (owned by "..player:get_player_name()..")")
 	end,
 }, true)
 
