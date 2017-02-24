@@ -153,14 +153,13 @@ end
 -- all_pull_sticky: All nodes are sticky in the direction that they are pulled from
 function mesecon.mvps_push_or_pull(from, ispulling, pos, stackdir, movedir, maximum, all_pull_sticky)
 	local frommeta = minetest.get_meta(from)
-	local has_meta = minetest.get_meta(from):to_table()
 	local owner = frommeta:get_string("owner")
 	local tnodes = mesecon.mvps_get_stack(pos, movedir, maximum, all_pull_sticky)
 	if not tnodes then return end
 	-- determine if one of the nodes blocks the push / pull
 	local nodes = {}
 	for id, n in ipairs(tnodes) do
-		if not has_meta or minetest.is_protected(n.pos, owner) then
+		if minetest.is_protected(n.pos, owner) then
 			if ispulling then
 				break
 			else
@@ -181,7 +180,7 @@ function mesecon.mvps_push_or_pull(from, ispulling, pos, stackdir, movedir, maxi
 	for _, n in ipairs(nodes) do
 		local np = vector.add(n.pos, movedir)
 
-		if not has_meta or minetest.is_protected(np, owner) then
+		if minetest.is_protected(np, owner) then
 			return
 		end
 	end
