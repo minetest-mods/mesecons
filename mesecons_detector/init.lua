@@ -5,19 +5,33 @@ local GET_COMMAND = "GET"
 -- The radius can be specified in mesecons/settings.lua
 
 local function object_detector_make_formspec(pos)
-	minetest.get_meta(pos):set_string("formspec", "size[9,2.5]" ..
+	local meta = minetest.get_meta(pos)
+		meta:set_string("formspec", "size[9,2.5]" ..
 		"field[0.3,  0;9,2;scanname;Name of player to scan for (empty for any):;${scanname}]"..
 		"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
 		"button_exit[7,0.75;2,3;;Save]")
+		if not meta:get_string("owner") then meta:set_string("owner", "") end
 end
 
-local function object_detector_on_receive_fields(pos, _, fields)
+local function after_place(pos, placer)
+	if placer then
+		minetest.get_meta(pos):set_string("owner", placer:get_player_name())
+	end
+end
+
+local function object_detector_on_receive_fields(pos, formname, fields, sender)
 	if not fields.scanname or not fields.digiline_channel then return end
 
 	local meta = minetest.get_meta(pos)
+	local owner = meta:get_string("owner")
+	if owner ~= "" and sender:get_player_name() ~= owner then
+		minetest.chat_send_player(sender:get_player_name(), "This detector is owned by "..owner.."!")
+		return
+	else
 	meta:set_string("scanname", fields.scanname)
 	meta:set_string("digiline_channel", fields.digiline_channel)
 	object_detector_make_formspec(pos)
+	end
 end
 
 -- returns true if player was found, false if not
@@ -28,16 +42,24 @@ local function object_detector_scan(pos)
 	if next(objs) == nil then return false end
 
 	local scanname = minetest.get_meta(pos):get_string("scanname")
+	local sep = "," -- Begin code to split scanname into array
+	local t={} ; i=1
+	for str in string.gmatch(scanname, "([^"..sep.."]+)") do 
+		t[i] = str:gsub("%s+", "")
+		i = i + 1
+	end -- end split code
 	local every_player = scanname == ""
 	for _, obj in pairs(objs) do
 		-- "" is returned if it is not a player; "" ~= nil; so only handle objects with foundname ~= ""
 		local foundname = obj:get_player_name()
 
 		if foundname ~= "" then
-			-- return true if scanning for any player or if specific playername was detected
-			if scanname == "" or foundname == scanname then
-				return true
+			for l = 1, i do
+				if (foundname == t[l] and foundname ~= "") or (foundname ~= "" and scanname == "") then
+					return true
+				end
 			end
+			-- return true if scanning for any player or if specific playername was detected
 		end
 	end
 
@@ -67,7 +89,8 @@ minetest.register_node("mesecons_detector:object_detector_off", {
 		state = mesecon.state.off,
 		rules = mesecon.rules.pplate
 	}},
-	on_construct = object_detector_make_formspec,
+	on_construct  = object_detector_make_formspec,
+	after_place_node = after_place,
 	on_receive_fields = object_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
 	digiline = object_detector_digiline
@@ -84,6 +107,7 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 		rules = mesecon.rules.pplate
 	}},
 	on_construct = object_detector_make_formspec,
+	after_place_node = after_place,
 	on_receive_fields = object_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
 	digiline = object_detector_digiline
@@ -128,17 +152,26 @@ minetest.register_abm({
 -- Detects the node in front of it
 
 local function node_detector_make_formspec(pos)
-	minetest.get_meta(pos):set_string("formspec", "size[9,2.5]" ..
+	local meta = minetest.get_meta(pos)
+	meta:set_string("formspec", "size[9,2.5]" ..
 		"field[0.3,  0;9,2;scanname;Name of node to scan for (empty for any):;${scanname}]"..
-		"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
+		"field[0.3,1.5;2,2;distance;Distance (0-10):;${distance}]"..
+		"field[2.5,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
 		"button_exit[7,0.75;2,3;;Save]")
+	if not meta:get_string("owner") then meta:set_string("owner", "") end
 end
 
-local function node_detector_on_receive_fields(pos, _, fields)
-	if not fields.scanname or not fields.digiline_channel then return end
+local function node_detector_on_receive_fields(pos, fieldname, fields, sender)
+	if not fields.scanname or not fields.digiline_channel or not fields.distance then return end
 
 	local meta = minetest.get_meta(pos)
+	local owner = meta:get_string("owner")
+	if owner ~= "" and sender:get_player_name() ~= owner then
+		minetest.chat_send_player(sender:get_player_name(), "This detector is owned by "..owner.."!")
+		return
+	end
 	meta:set_string("scanname", fields.scanname)
+	meta:set_string("distance", fields.distance)
 	meta:set_string("digiline_channel", fields.digiline_channel)
 	node_detector_make_formspec(pos)
 end
@@ -148,6 +181,14 @@ local function node_detector_scan(pos)
 	local node = minetest.get_node_or_nil(pos)
 	if not node then return end
 
+	local distance = minetest.get_meta(pos):get_string("distance")
+	if tonumber(distance) ~= nil then
+		distance = tonumber(distance)
+		if distance < 0 then distance = 0 end
+		if distance > 10 then distance = 10 end
+	else
+		distance = 0
+	end
 	local frontname = minetest.get_node(
 		vector.subtract(pos, minetest.facedir_to_dir(node.param2))
 	).name
@@ -194,6 +235,11 @@ local function after_place_node_detector(pos, placer)
 	local node = minetest.get_node(pos)
 	node.param2 = minetest.dir_to_facedir(vector.subtract(pos, placer_pos), true)
 	minetest.set_node(pos, node)
+	
+	if placer then
+		minetest.get_meta(pos):set_string("owner", placer:get_player_name())
+	end
+	
 end
 
 minetest.register_node("mesecons_detector:node_detector_off", {
