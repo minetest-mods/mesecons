@@ -6,11 +6,11 @@ local GET_COMMAND = "GET"
 
 local function object_detector_make_formspec(pos)
 	local meta = minetest.get_meta(pos)
-		meta:set_string("formspec", "size[9,2.5]" ..
-		"field[0.3,  0;9,2;scanname;Name of player to scan for (empty for any):;${scanname}]"..
-		"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
-		"button_exit[7,0.75;2,3;;Save]")
-		if not meta:get_string("owner") then meta:set_string("owner", "") end
+	meta:set_string("formspec", "size[9,2.5]" ..
+	"field[0.3,  0;9,2;scanname;Name of player to scan for (empty for any):;${scanname}]"..
+	"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
+	"button_exit[7,0.75;2,3;;Save]")
+	if not meta:get_string("owner") then meta:set_string("owner", "") end
 end
 
 local function after_place(pos, placer)
