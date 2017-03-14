@@ -6,11 +6,11 @@ local GET_COMMAND = "GET"
 
 local function object_detector_make_formspec(pos)
 	local meta = minetest.get_meta(pos)
-	meta:set_string("formspec", "size[9,2.5]" ..
-	"field[0.3,  0;9,2;scanname;Name of player to scan for (empty for any):;${scanname}]"..
-	"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
-	"button_exit[7,0.75;2,3;;Save]")
-	if not meta:get_string("owner") then meta:set_string("owner", "") end
+		meta:set_string("formspec", "size[9,2.5]" ..
+		"field[0.3,  0;9,2;scanname;Name of player to scan for (empty for any):;${scanname}]"..
+		"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
+		"button_exit[7,0.75;2,3;;Save]")
+		if not meta:get_string("owner") then meta:set_string("owner", "") end
 end
 
 local function after_place(pos, placer)
@@ -27,11 +27,10 @@ local function object_detector_on_receive_fields(pos, formname, fields, sender)
 	if owner ~= "" and sender:get_player_name() ~= owner then
 		minetest.chat_send_player(sender:get_player_name(), "This detector is owned by "..owner.."!")
 		return
-	else
+	end
 	meta:set_string("scanname", fields.scanname)
 	meta:set_string("digiline_channel", fields.digiline_channel)
 	object_detector_make_formspec(pos)
-	end
 end
 
 -- returns true if player was found, false if not
@@ -43,10 +42,9 @@ local function object_detector_scan(pos)
 
 	local scanname = minetest.get_meta(pos):get_string("scanname")
 	local sep = "," -- Begin code to split scanname into array
-	local t={} ; i=1
+	local t={}
 	for str in string.gmatch(scanname, "([^"..sep.."]+)") do 
-		t[i] = str:gsub("%s+", "")
-		i = i + 1
+		t[str:gsub("%s+", "")] = true
 	end -- end split code
 	local every_player = scanname == ""
 	for _, obj in pairs(objs) do
@@ -54,13 +52,12 @@ local function object_detector_scan(pos)
 		local foundname = obj:get_player_name()
 
 		if foundname ~= "" then
-			for l = 1, i do
-				if (foundname == t[l] and foundname ~= "") or (foundname ~= "" and scanname == "") then
-					return true
-				end
+			for _ in pairs(t) do
+				if t[foundname] then return true end
 			end
-			-- return true if scanning for any player or if specific playername was detected
 		end
+		
+		if scanname == "" then return true end -- Return true if no player name was specified
 	end
 
 	return false
@@ -190,7 +187,7 @@ local function node_detector_scan(pos)
 		distance = 0
 	end
 	local frontname = minetest.get_node(
-		vector.subtract(pos, minetest.facedir_to_dir(node.param2))
+		vector.subtract(pos, vector.multiply(minetest.facedir_to_dir(node.param2), distance+1))
 	).name
 	local scanname = minetest.get_meta(pos):get_string("scanname")
 
