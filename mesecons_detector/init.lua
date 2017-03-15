@@ -4,6 +4,12 @@ local GET_COMMAND = "GET"
 -- Detects players in a certain radius
 -- The radius can be specified in mesecons/settings.lua
 
+local function can_dig(pos, player)
+	local meta = minetest.get_meta(pos)
+	local owner = meta:get_string("owner")
+	return owner == "" or owner == player:get_player_name()
+end
+
 local function object_detector_make_formspec(pos)
 	local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", "size[9,2.5]" ..
@@ -87,6 +93,7 @@ minetest.register_node("mesecons_detector:object_detector_off", {
 		rules = mesecon.rules.pplate
 	}},
 	on_construct  = object_detector_make_formspec,
+	can_dig = can_dig,
 	after_place_node = after_place,
 	on_receive_fields = object_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
@@ -104,6 +111,7 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 		rules = mesecon.rules.pplate
 	}},
 	on_construct = object_detector_make_formspec,
+	can_dig = can_dig,
 	after_place_node = after_place,
 	on_receive_fields = object_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
@@ -248,6 +256,7 @@ minetest.register_node("mesecons_detector:node_detector_off", {
 		state = mesecon.state.off
 	}},
 	on_construct = node_detector_make_formspec,
+	can_dig = can_dig,
 	on_receive_fields = node_detector_on_receive_fields,
 	after_place_node = after_place_node_detector,
 	sounds = default.node_sound_stone_defaults(),
@@ -265,6 +274,7 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 		state = mesecon.state.on
 	}},
 	on_construct = node_detector_make_formspec,
+	can_dig = can_dig,
 	on_receive_fields = node_detector_on_receive_fields,
 	after_place_node = after_place_node_detector,
 	sounds = default.node_sound_stone_defaults(),
