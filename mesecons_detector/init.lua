@@ -178,18 +178,16 @@ local function node_detector_scan(pos)
 	local node = minetest.get_node_or_nil(pos)
 	if not node then return end
 
-	local distance = minetest.get_meta(pos):get_string("distance")
-	if tonumber(distance) ~= nil then
-		distance = tonumber(distance)
-		if distance < 0 then distance = 0 end
-		if distance > 10 then distance = 10 end
-	else
-		distance = 0
-	end
+	local meta = minetest.get_meta(pos)
+	
+	local distance = meta:get_int("distance")
+	if distance < 0 then distance = 0 end
+	if distance > 10 then distance = 10 end
+	
 	local frontname = minetest.get_node(
 		vector.subtract(pos, vector.multiply(minetest.facedir_to_dir(node.param2), distance+1))
 	).name
-	local scanname = minetest.get_meta(pos):get_string("scanname")
+	local scanname = meta:get_string("scanname")
 
 	return (frontname == scanname) or
 		(frontname ~= "air" and frontname ~= "ignore" and scanname == "")
