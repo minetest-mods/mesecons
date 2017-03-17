@@ -145,12 +145,9 @@ end
 local function node_detector_on_receive_fields(pos, fieldname, fields, sender)
 	if not fields.scanname or not fields.digiline_channel then return end
 
+	if minetest.is_protected(pos, sender:get_player_name()) then return end
+
 	local meta = minetest.get_meta(pos)
-	local owner = meta:get_string("owner")
-	if owner ~= "" and sender:get_player_name() ~= owner then
-		minetest.chat_send_player(sender:get_player_name(), "This detector is owned by "..owner.."!")
-		return
-	end
 	meta:set_string("scanname", fields.scanname)
 	meta:set_string("distance", fields.distance or "0")
 	meta:set_string("digiline_channel", fields.digiline_channel)
@@ -214,10 +211,6 @@ local function after_place_node_detector(pos, placer)
 	local node = minetest.get_node(pos)
 	node.param2 = minetest.dir_to_facedir(vector.subtract(pos, placer_pos), true)
 	minetest.set_node(pos, node)
-
-	if placer then
-		minetest.get_meta(pos):set_string("owner", placer:get_player_name())
-	end
 end
 
 minetest.register_node("mesecons_detector:node_detector_off", {
