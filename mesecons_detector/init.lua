@@ -4,36 +4,20 @@ local GET_COMMAND = "GET"
 -- Detects players in a certain radius
 -- The radius can be specified in mesecons/settings.lua
 
-local function can_dig(pos, player)
-	local meta = minetest.get_meta(pos)
-	local owner = meta:get_string("owner")
-	return owner == "" or owner == player:get_player_name()
-end
-
 local function object_detector_make_formspec(pos)
 	local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", "size[9,2.5]" ..
 		"field[0.3,  0;9,2;scanname;Name of player to scan for (empty for any):;${scanname}]"..
 		"field[0.3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
 		"button_exit[7,0.75;2,3;;Save]")
-		if not meta:get_string("owner") then meta:set_string("owner", "") end
-end
-
-local function after_place(pos, placer)
-	if placer then
-		minetest.get_meta(pos):set_string("owner", placer:get_player_name())
-	end
 end
 
 local function object_detector_on_receive_fields(pos, formname, fields, sender)
 	if not fields.scanname or not fields.digiline_channel then return end
 
+	if minetest.is_protected(pos, sender:get_player_name()) then return  end
+	
 	local meta = minetest.get_meta(pos)
-	local owner = meta:get_string("owner")
-	if owner ~= "" and sender:get_player_name() ~= owner then
-		minetest.chat_send_player(sender:get_player_name(), "This detector is owned by "..owner.."!")
-		return
-	end
 	meta:set_string("scanname", fields.scanname)
 	meta:set_string("digiline_channel", fields.digiline_channel)
 	object_detector_make_formspec(pos)
@@ -93,8 +77,6 @@ minetest.register_node("mesecons_detector:object_detector_off", {
 		rules = mesecon.rules.pplate
 	}},
 	on_construct  = object_detector_make_formspec,
-	can_dig = can_dig,
-	after_place_node = after_place,
 	on_receive_fields = object_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
 	digiline = object_detector_digiline
@@ -111,8 +93,6 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 		rules = mesecon.rules.pplate
 	}},
 	on_construct = object_detector_make_formspec,
-	can_dig = can_dig,
-	after_place_node = after_place,
 	on_receive_fields = object_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
 	digiline = object_detector_digiline
@@ -256,9 +236,7 @@ minetest.register_node("mesecons_detector:node_detector_off", {
 		state = mesecon.state.off
 	}},
 	on_construct = node_detector_make_formspec,
-	can_dig = can_dig,
 	on_receive_fields = node_detector_on_receive_fields,
-	after_place_node = after_place_node_detector,
 	sounds = default.node_sound_stone_defaults(),
 	digiline = node_detector_digiline
 })
@@ -274,9 +252,7 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 		state = mesecon.state.on
 	}},
 	on_construct = node_detector_make_formspec,
-	can_dig = can_dig,
 	on_receive_fields = node_detector_on_receive_fields,
-	after_place_node = after_place_node_detector,
 	sounds = default.node_sound_stone_defaults(),
 	digiline = node_detector_digiline
 })
