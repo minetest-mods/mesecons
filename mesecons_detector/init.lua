@@ -143,7 +143,7 @@ local function node_detector_make_formspec(pos)
 end
 
 local function node_detector_on_receive_fields(pos, fieldname, fields, sender)
-	if not fields.scanname or not fields.digiline_channel or not fields.distance then return end
+	if not fields.scanname or not fields.digiline_channel then return end
 
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
@@ -152,7 +152,7 @@ local function node_detector_on_receive_fields(pos, fieldname, fields, sender)
 		return
 	end
 	meta:set_string("scanname", fields.scanname)
-	meta:set_string("distance", fields.distance)
+	meta:set_string("distance", fields.distance or "0")
 	meta:set_string("digiline_channel", fields.digiline_channel)
 	node_detector_make_formspec(pos)
 end
