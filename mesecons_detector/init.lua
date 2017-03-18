@@ -139,8 +139,8 @@ local function node_detector_make_formspec(pos)
 	if meta:get_string("distance") == ""  then meta:set_string("distance", "0") end
 	meta:set_string("formspec", "size[9,2.5]" ..
 		"field[0.3,  0;9,2;scanname;Name of node to scan for (empty for any):;${scanname}]"..
-		"field[0.3,1.5;2,2;distance;Distance (0-10):;${distance}]"..
-		"field[2.5,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
+		"field[0.3,1.5;2.5,2;distance;Distance (0-"..mesecon.setting("node_detector_distance_max", 10).."):;${distance}]"..
+		"field[3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
 		"button_exit[7,0.75;2,3;;Save]")
 end
 
