@@ -86,6 +86,19 @@ function mesecon.do_cooldown(pos)
 	object_heat[id] = nil
 end
 
+function mesecon.move_hot_nodes(moved_nodes)
+	local new_heat = {}
+	for _, n in ipairs(moved_nodes) do
+		local old_id = minetest.hash_node_position(n.oldpos)
+		local new_id = minetest.hash_node_position(n.pos)
+		new_heat[new_id] = object_heat[old_id]
+		object_heat[old_id] = nil
+	end
+	for id, heat in pairs(new_heat) do
+		object_heat[id] = heat
+	end
+end
+
 local function global_cooldown(dtime)
 	cooldown_timer = cooldown_timer + dtime
 	if cooldown_timer < COOLDOWN_STEP then
