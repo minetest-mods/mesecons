@@ -31,11 +31,9 @@ local function object_detector_scan(pos)
 	if next(objs) == nil then return false end
 
 	local scanname = minetest.get_meta(pos):get_string("scanname")
-	local sep = "," -- Begin code to split scanname into array
-	local scan_for = {}
-	for str in string.gmatch(scanname, "([^"..sep.."]+)") do
-		scan_for[str:gsub("%s+", "")] = true
-	end -- end split code
+	local sep = ","
+	local scan_for = string.split(scanname, sep)
+	
 	local every_player = scanname == ""
 	for _, obj in pairs(objs) do
 		-- "" is returned if it is not a player; "" ~= nil; so only handle objects with foundname ~= ""
@@ -162,8 +160,9 @@ local function node_detector_scan(pos)
 	local meta = minetest.get_meta(pos)
 
 	local distance = meta:get_int("distance")
+	local distance_max = mesecon.setting("node_detector_distance_max", 10)
 	if distance < 0 then distance = 0 end
-	if distance > 10 then distance = 10 end
+	if distance > distance_max then distance = distance_max end
 
 	local frontname = minetest.get_node(
 		vector.subtract(pos, vector.multiply(minetest.facedir_to_dir(node.param2), distance+1))
