@@ -181,11 +181,17 @@ local node_detector_digiline = {
 	effector = {
 		action = function(pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
+			
+			local distance = meta:get_int("distance")
+			local distance_max = mesecon.setting("node_detector_distance_max", 10)
+			if distance < 0 then distance = 0 end
+			if distance > distance_max then distance = distance_max end
+			
 			if channel ~= meta:get_string("digiline_channel") then return end
 
 			if msg == GET_COMMAND then
 				local nodename = minetest.get_node(
-					vector.subtract(pos, minetest.facedir_to_dir(node.param2))
+					vector.subtract(pos, vector.multiply(minetest.facedir_to_dir(node.param2), distance+1))
 				).name
 
 				digiline:receptor_send(pos, digiline.rules.default, channel, nodename)
