@@ -31,10 +31,9 @@ local function object_detector_scan(pos)
 	if next(objs) == nil then return false end
 
 	local scanname = minetest.get_meta(pos):get_string("scanname")
-	local sep = ","
 	local scan_for = {}
-	for str in string.gmatch(scanname, "([^"..sep.."]+)") do
-		scan_for[str:gsub("%s+", "")] = true
+	for _, str in pairs(string.split(scanname:gsub(" ", ""), ",")) do
+		scan_for[str] = true
 	end
 	
 	local every_player = scanname == ""
