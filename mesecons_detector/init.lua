@@ -136,6 +136,7 @@ minetest.register_abm({
 
 local function node_detector_make_formspec(pos)
 	local meta = minetest.get_meta(pos)
+	if meta:get_string("distance") == ""  then meta:set_string("distance", "0") end
 	meta:set_string("formspec", "size[9,2.5]" ..
 		"field[0.3,  0;9,2;scanname;Name of node to scan for (empty for any):;${scanname}]"..
 		"field[0.3,1.5;2,2;distance;Distance (0-10):;${distance}]"..
