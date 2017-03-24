@@ -315,7 +315,7 @@ local function create_environment(pos, mem, event)
 		port = vports_copy,
 		event = event,
 		mem = mem,
-		heat = minetest.get_meta(pos):get_int("heat"),
+		heat = mesecon.get_heat(pos),
 		heat_max = mesecon.setting("overheat_max", 20),
 		print = safe_print,
 		interrupt = get_interrupt(pos),
@@ -485,7 +485,6 @@ local function reset_meta(pos, code, errmsg)
 		"image_button[3.75,6;2.5,1;jeija_luac_runbutton.png;program;]"..
 		"image_button_exit[9.72,-0.25;0.425,0.4;jeija_close_window.png;exit;]"..
 		"label[0.1,5;"..errmsg.."]")
-	meta:set_int("heat", 0)
 	meta:set_int("luac_id", math.random(1, 65535))
 end
 

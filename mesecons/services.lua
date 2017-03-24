@@ -78,12 +78,22 @@ function mesecon.do_overheat(pos)
 	local id = minetest.hash_node_position(pos)
 	local heat = (object_heat[id] or 0) + 1
 	object_heat[id] = heat
-	return heat >= OVERHEAT_MAX
+	if heat >= OVERHEAT_MAX then
+		minetest.log("action", "Node overheats at " .. minetest.pos_to_string(pos))
+		object_heat[id] = nil
+		return true
+	end
+	return false
 end
 
 function mesecon.do_cooldown(pos)
 	local id = minetest.hash_node_position(pos)
 	object_heat[id] = nil
+end
+
+function mesecon.get_heat(pos)
+	local id = minetest.hash_node_position(pos)
+	return object_heat[id] or 0
 end
 
 function mesecon.move_hot_nodes(moved_nodes)
