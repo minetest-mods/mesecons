@@ -23,6 +23,16 @@ minetest.register_craft({
 	}
 })
 
+
+minetest.register_craft({
+	output = 'mesecons_random:conductingfence 4',
+	recipe = {
+		{"group:stick", "group:stick", "group:stick"},
+		{"group:stick", "group:mesecon_conductor_craftable", "group:stick"},
+		{"group:stick", "default:steel_ingot", "group:stick"},
+	}
+})
+
 -- GHOSTSTONE
 
 minetest.register_node("mesecons_random:ghoststone", {
@@ -31,7 +41,7 @@ minetest.register_node("mesecons_random:ghoststone", {
 	is_ground_content = true,
 	inventory_image = minetest.inventorycube("jeija_ghoststone_inv.png"),
 	groups = {cracky=3},
-	sounds = default.node_sound_stone_defaults(),
+	--sounds = default.node_sound_stone_defaults(),
 	mesecons = {conductor = {
 		state = mesecon.state.off,
 		rules = { --axes
