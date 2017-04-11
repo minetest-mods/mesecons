@@ -625,6 +625,7 @@ for d = 0, 1 do
 			d = d == 1,
 		},
 		after_dig_node = function (pos, node)
+			mesecon.do_cooldown(pos)
 			mesecon.receptor_off(pos, output_rules)
 		end,
 		is_luacontroller = true,
