@@ -74,7 +74,8 @@ local function register_gate(name, inputnumber, assess, recipe, description)
 		assess = assess,
 		onstate = basename.."_on",
 		offstate = basename.."_off",
-		inputnumber = inputnumber
+		inputnumber = inputnumber,
+		after_dig_node = mesecon.do_cooldown,
 	},{
 		tiles = {"jeija_microcontroller_bottom.png^".."jeija_gate_off.png^"..
 			"jeija_gate_"..name..".png"},
