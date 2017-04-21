@@ -22,7 +22,7 @@ OK, I want in.
 --------------
 Go get it!
 
-[DOWNLOAD IT NOW](https://github.com/Jeija/minetest-mod-mesecons/archive/master.zip)
+[DOWNLOAD IT NOW](https://github.com/minetest-mods/mesecons/archive/master.zip)
 
 Now go ahead and install it like any other Minetest mod. Don't know how? Check out [the wonderful page about it](http://wiki.minetest.com/wiki/Mods) over at the Minetest Wiki. For your convenience, here's a quick summary:
 
@@ -45,7 +45,7 @@ An overview for the very newest of new beginners? How does [this one](http://ube
 
 Want to get more into building? Why not check out the [Mesecons Laboratory](http://uberi.mesecons.net/), a website dedicated to advanced Mesecons builders?
 
-Want to contribute to Mesecons itself? Check out the [source code](https://github.com/Jeija/minetest-mod-mesecons)!
+Want to contribute to Mesecons itself? Check out the [source code](https://github.com/minetest-mods/mesecons)!
 
 Who wrote it anyways?
 ---------------------
