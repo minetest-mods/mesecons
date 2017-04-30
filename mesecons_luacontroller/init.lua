@@ -296,6 +296,12 @@ local function get_digiline_send(pos)
 end
 
 
+function mesecon.program_luac()
+	-- This is a placeholder that will be redefined later.
+	-- It needs to be global so that the redefinition will be "noticed" by the function below.
+end
+
+
 local safe_globals = {
 	"assert", "error", "ipairs", "next", "pairs", "select",
 	"tonumber", "tostring", "type", "unpack", "_VERSION"
@@ -320,6 +326,7 @@ local function create_environment(pos, mem, event)
 		print = safe_print,
 		interrupt = get_interrupt(pos),
 		digiline_send = get_digiline_send(pos),
+		pos = pos,
 		string = {
 			byte = string.byte,
 			char = string.char,
@@ -376,6 +383,10 @@ local function create_environment(pos, mem, event)
 			time = os.time,
 			datetable = safe_date,
 		},
+		program = function(code)
+			assert(type(code) == "string","Program is not a string")
+			mesecon.program_luac(pos,code)
+		end,
 	}
 	env._G = env
 
@@ -459,12 +470,15 @@ local function run(pos, event)
 	if type(env.port) ~= "table" then
 		return "Ports set are invalid."
 	end
+	if code == meta:get_string("code") then
+		-- LuaC was not reprogrammed
 
-	-- Actually set the ports
-	set_port_states(pos, env.port)
+		-- Actually set the ports
+		set_port_states(pos, env.port)
 
-	-- Save memory. This may burn the luacontroller if a memory overflow occurs.
-	save_memory(pos, meta, env.mem)
+		-- Save memory. This may burn the luacontroller if a memory overflow occurs.
+		save_memory(pos, meta, env.mem)
+	end
 end
 
 mesecon.queue:add_function("lc_interrupt", function (pos, luac_id, iid)
@@ -482,7 +496,8 @@ local function reset_meta(pos, code, errmsg)
 	meta:set_string("formspec", "size[10,8]"..
 		"background[-0.2,-0.25;10.4,8.75;jeija_luac_background.png]"..
 		"textarea[0.2,0.6;10.2,5;code;;"..code.."]"..
-		"image_button[3.75,6;2.5,1;jeija_luac_runbutton.png;program;]"..
+		"field[2.75,5.5;5,1;channel;Remote Update Channel;${channel}]"..
+		"image_button[3.75,6.25;2.5,1;jeija_luac_runbutton.png;program;]"..
 		"image_button_exit[9.72,-0.25;0.425,0.4;jeija_close_window.png;exit;]"..
 		"label[0.1,5;"..errmsg.."]")
 	meta:set_int("luac_id", math.random(1, 65535))
@@ -492,6 +507,15 @@ local function reset(pos)
 	set_port_states(pos, {a=false, b=false, c=false, d=false})
 end
 
+function mesecon.program_luac(pos, code)
+	reset(pos)
+	reset_meta(pos, code)
+	local err = run(pos, {type="program"})
+	if err then
+		print(err)
+		reset_meta(pos, code, err)
+	end
+end
 
 -----------------------
 -- Node Registration --
@@ -518,7 +542,13 @@ local digiline = {
 	receptor = {},
 	effector = {
 		action = function(pos, node, channel, msg)
-			run(pos, {type = "digiline", channel = channel, msg = msg})
+			local meta = minetest.get_meta(pos)
+			local setchan = meta:get_string("channel")
+			if setchan ~= "" and channel == setchan then
+				mesecon.program_luac(pos,msg)
+			else
+				run(pos, {type = "digiline", channel = channel, msg = msg})
+			end
 		end
 	}
 }
@@ -531,13 +561,11 @@ local function on_receive_fields(pos, form_name, fields, sender)
 		minetest.record_protection_violation(pos, name)
 		return
 	end
-	reset(pos)
-	reset_meta(pos, fields.code)
-	local err = run(pos, {type="program"})
-	if err then
-		print(err)
-		reset_meta(pos, fields.code, err)
+	if fields.channel then
+		local meta = minetest.get_meta(pos)
+		meta:set_string("channel",fields.channel)
 	end
+	mesecon.program_luac(pos,fields.code)
 end
 
 for a = 0, 1 do -- 0 = off  1 = on
