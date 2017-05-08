@@ -478,7 +478,7 @@ local function reset_meta(pos, code, errmsg)
 	local meta = minetest.get_meta(pos)
 	meta:set_string("code", code)
 	code = minetest.formspec_escape(code or "")
-	errmsg = minetest.formspec_escape(errmsg or "")
+	errmsg = minetest.formspec_escape(errmsg and dump(errmsg) or "")
 	meta:set_string("formspec", "size[12,10]"..
 		"background[-0.2,-0.25;12.4,10.75;jeija_luac_background.png]"..
 		"textarea[0.2,0.2;12.2,9.5;code;;"..code.."]"..
