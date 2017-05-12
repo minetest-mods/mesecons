@@ -4,3 +4,4 @@ mesecons_delayer
 
 mesecons_torch
 mesecons_materials
+craft_guide?

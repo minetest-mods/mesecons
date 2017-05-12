@@ -1,3 +1,4 @@
 mesecons
 mesecons_materials
 mesecons_mvps
+craft_guide?
