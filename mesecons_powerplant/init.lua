@@ -18,7 +18,9 @@ minetest.register_node("mesecons_powerplant:power_plant", {
 	sounds = default.node_sound_leaves_defaults(),
 	mesecons = {receptor = {
 		state = mesecon.state.on
-	}}
+	}},
+	-- doc support:
+	_doc_items_longdesc = "A power plant is a receptor that is always turned on: It provides energy."
 })
 
 minetest.register_craft({

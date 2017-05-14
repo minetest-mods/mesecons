@@ -36,12 +36,23 @@ mesecon.register_node("mesecons_blinkyplant:blinky_plant", {
 },{
 	tiles = {"jeija_blinky_plant_off.png"},
 	groups = {dig_immediate=3},
-	mesecons = {receptor = { state = mesecon.state.off }}
+	mesecons = {receptor = { state = mesecon.state.off }},
+	-- doc support:
+	_doc_items_longdesc = "The blinky plants toggles between on and off state every three seconds."..
+		" Can be used to make clocks. Also works after having restarted the game.",
+	_doc_items_usagehelp = "Rightclick the blinky plants to en/disable it."
 },{
 	tiles = {"jeija_blinky_plant_on.png"},
 	groups = {dig_immediate=3, not_in_creative_inventory=1},
-	mesecons = {receptor = { state = mesecon.state.on }}
+	mesecons = {receptor = { state = mesecon.state.on }},
+	-- doc support:
+	_doc_items_create_entry = false
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_blinkyplant:blinky_plant_off", "nodes", "mesecons_blinkyplant:blinky_plant_on")
+end
 
 minetest.register_craft({
 	output = "mesecons_blinkyplant:blinky_plant_off 1",

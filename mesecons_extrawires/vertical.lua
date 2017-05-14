@@ -95,7 +95,10 @@ mesecon.register_node("mesecons_extrawires:vertical", {
 		state = mesecon.state.off,
 		onstate = "mesecons_extrawires:vertical_on",
 		rules = vertical_rules,
-	}}
+	}},
+	-- doc support:
+	_doc_items_longdesc = "Vertical Mesecons only conduct up and down."..
+		" Plates appear at the ends, at that place they also conduct to the side."
 },{
 	tiles = {"mesecons_wire_on.png"},
 	groups = {dig_immediate=3, not_in_creative_inventory=1},
@@ -103,7 +106,9 @@ mesecon.register_node("mesecons_extrawires:vertical", {
 		state = mesecon.state.on,
 		offstate = "mesecons_extrawires:vertical_off",
 		rules = vertical_rules,
-	}}
+	}},
+	-- doc support:
+	_doc_items_create_entry = false
 })
 
 -- Vertical wire top
@@ -119,7 +124,9 @@ mesecon.register_node("mesecons_extrawires:vertical_top", {
 	is_vertical_conductor = true,
 	drop = "mesecons_extrawires:vertical_off",
 	after_place_node = vertical_update,
-	after_dig_node = vertical_update
+	after_dig_node = vertical_update,
+	-- doc support:
+	_doc_items_create_entry = false
 },{
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
@@ -149,7 +156,9 @@ mesecon.register_node("mesecons_extrawires:vertical_bottom", {
 	is_vertical_conductor = true,
 	drop = "mesecons_extrawires:vertical_off",
 	after_place_node = vertical_update,
-	after_dig_node = vertical_update
+	after_dig_node = vertical_update,
+	-- doc support:
+	_doc_items_create_entry = false
 },{
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
@@ -165,6 +174,15 @@ mesecon.register_node("mesecons_extrawires:vertical_bottom", {
 		rules = bottom_rules,
 	}}
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_extrawires:vertical_off", "nodes", "mesecons_extrawires:vertical_on")
+	doc.add_entry_alias("nodes", "mesecons_extrawires:vertical_off", "nodes", "mesecons_extrawires:vertical_bottom_off")
+	doc.add_entry_alias("nodes", "mesecons_extrawires:vertical_off", "nodes", "mesecons_extrawires:vertical_bottom_on")
+	doc.add_entry_alias("nodes", "mesecons_extrawires:vertical_off", "nodes", "mesecons_extrawires:vertical_top_off")
+	doc.add_entry_alias("nodes", "mesecons_extrawires:vertical_off", "nodes", "mesecons_extrawires:vertical_top_on")
+end
 
 minetest.register_craft({
 	output = "mesecons_extrawires:vertical_off 3",

@@ -51,7 +51,9 @@ minetest.register_node("mesecons_button:button_off", {
 	mesecons = {receptor = {
 		state = mesecon.state.off,
 		rules = mesecon.rules.buttonlike_get
-	}}
+	}},
+	-- doc support:
+	_doc_items_longdesc = "This receptor can be attached to walls. It turns on for 1 second if it's rightclicked."
 })
 
 minetest.register_node("mesecons_button:button_on", {
@@ -89,8 +91,15 @@ minetest.register_node("mesecons_button:button_on", {
 	mesecons = {receptor = {
 		state = mesecon.state.on,
 		rules = mesecon.rules.buttonlike_get
-	}}
+	}},
+	-- doc support:
+	_doc_items_create_entry = false
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_button:button_off", "nodes", "mesecons_button:button_on")
+end
 
 minetest.register_craft({
 	output = "mesecons_button:button_off 2",

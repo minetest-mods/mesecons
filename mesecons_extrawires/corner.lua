@@ -70,8 +70,16 @@ minetest.register_node("mesecons_extrawires:corner_off", {
 		state = mesecon.state.off,
 		rules = corner_get_rules,
 		onstate = "mesecons_extrawires:corner_on"
-	}}
+	}},
+	-- doc support:
+	_doc_items_longdesc = "Insulated corners are conductors that only conduct between the inputs (also not up or down)."..
+	" When placing they always point to the left in direction of your vision."
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_extrawires:corner_off", "nodes", "mesecons_extrawires:corner_on")
+end
 
 minetest.register_craft({
 	output = "mesecons_extrawires:corner_off 3",

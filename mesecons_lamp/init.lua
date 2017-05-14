@@ -48,8 +48,15 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 		action_on = function (pos, node)
 			minetest.swap_node(pos, {name = "mesecons_lamp:lamp_on", param2 = node.param2})
 		end
-	}}
+	}},
+	-- doc support:
+	_doc_items_longdesc = "Lamps are effectors that if powered emit light."
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_lamp:lamp_off", "nodes", "mesecons_lamp:lamp_on")
+end
 
 minetest.register_craft({
 	output = "mesecons_lamp:lamp_off 1",

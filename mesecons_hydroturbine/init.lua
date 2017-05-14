@@ -24,7 +24,9 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {receptor = {
 		state = mesecon.state.off
-	}}
+	}},
+	-- doc support:
+	_doc_items_longdesc = "Water turbines are receptors that turn on if flowing water is above them."
 })
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
@@ -51,8 +53,15 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {receptor = {
 		state = mesecon.state.on
-	}}
+	}},
+	-- doc support:
+	_doc_items_create_entry = false
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_hydroturbine:hydro_turbine_off", "nodes", "mesecons_hydroturbine:hydro_turbine_on")
+end
 
 
 local function is_flowing_water(pos)

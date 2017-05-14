@@ -39,6 +39,9 @@ minetest.register_node("mesecons_extrawires:crossover_off", {
 			rules = crossover_get_rules(),
 		}
 	},
+	-- doc support:
+	_doc_items_longdesc = "Insulated crossing are conductors that conduct two signals between the opposing sides,"..
+		" the signals are insulated to each other.",
 })
 
 minetest.register_node("mesecons_extrawires:crossover_01", {
@@ -63,6 +66,8 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 			rules = crossover_get_rules(),
 		}
 	},
+	-- doc support:
+	_doc_items_create_entry = false,
 })
 
 minetest.register_node("mesecons_extrawires:crossover_10", {
@@ -87,6 +92,8 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 			rules = crossover_get_rules(),
 		}
 	},
+	-- doc support:
+	_doc_items_create_entry = false,
 })
 
 minetest.register_node("mesecons_extrawires:crossover_on", {
@@ -111,7 +118,16 @@ minetest.register_node("mesecons_extrawires:crossover_on", {
 			rules = crossover_get_rules(),
 		}
 	},
+	-- doc support:
+	_doc_items_create_entry = false,
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_extrawires:crossover_off", "nodes", "mesecons_extrawires:crossover_01")
+	doc.add_entry_alias("nodes", "mesecons_extrawires:crossover_off", "nodes", "mesecons_extrawires:crossover_10")
+	doc.add_entry_alias("nodes", "mesecons_extrawires:crossover_off", "nodes", "mesecons_extrawires:crossover_on")
+end
 
 minetest.register_craft({
 	type = "shapeless",

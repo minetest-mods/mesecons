@@ -82,7 +82,15 @@ minetest.register_node("mesecons_torch:mesecon_torch_on", {
 		state = mesecon.state.on,
 		rules = torch_get_output_rules
 	}},
+	-- doc support:
+	_doc_items_longdesc = "The torch is an inverter, it may take up to 1 second until the signal has passed through."..
+		" The input is 2 blocks away in the direction of the stick, outputs are around the mesecon glow.",
 })
+
+-- doc support:
+if minetest.get_modpath("doc") and minetest.get_modpath("doc_items") then
+	doc.add_entry_alias("nodes", "mesecons_torch:mesecon_torch_on", "nodes", "mesecons_torch:mesecon_torch_off")
+end
 
 minetest.register_abm({
 	nodenames = {"mesecons_torch:mesecon_torch_off","mesecons_torch:mesecon_torch_on"},
