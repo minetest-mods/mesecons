@@ -1,6 +1,6 @@
 {
     "name": "mesecons",
-    "description": "Mesecons is a mod for Minetest that implements a ton of items related to digital circuitry, such as wires, buttons, lights, and even programmable controllers. Among other things, there are also pistons, solar panels, pressure plates, and note blocks.",
+    "description": "Mesecons is a mod for Minetest that implements items related to digital circuitry: wires, buttons, lights, and programmable controllers.",
     "homepage": "http://mesecons.net",
     "authors": "Jeija",
     "license": "LGPL-3.0+",
