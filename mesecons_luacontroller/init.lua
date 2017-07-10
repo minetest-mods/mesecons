@@ -678,6 +678,15 @@ minetest.register_node(BASENAME .. "_burnt", {
 minetest.register_craft({
 	output = BASENAME.."0000 2",
 	recipe = {
+		{'mesecons_microcontroller:microcontroller0000', 'mesecons_microcontroller:microcontroller0000', 'mesecons_microcontroller:microcontroller0000'},
+		{'', '', ''},
+		{'', '', ''},
+	}
+})
+
+minetest.register_craft({
+	output = BASENAME.."0000 2",
+	recipe = {
 		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'group:mesecon_conductor_craftable'},
 		{'mesecons_materials:silicon', 'mesecons_materials:silicon', 'group:mesecon_conductor_craftable'},
 		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable', ''},
