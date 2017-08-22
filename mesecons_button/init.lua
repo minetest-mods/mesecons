@@ -46,7 +46,7 @@ minetest.register_node("mesecons_button:button_off", {
 		minetest.swap_node(pos, {name = "mesecons_button:button_on", param2=node.param2})
 		mesecon.receptor_on(pos, mesecon.rules.buttonlike_get(node))
 		minetest.sound_play("mesecons_button_push", {pos=pos})
-		minetest.after(1, mesecon.button_turnoff, pos)
+		minetest.get_node_timer(pos):start(1)
 	end,
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {receptor = {
@@ -90,15 +90,8 @@ minetest.register_node("mesecons_button:button_on", {
 	mesecons = {receptor = {
 		state = mesecon.state.on,
 		rules = mesecon.rules.buttonlike_get
-	}}
-})
-
-minetest.register_lbm({
-	label = "deactivate unloaded active mesecons buttons",
-	name = "mesecons_button:deactivate",
-	nodenames = {"mesecons_button:button_on"},
-	run_at_every_load = true,
-	action = mesecon.button_turnoff,
+	}},
+	on_timer = mesecon.button_turnoff,
 })
 
 minetest.register_craft({
