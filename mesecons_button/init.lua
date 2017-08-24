@@ -4,11 +4,11 @@
 
 mesecon.button_turnoff = function (pos)
 	local node = minetest.get_node(pos)
-	if node.name ~= "mesecons_button:button_on" then --has been dug
+	if node.name ~= "mesecons_button:button_on" then -- has been dug
 		return
 	end
-	minetest.swap_node(pos, {name = "mesecons_button:button_off", param2=node.param2})
-	minetest.sound_play("mesecons_button_pop", {pos=pos})
+	minetest.swap_node(pos, {name = "mesecons_button:button_off", param2 = node.param2})
+	minetest.sound_play("mesecons_button_pop", {pos = pos})
 	local rules = mesecon.rules.buttonlike_get(node)
 	mesecon.receptor_off(pos, rules)
 end
