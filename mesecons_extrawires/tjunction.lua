@@ -45,7 +45,8 @@ minetest.register_node("mesecons_extrawires:tjunction_on", {
 		state = mesecon.state.on,
 		rules = tjunction_get_rules,
 		offstate = "mesecons_extrawires:tjunction_off"
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_extrawires:tjunction_off", {
@@ -71,7 +72,8 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 		state = mesecon.state.off,
 		rules = tjunction_get_rules,
 		onstate = "mesecons_extrawires:tjunction_on"
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({

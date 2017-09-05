@@ -35,7 +35,7 @@ local function object_detector_scan(pos)
 	for _, str in pairs(string.split(scanname:gsub(" ", ""), ",")) do
 		scan_for[str] = true
 	end
-	
+
 	local every_player = scanname == ""
 	for _, obj in pairs(objs) do
 		-- "" is returned if it is not a player; "" ~= nil; so only handle objects with foundname ~= ""
@@ -76,7 +76,8 @@ minetest.register_node("mesecons_detector:object_detector_off", {
 	on_construct = object_detector_make_formspec,
 	on_receive_fields = object_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
-	digiline = object_detector_digiline
+	digiline = object_detector_digiline,
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_detector:object_detector_on", {
@@ -92,7 +93,8 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	on_construct = object_detector_make_formspec,
 	on_receive_fields = object_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
-	digiline = object_detector_digiline
+	digiline = object_detector_digiline,
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({
@@ -181,12 +183,12 @@ local node_detector_digiline = {
 	effector = {
 		action = function(pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
-			
+
 			local distance = meta:get_int("distance")
 			local distance_max = mesecon.setting("node_detector_distance_max", 10)
 			if distance < 0 then distance = 0 end
 			if distance > distance_max then distance = distance_max end
-			
+
 			if channel ~= meta:get_string("digiline_channel") then return end
 
 			if msg == GET_COMMAND then
@@ -234,7 +236,8 @@ minetest.register_node("mesecons_detector:node_detector_off", {
 	on_construct = node_detector_make_formspec,
 	on_receive_fields = node_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
-	digiline = node_detector_digiline
+	digiline = node_detector_digiline,
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_detector:node_detector_on", {
@@ -250,7 +253,8 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 	on_construct = node_detector_make_formspec,
 	on_receive_fields = node_detector_on_receive_fields,
 	sounds = default.node_sound_stone_defaults(),
-	digiline = node_detector_digiline
+	digiline = node_detector_digiline,
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({

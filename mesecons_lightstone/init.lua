@@ -28,20 +28,22 @@ function mesecon.lightstone_add(name, base_item, texture_off, texture_on, desc)
 			action_on = function (pos, node)
 				minetest.swap_node(pos, {name = "mesecons_lightstone:lightstone_" .. name .. "_on", param2 = node.param2})
 			end,
-		}}
+		}},
+		on_blast = mesecon.on_blastnode,
 	})
 	minetest.register_node("mesecons_lightstone:lightstone_" .. name .. "_on", {
-	tiles = {texture_on},
-	groups = {cracky=2,not_in_creative_inventory=1, mesecon = 2},
-	drop = "mesecons_lightstone:lightstone_" .. name .. "_off",
-	light_source = default.LIGHT_MAX-2,
-	sounds = default.node_sound_stone_defaults(),
-	mesecons = {effector = {
-		rules = lightstone_rules,
-		action_off = function (pos, node)
-			minetest.swap_node(pos, {name = "mesecons_lightstone:lightstone_" .. name .. "_off", param2 = node.param2})
-		end,
-	}}
+		tiles = {texture_on},
+		groups = {cracky=2,not_in_creative_inventory=1, mesecon = 2},
+		drop = "mesecons_lightstone:lightstone_" .. name .. "_off",
+		light_source = default.LIGHT_MAX-2,
+		sounds = default.node_sound_stone_defaults(),
+		mesecons = {effector = {
+			rules = lightstone_rules,
+			action_off = function (pos, node)
+				minetest.swap_node(pos, {name = "mesecons_lightstone:lightstone_" .. name .. "_off", param2 = node.param2})
+			end,
+		}},
+		on_blast = mesecon.on_blastnode,
 	})
 
 	minetest.register_craft({

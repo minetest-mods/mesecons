@@ -116,6 +116,7 @@ plg.register_nodes({
 	after_dig_node = function(pos, node)
 		mesecon.receptor_off(pos, plg.rules[node.name])
 	end,
+	on_blast = mesecon.on_blastnode,
 })
 
 

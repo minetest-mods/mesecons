@@ -18,7 +18,8 @@ minetest.register_node("mesecons_powerplant:power_plant", {
 	sounds = default.node_sound_leaves_defaults(),
 	mesecons = {receptor = {
 		state = mesecon.state.on
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({

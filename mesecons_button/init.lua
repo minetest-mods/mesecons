@@ -52,7 +52,8 @@ minetest.register_node("mesecons_button:button_off", {
 	mesecons = {receptor = {
 		state = mesecon.state.off,
 		rules = mesecon.rules.buttonlike_get
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_button:button_on", {
@@ -92,6 +93,7 @@ minetest.register_node("mesecons_button:button_on", {
 		rules = mesecon.rules.buttonlike_get
 	}},
 	on_timer = mesecon.button_turnoff,
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({
