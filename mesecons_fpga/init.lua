@@ -116,6 +116,43 @@ plg.register_nodes({
 	after_dig_node = function(pos, node)
 		mesecon.receptor_off(pos, plg.rules[node.name])
 	end,
+	on_rotate = minetest.global_exists("screwdriver") and function(pos, node, user, mode)
+		local abcd1 = {"A", "B", "C", "D"}
+		local abcd2 = {A = 1, B = 2, C = 3, D = 4}
+		local dir = 0
+		if mode == screwdriver.ROTATE_FACE then -- clock-wise
+			dir = 1
+			if user and user:is_player() then
+				minetest.chat_send_player(user:get_player_name(),
+						"FPGA has been rotated clock-wise.")
+			end
+		elseif mode == screwdriver.ROTATE_AXIS then -- counter-clock-wise
+			dir = -1
+			if user and user:is_player() then
+				minetest.chat_send_player(user:get_player_name(),
+						"FPGA has been rotated counter-clock-wise.")
+			end
+		end
+		local meta = minetest.get_meta(pos)
+		local instr = meta:get_string("instr")
+		local out = ""
+		for i = 1, #instr do
+			local char = instr:sub(i, i)
+			local num = abcd2[char]
+			if num then
+				num = num + dir
+				if num > 4 then
+					num = 1
+				elseif num < 1 then
+					num = 4
+				end
+				char = abcd1[num]
+			end
+			out = out..char
+		end
+		meta:set_string("instr", out)
+		plg.update_formspec(pos, out)
+	end,
 })
 
 
