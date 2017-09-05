@@ -178,6 +178,7 @@ end
 
 function mesecon.register_node(name, spec_common, spec_off, spec_on)
 	spec_common.drop = spec_common.drop or name .. "_off"
+	spec_common.on_blast = spec_common.on_blast or mesecon.on_blastnode
 	spec_common.__mesecon_basename = name
 	spec_on.__mesecon_state = "on"
 	spec_off.__mesecon_state = "off"
