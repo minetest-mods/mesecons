@@ -165,6 +165,10 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	-- remove all nodes
 	for _, n in ipairs(nodes) do
 		n.meta = minetest.get_meta(n.pos):to_table()
+		local node_timer = minetest.get_node_timer(n.pos)
+		if node_timer:is_started() then
+			n.node_timer = {node_timer:get_timeout(), node_timer:get_elapsed()}
+		end
 		minetest.remove_node(n.pos)
 	end
 
@@ -179,6 +183,9 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 
 		minetest.set_node(np, n.node)
 		minetest.get_meta(np):from_table(n.meta)
+		if n.node_timer then
+			minetest.get_node_timer(np):set(unpack(n.node_timer))
+		end
 	end
 
 	local moved_nodes = {}
@@ -190,6 +197,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 		moved_nodes[i].pos = nodes[i].pos
 		moved_nodes[i].node = nodes[i].node
 		moved_nodes[i].meta = nodes[i].meta
+		moved_nodes[i].node_timer = nodes[i].node_timer
 	end
 
 	on_mvps_move(moved_nodes)
