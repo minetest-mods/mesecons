@@ -53,7 +53,6 @@ function mesecon.register_movestone(name, def, is_sticky)
 
 	def.mesecons = {effector = {
 		action_on = function(pos, node, rulename)
-			print(dump(rulename))
 			if rulename and not minetest.get_node_timer(pos):is_started() then
 				movestone_move(pos, node, rulename)
 			end
@@ -62,13 +61,12 @@ function mesecon.register_movestone(name, def, is_sticky)
 	}}
 
 	def.on_timer = function(pos, elapsed)
-		local rulenames = mesecon.is_powered(pos)
-		if not rulenames then
+		local sourcepos = mesecon.is_powered(pos)
+		if not sourcepos then
 			return
 		end
-		for i = 1, #rulenames do
-			mesecon.activate(pos, minetest.get_node(pos), rulenames[1], 0)
-		end
+		local rulename = vector.subtract(sourcepos[1], pos)
+		mesecon.activate(pos, minetest.get_node(pos), rulename, 0)
 	end
 
 	def.drop = name
