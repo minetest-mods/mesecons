@@ -339,6 +339,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 
 -- onstate
 minetest.register_node("mesecons_pistons:piston_sticky_on", {
+	description = "Activated Sticky Piston Base",
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_top.png",
@@ -365,6 +366,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 
 -- pusher
 minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
+	description = "Sticky Piston Pusher",
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_pusher_top.png",
