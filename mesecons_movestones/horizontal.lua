@@ -97,6 +97,12 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+	type = "shapeless",
+	output = "mesecons_movestones:movestone",
+	recipe = {"mesecons_movestones:movestone_vertical"},
+})
+
 -- STICKY_MOVESTONE
 mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
 	tiles = {
@@ -111,6 +117,12 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
     description = "Sticky Movestone",
 	sounds = default.node_sound_stone_defaults(),
 }, true)
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "mesecons_movestones:sticky_movestone",
+	recipe = {"mesecons_movestones:sticky_movestone_vertical"},
+})
 
 minetest.register_craft({
 	output = "mesecons_movestones:sticky_movestone",

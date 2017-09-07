@@ -89,12 +89,9 @@ mesecon.register_vertical_movestone("mesecons_movestones:movestone_vertical", {
 }, false)
 
 minetest.register_craft({
-	output = "mesecons_movestones:movestone 2",
-	recipe = {
-		{"default:stone", "default:stone", "default:stone"},
-		{"group:mesecon_conductor_craftable", "group:mesecon_conductor_craftable", "group:mesecon_conductor_craftable"},
-		{"default:stone", "default:stone", "default:stone"},
-	}
+	type = "shapeless",
+	output = "mesecons_movestones:movestone_vertical",
+	recipe = {"mesecons_movestones:movestone"},
 })
 
 -- STICKY_MOVESTONE
@@ -113,8 +110,16 @@ mesecon.register_vertical_movestone("mesecons_movestones:sticky_movestone_vertic
 }, true)
 
 minetest.register_craft({
-	output = "mesecons_movestones:sticky_movestone",
+	type = "shapeless",
+	output = "mesecons_movestones:sticky_movestone_vertical",
+	recipe = {"mesecons_movestones:sticky_movestone"},
+})
+
+minetest.register_craft({
+	output = "mesecons_movestones:sticky_movestone_vertical",
 	recipe = {
-		{"mesecons_materials:glue", "mesecons_movestones:movestone", "mesecons_materials:glue"},
+		{"mesecons_materials:glue"},
+		{"mesecons_movestones:movestone_vertical"},
+		{"mesecons_materials:glue"},
 	}
 })
