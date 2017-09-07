@@ -154,7 +154,8 @@ plg.register_nodes({
 		end
 		local is = lcore.serialize(instr)
 		meta:set_string("instr", is)
-		plg.update_formspec(pos, is)
+		plg.update_formspec(pos, instr)
+		return true
 	end,
 })
 
