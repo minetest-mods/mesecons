@@ -1,65 +1,63 @@
+local specs = {
+	normal = {
+		offname = "mesecons_pistons:piston_normal_off",
+		onname = "mesecons_pistons:piston_normal_on",
+		pusher = "mesecons_pistons:piston_pusher_normal",
+	},
+	sticky = {
+		offname = "mesecons_pistons:piston_sticky_off",
+		onname = "mesecons_pistons:piston_sticky_on",
+		pusher = "mesecons_pistons:piston_pusher_sticky",
+		sticky = true,
+	},
+}
+
+local function get_pistonspec_name(name, part)
+	if part then
+		for spec_name, spec in pairs(specs) do
+			if name == spec[part] then
+				return spec_name, part
+			end
+		end
+		return
+	end
+	for spec_name, spec in pairs(specs) do
+		for part, value in pairs(spec)  do
+			if name == value then
+				return spec_name, part
+			end
+		end
+	end
+end
+
+local function get_pistonspec(name, part)
+	return specs[get_pistonspec_name(name, part)]
+end
+
+local max_push = mesecon.setting("piston_max_push", 15)
+local max_pull = mesecon.setting("piston_max_pull", 15)
+
 -- Get mesecon rules of pistons
-local piston_rules = {
- {x=0,  y=0,  z=1}, --everything apart from z- (pusher side)
- {x=1,  y=0,  z=0},
- {x=-1, y=0,  z=0},
- {x=1,  y=1,  z=0},
- {x=1,  y=-1, z=0},
- {x=-1, y=1,  z=0},
- {x=-1, y=-1, z=0},
- {x=0,  y=1,  z=1},
- {x=0,  y=-1, z=1}
-}
-
-local piston_up_rules = {
- {x=0,  y=0,  z=-1}, --everything apart from y+ (pusher side)
- {x=1,  y=0,  z=0},
- {x=-1, y=0,  z=0},
- {x=0,  y=0,  z=1},
- {x=1,  y=-1, z=0},
- {x=-1, y=-1, z=0},
- {x=0,  y=-1, z=1},
- {x=0,  y=-1, z=-1}
-}
-
-local piston_down_rules = {
- {x=0,  y=0,  z=-1}, --everything apart from y- (pusher side)
- {x=1,  y=0,  z=0},
- {x=-1, y=0,  z=0},
- {x=0,  y=0,  z=1},
- {x=1,  y=1, z=0},
- {x=-1, y=1, z=0},
- {x=0,  y=1, z=1},
- {x=0,  y=1, z=-1}
-}
-
 local function piston_get_rules(node)
-	local rules = piston_rules
-	for i = 1, node.param2 do
-		rules = mesecon.rotate_rules_left(rules)
+	local dir = minetest.facedir_to_dir(node.param2)
+	for k, v in pairs(dir) do
+		if v ~= 0 then
+			dir = {k, -v}
+			break
+		end
+	end
+	local rules = table.copy(mesecon.rules.default)
+	for i, rule in ipairs(rules) do
+		if rule[dir[1]] == dir[2] then
+			table.remove(rules, i)
+		end
 	end
 	return rules
 end
 
-local function piston_facedir_direction(node)
-	local rules = {{x = 0, y = 0, z = -1}}
-	for i = 1, node.param2 do
-		rules = mesecon.rotate_rules_left(rules)
-	end
-	return rules[1]
-end
-
-local function piston_get_direction(dir, node)
-	if type(dir) == "function" then
-		return dir(node)
-	else
-		return dir
-	end
-end
-
-local piston_remove_pusher = function(pos, node)
-	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-	local dir = piston_get_direction(pistonspec.dir, node)
+local function piston_remove_pusher(pos, node)
+	local pistonspec = get_pistonspec(node.name, "onname")
+	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 	local pusherpos = vector.add(pos, dir)
 	local pushername = minetest.get_node(pusherpos).name
 
@@ -74,67 +72,158 @@ local piston_remove_pusher = function(pos, node)
 		max_hear_distance = 20,
 		gain = 0.3,
 	})
-	nodeupdate(pusherpos)
+	minetest.check_for_falling(pusherpos)
 end
 
 local piston_on = function(pos, node)
-	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-
-	local dir = piston_get_direction(pistonspec.dir, node)
-	local np = vector.add(pos, dir)
-	local maxpush = mesecon.setting("piston_max_push", 15)
-	local success, stack, oldstack = mesecon.mvps_push(np, dir, maxpush)
-	if success then
-		minetest.set_node(pos, {param2 = node.param2, name = pistonspec.onname})
-		minetest.set_node(np,  {param2 = node.param2, name = pistonspec.pusher})
-		minetest.sound_play("piston_extend", {
-			pos = pos,
-			max_hear_distance = 20,
-			gain = 0.3,
-		})
-		mesecon.mvps_process_stack(stack)
-		mesecon.mvps_move_objects(np, dir, oldstack)
+	local pistonspec = get_pistonspec(node.name, "offname")
+	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
+	local pusher_pos = vector.add(pos, dir)
+	local success, stack, oldstack = mesecon.mvps_push(pusher_pos, dir, max_push)
+	if not success then
+		return
 	end
+	minetest.set_node(pos, {param2 = node.param2, name = pistonspec.onname})
+	minetest.set_node(pusher_pos,  {param2 = node.param2, name = pistonspec.pusher})
+	minetest.sound_play("piston_extend", {
+		pos = pos,
+		max_hear_distance = 20,
+		gain = 0.3,
+	})
+	mesecon.mvps_process_stack(stack)
+	mesecon.mvps_move_objects(pusher_pos, dir, oldstack)
 end
 
 local piston_off = function(pos, node)
-	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
+	local pistonspec = get_pistonspec(node.name, "onname")
 	minetest.set_node(pos, {param2 = node.param2, name = pistonspec.offname})
 	piston_remove_pusher(pos, node)
 
-	if pistonspec.sticky then
-		local maxpull = mesecon.setting("piston_max_pull", 15)
-		local dir = piston_get_direction(pistonspec.dir, node)
-		local pullpos = vector.add(pos, vector.multiply(dir, 2))
-		local stack = mesecon.mvps_pull_single(pullpos, vector.multiply(dir, -1), maxpull)
-		mesecon.mvps_process_stack(pos, dir, stack)
+	if not pistonspec.sticky then
+		return
 	end
+	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
+	local pullpos = vector.add(pos, vector.multiply(dir, 2))
+	local stack = mesecon.mvps_pull_single(pullpos, vector.multiply(dir, -1), max_pull)
+	mesecon.mvps_process_stack(pos, dir, stack)
 end
 
-local piston_orientate = function(pos, placer)
-	-- not placed by player
-	if not placer then return end
-
-	-- placer pitch in degrees
-	local pitch = placer:get_look_pitch() * (180 / math.pi)
-
+local orientations = {
+	[0] = { 4,  8},
+	      {13, 17},
+	      {10,  6},
+	      {20, 15},
+}
+local function piston_orientate(pos, placer)
+	if not placer then
+		return
+	end
+	local pitch = math.deg(placer:get_look_vertical())
 	local node = minetest.get_node(pos)
-	local pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-
-	-- looking upwards (pitch > 55) / looking downwards (pitch < -55)
-	local nn = nil
-	if pitch > 55 then nn = {name = pistonspec.piston_down} end
-	if pitch < -55 then nn = {name = pistonspec.piston_up} end
-
-	if nn then
-		minetest.set_node(pos, nn)
-		-- minetest.after, because on_placenode for unoriented piston must be processed first
-		minetest.after(0, mesecon.on_placenode, pos, nn)
+	if pitch > 55 then
+		node.param2 = orientations[node.param2][1]
+	elseif pitch < -55 then
+		node.param2 = orientations[node.param2][2]
+	else
+		return
 	end
+	minetest.swap_node(pos, node)
+	-- minetest.after, because on_placenode for unoriented piston must be processed first
+	minetest.after(0, mesecon.on_placenode, pos, node)
+end
+
+local rotations = {
+	{0, 16, 20, 12},
+	{2, 14, 22, 18},
+	{1,  5, 23,  9},
+	{3, 11, 21,  7},
+	{4, 13, 10, 19},
+	{6, 15,  8, 17},
+}
+local function get_rotation(param2)
+	for a = 1, #rotations do
+		for f = 1, #rotations[a] do
+			if rotations[a][f] == param2 then
+				return a, f
+			end
+		end
+	end
+end
+local function rotate(param2, mode)
+	local axis, face = get_rotation(param2)
+	if mode == screwdriver.ROTATE_FACE then
+		face = face + 1
+		if face > 4 then
+			face = 1
+		end
+	elseif mode == screwdriver.ROTATE_AXIS then
+		axis = axis + 1
+		if axis > 6 then
+			axis = 1
+		end
+		face = 1
+	else
+		return param2
+	end
+	return rotations[axis][face]
+end
+local function piston_rotate(pos, node, _, mode)
+	node.param2 = rotate(node.param2, mode)
+	minetest.swap_node(pos, node)
+	mesecon.execute_autoconnect_hooks_now(pos, node)
+	return true
+end
+local function piston_rotate_on(pos, node, player, mode)
+	local pistonspec = get_pistonspec(node.name, "onname")
+	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
+	local pusher_pos = vector.add(dir, pos)
+	local pusher_node = minetest.get_node(pusher_pos)
+	if pusher_node.name ~= pistonspec.pusher then
+		return piston_rotate(pos, node, nil, mode)
+	end
+	if mode == screwdriver.ROTATE_FACE then
+		piston_rotate(pusher_pos, pusher_node, nil, mode)
+		return piston_rotate(pos, node, nil, mode)
+	elseif mode ~= screwdriver.ROTATE_AXIS then
+		return false
+	end
+	local player_name = player and player:is_player() and player:get_player_name() or ""
+	local ok, dir_after, pusher_pos_after
+	for i = 1, 5 do
+		node.param2 = rotate(node.param2, mode)
+		dir_after = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
+		pusher_pos_after = vector.add(dir_after, pos)
+		local pusher_pos_after_node_name = minetest.get_node(pusher_pos_after).name
+		local pusher_pos_after_node_def = minetest.registered_nodes[pusher_pos_after_node_name]
+		if pusher_pos_after_node_def and pusher_pos_after_node_def.buildable_to and
+				not minetest.is_protected(pusher_pos_after, player_name) then
+			ok = true
+			break
+		end
+	end
+	if not ok then
+		return false
+	end
+	pusher_node.param2 = node.param2
+	minetest.remove_node(pusher_pos)
+	minetest.set_node(pusher_pos_after, pusher_node)
+	minetest.swap_node(pos, node)
+	mesecon.execute_autoconnect_hooks_now(pos, node)
+	return true
+end
+local function piston_rotate_pusher(pos, node, player, mode)
+	local pistonspec = get_pistonspec(node.name, "pusher")
+	local piston_pos = vector.add(pos, minetest.facedir_to_dir(node.param2))
+	local piston_node = minetest.get_node(piston_pos)
+	if piston_node.name ~= pistonspec.onname then
+		minetest.remove_node(pos) -- Make it possible to remove alone pushers.
+		return false
+	end
+	return piston_rotate_on(piston_pos, piston_node, player, mode)
 end
 
 
--- Horizontal pistons
+-- Boxes:
 
 local pt = 3/16 -- pusher thickness
 
@@ -143,28 +232,18 @@ local piston_pusher_box = {
 	fixed = {
 		{-2/16, -2/16, -.5 + pt, 2/16, 2/16,  .5 + pt},
 		{-.5  , -.5  , -.5     , .5  , .5  , -.5 + pt},
-	}
+	},
 }
 
 local piston_on_box = {
 	type = "fixed",
 	fixed = {
 		{-.5, -.5, -.5 + pt, .5, .5, .5}
-	}
+	},
 }
 
 
--- Normal (non-sticky) ones:
-
-local pistonspec_normal = {
-	offname = "mesecons_pistons:piston_normal_off",
-	onname = "mesecons_pistons:piston_normal_on",
-	dir = piston_facedir_direction,
-	pusher = "mesecons_pistons:piston_pusher_normal",
-	piston_down = "mesecons_pistons:piston_down_normal_off",
-	piston_up   = "mesecons_pistons:piston_up_normal_off",
-}
-
+-- Normal (non-sticky) Pistons:
 -- offstate
 minetest.register_node("mesecons_pistons:piston_normal_off", {
 	description = "Piston",
@@ -175,20 +254,21 @@ minetest.register_node("mesecons_pistons:piston_normal_off", {
 		"mesecons_piston_right.png",
 		"mesecons_piston_back.png",
 		"mesecons_piston_pusher_front.png"
-		},
+	},
 	groups = {cracky = 3},
 	paramtype2 = "facedir",
 	after_place_node = piston_orientate,
-	mesecons_piston = pistonspec_normal,
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
-		rules = piston_get_rules
-	}}
+		rules = piston_get_rules,
+	}},
+	on_rotate = piston_rotate,
 })
 
 -- onstate
 minetest.register_node("mesecons_pistons:piston_normal_on", {
+	description = "Activated Piston Base",
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_top.png",
@@ -197,9 +277,7 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 		"mesecons_piston_right.png",
 		"mesecons_piston_back.png",
 		"mesecons_piston_on_front.png"
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
+	},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -207,16 +285,17 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
-	mesecons_piston = pistonspec_normal,
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
-		rules = piston_get_rules
-	}}
+		rules = piston_get_rules,
+	}},
+	on_rotate = piston_rotate_on,
 })
 
 -- pusher
 minetest.register_node("mesecons_pistons:piston_pusher_normal", {
+	description = "Piston Pusher",
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_pusher_top.png",
@@ -225,27 +304,17 @@ minetest.register_node("mesecons_pistons:piston_pusher_normal", {
 		"mesecons_piston_pusher_right.png",
 		"mesecons_piston_pusher_back.png",
 		"mesecons_piston_pusher_front.png"
-		},
+	},
+	groups = {not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	diggable = false,
-	corresponding_piston = "mesecons_pistons:piston_normal_on",
 	selection_box = piston_pusher_box,
 	node_box = piston_pusher_box,
+	on_rotate = piston_rotate_pusher,
 })
 
 -- Sticky ones
-
-local pistonspec_sticky = {
-	offname = "mesecons_pistons:piston_sticky_off",
-	onname = "mesecons_pistons:piston_sticky_on",
-	dir = piston_facedir_direction,
-	pusher = "mesecons_pistons:piston_pusher_sticky",
-	sticky = true,
-	piston_down = "mesecons_pistons:piston_down_sticky_off",
-	piston_up   = "mesecons_pistons:piston_up_sticky_off",
-}
-
 -- offstate
 minetest.register_node("mesecons_pistons:piston_sticky_off", {
 	description = "Sticky Piston",
@@ -256,16 +325,16 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 		"mesecons_piston_right.png",
 		"mesecons_piston_back.png",
 		"mesecons_piston_pusher_front_sticky.png"
-		},
+	},
 	groups = {cracky = 3},
 	paramtype2 = "facedir",
 	after_place_node = piston_orientate,
-	mesecons_piston = pistonspec_sticky,
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_on = piston_on,
-		rules = piston_get_rules
-	}}
+		rules = piston_get_rules,
+	}},
+	on_rotate = piston_rotate,
 })
 
 -- onstate
@@ -278,9 +347,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 		"mesecons_piston_right.png",
 		"mesecons_piston_back.png",
 		"mesecons_piston_on_front.png"
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
+	},
 	groups = {cracky = 3, not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -288,12 +355,12 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 	after_dig_node = piston_remove_pusher,
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
-	mesecons_piston = pistonspec_sticky,
 	sounds = default.node_sound_wood_defaults(),
 	mesecons = {effector={
 		action_off = piston_off,
-		rules = piston_get_rules
-	}}
+		rules = piston_get_rules,
+	}},
+	on_rotate = piston_rotate_on,
 })
 
 -- pusher
@@ -306,399 +373,35 @@ minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 		"mesecons_piston_pusher_right.png",
 		"mesecons_piston_pusher_back.png",
 		"mesecons_piston_pusher_front_sticky.png"
-		},
+	},
+	groups = {not_in_creative_inventory = 1},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	diggable = false,
-	corresponding_piston = "mesecons_pistons:piston_sticky_on",
 	selection_box = piston_pusher_box,
 	node_box = piston_pusher_box,
-})
-
---
---
--- UP
---
---
-
-local piston_up_pusher_box = {
-	type = "fixed",
-	fixed = {
-		{-2/16, -.5 - pt, -2/16, 2/16, .5 - pt, 2/16},
-		{-.5  ,  .5 - pt, -.5  , .5  , .5     ,   .5},
-	}
-}
-
-local piston_up_on_box = {
-	type = "fixed",
-	fixed = {
-		{-.5, -.5, -.5 , .5, .5-pt, .5}
-	}
-}
-
--- Normal
-
-local pistonspec_normal_up = {
-	offname = "mesecons_pistons:piston_up_normal_off",
-	onname = "mesecons_pistons:piston_up_normal_on",
-	dir = {x = 0, y = 1, z = 0},
-	pusher = "mesecons_pistons:piston_up_pusher_normal"
-}
-
--- offstate
-minetest.register_node("mesecons_pistons:piston_up_normal_off", {
-	tiles = {
-		"mesecons_piston_pusher_front.png",
-		"mesecons_piston_back.png",
-		"mesecons_piston_left.png^[transformR270",
-		"mesecons_piston_right.png^[transformR90",
-		"mesecons_piston_bottom.png",
-		"mesecons_piston_top.png^[transformR180",
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
-	groups = {cracky = 3, not_in_creative_inventory = 1},
-	paramtype2 = "facedir",
-	drop = "mesecons_pistons:piston_normal_off",
-	mesecons_piston = pistonspec_normal_up,
-	mesecons = {effector={
-		action_on = piston_on,
-		rules = piston_up_rules,
-	}}
-})
-
--- onstate
-minetest.register_node("mesecons_pistons:piston_up_normal_on", {
-	drawtype = "nodebox",
-	tiles = {
-		"mesecons_piston_on_front.png",
-		"mesecons_piston_back.png",
-		"mesecons_piston_left.png^[transformR270",
-		"mesecons_piston_right.png^[transformR90",
-		"mesecons_piston_bottom.png",
-		"mesecons_piston_top.png^[transformR180",
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
-	groups = {cracky = 3, not_in_creative_inventory = 1},
-	paramtype = "light",
-	paramtype2 = "facedir",
-	drop = "mesecons_pistons:piston_normal_off",
-	after_dig_node = piston_remove_pusher,
-	node_box = piston_up_on_box,
-	selection_box = piston_up_on_box,
-	mesecons_piston = pistonspec_normal_up,
-	sounds = default.node_sound_wood_defaults(),
-	mesecons = {effector={
-		action_off = piston_off,
-		rules = piston_up_rules,
-	}}
-})
-
--- pusher
-minetest.register_node("mesecons_pistons:piston_up_pusher_normal", {
-	drawtype = "nodebox",
-	tiles = {
-		"mesecons_piston_pusher_front.png",
-		"mesecons_piston_pusher_back.png",
-		"mesecons_piston_pusher_left.png^[transformR270",
-		"mesecons_piston_pusher_right.png^[transformR90",
-		"mesecons_piston_pusher_bottom.png",
-		"mesecons_piston_pusher_top.png^[transformR180",
-		},
-	paramtype = "light",
-	paramtype2 = "facedir",
-	diggable = false,
-	corresponding_piston = "mesecons_pistons:piston_up_normal_on",
-	selection_box = piston_up_pusher_box,
-	node_box = piston_up_pusher_box,
-})
-
-
-
--- Sticky
-
-
-local pistonspec_sticky_up = {
-	offname = "mesecons_pistons:piston_up_sticky_off",
-	onname = "mesecons_pistons:piston_up_sticky_on",
-	dir = {x = 0, y = 1, z = 0},
-	pusher = "mesecons_pistons:piston_up_pusher_sticky",
-	sticky = true
-}
-
--- offstate
-minetest.register_node("mesecons_pistons:piston_up_sticky_off", {
-	tiles = {
-		"mesecons_piston_pusher_front_sticky.png",
-		"mesecons_piston_back.png",
-		"mesecons_piston_left.png^[transformR270",
-		"mesecons_piston_right.png^[transformR90",
-		"mesecons_piston_bottom.png",
-		"mesecons_piston_top.png^[transformR180",
-		"mesecons_piston_tb.png"
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
-	groups = {cracky = 3, not_in_creative_inventory = 1},
-	paramtype2 = "facedir",
-	drop = "mesecons_pistons:piston_sticky_off",
-	mesecons_piston = pistonspec_sticky_up,
-	sounds = default.node_sound_wood_defaults(),
-	mesecons = {effector={
-		action_on = piston_on,
-		rules = piston_up_rules,
-	}}
-})
-
--- onstate
-minetest.register_node("mesecons_pistons:piston_up_sticky_on", {
-	drawtype = "nodebox",
-	tiles = {
-		"mesecons_piston_on_front.png",
-		"mesecons_piston_back.png",
-		"mesecons_piston_left.png^[transformR270",
-		"mesecons_piston_right.png^[transformR90",
-		"mesecons_piston_bottom.png",
-		"mesecons_piston_top.png^[transformR180",
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
-	groups = {cracky = 3, not_in_creative_inventory = 1},
-	paramtype = "light",
-	paramtype2 = "facedir",
-	drop = "mesecons_pistons:piston_normal_off",
-	after_dig_node = piston_remove_pusher,
-	node_box = piston_up_on_box,
-	selection_box = piston_up_on_box,
-	mesecons_piston = pistonspec_sticky_up,
-	sounds = default.node_sound_wood_defaults(),
-	mesecons = {effector={
-		action_off = piston_off,
-		rules = piston_up_rules,
-	}}
-})
-
--- pusher
-minetest.register_node("mesecons_pistons:piston_up_pusher_sticky", {
-	drawtype = "nodebox",
-	tiles = {
-		"mesecons_piston_pusher_front_sticky.png",
-		"mesecons_piston_pusher_back.png",
-		"mesecons_piston_pusher_left.png^[transformR270",
-		"mesecons_piston_pusher_right.png^[transformR90",
-		"mesecons_piston_pusher_bottom.png",
-		"mesecons_piston_pusher_top.png^[transformR180",
-		},
-	paramtype = "light",
-	paramtype2 = "facedir",
-	diggable = false,
-	corresponding_piston = "mesecons_pistons:piston_up_sticky_on",
-	selection_box = piston_up_pusher_box,
-	node_box = piston_up_pusher_box,
-})
-
---
---
--- DOWN
---
---
-
-local piston_down_pusher_box = {
-	type = "fixed",
-	fixed = {
-		{-2/16, -.5 + pt, -2/16, 2/16,  .5 + pt, 2/16},
-		{-.5  , -.5     , -.5  , .5  , -.5 + pt,   .5},
-	}
-}
-
-local piston_down_on_box = {
-	type = "fixed",
-	fixed = {
-		{-.5, -.5+pt, -.5 , .5, .5, .5}
-	}
-}
-
-
-
--- Normal
-
-local pistonspec_normal_down = {
-	offname = "mesecons_pistons:piston_down_normal_off",
-	onname = "mesecons_pistons:piston_down_normal_on",
-	dir = {x = 0, y = -1, z = 0},
-	pusher = "mesecons_pistons:piston_down_pusher_normal",
-}
-
--- offstate
-minetest.register_node("mesecons_pistons:piston_down_normal_off", {
-	tiles = {
-		"mesecons_piston_back.png",
-		"mesecons_piston_pusher_front.png",
-		"mesecons_piston_left.png^[transformR90",
-		"mesecons_piston_right.png^[transformR270",
-		"mesecons_piston_bottom.png^[transformR180",
-		"mesecons_piston_top.png",
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
-	groups = {cracky = 3, not_in_creative_inventory = 1},
-	paramtype2 = "facedir",
-	drop = "mesecons_pistons:piston_normal_off",
-	mesecons_piston = pistonspec_normal_down,
-	sounds = default.node_sound_wood_defaults(),
-	mesecons = {effector={
-		action_on = piston_on,
-		rules = piston_down_rules,
-	}}
-})
-
--- onstate
-minetest.register_node("mesecons_pistons:piston_down_normal_on", {
-	drawtype = "nodebox",
-	tiles = {
-		"mesecons_piston_back.png",
-		"mesecons_piston_on_front.png",
-		"mesecons_piston_left.png^[transformR90",
-		"mesecons_piston_right.png^[transformR270",
-		"mesecons_piston_bottom.png^[transformR180",
-		"mesecons_piston_top.png",
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
-	groups = {cracky = 3, not_in_creative_inventory = 1},
-	paramtype = "light",
-	paramtype2 = "facedir",
-	drop = "mesecons_pistons:piston_normal_off",
-	after_dig_node = piston_remove_pusher,
-	node_box = piston_down_on_box,
-	selection_box = piston_down_on_box,
-	mesecons_piston = pistonspec_normal_down,
-	sounds = default.node_sound_wood_defaults(),
-	mesecons = {effector={
-		action_off = piston_off,
-		rules = piston_down_rules,
-	}}
-})
-
--- pusher
-minetest.register_node("mesecons_pistons:piston_down_pusher_normal", {
-	drawtype = "nodebox",
-	tiles = {
-		"mesecons_piston_pusher_back.png",
-		"mesecons_piston_pusher_front.png",
-		"mesecons_piston_pusher_left.png^[transformR90",
-		"mesecons_piston_pusher_right.png^[transformR270",
-		"mesecons_piston_pusher_bottom.png^[transformR180",
-		"mesecons_piston_pusher_top.png",
-		},
-	paramtype = "light",
-	paramtype2 = "facedir",
-	diggable = false,
-	corresponding_piston = "mesecons_pistons:piston_down_normal_on",
-	selection_box = piston_down_pusher_box,
-	node_box = piston_down_pusher_box,
-})
-
--- Sticky
-
-local pistonspec_sticky_down = {
-	onname = "mesecons_pistons:piston_down_sticky_on",
-	offname = "mesecons_pistons:piston_down_sticky_off",
-	dir = {x = 0, y = -1, z = 0},
-	pusher = "mesecons_pistons:piston_down_pusher_sticky",
-	sticky = true
-}
-
--- offstate
-minetest.register_node("mesecons_pistons:piston_down_sticky_off", {
-	tiles = {
-		"mesecons_piston_back.png",
-		"mesecons_piston_pusher_front_sticky.png",
-		"mesecons_piston_left.png^[transformR90",
-		"mesecons_piston_right.png^[transformR270",
-		"mesecons_piston_bottom.png^[transformR180",
-		"mesecons_piston_top.png",
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
-	groups = {cracky = 3, not_in_creative_inventory = 1},
-	paramtype2 = "facedir",
-	drop = "mesecons_pistons:piston_sticky_off",
-	mesecons_piston = pistonspec_sticky_down,
-	sounds = default.node_sound_wood_defaults(),
-	mesecons = {effector={
-		action_on = piston_on,
-		rules = piston_down_rules,
-	}}
-})
-
--- onstate
-minetest.register_node("mesecons_pistons:piston_down_sticky_on", {
-	drawtype = "nodebox",
-	tiles = {
-		"mesecons_piston_back.png",
-		"mesecons_piston_on_front.png",
-		"mesecons_piston_left.png^[transformR90",
-		"mesecons_piston_right.png^[transformR270",
-		"mesecons_piston_bottom.png^[transformR180",
-		"mesecons_piston_top.png",
-		},
-	inventory_image = "mesecons_piston_top.png",
-	wield_image = "mesecons_piston_top.png",
-	groups = {cracky = 3, not_in_creative_inventory = 1},
-	paramtype = "light",
-	paramtype2 = "facedir",
-	drop = "mesecons_pistons:piston_sticky_off",
-	after_dig_node = piston_remove_pusher,
-	node_box = piston_down_on_box,
-	selection_box = piston_down_on_box,
-	mesecons_piston = pistonspec_sticky_down,
-	sounds = default.node_sound_wood_defaults(),
-	mesecons = {effector={
-		action_off = piston_off,
-		rules = piston_down_rules,
-	}}
-})
-
--- pusher
-minetest.register_node("mesecons_pistons:piston_down_pusher_sticky", {
-	drawtype = "nodebox",
-	tiles = {
-		"mesecons_piston_pusher_back.png",
-		"mesecons_piston_pusher_front_sticky.png",
-		"mesecons_piston_pusher_left.png^[transformR90",
-		"mesecons_piston_pusher_right.png^[transformR270",
-		"mesecons_piston_pusher_bottom.png^[transformR180",
-		"mesecons_piston_pusher_top.png",
-		},
-	paramtype = "light",
-	paramtype2 = "facedir",
-	diggable = false,
-	corresponding_piston = "mesecons_pistons:piston_down_sticky_on",
-	selection_box = piston_down_pusher_box,
-	node_box = piston_down_pusher_box,
+	on_rotate = piston_rotate_pusher,
 })
 
 
 -- Register pushers as stoppers if they would be seperated from the piston
-local piston_pusher_get_stopper = function (node, dir, stack, stackid)
+local function piston_pusher_get_stopper(node, dir, stack, stackid)
 	if (stack[stackid + 1]
-	and stack[stackid + 1].node.name   == minetest.registered_nodes[node.name].corresponding_piston
+	and stack[stackid + 1].node.name   == get_pistonspec(node.name, "pusher").onname
 	and stack[stackid + 1].node.param2 == node.param2)
 	or (stack[stackid - 1]
-	and stack[stackid - 1].node.name   == minetest.registered_nodes[node.name].corresponding_piston
+	and stack[stackid - 1].node.name   == get_pistonspec(node.name, "pusher").onname
 	and stack[stackid - 1].node.param2 == node.param2) then
 		return false
 	end
 	return true
 end
 
-local piston_pusher_up_down_get_stopper = function (node, dir, stack, stackid)
+local function piston_pusher_up_down_get_stopper(node, dir, stack, stackid)
 	if (stack[stackid + 1]
-	and stack[stackid + 1].node.name   == minetest.registered_nodes[node.name].corresponding_piston)
+	and stack[stackid + 1].node.name   == get_pistonspec(node.name, "pusher").onname)
 	or (stack[stackid - 1]
-	and stack[stackid - 1].node.name   == minetest.registered_nodes[node.name].corresponding_piston) then
+	and stack[stackid - 1].node.name   == get_pistonspec(node.name, "pusher").onname) then
 		return false
 	end
 	return true
@@ -707,31 +410,24 @@ end
 mesecon.register_mvps_stopper("mesecons_pistons:piston_pusher_normal", piston_pusher_get_stopper)
 mesecon.register_mvps_stopper("mesecons_pistons:piston_pusher_sticky", piston_pusher_get_stopper)
 
-mesecon.register_mvps_stopper("mesecons_pistons:piston_up_pusher_normal", piston_pusher_up_down_get_stopper)
-mesecon.register_mvps_stopper("mesecons_pistons:piston_up_pusher_sticky", piston_pusher_up_down_get_stopper)
-
-mesecon.register_mvps_stopper("mesecons_pistons:piston_down_pusher_normal", piston_pusher_up_down_get_stopper)
-mesecon.register_mvps_stopper("mesecons_pistons:piston_down_pusher_sticky", piston_pusher_up_down_get_stopper)
-
 
 -- Register pistons as stoppers if they would be seperated from the stopper
 local piston_up_down_get_stopper = function (node, dir, stack, stackid)
 	if (stack[stackid + 1]
-	and stack[stackid + 1].node.name   == minetest.registered_nodes[node.name].mesecons_piston.pusher)
+	and stack[stackid + 1].node.name   == get_pistonspec(node.name, "onname").pusher)
 	or (stack[stackid - 1]
-	and stack[stackid - 1].node.name   == minetest.registered_nodes[node.name].mesecons_piston.pusher) then
+	and stack[stackid - 1].node.name   == get_pistonspec(node.name, "onname").pusher) then
 		return false
 	end
 	return true
 end
 
-local piston_get_stopper = function (node, dir, stack, stackid)
-	pistonspec = minetest.registered_nodes[node.name].mesecons_piston
-	dir = piston_get_direction(pistonspec.dir, node)
-	local pusherpos  = vector.add(stack[stackid].pos, dir)
+local function piston_get_stopper(node, dir, stack, stackid)
+	local pistonspec = get_pistonspec(node.name, "onname")
+	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
+	local pusherpos = vector.add(stack[stackid].pos, dir)
 	local pushernode = minetest.get_node(pusherpos)
-
-	if minetest.registered_nodes[node.name].mesecons_piston.pusher == pushernode.name then
+	if pistonspec.pusher == pushernode.name then
 		for _, s in ipairs(stack) do
 			if  vector.equals(s.pos, pusherpos) -- pusher is also to be pushed
 			and s.node.param2 == node.param2 then
@@ -745,18 +441,13 @@ end
 mesecon.register_mvps_stopper("mesecons_pistons:piston_normal_on", piston_get_stopper)
 mesecon.register_mvps_stopper("mesecons_pistons:piston_sticky_on", piston_get_stopper)
 
-mesecon.register_mvps_stopper("mesecons_pistons:piston_up_normal_on", piston_up_down_get_stopper)
-mesecon.register_mvps_stopper("mesecons_pistons:piston_up_sticky_on", piston_up_down_get_stopper)
-
-mesecon.register_mvps_stopper("mesecons_pistons:piston_down_normal_on", piston_up_down_get_stopper)
-mesecon.register_mvps_stopper("mesecons_pistons:piston_down_sticky_on", piston_up_down_get_stopper)
 
 --craft recipes
 minetest.register_craft({
 	output = "mesecons_pistons:piston_normal_off 2",
 	recipe = {
-		{"group:wood", "group:wood", "group:wood"},
-		{"default:cobble", "default:steel_ingot", "default:cobble"},
+		{"group:wood",     "group:wood",                        "group:wood"},
+		{"default:cobble", "default:steel_ingot",               "default:cobble"},
 		{"default:cobble", "group:mesecon_conductor_craftable", "default:cobble"},
 	}
 })
@@ -768,3 +459,7 @@ minetest.register_craft({
 		{"mesecons_pistons:piston_normal_off"},
 	}
 })
+
+
+-- load legacy code
+dofile(minetest.get_modpath("mesecons_pistons")..DIR_DELIM.."legacy.lua")
