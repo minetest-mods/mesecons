@@ -205,37 +205,50 @@ end)
 
 function mesecon.mvps_move_objects(pos, dir, nodestack)
 	local objects_to_move = {}
-
-	-- Move object at tip of stack, pushpos is position at tip of stack
-	local pushpos = vector.add(pos, vector.multiply(dir, #nodestack))
-
-	local objects = minetest.get_objects_inside_radius(pushpos, 1)
-	for _, obj in ipairs(objects) do
-		table.insert(objects_to_move, obj)
-	end
-
-	-- Move objects lying/standing on the stack (before it was pushed - oldstack)
-	if tonumber(minetest.setting_get("movement_gravity")) > 0 and dir.y == 0 then
-		-- If gravity positive and dir horizontal, push players standing on the stack
-		for _, n in ipairs(nodestack) do
-			local p_above = vector.add(n.pos, {x=0, y=1, z=0})
-			local objects = minetest.get_objects_inside_radius(p_above, 1)
-			for _, obj in ipairs(objects) do
-				table.insert(objects_to_move, obj)
-			end
+	local dir_k
+	local dir_l
+	for k, v in pairs(dir) do
+		if v ~= 0 then
+			dir_k = k
+			dir_l = v
+			break
 		end
 	end
-
-	for _, obj in ipairs(objects_to_move) do
-		local entity = obj:get_luaentity()
-		if not entity or not mesecon.is_mvps_unmov(entity.name) then
-			local np = vector.add(obj:getpos(), dir)
-
-			--move only if destination is not solid
-			local nn = minetest.get_node(np)
-			if not ((not minetest.registered_nodes[nn.name])
-			or minetest.registered_nodes[nn.name].walkable) then
-				obj:setpos(np)
+	for id, obj in pairs(minetest.object_refs) do
+		local obj_pos = obj:get_pos()
+		local cbox = obj:get_properties().collisionbox
+		local min_pos = vector.add(obj_pos, vector.new(cbox[1], cbox[2], cbox[3]))
+		local max_pos = vector.add(obj_pos, vector.new(cbox[4], cbox[5], cbox[6]))
+		local ok = true
+		for k, v in pairs(pos) do
+			local edge1, edge2
+			if k ~= dir_k then
+				edge1 = v - 0.5
+				edge2 = v + 0.5
+			else
+				edge1 = v - 0.5 * dir_l
+				edge2 = v + (#nodestack + 0.5) * dir_l
+				-- Make sure, edge1 is more than edge2:
+				if edge1 > edge2 then
+					edge1, edge2 = edge2, edge1
+				end
+			end
+			if min_pos[k] > edge2 or max_pos[k] < edge1 then
+				ok = false
+				break
+			end
+		end
+		if ok then
+			local ent = obj:get_luaentity()
+			if not ent or not mesecon.is_mvps_unmov(ent.name) then
+				local np = vector.add(obj_pos, dir)
+				-- Move only if destination is not solid or object is inside stack:
+				local nn = minetest.get_node(np)
+				local node_def = minetest.registered_nodes[nn.name]
+				if (node_def and not node_def.walkable) or
+						math.abs(obj_pos[dir_k]) <= #nodestack - 0.5 + math.abs(pos[dir_k]) then
+					obj:move_to(np)
+				end
 			end
 		end
 	end
