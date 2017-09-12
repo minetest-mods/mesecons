@@ -17,7 +17,7 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 	legacy_wallmounted = true,
 	sunlight_propagates = true,
 	walkable = true,
-	light_source = default.LIGHT_MAX,
+	light_source = minetest.LIGHT_MAX,
 	node_box = mesecon_lamp_box,
 	selection_box = mesecon_lamp_box,
 	groups = {dig_immediate=3,not_in_creative_inventory=1, mesecon_effector_on = 1},
@@ -26,7 +26,8 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 	mesecons = {effector = {
 		action_off = function (pos, node)
 			minetest.swap_node(pos, {name = "mesecons_lamp:lamp_off", param2 = node.param2})
-		end
+		end,
+		rules = mesecon.rules.wallmounted_get,
 	}}
 })
 
@@ -47,7 +48,8 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 	mesecons = {effector = {
 		action_on = function (pos, node)
 			minetest.swap_node(pos, {name = "mesecons_lamp:lamp_on", param2 = node.param2})
-		end
+		end,
+		rules = mesecon.rules.wallmounted_get,
 	}}
 })
 
