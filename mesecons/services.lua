@@ -21,9 +21,8 @@ mesecon.on_placenode = function(pos, node)
 			end
 			--mesecon.receptor_on (pos, mesecon.conductor_get_rules(node))
 		elseif mesecon.is_conductor_on(node) then
-			local new_node = table.copy(node)
-			new_node.name = mesecon.get_conductor_off(new_node)
-			minetest.swap_node(pos, new_node)
+			node.name = mesecon.get_conductor_off(node)
+			minetest.swap_node(pos, node)
 		end
 	end
 
