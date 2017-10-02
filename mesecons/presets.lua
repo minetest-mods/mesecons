@@ -45,42 +45,44 @@ mesecon.rules.alldirs = {
 	{x =  0, y =  0,  z = -1},
 }
 
-mesecon.rules.buttonlike_get = function(node)
-	local rules = mesecon.rules.buttonlike
-	local dir = minetest.facedir_to_dir(node.param2)
-	if dir.x == 1 then
-		-- No action needed
-	elseif dir.z == -1 then
-		rules = mesecon.rotate_rules_left(rules)
-	elseif dir.x == -1 then
-		rules = mesecon.rotate_rules_right(mesecon.rotate_rules_right(rules))
-	elseif dir.z == 1 then
-		rules = mesecon.rotate_rules_right(rules)
-	elseif dir.y == -1 then
-		rules = mesecon.rotate_rules_up(rules)
-	elseif dir.y == 1 then
-		rules = mesecon.rotate_rules_down(rules)
-	end
-	return rules
+local rules_wallmounted, rules_buttonlike = {}, {}
+minetest.after(0, function() -- The rotate_rules functions are not yet loaden.
+	rules_wallmounted = {
+		xp = mesecon.rotate_rules_down(mesecon.rules.floor),
+		xn = mesecon.rotate_rules_up(mesecon.rules.floor),
+		yp = mesecon.rotate_rules_up(mesecon.rotate_rules_up(mesecon.rules.floor)),
+		yn = mesecon.rules.floor,
+		zp = mesecon.rotate_rules_left(mesecon.rotate_rules_up(mesecon.rules.floor)),
+		zn = mesecon.rotate_rules_right(mesecon.rotate_rules_up(mesecon.rules.floor)),
+	}
+
+	rules_buttonlike = {
+		xp = mesecon.rules.buttonlike,
+		xn = mesecon.rotate_rules_right(mesecon.rotate_rules_right(mesecon.rules.buttonlike)),
+		yp = mesecon.rotate_rules_down(mesecon.rules.buttonlike),
+		yn = mesecon.rotate_rules_up(mesecon.rules.buttonlike),
+		zp = mesecon.rotate_rules_right(mesecon.rules.buttonlike),
+		zn = mesecon.rotate_rules_left(mesecon.rules.buttonlike),
+	}
+end)
+
+local function rules_from_dir(ruleset, dir)
+	if dir.x ==  1 then return ruleset.xp end
+	if dir.y ==  1 then return ruleset.yp end
+	if dir.z ==  1 then return ruleset.zp end
+	if dir.x == -1 then return ruleset.xn end
+	if dir.y == -1 then return ruleset.yn end
+	if dir.Z == -1 then return ruleset.zn end
 end
 
 mesecon.rules.wallmounted_get = function(node)
-	local rules = mesecon.rules.floor
 	local dir = minetest.wallmounted_to_dir(node.param2)
-	if dir.y == -1 then
-		-- No action needed
-	elseif dir.y == 1 then
-		rules = mesecon.rotate_rules_up(mesecon.rotate_rules_up(rules))
-	elseif dir.x == -1 then
-		rules = mesecon.rotate_rules_up(rules)
-	elseif dir.x == 1 then
-		rules = mesecon.rotate_rules_down(rules)
-	elseif dir.z == -1 then
-		rules = mesecon.rotate_rules_right(mesecon.rotate_rules_up(rules))
-	elseif dir.z == 1 then
-		rules = mesecon.rotate_rules_left(mesecon.rotate_rules_up(rules))
-	end
-	return rules
+	return rules_from_dir(rules_wallmounted, dir)
+end
+
+mesecon.rules.buttonlike_get = function(node)
+	local dir = minetest.facedir_to_dir(node.param2)
+	return rules_from_dir(rules_buttonlike, dir)
 end
 
 mesecon.state.on = "on"
