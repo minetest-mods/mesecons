@@ -137,13 +137,12 @@ plg.register_nodes({
 		local meta = minetest.get_meta(pos)
 		local instr = lcore.deserialize(meta:get_string("instr"))
 		for i = 1, #instr do
-			for k = 1, #ops do
-				local op = ops[k]
+			for _, op in ipairs(ops) do
 				local o = instr[i][op]
 				if o and o.type == "io" then
 					local num = abcd2[o.port]
 					num = num + dir
-					num = (2 ^ num % 2) * 4 + num + math.floor(num / 5)
+					num = (2 ^ num % 2) * 4 + num - math.floor(num / 5) * 4
 					instr[i][op].port = abcd1[num]
 				end
 			end
