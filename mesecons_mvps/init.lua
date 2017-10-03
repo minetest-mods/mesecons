@@ -251,8 +251,8 @@ mesecon.register_on_mvps_move(function(moved_nodes)
 	for i = 1, #moved_nodes do
 		local moved_node = moved_nodes[i]
 		local node_def = minetest.registered_nodes[moved_node.node.name]
-		if node_def and node_def.mesecons_on_mvps_move then
-			node_def.mesecons_on_mvps_move(moved_node.pos, moved_node.node,
+		if node_def and node_def.mesecon and node_def.mesecon.on_mvps_move then
+			node_def.mesecon.on_mvps_move(moved_node.pos, moved_node.node,
 					moved_node.oldpos, moved_node.meta)
 		end
 	end
