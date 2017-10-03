@@ -223,12 +223,12 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 		for k, v in pairs(pos) do
 			local edge1, edge2
 			if k ~= dir_k then
-				edge1 = v - 0.5
-				edge2 = v + 0.5
+				edge1 = v - 0.51 -- More than 0.5 to move objects near to the stack.
+				edge2 = v + 0.51
 			else
 				edge1 = v - 0.5 * dir_l
 				edge2 = v + (#nodestack + 0.5) * dir_l
-				-- Make sure, edge1 is more than edge2:
+				-- Make sure, edge1 is bigger than edge2:
 				if edge1 > edge2 then
 					edge1, edge2 = edge2, edge1
 				end
@@ -240,13 +240,18 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 		end
 		if ok then
 			local ent = obj:get_luaentity()
-			if not ent or not mesecon.is_mvps_unmov(ent.name) then
+			if not (ent and mesecon.is_mvps_unmov(ent.name)) then
 				local np = vector.add(obj_pos, dir)
 				-- Move only if destination is not solid or object is inside stack:
 				local nn = minetest.get_node(np)
 				local node_def = minetest.registered_nodes[nn.name]
+				local nodestack_front = (#nodestack - 0.5 + math.abs(pos[dir_k]))
+				nodestack_front = nodestack_front * pos[dir_k]/math.abs(pos[dir_k])
 				if (node_def and not node_def.walkable) or
-						math.abs(obj_pos[dir_k]) <= #nodestack - 0.5 + math.abs(pos[dir_k]) then
+						(obj_pos[dir_k] >= pos[dir_k] and
+						obj_pos[dir_k] <= nodestack_front) or
+						(obj_pos[dir_k] <= pos[dir_k] and
+						obj_pos[dir_k] >= nodestack_front) then
 					obj:move_to(np)
 				end
 			end
