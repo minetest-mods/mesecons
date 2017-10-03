@@ -142,7 +142,11 @@ plg.register_nodes({
 				if o and o.type == "io" then
 					local num = abcd2[o.port]
 					num = num + dir
-					num = (2 ^ num % 2) * 4 + num - math.floor(num / 5) * 4
+					if num > 4 then
+						num = 1
+					elseif num < 1 then
+						num = 4
+					end
 					instr[i][op].port = abcd1[num]
 				end
 			end
