@@ -245,13 +245,10 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 				-- Move only if destination is not solid or object is inside stack:
 				local nn = minetest.get_node(np)
 				local node_def = minetest.registered_nodes[nn.name]
-				local nodestack_front = (#nodestack - 0.5 + math.abs(pos[dir_k]))
-				nodestack_front = nodestack_front * pos[dir_k]/math.abs(pos[dir_k])
+				local obj_offset = dir_l * (obj_pos[dir_k] - pos[dir_k])
 				if (node_def and not node_def.walkable) or
-						(obj_pos[dir_k] >= pos[dir_k] and
-						obj_pos[dir_k] <= nodestack_front) or
-						(obj_pos[dir_k] <= pos[dir_k] and
-						obj_pos[dir_k] >= nodestack_front) then
+						(obj_offset >= 0 and
+						obj_offset <= #nodestack - 0.5) then
 					obj:move_to(np)
 				end
 			end
