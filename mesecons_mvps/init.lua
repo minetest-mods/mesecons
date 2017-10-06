@@ -240,7 +240,7 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 		end
 		if ok then
 			local ent = obj:get_luaentity()
-			if not (ent and mesecon.is_mvps_unmov(ent.name)) then
+			if obj:is_player() or (ent and not mesecon.is_mvps_unmov(ent.name)) then
 				local np = vector.add(obj_pos, dir)
 				-- Move only if destination is not solid or object is inside stack:
 				local nn = minetest.get_node(np)
