@@ -47,6 +47,7 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		-- ### Step 1: Push nodes in front ###
 		local success, stack, oldstack = mesecon.mvps_push(frontpos, direction, max_push)
 		if not success then
+			minetest.get_node_timer(pos):start(timer_interval)
 			return
 		end
 		mesecon.mvps_process_stack(stack)
