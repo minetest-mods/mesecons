@@ -39,6 +39,7 @@ minetest.register_node("mesecons_extrawires:crossover_off", {
 			rules = crossover_get_rules(),
 		}
 	},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_extrawires:crossover_01", {
@@ -63,6 +64,7 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 			rules = crossover_get_rules(),
 		}
 	},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_extrawires:crossover_10", {
@@ -87,6 +89,7 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 			rules = crossover_get_rules(),
 		}
 	},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_extrawires:crossover_on", {
@@ -111,6 +114,7 @@ minetest.register_node("mesecons_extrawires:crossover_on", {
 			rules = crossover_get_rules(),
 		}
 	},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({

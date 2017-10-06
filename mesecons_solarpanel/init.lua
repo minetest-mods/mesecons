@@ -25,7 +25,8 @@ minetest.register_node("mesecons_solarpanel:solar_panel_on", {
 	sounds = default.node_sound_glass_defaults(),
 	mesecons = {receptor = {
 		state = mesecon.state.on
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- Solar Panel
@@ -55,7 +56,8 @@ minetest.register_node("mesecons_solarpanel:solar_panel_off", {
 	sounds = default.node_sound_glass_defaults(),
 	mesecons = {receptor = {
 		state = mesecon.state.off
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({

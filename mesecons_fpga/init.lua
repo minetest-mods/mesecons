@@ -116,6 +116,7 @@ plg.register_nodes({
 	after_dig_node = function(pos, node)
 		mesecon.receptor_off(pos, plg.rules[node.name])
 	end,
+	on_blast = mesecon.on_blastnode,
 	on_rotate = function(pos, node, user, mode)
 		local abcd1 = {"A", "B", "C", "D"}
 		local abcd2 = {A = 1, B = 2, C = 3, D = 4}

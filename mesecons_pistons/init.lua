@@ -184,7 +184,8 @@ minetest.register_node("mesecons_pistons:piston_normal_off", {
 	mesecons = {effector={
 		action_on = piston_on,
 		rules = piston_get_rules
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- onstate
@@ -212,7 +213,8 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 	mesecons = {effector={
 		action_off = piston_off,
 		rules = piston_get_rules
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- pusher
@@ -232,6 +234,7 @@ minetest.register_node("mesecons_pistons:piston_pusher_normal", {
 	corresponding_piston = "mesecons_pistons:piston_normal_on",
 	selection_box = piston_pusher_box,
 	node_box = piston_pusher_box,
+	drop = "",
 })
 
 -- Sticky ones
@@ -265,7 +268,8 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 	mesecons = {effector={
 		action_on = piston_on,
 		rules = piston_get_rules
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- onstate
@@ -293,7 +297,8 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 	mesecons = {effector={
 		action_off = piston_off,
 		rules = piston_get_rules
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- pusher
@@ -313,6 +318,7 @@ minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 	corresponding_piston = "mesecons_pistons:piston_sticky_on",
 	selection_box = piston_pusher_box,
 	node_box = piston_pusher_box,
+	drop = "",
 })
 
 --
@@ -364,7 +370,8 @@ minetest.register_node("mesecons_pistons:piston_up_normal_off", {
 	mesecons = {effector={
 		action_on = piston_on,
 		rules = piston_up_rules,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- onstate
@@ -392,7 +399,8 @@ minetest.register_node("mesecons_pistons:piston_up_normal_on", {
 	mesecons = {effector={
 		action_off = piston_off,
 		rules = piston_up_rules,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- pusher
@@ -412,6 +420,7 @@ minetest.register_node("mesecons_pistons:piston_up_pusher_normal", {
 	corresponding_piston = "mesecons_pistons:piston_up_normal_on",
 	selection_box = piston_up_pusher_box,
 	node_box = piston_up_pusher_box,
+	drop = "",
 })
 
 
@@ -448,7 +457,8 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_off", {
 	mesecons = {effector={
 		action_on = piston_on,
 		rules = piston_up_rules,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- onstate
@@ -476,7 +486,8 @@ minetest.register_node("mesecons_pistons:piston_up_sticky_on", {
 	mesecons = {effector={
 		action_off = piston_off,
 		rules = piston_up_rules,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- pusher
@@ -496,6 +507,7 @@ minetest.register_node("mesecons_pistons:piston_up_pusher_sticky", {
 	corresponding_piston = "mesecons_pistons:piston_up_sticky_on",
 	selection_box = piston_up_pusher_box,
 	node_box = piston_up_pusher_box,
+	drop = "",
 })
 
 --
@@ -550,7 +562,8 @@ minetest.register_node("mesecons_pistons:piston_down_normal_off", {
 	mesecons = {effector={
 		action_on = piston_on,
 		rules = piston_down_rules,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- onstate
@@ -578,7 +591,8 @@ minetest.register_node("mesecons_pistons:piston_down_normal_on", {
 	mesecons = {effector={
 		action_off = piston_off,
 		rules = piston_down_rules,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- pusher
@@ -598,6 +612,7 @@ minetest.register_node("mesecons_pistons:piston_down_pusher_normal", {
 	corresponding_piston = "mesecons_pistons:piston_down_normal_on",
 	selection_box = piston_down_pusher_box,
 	node_box = piston_down_pusher_box,
+	drop = "",
 })
 
 -- Sticky
@@ -630,7 +645,8 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_off", {
 	mesecons = {effector={
 		action_on = piston_on,
 		rules = piston_down_rules,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- onstate
@@ -658,7 +674,8 @@ minetest.register_node("mesecons_pistons:piston_down_sticky_on", {
 	mesecons = {effector={
 		action_off = piston_off,
 		rules = piston_down_rules,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- pusher
@@ -678,6 +695,7 @@ minetest.register_node("mesecons_pistons:piston_down_pusher_sticky", {
 	corresponding_piston = "mesecons_pistons:piston_down_sticky_on",
 	selection_box = piston_down_pusher_box,
 	node_box = piston_down_pusher_box,
+	drop = "",
 })
 
 

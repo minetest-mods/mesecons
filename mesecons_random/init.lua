@@ -12,7 +12,8 @@ minetest.register_node("mesecons_random:removestone", {
 			mesecon.on_dignode(pos, node)
 			minetest.check_for_falling(vector.add(pos, vector.new(0, 1, 0)))
 		end
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({
@@ -37,7 +38,8 @@ minetest.register_node("mesecons_random:ghoststone", {
 		state = mesecon.state.off,
 		rules = mesecon.rules.alldirs,
 		onstate = "mesecons_random:ghoststone_active"
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_random:ghoststone_active", {
@@ -59,7 +61,8 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 		if (minetest.get_node(shadowpos).name == "air") then
 			minetest.dig_node(shadowpos)
 		end
-	end
+	end,
+	on_blast = mesecon.on_blastnode,
 })
 
 

@@ -44,7 +44,8 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 		state = mesecon.state.on,
 		rules = corner_get_rules,
 		offstate = "mesecons_extrawires:corner_off"
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_extrawires:corner_off", {
@@ -70,7 +71,8 @@ minetest.register_node("mesecons_extrawires:corner_off", {
 		state = mesecon.state.off,
 		rules = corner_get_rules,
 		onstate = "mesecons_extrawires:corner_on"
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({

@@ -36,7 +36,8 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 		state = mesecon.state.on,
 		offstate = "mesecons_insulated:insulated_off",
 		rules = insulated_wire_get_rules
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_insulated:insulated_off", {
@@ -67,7 +68,8 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 		state = mesecon.state.off,
 		onstate = "mesecons_insulated:insulated_on",
 		rules = insulated_wire_get_rules
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({
