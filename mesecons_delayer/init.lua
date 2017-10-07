@@ -114,7 +114,8 @@ minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), {
 			rules = delayer_get_input_rules,
 			action_on = delayer_activate
 		}
-	}
+	},
+	on_blast = mesecon.on_blastnode,
 })
 
 
@@ -168,7 +169,8 @@ minetest.register_node("mesecons_delayer:delayer_on_"..tostring(i), {
 			rules = delayer_get_input_rules,
 			action_off = delayer_deactivate
 		}
-	}
+	},
+	on_blast = mesecon.on_blastnode,
 })
 end
 

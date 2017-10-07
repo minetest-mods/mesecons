@@ -165,6 +165,10 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	-- remove all nodes
 	for _, n in ipairs(nodes) do
 		n.meta = minetest.get_meta(n.pos):to_table()
+		local node_timer = minetest.get_node_timer(n.pos)
+		if node_timer:is_started() then
+			n.node_timer = {node_timer:get_timeout(), node_timer:get_elapsed()}
+		end
 		minetest.remove_node(n.pos)
 	end
 
@@ -179,6 +183,9 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 
 		minetest.set_node(np, n.node)
 		minetest.get_meta(np):from_table(n.meta)
+		if n.node_timer then
+			minetest.get_node_timer(np):set(unpack(n.node_timer))
+		end
 	end
 
 	local moved_nodes = {}
@@ -190,6 +197,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 		moved_nodes[i].pos = nodes[i].pos
 		moved_nodes[i].node = nodes[i].node
 		moved_nodes[i].meta = nodes[i].meta
+		moved_nodes[i].node_timer = nodes[i].node_timer
 	end
 
 	on_mvps_move(moved_nodes)
@@ -247,3 +255,13 @@ mesecon.register_mvps_stopper("doors:door_steel_b_2")
 mesecon.register_mvps_stopper("doors:door_steel_t_2")
 mesecon.register_mvps_stopper("default:chest_locked")
 mesecon.register_on_mvps_move(mesecon.move_hot_nodes)
+mesecon.register_on_mvps_move(function(moved_nodes)
+	for i = 1, #moved_nodes do
+		local moved_node = moved_nodes[i]
+		local node_def = minetest.registered_nodes[moved_node.node.name]
+		if node_def and node_def.mesecon and node_def.mesecon.on_mvps_move then
+			node_def.mesecon.on_mvps_move(moved_node.pos, moved_node.node,
+					moved_node.oldpos, moved_node.meta)
+		end
+	end
+end)

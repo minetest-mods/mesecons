@@ -264,6 +264,7 @@ minetest.register_node("mesecons_pistons:piston_normal_off", {
 		rules = piston_get_rules,
 	}},
 	on_rotate = piston_rotate,
+	on_blast = mesecon.on_blastnode,
 })
 
 -- onstate
@@ -291,6 +292,7 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 		rules = piston_get_rules,
 	}},
 	on_rotate = piston_rotate_on,
+	on_blast = mesecon.on_blastnode,
 })
 
 -- pusher
@@ -312,6 +314,7 @@ minetest.register_node("mesecons_pistons:piston_pusher_normal", {
 	selection_box = piston_pusher_box,
 	node_box = piston_pusher_box,
 	on_rotate = piston_rotate_pusher,
+	drop = "",
 })
 
 -- Sticky ones
@@ -335,6 +338,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 		rules = piston_get_rules,
 	}},
 	on_rotate = piston_rotate,
+	on_blast = mesecon.on_blastnode,
 })
 
 -- onstate
@@ -362,6 +366,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 		rules = piston_get_rules,
 	}},
 	on_rotate = piston_rotate_on,
+	on_blast = mesecon.on_blastnode,
 })
 
 -- pusher
@@ -383,6 +388,7 @@ minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 	selection_box = piston_pusher_box,
 	node_box = piston_pusher_box,
 	on_rotate = piston_rotate_pusher,
+	drop = "",
 })
 
 

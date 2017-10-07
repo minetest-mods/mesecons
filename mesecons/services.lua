@@ -21,7 +21,8 @@ mesecon.on_placenode = function(pos, node)
 			end
 			--mesecon.receptor_on (pos, mesecon.conductor_get_rules(node))
 		elseif mesecon.is_conductor_on(node) then
-			minetest.swap_node(pos, {name = mesecon.get_conductor_off(node)})
+			node.name = mesecon.get_conductor_off(node)
+			minetest.swap_node(pos, node)
 		end
 	end
 
@@ -60,6 +61,13 @@ mesecon.on_dignode = function(pos, node)
 	end
 
 	mesecon.execute_autoconnect_hooks_queue(pos, node)
+end
+
+function mesecon.on_blastnode(pos, intensity)
+	local node = minetest.get_node(pos)
+	minetest.remove_node(pos)
+	mesecon.on_dignode(pos, node)
+	return minetest.get_node_drops(node.name, "")
 end
 
 minetest.register_on_placenode(mesecon.on_placenode)
