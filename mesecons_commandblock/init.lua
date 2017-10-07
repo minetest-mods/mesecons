@@ -189,7 +189,8 @@ minetest.register_node("mesecons_commandblock:commandblock_off", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_on = commandblock_action_on
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_commandblock:commandblock_on", {
@@ -204,5 +205,6 @@ minetest.register_node("mesecons_commandblock:commandblock_on", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {effector = {
 		action_off = commandblock_action_off
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })

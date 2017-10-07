@@ -111,6 +111,8 @@ function mesecon.register_movestone(name, def, is_sticky)
 
 	def.drop = name
 
+	def.on_blast = mesecon.on_blastnode
+
 	minetest.register_node(name, def)
 
 	-- active node only

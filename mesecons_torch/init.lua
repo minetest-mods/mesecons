@@ -62,7 +62,8 @@ minetest.register_node("mesecons_torch:mesecon_torch_off", {
 	mesecons = {receptor = {
 		state = mesecon.state.off,
 		rules = torch_get_output_rules
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_torch:mesecon_torch_on", {
@@ -82,6 +83,7 @@ minetest.register_node("mesecons_torch:mesecon_torch_on", {
 		state = mesecon.state.on,
 		rules = torch_get_output_rules
 	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_abm({

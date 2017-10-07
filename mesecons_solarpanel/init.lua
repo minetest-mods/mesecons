@@ -26,7 +26,8 @@ minetest.register_node("mesecons_solarpanel:solar_panel_on", {
 	mesecons = {receptor = {
 		state = mesecon.state.on,
 		rules = mesecon.rules.wallmounted_get,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 -- Solar Panel
@@ -57,7 +58,8 @@ minetest.register_node("mesecons_solarpanel:solar_panel_off", {
 	mesecons = {receptor = {
 		state = mesecon.state.off,
 		rules = mesecon.rules.wallmounted_get,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({

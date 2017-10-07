@@ -10,8 +10,10 @@ minetest.register_node("mesecons_random:removestone", {
 		action_on = function (pos, node)
 			minetest.remove_node(pos)
 			mesecon.on_dignode(pos, node)
+			minetest.check_for_falling(vector.add(pos, vector.new(0, 1, 0)))
 		end
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({
@@ -34,16 +36,10 @@ minetest.register_node("mesecons_random:ghoststone", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {conductor = {
 		state = mesecon.state.off,
-		rules = { --axes
-			{x = -1, y = 0, z = 0},
-			{x = 1, y = 0, z = 0},
-			{x = 0, y = -1, z = 0},
-			{x = 0, y = 1, z = 0},
-			{x = 0, y = 0, z = -1},
-			{x = 0, y = 0, z = 1},
-		},
+		rules = mesecon.rules.alldirs,
 		onstate = "mesecons_random:ghoststone_active"
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_random:ghoststone_active", {
@@ -56,14 +52,7 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 	drop = "mesecons_random:ghoststone",
 	mesecons = {conductor = {
 		state = mesecon.state.on,
-		rules = {
-			{x = -1, y = 0, z = 0},
-			{x = 1, y = 0, z = 0},
-			{x = 0, y = -1, z = 0},
-			{x = 0, y = 1, z = 0},
-			{x = 0, y = 0, z = -1},
-			{x = 0, y = 0, z = 1},
-		},
+		rules = mesecon.rules.alldirs,
 		offstate = "mesecons_random:ghoststone"
 	}},
 	on_construct = function(pos)
@@ -72,7 +61,8 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 		if (minetest.get_node(shadowpos).name == "air") then
 			minetest.dig_node(shadowpos)
 		end
-	end
+	end,
+	on_blast = mesecon.on_blastnode,
 })
 
 

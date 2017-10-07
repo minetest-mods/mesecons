@@ -629,6 +629,7 @@ for d = 0, 1 do
 			mesecon.receptor_off(pos, output_rules)
 		end,
 		is_luacontroller = true,
+		on_blast = mesecon.on_blastnode,
 	})
 end
 end
@@ -669,6 +670,7 @@ minetest.register_node(BASENAME .. "_burnt", {
 			end,
 		},
 	},
+	on_blast = mesecon.on_blastnode,
 })
 
 ------------------------

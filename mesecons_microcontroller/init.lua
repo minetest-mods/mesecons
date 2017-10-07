@@ -138,6 +138,7 @@ minetest.register_node(nodename, {
 		rules = microc_rules[node.name]
 		mesecon.receptor_off(pos, rules)
 	end,
+	on_blast = mesecon.on_blastnode,
 })
 end
 end

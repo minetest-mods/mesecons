@@ -28,7 +28,8 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 			minetest.swap_node(pos, {name = "mesecons_lamp:lamp_off", param2 = node.param2})
 		end,
 		rules = mesecon.rules.wallmounted_get,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_lamp:lamp_off", {
@@ -50,7 +51,8 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 			minetest.swap_node(pos, {name = "mesecons_lamp:lamp_on", param2 = node.param2})
 		end,
 		rules = mesecon.rules.wallmounted_get,
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_craft({

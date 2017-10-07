@@ -24,7 +24,8 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {receptor = {
 		state = mesecon.state.off
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
@@ -51,7 +52,8 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 	sounds = default.node_sound_stone_defaults(),
 	mesecons = {receptor = {
 		state = mesecon.state.on
-	}}
+	}},
+	on_blast = mesecon.on_blastnode,
 })
 
 

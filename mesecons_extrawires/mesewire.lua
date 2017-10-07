@@ -26,7 +26,8 @@ local powered_def = mesecon.mergetable(minetest.registered_nodes["default:mese"]
 		offstate = "default:mese",
 		rules = mesewire_rules
 	}},
-	groups = {cracky = 1, not_in_creative_inventory = 1}
+	groups = {cracky = 1, not_in_creative_inventory = 1},
+	on_blast = mesecon.on_blastnode,
 })
 
 for i, v in pairs(powered_def.tiles) do
