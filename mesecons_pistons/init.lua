@@ -84,7 +84,7 @@ local piston_on = function(pos, node)
 		return
 	end
 	minetest.set_node(pos, {param2 = node.param2, name = pistonspec.onname})
-	minetest.set_node(pusher_pos,  {param2 = node.param2, name = pistonspec.pusher})
+	minetest.set_node(pusher_pos, {param2 = node.param2, name = pistonspec.pusher})
 	minetest.sound_play("piston_extend", {
 		pos = pos,
 		max_hear_distance = 20,
@@ -94,7 +94,7 @@ local piston_on = function(pos, node)
 	mesecon.mvps_move_objects(pusher_pos, dir, oldstack)
 end
 
-local piston_off = function(pos, node)
+local function piston_off(pos, node)
 	local pistonspec = get_pistonspec(node.name, "onname")
 	minetest.set_node(pos, {param2 = node.param2, name = pistonspec.offname})
 	piston_remove_pusher(pos, node)
@@ -114,6 +114,7 @@ local orientations = {
 	      {10,  6},
 	      {20, 15},
 }
+
 local function piston_orientate(pos, placer)
 	if not placer then
 		return
@@ -140,6 +141,7 @@ local rotations = {
 	{4, 13, 10, 19},
 	{6, 15,  8, 17},
 }
+
 local function get_rotation(param2)
 	for a = 1, #rotations do
 		for f = 1, #rotations[a] do
@@ -149,6 +151,7 @@ local function get_rotation(param2)
 		end
 	end
 end
+
 local function rotate(param2, mode)
 	local axis, face = get_rotation(param2)
 	if mode == screwdriver.ROTATE_FACE then
@@ -167,12 +170,14 @@ local function rotate(param2, mode)
 	end
 	return rotations[axis][face]
 end
+
 local function piston_rotate(pos, node, _, mode)
 	node.param2 = rotate(node.param2, mode)
 	minetest.swap_node(pos, node)
 	mesecon.execute_autoconnect_hooks_now(pos, node)
 	return true
 end
+
 local function piston_rotate_on(pos, node, player, mode)
 	local pistonspec = get_pistonspec(node.name, "onname")
 	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
@@ -211,6 +216,7 @@ local function piston_rotate_on(pos, node, player, mode)
 	mesecon.execute_autoconnect_hooks_now(pos, node)
 	return true
 end
+
 local function piston_rotate_pusher(pos, node, player, mode)
 	local pistonspec = get_pistonspec(node.name, "pusher")
 	local piston_pos = vector.add(pos, minetest.facedir_to_dir(node.param2))
