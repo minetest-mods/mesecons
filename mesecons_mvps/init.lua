@@ -205,12 +205,6 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	return true, nodes, oldstack
 end
 
-mesecon.register_on_mvps_move(function(moved_nodes)
-	for _, n in ipairs(moved_nodes) do
-		mesecon.on_placenode(n.pos, n.node)
-	end
-end)
-
 function mesecon.mvps_move_objects(pos, dir, nodestack)
 	local objects_to_move = {}
 
@@ -258,6 +252,9 @@ mesecon.register_on_mvps_move(mesecon.move_hot_nodes)
 mesecon.register_on_mvps_move(function(moved_nodes)
 	for i = 1, #moved_nodes do
 		local moved_node = moved_nodes[i]
+		mesecon.on_placenode(moved_node.pos, moved_node.node)
+		minetest.check_for_falling(moved_node.oldpos)
+		minetest.check_for_falling(moved_node.pos)
 		local node_def = minetest.registered_nodes[moved_node.node.name]
 		if node_def and node_def.mesecon and node_def.mesecon.on_mvps_move then
 			node_def.mesecon.on_mvps_move(moved_node.pos, moved_node.node,
