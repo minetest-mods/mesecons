@@ -72,7 +72,6 @@ local function piston_remove_pusher(pos, node)
 		max_hear_distance = 20,
 		gain = 0.3,
 	})
-	minetest.check_for_falling(pusherpos)
 end
 
 local piston_on = function(pos, node)
