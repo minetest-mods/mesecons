@@ -205,7 +205,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	return true, nodes, oldstack
 end
 
-function mesecon.mvps_move_objects(pos, dir, nodestack)
+function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 	local objects_to_move = {}
 	local dir_k
 	local dir_l
@@ -243,7 +243,7 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 		if ok then
 			local ent = obj:get_luaentity()
 			if obj:is_player() or (ent and not mesecon.is_mvps_unmov(ent.name)) then
-				local np = vector.add(obj_pos, dir)
+				local np = vector.add(obj_pos, vector.multiply(dir, movefactor or 1))
 				-- Move only if destination is not solid or object is inside stack:
 				local nn = minetest.get_node(np)
 				local node_def = minetest.registered_nodes[nn.name]
