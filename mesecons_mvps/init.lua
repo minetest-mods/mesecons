@@ -135,29 +135,52 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	return nodes
 end
 
-function mesecon.mvps_push(pos, dir, maximum)
-	return mesecon.mvps_push_or_pull(pos, dir, dir, maximum)
+function mesecon.mvps_push(from, pos, dir, maximum)
+	return mesecon.mvps_push_or_pull(from, false, pos, dir, dir, maximum)
 end
 
-function mesecon.mvps_pull_all(pos, dir, maximum)
-	return mesecon.mvps_push_or_pull(pos, vector.multiply(dir, -1), dir, maximum, true)
+function mesecon.mvps_pull_all(from, pos, dir, maximum)
+	return mesecon.mvps_push_or_pull(from, true, pos, vector.multiply(dir, -1), dir, maximum, true)
 end
 
-function mesecon.mvps_pull_single(pos, dir, maximum)
-	return mesecon.mvps_push_or_pull(pos, vector.multiply(dir, -1), dir, maximum)
+function mesecon.mvps_pull_single(from, pos, dir, maximum)
+	return mesecon.mvps_push_or_pull(from, true, pos, vector.multiply(dir, -1), dir, maximum)
 end
 
 -- pos: pos of mvps; stackdir: direction of building the stack
 -- movedir: direction of actual movement
 -- maximum: maximum nodes to be pushed
 -- all_pull_sticky: All nodes are sticky in the direction that they are pulled from
-function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sticky)
-	local nodes = mesecon.mvps_get_stack(pos, movedir, maximum, all_pull_sticky)
-
-	if not nodes then return end
+function mesecon.mvps_push_or_pull(from, ispulling, pos, stackdir, movedir, maximum, all_pull_sticky)
+	local frommeta = minetest.get_meta(from)
+	local owner = frommeta:get_string("owner")
+	local tnodes = mesecon.mvps_get_stack(pos, movedir, maximum, all_pull_sticky)
+	if not tnodes then return end
 	-- determine if one of the nodes blocks the push / pull
-	for id, n in ipairs(nodes) do
+	local nodes = {}
+	for id, n in ipairs(tnodes) do
+		if minetest.is_protected(n.pos, owner) then
+			if ispulling then
+				break
+			else
+				return
+			end
+		end
 		if mesecon.is_mvps_stopper(n.node, movedir, nodes, id) then
+			if ispulling then
+				break
+			else
+				return
+			end
+		end
+		nodes[id] = n
+	end
+
+	-- check nodes
+	for _, n in ipairs(nodes) do
+		local np = vector.add(n.pos, movedir)
+
+		if minetest.is_protected(np, owner) then
 			return
 		end
 	end

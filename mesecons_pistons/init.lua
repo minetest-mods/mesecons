@@ -83,7 +83,7 @@ local piston_on = function(pos, node)
 	local dir = piston_get_direction(pistonspec.dir, node)
 	local np = vector.add(pos, dir)
 	local maxpush = mesecon.setting("piston_max_push", 15)
-	local success, stack, oldstack = mesecon.mvps_push(np, dir, maxpush)
+	local success, stack, oldstack = mesecon.mvps_push(pos, np, dir, maxpush)
 	if success then
 		minetest.set_node(pos, {param2 = node.param2, name = pistonspec.onname})
 		minetest.set_node(np,  {param2 = node.param2, name = pistonspec.pusher})
@@ -106,7 +106,7 @@ local piston_off = function(pos, node)
 		local maxpull = mesecon.setting("piston_max_pull", 15)
 		local dir = piston_get_direction(pistonspec.dir, node)
 		local pullpos = vector.add(pos, vector.multiply(dir, 2))
-		local stack = mesecon.mvps_pull_single(pullpos, vector.multiply(dir, -1), maxpull)
+		local stack = mesecon.mvps_pull_single(pos, pullpos, vector.multiply(dir, -1), maxpull)
 		mesecon.mvps_process_stack(pos, dir, stack)
 	end
 end
@@ -114,6 +114,11 @@ end
 local piston_orientate = function(pos, placer)
 	-- not placed by player
 	if not placer then return end
+
+	local meta = minetest.get_meta(pos)
+
+	meta:set_string("owner", placer:get_player_name())
+	meta:set_string("infotext", "Piston (owned by "..placer:get_player_name()..")")
 
 	-- placer pitch in degrees
 	local pitch = placer:get_look_pitch() * (180 / math.pi)
