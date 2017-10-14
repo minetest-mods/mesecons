@@ -216,6 +216,8 @@ function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 			break
 		end
 	end
+	movefactor = movefactor or 1
+	dir = vector.multiply(dir, movefactor)
 	for id, obj in pairs(minetest.object_refs) do
 		local obj_pos = obj:get_pos()
 		local cbox = obj:get_properties().collisionbox
@@ -229,7 +231,7 @@ function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 				edge2 = v + 0.51
 			else
 				edge1 = v - 0.5 * dir_l
-				edge2 = v + (#nodestack + 0.5) * dir_l
+				edge2 = v + (#nodestack + 0.5 * movefactor) * dir_l
 				-- Make sure, edge1 is bigger than edge2:
 				if edge1 > edge2 then
 					edge1, edge2 = edge2, edge1
@@ -243,7 +245,7 @@ function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 		if ok then
 			local ent = obj:get_luaentity()
 			if obj:is_player() or (ent and not mesecon.is_mvps_unmov(ent.name)) then
-				local np = vector.add(obj_pos, vector.multiply(dir, movefactor or 1))
+				local np = vector.add(obj_pos, dir)
 				-- Move only if destination is not solid or object is inside stack:
 				local nn = minetest.get_node(np)
 				local node_def = minetest.registered_nodes[nn.name]
