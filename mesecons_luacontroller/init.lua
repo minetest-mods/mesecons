@@ -533,9 +533,10 @@ local function set_program(pos, code)
 	reset_meta(pos, code)
 	local err = run(pos, {type="program"})
 	if err then
-		print(err)
 		reset_meta(pos, code, err)
+		return false, err
 	end
+	return true
 end
 
 local function on_receive_fields(pos, form_name, fields, sender)
@@ -547,7 +548,11 @@ local function on_receive_fields(pos, form_name, fields, sender)
 		minetest.record_protection_violation(pos, name)
 		return
 	end
-	set_program(pos, fields.code)
+	local ok, err = set_program(pos, fields.code)
+	if not ok then
+		-- it's not an error from the server perspective
+		minetest.log("action", "Lua controller programming error: " .. err)
+	end
 end
 
 for a = 0, 1 do -- 0 = off  1 = on
