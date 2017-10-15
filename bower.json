@@ -1,0 +1,12 @@
+{
+    "name": "mesecons",
+    "description": "Mesecons is a mod for Minetest that implements items related to digital circuitry: wires, buttons, lights, and programmable controllers.",
+    "homepage": "http://mesecons.net",
+    "authors": "Jeija",
+    "license": "LGPL-3.0+",
+    "keywords": [
+        "mesecons",
+        "minetest",
+        "mod"
+    ]
+}
