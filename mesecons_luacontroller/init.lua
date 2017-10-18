@@ -522,6 +522,23 @@ local digiline = {
 		end
 	}
 }
+
+local function get_program(pos)
+	local meta = minetest.get_meta(pos)
+	return meta:get_string("code")
+end
+
+local function set_program(pos, code)
+	reset(pos)
+	reset_meta(pos, code)
+	local err = run(pos, {type="program"})
+	if err then
+		reset_meta(pos, code, err)
+		return false, err
+	end
+	return true
+end
+
 local function on_receive_fields(pos, form_name, fields, sender)
 	if not fields.program then
 		return
@@ -531,12 +548,10 @@ local function on_receive_fields(pos, form_name, fields, sender)
 		minetest.record_protection_violation(pos, name)
 		return
 	end
-	reset(pos)
-	reset_meta(pos, fields.code)
-	local err = run(pos, {type="program"})
-	if err then
-		print(err)
-		reset_meta(pos, fields.code, err)
+	local ok, err = set_program(pos, fields.code)
+	if not ok then
+		-- it's not an error from the server perspective
+		minetest.log("action", "Lua controller programming error: " .. err)
 	end
 end
 
@@ -590,7 +605,11 @@ for d = 0, 1 do
 		receptor = {
 			state = mesecon.state.on,
 			rules = output_rules[cid]
-		}
+		},
+		luacontroller = {
+			get_program = get_program,
+			set_program = set_program,
+		},
 	}
 
 	minetest.register_node(node_name, {
