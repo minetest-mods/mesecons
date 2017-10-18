@@ -50,7 +50,6 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 			minetest.get_node_timer(pos):start(timer_interval)
 			return
 		end
-		mesecon.mvps_process_stack(stack)
 		mesecon.mvps_move_objects(frontpos, direction, oldstack)
 
 		-- ### Step 2: Move the movestone ###
@@ -61,9 +60,13 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		minetest.get_node_timer(frontpos):start(timer_interval)
 
 		-- ### Step 3: If sticky, pull stack behind ###
-		if is_sticky then
-			local backpos = vector.subtract(pos, direction)
-			mesecon.mvps_pull_all(backpos, direction, max_pull)
+		if not is_sticky then
+			return
+		end
+		local backpos = vector.subtract(pos, direction)
+		success, stack, oldstack = mesecon.mvps_pull_all(backpos, direction, max_pull)
+		if success then
+			mesecon.mvps_move_objects(backpos, vector.multiply(direction, -1), oldstack, -1)
 		end
 	end
 

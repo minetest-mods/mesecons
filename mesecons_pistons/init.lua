@@ -101,10 +101,12 @@ local function piston_off(pos, node)
 	if not pistonspec.sticky then
 		return
 	end
-	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
-	local pullpos = vector.add(pos, vector.multiply(dir, 2))
-	local stack = mesecon.mvps_pull_single(pullpos, vector.multiply(dir, -1), max_pull)
-	mesecon.mvps_process_stack(pos, dir, stack)
+	local dir = minetest.facedir_to_dir(node.param2)
+	local pullpos = vector.add(pos, vector.multiply(dir, -2))
+	local success, stack, oldstack = mesecon.mvps_pull_single(pullpos, dir, max_pull)
+	if success then
+		mesecon.mvps_move_objects(pullpos, vector.multiply(dir, -1), oldstack, -1)
+	end
 end
 
 local orientations = {

@@ -205,7 +205,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	return true, nodes, oldstack
 end
 
-function mesecon.mvps_move_objects(pos, dir, nodestack)
+function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 	local objects_to_move = {}
 	local dir_k
 	local dir_l
@@ -216,6 +216,8 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 			break
 		end
 	end
+	movefactor = movefactor or 1
+	dir = vector.multiply(dir, movefactor)
 	for id, obj in pairs(minetest.object_refs) do
 		local obj_pos = obj:get_pos()
 		local cbox = obj:get_properties().collisionbox
@@ -229,7 +231,7 @@ function mesecon.mvps_move_objects(pos, dir, nodestack)
 				edge2 = v + 0.51
 			else
 				edge1 = v - 0.5 * dir_l
-				edge2 = v + (#nodestack + 0.5) * dir_l
+				edge2 = v + (#nodestack + 0.5 * movefactor) * dir_l
 				-- Make sure, edge1 is bigger than edge2:
 				if edge1 > edge2 then
 					edge1, edge2 = edge2, edge1
