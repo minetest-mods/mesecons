@@ -69,7 +69,7 @@ local function rules_from_dir(ruleset, dir)
 	if dir.z ==  1 then return ruleset.zp end
 	if dir.x == -1 then return ruleset.xn end
 	if dir.y == -1 then return ruleset.yn end
-	if dir.Z == -1 then return ruleset.zn end
+	if dir.z == -1 then return ruleset.zn end
 end
 
 mesecon.rules.wallmounted_get = function(node)
