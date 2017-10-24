@@ -271,7 +271,7 @@ end
 
 
 -- Given a message object passed to digiline_send, clean it up into a form
--- which is safe to transmit over the network and compute its “cost” (a very
+-- which is safe to transmit over the network and compute its "cost" (a very
 -- rough estimate of its memory usage).
 --
 -- The cleaning comprises the following:
