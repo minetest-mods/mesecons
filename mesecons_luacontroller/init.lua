@@ -353,7 +353,7 @@ end
 
 
 local function get_digiline_send(pos)
-	if not digiline then return end
+	if not minetest.global_exists("digilines") then return end
 	return function(channel, msg)
 		-- Make sure channel is string, number or boolean
 		if (type(channel) ~= "string" and type(channel) ~= "number" and type(channel) ~= "boolean") then
@@ -367,7 +367,7 @@ local function get_digiline_send(pos)
 		end
 
 		minetest.after(0, function()
-			digiline:receptor_send(pos, digiline.rules.default, channel, msg)
+			digilines.receptor_send(pos, digilines.rules.default, channel, msg)
 		end)
 		return true
 	end
