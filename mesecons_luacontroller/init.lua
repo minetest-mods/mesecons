@@ -299,8 +299,9 @@ local function clean_and_weigh_digiline_message(msg, back_references)
 	local t = type(msg)
 	if t == "string" then
 		-- Strings are immutable so can be passed by reference, and cost their
-		-- length.
-		return msg, #msg
+		-- length plus the size of the Lua object header (24 bytes on a 64-bit
+		-- platform) plus one byte for the NUL terminator.
+		return msg, #msg + 25
 	elseif t == "number" then
 		-- Numbers are passed by value so need not be touched, and cost 8 bytes
 		-- as all numbers in Lua are doubles.
