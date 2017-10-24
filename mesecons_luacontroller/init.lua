@@ -362,7 +362,7 @@ local function get_digiline_send(pos)
 
 		local msg_cost
 		msg, msg_cost = clean_and_weigh_digiline_message(msg)
-		if msg_cost > mesecon.setting("luacontroller_digiline_maxlen", 50000) then
+		if msg == nil or msg_cost > mesecon.setting("luacontroller_digiline_maxlen", 50000) then
 			return false
 		end
 
