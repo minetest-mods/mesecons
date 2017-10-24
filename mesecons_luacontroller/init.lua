@@ -370,9 +370,7 @@ local function get_digiline_send(pos)
 			return false
 		end
 
-		minetest.after(0, function()
-			digilines.receptor_send(pos, digilines.rules.default, channel, msg)
-		end)
+		minetest.after(0, digilines.receptor_send, pos, digilines.rules.default, channel, msg)
 		return true
 	end
 end
