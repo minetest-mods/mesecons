@@ -306,6 +306,10 @@ local function clean_and_weigh_digiline_message(msg, back_references)
 		-- Numbers are passed by value so need not be touched, and cost 8 bytes
 		-- as all numbers in Lua are doubles.
 		return msg, 8
+	elseif t == "boolean" then
+		-- Booleans are passed by value so need not be touched, and cost 1
+		-- byte.
+		return msg, 1
 	elseif t == "table" then
 		-- Tables are duplicated. Check if this table has been seen before
 		-- (self-referential or shared table); if so, reuse the cleaned value
