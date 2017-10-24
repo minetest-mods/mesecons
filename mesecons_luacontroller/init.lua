@@ -296,7 +296,6 @@ end
 -- 1. The cleaned object.
 -- 2. The approximate cost of the object.
 local function clean_and_weigh_digiline_message(msg, back_references)
-	back_references = back_references or {}
 	local t = type(msg)
 	if t == "string" then
 		-- Strings are immutable so can be passed by reference, and cost their
@@ -316,6 +315,7 @@ local function clean_and_weigh_digiline_message(msg, back_references)
 		-- of the previous occurrence, maintaining table topology and avoiding
 		-- infinite recursion, and charge zero bytes for this as the object has
 		-- already been counted.
+		back_references = back_references or {}
 		local bref = back_references[msg]
 		if bref then
 			return bref, 0
