@@ -20,6 +20,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
+	is_ground_content = false,
 	walkable = false,
 	sunlight_propagates = true,
 	selection_box = {
@@ -53,6 +54,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
+	is_ground_content = false,
 	walkable = false,
 	sunlight_propagates = true,
 	selection_box = {

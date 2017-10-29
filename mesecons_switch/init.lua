@@ -3,6 +3,7 @@
 mesecon.register_node("mesecons_switch:mesecon_switch", {
 	paramtype2="facedir",
 	description="Switch",
+	is_ground_content = false,
 	sounds = default.node_sound_stone_defaults(),
 	on_rightclick = function (pos, node)
 		if(mesecon.flipstate(pos, node) == "on") then

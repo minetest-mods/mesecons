@@ -8,6 +8,7 @@ mesecon.register_node("mesecons_walllever:wall_lever", {
 	wield_image = "jeija_wall_lever_inv.png",
 	paramtype = "light",
 	paramtype2 = "facedir",
+	is_ground_content = false,
 	sunlight_propagates = true,
 	walkable = false,
 	selection_box = {

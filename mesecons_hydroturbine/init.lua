@@ -13,6 +13,7 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 		"jeija_hydro_turbine_turbine_misc_off.png"
 	},
 	inventory_image = "jeija_hydro_turbine_inv.png",
+	is_ground_content = false,
 	wield_scale = {x=0.75, y=0.75, z=0.75},
 	groups = {dig_immediate=2},
 	description="Water Turbine",
@@ -30,6 +31,7 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 
 minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 	drawtype = "mesh",
+	is_ground_content = false,
 	mesh = "jeija_hydro_turbine_on.obj",
 	wield_scale = {x=0.75, y=0.75, z=0.75},
 	tiles = {

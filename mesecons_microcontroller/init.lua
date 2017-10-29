@@ -69,6 +69,7 @@ minetest.register_node(nodename, {
 
 	sunlight_propagates = true,
 	paramtype = "light",
+	is_ground_content = false,
 	walkable = true,
 	groups = groups,
 	drop = "mesecons_microcontroller:microcontroller0000 1",

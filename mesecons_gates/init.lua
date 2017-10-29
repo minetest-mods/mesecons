@@ -65,6 +65,7 @@ local function register_gate(name, inputnumber, assess, recipe, description)
 		inventory_image = "jeija_gate_off.png^jeija_gate_"..name..".png",
 		paramtype = "light",
 		paramtype2 = "facedir",
+		is_ground_content = false,
 		drawtype = "nodebox",
 		drop = basename.."_off",
 		selection_box = nodebox,

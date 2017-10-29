@@ -7,7 +7,7 @@ minetest.register_node("mesecons_solarpanel:solar_panel_on", {
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	walkable = false,
-	is_ground_content = true,
+	is_ground_content = false,
 	node_box = {
 		type = "wallmounted",
 		wall_bottom = { -7/16, -8/16, -7/16,  7/16, -7/16, 7/16 },
@@ -39,7 +39,7 @@ minetest.register_node("mesecons_solarpanel:solar_panel_off", {
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	walkable = false,
-	is_ground_content = true,
+	is_ground_content = false,
 	node_box = {
 		type = "wallmounted",
 		wall_bottom = { -7/16, -8/16, -7/16,  7/16, -7/16, 7/16 },
