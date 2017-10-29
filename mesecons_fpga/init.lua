@@ -72,7 +72,7 @@ plg.register_nodes({
 	sunlight_propagates = true,
 	paramtype = "light",
 	walkable = true,
-	groups = {dig_immediate = 2, mesecon = 3},
+	groups = {dig_immediate = 2, mesecon = 3, overheat = 1},
 	drop = "mesecons_fpga:fpga0000",
 	selection_box = {
 		type = "fixed",
@@ -308,6 +308,11 @@ end
 plg.update = function(pos)
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("valid") ~= 1 then
+		return
+	elseif mesecon.do_overheat(pos) then
+		plg.setports(pos, false, false, false, false)
+		meta:set_int("valid", 0)
+		meta:set_string("infotext", "FPGA (overheated)")
 		return
 	end
 
