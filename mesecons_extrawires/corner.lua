@@ -46,6 +46,7 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 		offstate = "mesecons_extrawires:corner_off"
 	}},
 	on_blast = mesecon.on_blastnode,
+	on_rotate = screwdriver and screwdriver.rotate_simple,
 })
 
 minetest.register_node("mesecons_extrawires:corner_off", {
@@ -73,6 +74,7 @@ minetest.register_node("mesecons_extrawires:corner_off", {
 		onstate = "mesecons_extrawires:corner_on"
 	}},
 	on_blast = mesecon.on_blastnode,
+	on_rotate = screwdriver and screwdriver.rotate_simple,
 })
 
 minetest.register_craft({
