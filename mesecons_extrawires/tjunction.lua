@@ -1,3 +1,5 @@
+local screwdriver_exists = minetest.global_exists("screwdriver")
+
 local tjunction_nodebox = {
 	type = "fixed",
 	fixed = {{ -16/32-0.001, -17/32, -3/32, 16/32+0.001, -13/32, 3/32 },
@@ -47,7 +49,7 @@ minetest.register_node("mesecons_extrawires:tjunction_on", {
 		offstate = "mesecons_extrawires:tjunction_off"
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = screwdriver and screwdriver.rotate_simple,
+	on_rotate = screwdriver_exists and screwdriver.rotate_simple,
 })
 
 minetest.register_node("mesecons_extrawires:tjunction_off", {
@@ -75,7 +77,7 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 		onstate = "mesecons_extrawires:tjunction_on"
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = screwdriver and screwdriver.rotate_simple,
+	on_rotate = screwdriver_exists and screwdriver.rotate_simple,
 })
 
 minetest.register_craft({
