@@ -24,6 +24,7 @@ mesecon.register_node("mesecons_blinkyplant:blinky_plant", {
 	drawtype = "plantlike",
 	inventory_image = "jeija_blinky_plant_off.png",
 	paramtype = "light",
+	is_ground_content = false,
 	walkable = false,
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {

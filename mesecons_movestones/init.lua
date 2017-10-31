@@ -70,6 +70,8 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		end
 	end
 
+	def.is_ground_content = false
+
 	def.mesecons = {effector = {
 		action_on = function(pos, node, rulename)
 			if rulename and not minetest.get_node_timer(pos):is_started() then
@@ -87,8 +89,6 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		local rulename = vector.subtract(sourcepos[1], pos)
 		mesecon.activate(pos, minetest.get_node(pos), rulename, 0)
 	end
-
-	def.on_blast = mesecon.on_blastnode
 
 	def.on_blast = mesecon.on_blastnode
 

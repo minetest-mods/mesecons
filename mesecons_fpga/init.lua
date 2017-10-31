@@ -69,6 +69,7 @@ plg.register_nodes({
 		"jeija_fpga_sides.png"
 	},
 	inventory_image = "", -- replaced later
+	is_ground_content = false,
 	sunlight_propagates = true,
 	paramtype = "light",
 	walkable = true,

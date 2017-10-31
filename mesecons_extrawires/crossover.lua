@@ -29,6 +29,7 @@ minetest.register_node("mesecons_extrawires:crossover_off", {
 		"jeija_insulated_wire_ends_off.png"
 	},
 	paramtype = "light",
+	is_ground_content = false,
 	walkable = false,
 	stack_max = 99,
 	selection_box = {type="fixed", fixed={-16/32-0.0001, -18/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
@@ -54,6 +55,7 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 		"jeija_insulated_wire_ends_off.png"
 	},
 	paramtype = "light",
+	is_ground_content = false,
 	walkable = false,
 	stack_max = 99,
 	selection_box = {type="fixed", fixed={-16/32-0.0001, -18/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
@@ -79,6 +81,7 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 		"jeija_insulated_wire_ends_on.png"
 	},
 	paramtype = "light",
+	is_ground_content = false,
 	walkable = false,
 	stack_max = 99,
 	selection_box = {type="fixed", fixed={-16/32-0.0001, -18/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
@@ -104,6 +107,7 @@ minetest.register_node("mesecons_extrawires:crossover_on", {
 		"jeija_insulated_wire_ends_on.png"
 	},
 	paramtype = "light",
+	is_ground_content = false,
 	walkable = false,
 	stack_max = 99,
 	selection_box = {type="fixed", fixed={-16/32-0.0001, -18/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},

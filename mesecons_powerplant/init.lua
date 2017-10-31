@@ -7,6 +7,7 @@ minetest.register_node("mesecons_powerplant:power_plant", {
 	tiles = {"jeija_power_plant.png"},
 	inventory_image = "jeija_power_plant.png",
 	paramtype = "light",
+	is_ground_content = false,
 	walkable = false,
 	groups = {dig_immediate=3, mesecon = 2},
 	light_source = default.LIGHT_MAX-9,

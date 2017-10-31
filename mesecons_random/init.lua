@@ -2,6 +2,7 @@
 
 minetest.register_node("mesecons_random:removestone", {
 	tiles = {"jeija_removestone.png"},
+	is_ground_content = false,
 	inventory_image = minetest.inventorycube("jeija_removestone_inv.png"),
 	groups = {cracky=3},
 	description="Removestone",
@@ -30,7 +31,7 @@ minetest.register_craft({
 minetest.register_node("mesecons_random:ghoststone", {
 	description="Ghoststone",
 	tiles = {"jeija_ghoststone.png"},
-	is_ground_content = true,
+	is_ground_content = false,
 	inventory_image = minetest.inventorycube("jeija_ghoststone_inv.png"),
 	groups = {cracky=3},
 	sounds = default.node_sound_stone_defaults(),
@@ -47,6 +48,7 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 	pointable = false,
 	walkable = false,
 	diggable = false,
+	is_ground_content = false,
 	sunlight_propagates = true,
 	paramtype = "light",
 	drop = "mesecons_random:ghoststone",

@@ -208,6 +208,7 @@ local function register_wires()
 			wield_image = "mesecons_wire_inv.png",
 			paramtype = "light",
 			paramtype2 = "facedir",
+			is_ground_content = false,
 			sunlight_propagates = true,
 			selection_box = selectionbox,
 			node_box = nodebox,
