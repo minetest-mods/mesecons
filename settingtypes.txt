@@ -1,43 +1,51 @@
 [mesecons]
-
-mesecon.resumetime (Actionqueue resume time) int 4
+#    This is the time in seconds to wait after starting the server before
+#    processing the ActionQueue, don't set this too low.
+mesecon.resumetime (ActionQueue resume time) int 4
+#    This is used for fast circuits.
+#    Gates, fpgas, luacontrollers and the like will overheat if their heats get this high.
 mesecon.overheat_max (Overheat max) int 20
+#    This is this time in second it takes to cool a maximal heated device.
 mesecon.cooldown_time (Cooldown time) float 2.0
+#    This is the time in seconds between cooldown steps.
+#    Setting this too low can overload the CPU.
 mesecon.cooldown_granularity (Cooldown granularity) float 0.5
 
-
 [mesecons_blinkyplant]
-
+#    This is the interval in seconds in which a blinky plant flips its state once.
 mesecon.blinky_plant_interval (Blinky Plant interval) int 3
 
-
 [mesecons_detector]
-
+#    This is the radius in that object detectors search for objects.
+#    An euclidean metric is used.
 mesecon.detector_radius (Object Detector radius) int 6
+#    This is the maximal distance that can be set for node detectors.
 mesecon.node_detector_distance_max (Node Detector max distance) int 10
 
-
 [mesecons_luacontroller]
-
+#    The result of the function string.rep can maximally have this many characters.
 mesecon.luacontroller_string_rep_max (string.rep result length limit) int 64000
+#    This is the maximum number of characters of serialized digiline messages.
 mesecon.luacontroller_digiline_maxlen (Digiline message size limit) int 50000
+#    Make this higher if your luacontroller code tends to time out.
 mesecon.luacontroller_maxevents (Max debug hook events per event) int 10000
-mesecon.luacontroller_memsize (Memory size in number of characters of serialized mem) int 100000
-
+#    This is the maximum number of characters of serialized mem per luacontroller.
+mesecon.luacontroller_memsize (Memory size) int 100000
 
 [mesecons_movestones]
-
+#    This is the speed of movestones in nodes per second.
 mesecon.movestone_speed (Speed) int 3
+#    This is the maximum amount of nodes that can be pushed by a movestone.
 mesecon.movestone_max_push (Max push) int 50
+#    This is the maximum amount of nodes that can be pulled by a sticky movestone.
 mesecon.movestone_max_pull (Max pull) int 50
 
-
 [mesecons_pistons]
-
+#    This is the maximum amount of nodes that can be pushed by a piston.
 mesecon.piston_max_push (Max push) int 15
+#    This is the maximum amount of nodes that can be pulled by a sticky piston.
 mesecon.piston_max_pull (Max pull) int 15
 
-
 [mesecons_pressureplates]
-
+#    This is the interval in which pressureplates check for objects lying on them.
 mesecon.pplate_interval (Check Interval) float 0.1
