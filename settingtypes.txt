@@ -1,0 +1,43 @@
+[mesecons]
+
+mesecon.resumetime (Resume time) int 4
+mesecon.overheat_max (Overheat max) int 20
+mesecon.cooldown_time (Cooldown time) float 2.0
+mesecon.cooldown_granularity (Cooldown granularity) float 0.5
+
+
+[mesecons_blinkyplant]
+
+mesecon.blinky_plant_interval (Plant interval) int 3
+
+
+[mesecons_detector]
+
+mesecon.detector_radius (Detector radius) int 6
+mesecon.node_detector_distance_max (Detector max distance) int 10
+
+
+[mesecons_luacontroller]
+
+mesecon.luacontroller_string_rep_max (Max) int 64000
+mesecon.luacontroller_digiline_maxlen (Digiline max length) int 50000
+mesecon.luacontroller_maxevents (Max events) int 10000
+mesecon.luacontroller_memsize (Memory size) int 100000
+
+
+[mesecons_movestones]
+
+mesecon.movestone_speed (Speed) int 3
+mesecon.movestone_max_push (Max push) int 50
+mesecon.movestone_max_pull (Max pull) int 50
+
+
+[mesecons_pistons]
+
+mesecon.piston_max_push (Max push) int 15
+mesecon.piston_max_pull (Max pull) int 15
+
+
+[mesecons_pressureplates]
+
+mesecon.pplate_interval (Interval) float 0.1

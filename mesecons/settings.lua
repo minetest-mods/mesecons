@@ -8,7 +8,7 @@ minetest.settings = minetest.settings or {
 	get_bool = function(_, k, default)
 		local s = minetest.setting_getbool(k)
 		if s == nil then
-			s = default
+			return default
 		end
 		return s
 	end,
@@ -31,12 +31,9 @@ minetest.settings = minetest.settings or {
 function mesecon.setting(setting, default)
 	if type(default) == "boolean" then
 		local read = minetest.settings:get_bool("mesecon."..setting, default)
-		 -- legacy:
-		if read == nil then
+		if read == nil then -- legacy
 			return default
-		else
-			return read
-		end
+		return read
 	elseif type(default) == "string" then
 		return minetest.settings:get("mesecon."..setting) or default
 	elseif type(default) == "number" then
