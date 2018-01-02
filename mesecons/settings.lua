@@ -18,14 +18,8 @@ minetest.settings = minetest.settings or {
 	set_bool = function(_, k, v)
 		return minetest.setting_setbool(k, v)
 	end,
-	get_names = function()
-		return {}
-	end,
-	write = function()
-		return minetest.setting_save()
-	end,
 }
--- do not use get_np_group, set_np_group, remove or to_table
+-- do not use get_np_group, set_np_group, remove, get_names, write or to_table
 
 
 function mesecon.setting(setting, default)
@@ -33,6 +27,7 @@ function mesecon.setting(setting, default)
 		local read = minetest.settings:get_bool("mesecon."..setting, default)
 		if read == nil then -- legacy
 			return default
+		end
 		return read
 	elseif type(default) == "string" then
 		return minetest.settings:get("mesecon."..setting) or default
