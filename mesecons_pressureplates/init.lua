@@ -1,3 +1,5 @@
+local pplate_interval = mesecon.setting("pplate_interval", 0.1)
+
 local pp_box_off = {
 	type = "fixed",
 	fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
@@ -54,7 +56,7 @@ function mesecon.register_pressure_plate(basename, description, textures_off, te
 		pressureplate_basename = basename,
 		on_timer = pp_on_timer,
 		on_construct = function(pos)
-			minetest.get_node_timer(pos):start(mesecon.setting("pplate_interval", 0.1))
+			minetest.get_node_timer(pos):start(pplate_interval)
 		end,
 	},{
 		mesecons = {receptor = { state = mesecon.state.off, rules = mesecon.rules.pplate }},
