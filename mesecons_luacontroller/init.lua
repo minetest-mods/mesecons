@@ -35,6 +35,13 @@ local rules = {
 	d = {x =  0, y = 0, z = -1, name="D"},
 }
 
+-- Settings:
+local luacontroller_string_rep_max = mesecon.setting("luacontroller_string_rep_max", 64000)
+local luacontroller_digiline_maxlen = mesecon.setting("luacontroller_digiline_maxlen", 50000)
+local overheat_max = mesecon.setting("overheat_max", 20)
+local luacontroller_maxevents = mesecon.setting("luacontroller_maxevents", 10000)
+local luacontroller_memsize = mesecon.setting("luacontroller_memsize", 100000)
+
 
 ------------------
 -- Action stuff --
@@ -206,7 +213,7 @@ end
 -- string.rep(str, n) with a high value for n can be used to DoS
 -- the server. Therefore, limit max. length of generated string.
 local function safe_string_rep(str, n)
-	if #str * n > mesecon.setting("luacontroller_string_rep_max", 64000) then
+	if #str * n > luacontroller_string_rep_max then
 		debug.sethook() -- Clear hook
 		error("string.rep: string length overflow", 2)
 	end
@@ -284,7 +291,7 @@ local function get_digiline_send(pos)
 		-- Make sure serialized version of the data is not insanely long to
 		-- prevent DoS-like attacks
 		local msg_ser = minetest.serialize(msg)
-		if #msg_ser > mesecon.setting("luacontroller_digiline_maxlen", 50000) then
+		if #msg_ser > luacontroller_digiline_maxlen then
 			return false
 		end
 
@@ -316,7 +323,7 @@ local function create_environment(pos, mem, event)
 		event = event,
 		mem = mem,
 		heat = mesecon.get_heat(pos),
-		heat_max = mesecon.setting("overheat_max", 20),
+		heat_max = overheat_max,
 		print = safe_print,
 		interrupt = get_interrupt(pos),
 		digiline_send = get_digiline_send(pos),
@@ -410,8 +417,7 @@ local function create_sandbox(code, env)
 	return function(...)
 		-- Use instruction counter to stop execution
 		-- after luacontroller_maxevents
-		local maxevents = mesecon.setting("luacontroller_maxevents", 10000)
-		debug.sethook(timeout, "", maxevents)
+		debug.sethook(timeout, "", luacontroller_maxevents)
 		local ok, ret = pcall(f, ...)
 		debug.sethook()  -- Clear hook
 		if not ok then error(ret, 0) end
@@ -427,7 +433,7 @@ end
 
 local function save_memory(pos, meta, mem)
 	local memstring = minetest.serialize(remove_functions(mem))
-	local memsize_max = mesecon.setting("luacontroller_memsize", 100000)
+	local memsize_max = luacontroller_memsize
 
 	if (#memstring <= memsize_max) then
 		meta:set_string("lc_memory", memstring)

@@ -2,7 +2,10 @@ local GET_COMMAND = "GET"
 
 -- Object detector
 -- Detects players in a certain radius
--- The radius can be specified in mesecons/settings.lua
+-- The radius can be specified in settings
+
+local detector_radius = mesecon.setting("detector_radius", 6)
+local node_detector_distance_max = mesecon.setting("node_detector_distance_max", 10)
 
 local function object_detector_make_formspec(pos)
 	local meta = minetest.get_meta(pos)
@@ -25,7 +28,7 @@ end
 
 -- returns true if player was found, false if not
 local function object_detector_scan(pos)
-	local objs = minetest.get_objects_inside_radius(pos, mesecon.setting("detector_radius", 6))
+	local objs = minetest.get_objects_inside_radius(pos, detector_radius)
 
 	-- abort if no scan results were found
 	if next(objs) == nil then return false end
@@ -142,7 +145,7 @@ local function node_detector_make_formspec(pos)
 	if meta:get_string("distance") == ""  then meta:set_string("distance", "0") end
 	meta:set_string("formspec", "size[9,2.5]" ..
 		"field[0.3,  0;9,2;scanname;Name of node to scan for (empty for any):;${scanname}]"..
-		"field[0.3,1.5;2.5,2;distance;Distance (0-"..mesecon.setting("node_detector_distance_max", 10).."):;${distance}]"..
+		"field[0.3,1.5;2.5,2;distance;Distance (0-"..node_detector_distance_max.."):;${distance}]"..
 		"field[3,1.5;4,2;digiline_channel;Digiline Channel (optional):;${digiline_channel}]"..
 		"button_exit[7,0.75;2,3;;Save]")
 end
@@ -167,9 +170,8 @@ local function node_detector_scan(pos)
 	local meta = minetest.get_meta(pos)
 
 	local distance = meta:get_int("distance")
-	local distance_max = mesecon.setting("node_detector_distance_max", 10)
 	if distance < 0 then distance = 0 end
-	if distance > distance_max then distance = distance_max end
+	distance = math.min(distance, node_detector_distance_max)
 
 	local frontname = minetest.get_node(
 		vector.subtract(pos, vector.multiply(minetest.facedir_to_dir(node.param2), distance + 1))
@@ -187,9 +189,8 @@ local node_detector_digiline = {
 			local meta = minetest.get_meta(pos)
 
 			local distance = meta:get_int("distance")
-			local distance_max = mesecon.setting("node_detector_distance_max", 10)
 			if distance < 0 then distance = 0 end
-			if distance > distance_max then distance = distance_max end
+			distance = math.min(distance, node_detector_distance_max)
 
 			if channel ~= meta:get_string("digiline_channel") then return end
 

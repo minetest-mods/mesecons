@@ -1,11 +1,13 @@
 -- The BLINKY_PLANT
 
+local blinky_plant_interval = mesecon.setting("blinky_plant_interval", 3)
+
 local toggle_timer = function (pos)
 	local timer = minetest.get_node_timer(pos)
 	if timer:is_started() then
 		timer:stop()
 	else
-		timer:start(mesecon.setting("blinky_plant_interval", 3))
+		timer:start(blinky_plant_interval)
 	end
 end
 
