@@ -550,7 +550,11 @@ local digiline = {
 	receptor = {},
 	effector = {
 		action = function(pos, node, channel, msg)
-			run(pos, {type = "digiline", channel = channel, msg = msg})
+			if (type(channel) ~= "string" and type(channel) ~= "number" and type(channel) ~= "boolean") then
+				return
+			end
+			local clean_msg = safe_deep_copy(msg, mesecon.setting("luacontroller_digiline_maxlen", 50000))
+			run(pos, {type = "digiline", channel = channel, msg = clean_msg})
 		end
 	}
 }
