@@ -599,6 +599,7 @@ local digiline = {
 	receptor = {},
 	effector = {
 		action = function(pos, node, channel, msg)
+			msg = clean_and_weigh_digiline_message(msg)
 			run(pos, {type = "digiline", channel = channel, msg = msg})
 		end
 	}
