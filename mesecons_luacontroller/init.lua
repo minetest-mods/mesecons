@@ -292,6 +292,7 @@ local function safe_deep_copy_helper(msg, back_references, size_limit)
 			if k == nil or v == nil then
 				return nil, 0
 			end
+			ret[k] = v
 			cost = cost + k_cost + v_cost
 			if cost > size_limit then
 				return nil, 0
