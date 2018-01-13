@@ -269,28 +269,61 @@ local function get_interrupt(pos)
 	return interrupt
 end
 
+local function safe_deep_copy_helper(msg, back_references, size_limit)
+	local t = type(msg)
+	if t == "string" then
+		return msg, #msg + 25
+	elseif t == "number" then
+		return msg, 8
+	elseif t == "boolean" then
+		return msg, 1
+	elseif t == "table" then
+		local bref = back_references[msg]
+		if bref then
+			return bref, 0
+		end
+		local cost = 8
+		local ret = {}
+		back_references[msg] = ret
+		for k, v in pairs(msg) do
+			local k_cost, v_cost
+			k, k_cost = safe_deep_copy_helper(k, back_references, size_limit)
+			v, v_cost = safe_deep_copy_helper(v, back_references, size_limit)
+			if k == nil or v == nil then
+				return nil, 0
+			end
+			ret[k] = v
+			cost = cost + k_cost + v_cost
+			if cost > size_limit then
+				return nil, 0
+			end
+		end
+		return ret, cost
+	else
+		return nil, 0
+	end
+end
+
+local function safe_deep_copy(msg, size_limit)
+	local result, cost = safe_deep_copy_helper(msg, {}, size_limit)
+	if cost > size_limit then
+		return nil
+	end
+	return result
+end
 
 local function get_digiline_send(pos)
-	if not digiline then return end
+	if not minetest.global_exists("digilines") then return end
 	return function(channel, msg)
 		-- Make sure channel is string, number or boolean
 		if (type(channel) ~= "string" and type(channel) ~= "number" and type(channel) ~= "boolean") then
 			return false
 		end
-
-		-- It is technically possible to send functions over the wire since
-		-- the high performance impact of stripping those from the data has
-		-- been decided to not be worth the added realism.
-		-- Make sure serialized version of the data is not insanely long to
-		-- prevent DoS-like attacks
-		local msg_ser = minetest.serialize(msg)
-		if #msg_ser > mesecon.setting("luacontroller_digiline_maxlen", 50000) then
+		local clean_msg = safe_deep_copy(msg, mesecon.setting("luacontroller_digiline_maxlen", 50000))
+		if clean_msg == nil then
 			return false
 		end
-
-		minetest.after(0, function()
-			digiline:receptor_send(pos, digiline.rules.default, channel, msg)
-		end)
+		minetest.after(0, digilines.receptor_send, pos, digilines.rules.default, channel, clean_msg)
 		return true
 	end
 end
@@ -518,7 +551,11 @@ local digiline = {
 	receptor = {},
 	effector = {
 		action = function(pos, node, channel, msg)
-			run(pos, {type = "digiline", channel = channel, msg = msg})
+			if (type(channel) ~= "string" and type(channel) ~= "number" and type(channel) ~= "boolean") then
+				return
+			end
+			local clean_msg = safe_deep_copy(msg, mesecon.setting("luacontroller_digiline_maxlen", 50000))
+			run(pos, {type = "digiline", channel = channel, msg = clean_msg})
 		end
 	}
 }
