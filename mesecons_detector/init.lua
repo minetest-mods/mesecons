@@ -98,26 +98,24 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	digiline = object_detector_digiline,
 	on_blast = mesecon.on_blastnode,
 })
+  
+minetest.register_craft({
+	output = 'mesecons_detector:object_detector_off',
+	recipe = {
+		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		{"default:steel_ingot", "mesecons_luacontroller:luacontroller0000", "default:steel_ingot"},
+		{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
+	}
+})
 
-if minetest.get_modpath("mesecons_luacontroller") then    
-	minetest.register_craft({
-		output = 'mesecons_detector:object_detector_off',
-		recipe = {
-			{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-			{"default:steel_ingot", "mesecons_luacontroller:luacontroller0000", "default:steel_ingot"},
-			{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
-		}
-	})
-else
-	minetest.register_craft({
-		output = 'mesecons_detector:object_detector_off',
-		recipe = {
-			{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-			{"default:steel_ingot", "mesecons_microcontroller:microcontroller0000", "default:steel_ingot"},
-			{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
-		}
-	})
-end
+minetest.register_craft({
+	output = 'mesecons_detector:object_detector_off',
+	recipe = {
+		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		{"default:steel_ingot", "mesecons_microcontroller:microcontroller0000", "default:steel_ingot"},
+		{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
+	}
+})
 
 minetest.register_abm({
 	nodenames = {"mesecons_detector:object_detector_off"},
@@ -272,25 +270,23 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 	on_blast = mesecon.on_blastnode,
 })
 
-if minetest.get_modpath("mesecons_luacontroller") then
-	minetest.register_craft({
-		output = 'mesecons_detector:node_detector_off',
-		recipe = {
-			{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
-			{"default:steel_ingot", "mesecons_luacontroller:luacontroller0000", "default:steel_ingot"},
-			{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-		}
-	})
-else
-	minetest.register_craft({
-		output = 'mesecons_detector:node_detector_off',
-		recipe = {
-			{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
-			{"default:steel_ingot", "mesecons_microcontroller:microcontroller0000", "default:steel_ingot"},
-			{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-		}
-	})
-end
+minetest.register_craft({
+	output = 'mesecons_detector:node_detector_off',
+	recipe = {
+		{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
+		{"default:steel_ingot", "mesecons_luacontroller:luacontroller0000", "default:steel_ingot"},
+		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+	}
+})
+
+minetest.register_craft({
+	output = 'mesecons_detector:node_detector_off',
+	recipe = {
+		{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
+		{"default:steel_ingot", "mesecons_microcontroller:microcontroller0000", "default:steel_ingot"},
+		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+	}
+})
 
 minetest.register_abm({
 	nodenames = {"mesecons_detector:node_detector_off"},
