@@ -98,7 +98,7 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	digiline = object_detector_digiline,
 	on_blast = mesecon.on_blastnode,
 })
-  
+
 minetest.register_craft({
 	output = 'mesecons_detector:object_detector_off',
 	recipe = {
