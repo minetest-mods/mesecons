@@ -1,3 +1,3 @@
 --  This is just a place holder to inject pixel art to this fork.  
---  By the way, these pixels are variants of the original defauls:mese and default:cobble nodes.
+--  By the way, these pixels are variants of the original default:mese and default:cobble nodes.
 --  Modified by myself using gimp
