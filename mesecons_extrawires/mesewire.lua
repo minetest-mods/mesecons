@@ -8,6 +8,7 @@ local mesewire_rules =
 	{x = 0, y = 0, z =-1},
 }
 
+-- The sweet taste of a default override
 minetest.override_item("default:mese", {
 	mesecons = {conductor = {
 		state = mesecon.state.off,
@@ -16,22 +17,57 @@ minetest.override_item("default:mese", {
 	}}
 })
 
--- Copy node definition of powered mese from normal mese
--- and brighten texture tiles to indicate mese is powered
-local powered_def = mesecon.mergetable(minetest.registered_nodes["default:mese"], {
+-- Now I got my own sweet Mese pixels, let's use those
+minetest.register_node("mesecons_extrawires:mese_powered", {
+	description = "Meseblock On",
+	tiles = {"mesecons_meseblock_on.png"},
+	light_source = 6,
 	drop = "default:mese",
-	light_source = 5,
+	is_ground_content = false,
+	groups = {cracky = 3, level = 2},
 	mesecons = {conductor = {
 		state = mesecon.state.on,
 		offstate = "default:mese",
 		rules = mesewire_rules
-	}},
-	groups = {cracky = 1, not_in_creative_inventory = 1},
-	on_blast = mesecon.on_blastnode,
+	}}
+
 })
 
-for i, v in pairs(powered_def.tiles) do
-	powered_def.tiles[i] = v .. "^[brighten"
-end
+--  And now for some insanity
+--  Lets add an Off state CobbleCon here
+minetest.register_node("mesecons_extrawires:mese_cobble_off", {
+	description = "Mese Cobble Off",
+	tiles = {"mesecons_cobblecon_off.png"},
+	is_ground_content = false,
+	groups = {cracky = 3, level = 2},
+	mesecons = {conductor = {
+		state = mesecon.state.off,
+		onstate = "mesecons_extrawires:mese_cobble_on",
+		rules = mesewire_rules
+	}}
+})
 
-minetest.register_node("mesecons_extrawires:mese_powered", powered_def)
+-- Finishing strange with an On state Cobblecon here
+minetest.register_node("mesecons_extrawires:mese_cobble_on", {
+	description = "Mese Cobble On",
+	tiles = {"mesecons_cobblecon_on.png"},
+	light_source = 4,
+	drop = "mesecons_extrawires:mese_cobble_off",
+	is_ground_content = false,
+	groups = {cracky = 3, level = 2},
+	mesecons = {conductor = {
+		state = mesecon.state.on,
+		offstate = "mesecons_extrawires:mese_cobble_off",
+		rules = mesewire_rules
+	}}
+})
+
+--  Ok ok, get out of the kitchen you, here's the recipe
+minetest.register_craft({
+	output = 'mesecons_extrawires:mese_cobble_off 5',
+	recipe = {
+		{'default:cobble', 'mesecons:wire_00000000_off', 'default:cobble'},
+		{'mesecons:wire_00000000_off', 'default:cobble', 'mesecons:wire_00000000_off'},
+		{'default:cobble', 'mesecons:wire_00000000_off', 'default:cobble'},
+	}
+})
