@@ -35,6 +35,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 	},
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons_insulated:insulated_off",
+	sounds = default.node_sound_defaults(),
 	mesecons = {conductor = {
 		state = mesecon.state.on,
 		offstate = "mesecons_insulated:insulated_off",
@@ -69,6 +70,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 		fixed = { -16/32-0.001, -17/32, -3/32, 16/32+0.001, -13/32, 3/32 }
 	},
 	groups = {dig_immediate = 3},
+	sounds = default.node_sound_defaults(),
 	mesecons = {conductor = {
 		state = mesecon.state.off,
 		onstate = "mesecons_insulated:insulated_on",

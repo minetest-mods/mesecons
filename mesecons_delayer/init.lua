@@ -158,6 +158,7 @@ minetest.register_node("mesecons_delayer:delayer_on_"..tostring(i), {
 	end,
 	delayer_time = delaytime,
 	delayer_offstate = "mesecons_delayer:delayer_off_"..tostring(i),
+	sounds = default.node_sound_stone_defaults(),
 	mesecons = {
 		receptor =
 		{
