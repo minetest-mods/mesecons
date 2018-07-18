@@ -718,7 +718,7 @@ local function on_receive_fields(pos, form_name, fields, sender)
 	local ok, err = set_program(pos, fields.code)
 	if not ok then
 		-- it's not an error from the server perspective
-		minetest.log("action", "Lua controller programming error: " .. err)
+		minetest.log("action", "Lua controller programming error: " .. tostring(err))
 	end
 end
 
