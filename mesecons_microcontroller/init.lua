@@ -103,6 +103,12 @@ minetest.register_node(nodename, {
 		meta:set_string("eeprom", r)
 	end,
 	on_receive_fields = function(pos, formanme, fields, sender)
+		local player_name = sender:get_player_name()
+		if minetest.is_protected(pos, player_name) and
+				not minetest.check_player_privs(player_name, {protection_bypass=true}) then
+			minetest.record_protection_violation(pos, player_name)
+			return
+		end
 		local meta = minetest.get_meta(pos)
 		if fields.band then
 			fields.code = "sbi(C, A&B) :A and B are inputs, C is output"
@@ -272,7 +278,7 @@ yc.parsecode = function(code, pos)
 end
 
 yc.parse_get_command = function(code, starti)
-	i = starti
+	local i = starti
 	local s
 	while s ~= "" do
 		s = string.sub(code, i, i)
@@ -298,7 +304,7 @@ yc.parse_get_command = function(code, starti)
 end
 
 yc.parse_get_params = function(code, starti)
-	i = starti
+	local i = starti
 	local s
 	local params = {}
 	local is_string = false
@@ -321,7 +327,7 @@ yc.parse_get_params = function(code, starti)
 end
 
 yc.parse_get_eeprom_param = function(cond, starti)
-	i = starti
+	local i = starti
 	local s
 	local addr
 	while s ~= "" do
@@ -488,7 +494,7 @@ end
 
 --Condition parsing
 yc.command_if_getcondition = function(code, starti)
-	i = starti
+	local i = starti
 	local s
 	local brackets = 1 --1 Bracket to close
 	while s ~= "" do
