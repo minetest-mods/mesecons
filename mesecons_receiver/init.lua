@@ -209,7 +209,6 @@ function mesecon.receiver_place(rcpt_pos)
 	local param2 = minetest.dir_to_facedir(minetest.facedir_to_dir(node.param2))
 
 	if string.find(nn.name, "mesecons:wire_") ~= nil then
-		minetest.dig_node(pos)
 		minetest.set_node(pos, {name = rcvtype, param2 = param2})
 		mesecon.on_placenode(pos, nn)
 	end
@@ -218,8 +217,7 @@ end
 function mesecon.receiver_remove(rcpt_pos, dugnode)
 	local pos = mesecon.receiver_get_pos_from_rcpt(rcpt_pos, dugnode.param2)
 	local nn = minetest.get_node(pos)
-	if string.find(nn.name, "mesecons_receiver:receiver_") ~=nil then
-		minetest.dig_node(pos)
+	if string.find(nn.name, "mesecons_receiver:receiver_") ~= nil then
 		local node = {name = "mesecons:wire_00000000_off"}
 		minetest.set_node(pos, node)
 		mesecon.on_placenode(pos, node)
