@@ -198,7 +198,11 @@ end
 -------------------------
 
 local function safe_print(param)
+	local string_meta = getmetatable("")
+	local sandbox = string_meta.__index
+	string_meta.__index = string -- Leave string sandbox temporarily
 	print(dump(param))
+	string_meta.__index = sandbox -- Restore string sandbox
 end
 
 local function safe_date()
