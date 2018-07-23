@@ -1,43 +1,43 @@
 [mesecons]
 
-mesecon.resumetime (Resume time) int 4
-mesecon.overheat_max (Device heat limit) int 20
-mesecon.cooldown_time (Device cooldown time) float 2.0
-mesecon.cooldown_granularity (Cooldown step length) float 0.5
+mesecon.resumetime (Startup delay) int 4 1 10
+mesecon.overheat_max (Device heat limit) int 20 1 100
+mesecon.cooldown_time (Device cooldown time) float 2.0 0.1 10.0
+mesecon.cooldown_granularity (Cooldown step length) float 0.5 0.0 1.0
 
 
 [mesecons_blinkyplant]
 
-mesecon.blinky_plant_interval (Plant blinking interval) int 3
+mesecon.blinky_plant_interval (Plant blinking interval) int 3 1 5
 
 
 [mesecons_detector]
 
-mesecon.detector_radius (Player detector radius) int 6
-mesecon.node_detector_distance_max (Node detector radius) int 10
+mesecon.detector_radius (Player detector scanning radius) int 6 3 16
+mesecon.node_detector_distance_max (Node detector distance limit) int 10 1 16
 
 
 [mesecons_luacontroller]
 
-mesecon.luacontroller_string_rep_max (string:rep result length limit) int 64000
-mesecon.luacontroller_digiline_maxlen (Digiline message size limit) int 50000
-mesecon.luacontroller_maxevents (Controller execution time limit) int 10000
-mesecon.luacontroller_memsize (Controller memory limit) int 100000
+mesecon.luacontroller_string_rep_max (string:rep result length limit) int 64000 1000 1000000
+mesecon.luacontroller_digiline_maxlen (Digiline message size limit) int 50000 1000 1000000
+mesecon.luacontroller_maxevents (Controller execution time limit) int 10000 1000 100000
+mesecon.luacontroller_memsize (Controller memory limit) int 100000 10000 1000000
 
 
 [mesecons_movestones]
 
-mesecon.movestone_speed (Speed) int 3
-mesecon.movestone_max_push (Max push) int 50
-mesecon.movestone_max_pull (Max pull) int 50
+mesecon.movestone_speed (Speed) int 3 1 10
+mesecon.movestone_max_push (Max push) int 50 1 100
+mesecon.movestone_max_pull (Max pull) int 50 1 100
 
 
 [mesecons_pistons]
 
-mesecon.piston_max_push (Max push) int 15
-mesecon.piston_max_pull (Max pull) int 15
+mesecon.piston_max_push (Max push) int 15 1 100
+mesecon.piston_max_pull (Max pull) int 15 1 100
 
 
 [mesecons_pressureplates]
 
-mesecon.pplate_interval (Check interval) float 0.1
+mesecon.pplate_interval (Check interval) float 0.1 0.1 1.0
