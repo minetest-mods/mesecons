@@ -68,10 +68,8 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 			end
 		end
 
-		-- ### Step 4: Let things fall
-		if not is_vertical then
-			minetest.check_for_falling(vector.add(pos, {x=0, y=1, z=0}))
-		end
+		-- ### Step 4: Let things fall ###
+		minetest.check_for_falling(vector.add(pos, {x=0, y=1, z=0}))
 	end
 
 	def.is_ground_content = false
