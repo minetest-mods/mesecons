@@ -60,14 +60,16 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		minetest.get_node_timer(frontpos):start(timer_interval)
 
 		-- ### Step 3: If sticky, pull stack behind ###
-		if not is_sticky then
-			return
+		if is_sticky then
+			local backpos = vector.subtract(pos, direction)
+			success, stack, oldstack = mesecon.mvps_pull_all(backpos, direction, max_pull)
+			if success then
+				mesecon.mvps_move_objects(backpos, vector.multiply(direction, -1), oldstack, -1)
+			end
 		end
-		local backpos = vector.subtract(pos, direction)
-		success, stack, oldstack = mesecon.mvps_pull_all(backpos, direction, max_pull)
-		if success then
-			mesecon.mvps_move_objects(backpos, vector.multiply(direction, -1), oldstack, -1)
-		end
+
+		-- ### Step 4: Let things fall ###
+		minetest.check_for_falling(vector.add(pos, {x=0, y=1, z=0}))
 	end
 
 	def.is_ground_content = false
