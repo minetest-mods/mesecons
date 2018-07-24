@@ -73,7 +73,7 @@ minetest.register_node("mesecons_button:button_on", {
 	legacy_wallmounted = true,
 	walkable = false,
 	on_rotate = false,
-	light_source = default.LIGHT_MAX-7,
+	light_source = minetest.LIGHT_MAX-7,
 	sunlight_propagates = true,
 	selection_box = {
 		type = "fixed",
