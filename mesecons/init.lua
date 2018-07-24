@@ -39,6 +39,8 @@
 --	}
 --}
 
+default.LIGHT_MAX = 14
+
 -- PUBLIC VARIABLES
 mesecon={} -- contains all functions and all global variables
 mesecon.queue={} -- contains the ActionQueue
