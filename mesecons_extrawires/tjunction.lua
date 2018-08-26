@@ -8,7 +8,7 @@ local tjunction_nodebox = {
 
 local tjunction_selectionbox = {
 		type = "fixed",
-		fixed = { -16/32-0.001, -18/32, -16/32, 16/32+0.001, -12/32, 7/32 },
+		fixed = { -16/32-0.001, -16/32, -16/32, 16/32+0.001, -12/32, 7/32 },
 }
 
 local tjunction_get_rules = function (node)

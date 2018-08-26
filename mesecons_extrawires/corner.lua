@@ -8,7 +8,7 @@ local corner_nodebox = {
 
 local corner_selectionbox = {
 		type = "fixed",
-		fixed = { -16/32-0.001, -18/32, -16/32, 5/32, -12/32, 5/32 },
+		fixed = { -16/32-0.001, -16/32, -16/32, 5/32, -12/32, 5/32 },
 }
 
 local corner_get_rules = function (node)
