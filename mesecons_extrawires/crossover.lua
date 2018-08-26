@@ -32,7 +32,7 @@ minetest.register_node("mesecons_extrawires:crossover_off", {
 	is_ground_content = false,
 	walkable = false,
 	stack_max = 99,
-	selection_box = {type="fixed", fixed={-16/32-0.0001, -18/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
+	selection_box = {type="fixed", fixed={-16/32-0.0001, -16/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
 	groups = {dig_immediate=3, mesecon=3},
 	sounds = default.node_sound_defaults(),
 	mesecons = {
@@ -59,7 +59,7 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 	is_ground_content = false,
 	walkable = false,
 	stack_max = 99,
-	selection_box = {type="fixed", fixed={-16/32-0.0001, -18/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
+	selection_box = {type="fixed", fixed={-16/32-0.0001, -16/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
 	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
 	sounds = default.node_sound_defaults(),
 	mesecons = {
@@ -86,7 +86,7 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 	is_ground_content = false,
 	walkable = false,
 	stack_max = 99,
-	selection_box = {type="fixed", fixed={-16/32-0.0001, -18/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
+	selection_box = {type="fixed", fixed={-16/32-0.0001, -16/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
 	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
 	sounds = default.node_sound_defaults(),
 	mesecons = {
@@ -113,7 +113,7 @@ minetest.register_node("mesecons_extrawires:crossover_on", {
 	is_ground_content = false,
 	walkable = false,
 	stack_max = 99,
-	selection_box = {type="fixed", fixed={-16/32-0.0001, -18/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
+	selection_box = {type="fixed", fixed={-16/32-0.0001, -16/32, -16/32-0.001, 16/32+0.001, -5/32, 16/32+0.001}},
 	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
 	sounds = default.node_sound_defaults(),
 	mesecons = {

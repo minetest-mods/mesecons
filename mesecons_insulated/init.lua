@@ -27,7 +27,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 	sunlight_propagates = true,
 	selection_box = {
 		type = "fixed",
-		fixed = { -16/32-0.001, -18/32, -7/32, 16/32+0.001, -12/32, 7/32 }
+		fixed = { -16/32-0.001, -16/32, -7/32, 16/32+0.001, -12/32, 7/32 }
 	},
 	node_box = {
 		type = "fixed",
@@ -63,7 +63,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 	sunlight_propagates = true,
 	selection_box = {
 		type = "fixed",
-		fixed = { -16/32-0.001, -18/32, -7/32, 16/32+0.001, -12/32, 7/32 }
+		fixed = { -16/32-0.001, -16/32, -7/32, 16/32+0.001, -12/32, 7/32 }
 	},
 	node_box = {
 		type = "fixed",
