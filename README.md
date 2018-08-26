@@ -24,7 +24,7 @@ Go get it!
 
 [DOWNLOAD IT NOW](https://github.com/minetest-mods/mesecons/archive/master.zip)
 
-Now go ahead and install it like any other Minetest mod. Don't know how? Check out [the wonderful page about it](http://wiki.minetest.com/wiki/Mods) over at the Minetest Wiki. For your convenience, here's a quick summary:
+Now go ahead and install it like any other Minetest mod. Don't know how? Check out [the wonderful page about it](https://wiki.minetest.net/Mods) over at the official Minetest Wiki. For your convenience, here's a quick summary:
 
 1. If Mesecons is still in a ZIP file, extract the folder inside to somewhere on the computer.
 2. Make sure that when you open the folder, you can directly find `README.md` in the listing. If you just see another folder, move that folder up one level and delete the old one.
@@ -42,6 +42,8 @@ How about a [quick overview video](https://www.youtube.com/watch?v=6kmeQj6iW5k)?
 Or maybe a [comprehensive reference](http://mesecons.net/items.html) is your style?
 
 An overview for the very newest of new beginners? How does [this one](http://uberi.mesecons.net/projects/MeseconsBasics/index.html) look?
+
+There is also a [wiki page](https://wiki.minetest.net/Mods/Mesecons) dedicated to this mod.
 
 Want to get more into building? Why not check out the [Mesecons Laboratory](http://uberi.mesecons.net/), a website dedicated to advanced Mesecons builders?
 
