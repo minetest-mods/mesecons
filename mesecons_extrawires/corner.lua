@@ -2,13 +2,14 @@ local screwdriver_exists = minetest.global_exists("screwdriver")
 
 local corner_nodebox = {
 	type = "fixed",
+	-- ±0.001 is to prevent z-fighting
 	fixed = {{ -16/32-0.001, -17/32, -3/32, 0, -13/32, 3/32 },
 		   { -3/32, -17/32, -16/32+0.001, 3/32, -13/32, 3/32}}
 }
 
 local corner_selectionbox = {
 		type = "fixed",
-		fixed = { -16/32-0.001, -16/32, -16/32, 5/32, -12/32, 5/32 },
+		fixed = { -16/32, -16/32, -16/32, 5/32, -12/32, 5/32 },
 }
 
 local corner_get_rules = function (node)
