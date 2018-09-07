@@ -28,7 +28,7 @@ local function set_gate(pos, node, state)
 
 	if mesecon.do_overheat(pos) then
 		minetest.remove_node(pos)
-		mesecon.receptor_off(pos, gate_get_output_rules(node))
+		mesecon.on_dignode(pos, node)
 		minetest.add_item(pos, gate.drop)
 	elseif state then
 		minetest.swap_node(pos, {name = gate.onstate, param2=node.param2})
