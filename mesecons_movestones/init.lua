@@ -143,12 +143,12 @@ mesecon.register_movestone("mesecons_movestones:movestone_vertical", {
 
 mesecon.register_movestone("mesecons_movestones:sticky_movestone_vertical", {
 	tiles = {
-		"jeija_movestone_side.png",
-		"jeija_movestone_side.png",
-		"jeija_sticky_movestone.png^[transformFXR90",
-		"jeija_sticky_movestone.png^[transformR90",
-		"jeija_sticky_movestone.png^[transformFXR90",
-		"jeija_sticky_movestone.png^[transformR90",
+		"jeija_movestone_side.png^(mesecons_glue.png^[opacity:127)",
+		"jeija_movestone_side.png^(mesecons_glue.png^[opacity:127)",
+		"jeija_movestone_arrows.png^[transformFXR90",
+		"jeija_movestone_arrows.png^[transformR90",
+		"jeija_movestone_arrows.png^[transformFXR90",
+		"jeija_movestone_arrows.png^[transformR90",
 	},
 	groups = {cracky = 3},
     description = "Vertical Sticky Movestone",
