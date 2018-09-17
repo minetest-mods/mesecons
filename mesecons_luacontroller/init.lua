@@ -552,6 +552,7 @@ local function save_memory(pos, meta, mem)
 
 	if (#memstring <= memsize_max) then
 		meta:set_string("lc_memory", memstring)
+		meta:mark_as_private("lc_memory")
 	else
 		print("Error: Luacontroller memory overflow. "..memsize_max.." bytes available, "
 				..#memstring.." required. Controller overheats.")
