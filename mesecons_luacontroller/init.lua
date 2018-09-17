@@ -616,6 +616,7 @@ end
 
 local function reset_formspec(meta, code, errmsg)
 	meta:set_string("code", code)
+	meta:mark_as_private("code")
 	code = minetest.formspec_escape(code or "")
 	errmsg = minetest.formspec_escape(tostring(errmsg or ""))
 	meta:set_string("formspec", "size[12,10]"..
