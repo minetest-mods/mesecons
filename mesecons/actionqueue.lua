@@ -63,6 +63,7 @@ minetest.register_globalstep(function (dtime)
 	-- don't even try if server has not been running for XY seconds; resumetime = time to wait
 	-- after starting the server before processing the ActionQueue, don't set this too low
 	if (m_time < resumetime) then return end
+	local t0 = minetest.get_us_time()
 	local actions = mesecon.tablecopy(mesecon.queue.actions)
 	local actions_now={}
 
@@ -83,6 +84,12 @@ minetest.register_globalstep(function (dtime)
 		local hp = get_highest_priority(actions_now)
 		mesecon.queue:execute(actions_now[hp])
 		table.remove(actions_now, hp)
+	end
+
+	local t1 = minetest.get_us_time()
+	local diff = t1 - t0
+	if diff > 100000 then
+		minetest.log("warning", "[mesecons] globalstep took " .. diff .. " us")
 	end
 end)
 
