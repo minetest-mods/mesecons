@@ -50,6 +50,7 @@ local torch_selectionbox =
 }
 
 local torch_update = function(pos)
+	
 	local node = minetest.get_node(pos)
 	local is_powered = false
 	for _, rule in ipairs(torch_get_input_rules(node)) do
@@ -59,16 +60,15 @@ local torch_update = function(pos)
 		end
 	end
 
-	if is_powered then
-		if node.name == "mesecons_torch:mesecon_torch_on" then
-			minetest.swap_node(pos, {name = "mesecons_torch:mesecon_torch_off", param2 = node.param2})
-			mesecon.receptor_off(pos, torch_get_output_rules(node))
-		end
+	if is_powered and node.name == "mesecons_torch:mesecon_torch_on" then
+		minetest.swap_node(pos, {name = "mesecons_torch:mesecon_torch_off", param2 = node.param2})
+		mesecon.receptor_off(pos, torch_get_output_rules(node))
 	elseif node.name == "mesecons_torch:mesecon_torch_off" then
 		minetest.swap_node(pos, {name = "mesecons_torch:mesecon_torch_on", param2 = node.param2})
 		mesecon.receptor_on(pos, torch_get_output_rules(node))
 	end
-	return true
+	
+
 end
 
 minetest.register_node("mesecons_torch:mesecon_torch_off", {
