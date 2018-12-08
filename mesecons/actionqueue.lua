@@ -82,8 +82,20 @@ minetest.register_globalstep(function (dtime)
 
 	while(#actions_now > 0) do -- execute highest priorities first, until all are executed
 		local hp = get_highest_priority(actions_now)
-		mesecon.queue:execute(actions_now[hp])
+		local action = actions_now[hp]
+
+		local ts0 = minetest.get_us_time()
+		mesecon.queue:execute(action)
 		table.remove(actions_now, hp)
+		local ts1 = minetest.get_us_time()
+		local step_diff = ts1 - ts0
+		if step_diff > 5000 then
+			local pos_str = "<none>"
+			if action.pos then
+				pos_str = minetest.pos_to_string(action.pos)
+			end
+			minetest.log("warning", "[mesecons] step took " .. step_diff .. " us @ " .. pos_str)
+		end
 	end
 
 	local t1 = minetest.get_us_time()
