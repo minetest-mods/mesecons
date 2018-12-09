@@ -619,12 +619,13 @@ local function reset_formspec(meta, code, errmsg)
 	meta:mark_as_private("code")
 	code = minetest.formspec_escape(code or "")
 	errmsg = minetest.formspec_escape(tostring(errmsg or ""))
-	meta:set_string("formspec", "size[12,10]"..
-		"background[-0.2,-0.25;12.4,10.75;jeija_luac_background.png]"..
-		"textarea[0.2,0.2;12.2,9.5;code;;"..code.."]"..
-		"image_button[4.75,8.75;2.5,1;jeija_luac_runbutton.png;program;]"..
-		"image_button_exit[11.72,-0.25;0.425,0.4;jeija_close_window.png;exit;]"..
-		"label[0.1,9;"..errmsg.."]")
+	meta:set_string("formspec", "size[12,10]"
+		.."background[-0.2,-0.25;12.4,10.75;jeija_luac_background.png]"
+		.."label[0.1,8.3;"..errmsg.."]"
+		.."textarea[0.2,0.2;12.2,9.5;code;;"..code.."]"
+		.."image_button[4.75,8.75;2.5,1;jeija_luac_runbutton.png;program;]"
+		.."image_button_exit[11.72,-0.25;0.425,0.4;jeija_close_window.png;exit;]"
+		)
 end
 
 local function reset_meta(pos, code, errmsg)
