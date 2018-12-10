@@ -282,7 +282,14 @@ local function get_interrupt(pos, itbl, send_warning)
 			iid = remove_functions(iid)
 			local msg_ser = minetest.serialize(iid)
 			if #msg_ser <= mesecon.setting("luacontroller_interruptid_maxlen", 256) then
-				mesecon.queue:add_action(pos, "lc_interrupt", {luac_id, iid}, time, iid, 1)
+				if mesecon.setting("luacontroller_nodetimer", false) then
+					-- use global action queue
+					mesecon.queue:add_action(pos, "lc_interrupt", {luac_id, iid}, time, iid, 1)
+				else
+					-- use node timer
+					minetest.get_meta(pos):set_string("iid", iid)
+					minetest.get_node_timer(pos):start(time)
+				end
 			else
 				send_warning("An interrupt ID was too large!")
 			end
@@ -412,6 +419,15 @@ local function get_digiline_send(pos, itbl, send_warning)
 		end)
 		return true
 	end
+end
+
+local function node_timer(pos)
+	local iid = minetest.get_meta(pos):get_string("iid")
+	if (minetest.registered_nodes[minetest.get_node(pos).name].is_burnt) then
+		return false
+	end
+	run(pos, {type="interrupt", iid = iid})
+	return false
 end
 
 
@@ -822,6 +838,7 @@ for d = 0, 1 do
 			mesecon.receptor_off(pos, output_rules)
 		end,
 		is_luacontroller = true,
+		on_timer = node_timer,
 		on_blast = mesecon.on_blastnode,
 	})
 end
