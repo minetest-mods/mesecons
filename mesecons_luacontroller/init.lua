@@ -283,12 +283,12 @@ local function get_interrupt(pos, itbl, send_warning)
 			local msg_ser = minetest.serialize(iid)
 			if #msg_ser <= mesecon.setting("luacontroller_interruptid_maxlen", 256) then
 				if mesecon.setting("luacontroller_nodetimer", false) then
-					-- use global action queue
-					mesecon.queue:add_action(pos, "lc_interrupt", {luac_id, iid}, time, iid, 1)
-				else
 					-- use node timer
 					minetest.get_meta(pos):set_string("iid", iid)
 					minetest.get_node_timer(pos):start(time)
+				else
+					-- use global action queue
+					mesecon.queue:add_action(pos, "lc_interrupt", {luac_id, iid}, time, iid, 1)
 				end
 			else
 				send_warning("An interrupt ID was too large!")
