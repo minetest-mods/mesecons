@@ -56,8 +56,16 @@ local get_highest_priority = function (actions)
 	return highesti
 end
 
+-- enable timing log
+local enable_timing_log = mesecon.setting("actionqueue_timing_log", false)
+-- threshold for globalstep timing warning
+local step_log_threshold = mesecon.setting("actionqueue_timing_step_threshold", 100000) -- 100 ms
+-- threshold for action timing warning
+local action_log_threshold = mesecon.setting("actionqueue_timing_action_threshold", 10000) -- 10 ms
+
 local m_time = 0
 local resumetime = mesecon.setting("resumetime", 4)
+
 minetest.register_globalstep(function (dtime)
 	m_time = m_time + dtime
 	-- don't even try if server has not been running for XY seconds; resumetime = time to wait
@@ -84,12 +92,16 @@ minetest.register_globalstep(function (dtime)
 		local hp = get_highest_priority(actions_now)
 		local action = actions_now[hp]
 
+		-- start measuring action time
 		local ts0 = minetest.get_us_time()
+
 		mesecon.queue:execute(action)
 		table.remove(actions_now, hp)
+
+		-- measure action time
 		local ts1 = minetest.get_us_time()
 		local step_diff = ts1 - ts0
-		if step_diff > 5000 then
+		if enable_timing_log and step_diff > action_log_threshold then
 			local pos_str = "<none>"
 			if action.pos then
 				pos_str = minetest.pos_to_string(action.pos)
@@ -98,9 +110,10 @@ minetest.register_globalstep(function (dtime)
 		end
 	end
 
+	-- measure total step time
 	local t1 = minetest.get_us_time()
 	local diff = t1 - t0
-	if diff > 100000 then
+	if enable_timing_log and diff > step_log_threshold then
 		minetest.log("warning", "[mesecons] globalstep took " .. diff .. " us")
 	end
 end)
