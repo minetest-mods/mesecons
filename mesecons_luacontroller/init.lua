@@ -421,16 +421,6 @@ local function get_digiline_send(pos, itbl, send_warning)
 	end
 end
 
-local function node_timer(pos)
-	local iid = minetest.get_meta(pos):get_string("iid")
-	if (minetest.registered_nodes[minetest.get_node(pos).name].is_burnt) then
-		return false
-	end
-	run(pos, {type="interrupt", iid = iid})
-	return false
-end
-
-
 local safe_globals = {
 	-- Don't add pcall/xpcall unless willing to deal with the consequences (unless very careful, incredibly likely to allow killing server indirectly)
 	"assert", "error", "ipairs", "next", "pairs", "select",
@@ -664,6 +654,15 @@ end
 
 local function reset(pos)
 	set_port_states(pos, {a=false, b=false, c=false, d=false})
+end
+
+local function node_timer(pos)
+	local iid = minetest.get_meta(pos):get_string("iid")
+	if (minetest.registered_nodes[minetest.get_node(pos).name].is_burnt) then
+		return false
+	end
+	run(pos, {type="interrupt", iid = iid})
+	return false
 end
 
 -----------------------
