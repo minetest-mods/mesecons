@@ -55,7 +55,7 @@ local function piston_get_rules(node)
 	return rules
 end
 
-local function piston_remove_pusher(pos, node)
+local function piston_remove_pusher(pos, node, check_falling)
 	local pistonspec = get_pistonspec(node.name, "onname")
 	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 	local pusherpos = vector.add(pos, dir)
@@ -72,7 +72,14 @@ local function piston_remove_pusher(pos, node)
 		max_hear_distance = 20,
 		gain = 0.3,
 	})
-	minetest.check_for_falling(pusherpos)
+
+	if check_falling then
+		minetest.check_for_falling(pusherpos)
+	end
+end
+
+local function piston_after_dig(pos, node)
+	piston_remove_pusher(pos, node, true)
 end
 
 local piston_on = function(pos, node)
@@ -97,7 +104,7 @@ end
 local function piston_off(pos, node)
 	local pistonspec = get_pistonspec(node.name, "onname")
 	minetest.set_node(pos, {param2 = node.param2, name = pistonspec.offname})
-	piston_remove_pusher(pos, node)
+	piston_remove_pusher(pos, node, not pistonspec.sticky)
 
 	if not pistonspec.sticky then
 		return
@@ -293,7 +300,7 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 	paramtype2 = "facedir",
 	is_ground_content = false,
 	drop = "mesecons_pistons:piston_normal_off",
-	after_dig_node = piston_remove_pusher,
+	after_dig_node = piston_after_dig,
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
 	sounds = default.node_sound_wood_defaults(),
@@ -371,7 +378,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 	paramtype2 = "facedir",
 	is_ground_content = false,
 	drop = "mesecons_pistons:piston_sticky_off",
-	after_dig_node = piston_remove_pusher,
+	after_dig_node = piston_after_dig,
 	node_box = piston_on_box,
 	selection_box = piston_on_box,
 	sounds = default.node_sound_wood_defaults(),
