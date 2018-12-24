@@ -282,9 +282,8 @@ local function get_interrupt(pos, itbl, send_warning)
 			iid = remove_functions(iid)
 			local msg_ser = minetest.serialize(iid)
 			if #msg_ser <= mesecon.setting("luacontroller_interruptid_maxlen", 256) then
-				if mesecon.setting("luacontroller_nodetimer", false) then
+				if mesecon.setting("luacontroller_lightweight_interrupts", false) then
 					-- use node timer
-					minetest.get_meta(pos):set_string("iid", iid)
 					minetest.get_node_timer(pos):start(time)
 				else
 					-- use global action queue
@@ -657,11 +656,10 @@ local function reset(pos)
 end
 
 local function node_timer(pos)
-	local iid = minetest.get_meta(pos):get_string("iid")
 	if (minetest.registered_nodes[minetest.get_node(pos).name].is_burnt) then
 		return false
 	end
-	run(pos, {type="interrupt", iid = iid})
+	run(pos, {type="interrupt"})
 	return false
 end
 
