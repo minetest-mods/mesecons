@@ -24,6 +24,10 @@ mesecon.luacontroller_digiline_maxlen (Digiline message size limit) int 50000 10
 mesecon.luacontroller_maxevents (Controller execution time limit) int 10000 1000 100000
 mesecon.luacontroller_memsize (Controller memory limit) int 100000 10000 1000000
 
+# Use node timer for interrupts (runs in active blocks only).
+# IID is ignored and at most one interrupt may be queued if this setting is enabled.
+mesecon.luacontroller_lightweight_interrupts (Lightweight interrupts) bool false
+
 
 [mesecons_movestones]
 
