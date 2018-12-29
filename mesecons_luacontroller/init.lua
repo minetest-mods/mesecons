@@ -271,8 +271,9 @@ local get_interrupt
 if mesecon.setting("luacontroller_lightweight_interrupts", false) then
 	-- use node timer
 	get_interrupt = function(pos, itbl, send_warning)
-		return (function(time)
-			if type(time) ~= "number" then return end
+		return (function(time, iid)
+			if type(time) ~= "number" then error("Delay must be a number") end
+			if iid ~= nil then send_warning("Interrupt IDs are disabled on this server") end
 			table.insert(itbl, function() minetest.get_node_timer(pos):start(time) end)
 		end)
 	end
@@ -284,7 +285,7 @@ else
 		local function interrupt(time, iid)
 			-- NOTE: This runs within string metatable sandbox, so don't *rely* on anything of the form (""):y
 			-- Hence the values get moved out. Should take less time than original, so totally compatible
-			if type(time) ~= "number" then return end
+			if type(time) ~= "number" then error("Delay must be a number") end
 			table.insert(itbl, function ()
 				-- Outside string metatable sandbox, can safely run this now
 				local luac_id = minetest.get_meta(pos):get_int("luac_id")
@@ -662,7 +663,7 @@ local function reset(pos)
 end
 
 local function node_timer(pos)
-	if (minetest.registered_nodes[minetest.get_node(pos).name].is_burnt) then
+	if minetest.registered_nodes[minetest.get_node(pos).name].is_burnt then
 		return false
 	end
 	run(pos, {type="interrupt"})
