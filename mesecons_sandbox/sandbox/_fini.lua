@@ -1,3 +1,4 @@
-local result = serialize({...})
+local port = serialize(port)
+local mem = serialize(mem)
 local log = table.concat(log, "\n")
-return result, log
+return port, mem, log
