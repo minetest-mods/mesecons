@@ -271,8 +271,9 @@ local get_interrupt
 if mesecon.setting("luacontroller_lightweight_interrupts", false) then
 	-- use node timer
 	get_interrupt = function(pos, itbl, send_warning)
-		return (function(time, iid)
+		return (function(time, iid, lightweight)
 			if type(time) ~= "number" then error("Delay must be a number") end
+			if lightweight == false then error("Non-lightweight interrupts are disabled on this server") end
 			if iid ~= nil then send_warning("Interrupt IDs are disabled on this server") end
 			table.insert(itbl, function() minetest.get_node_timer(pos):start(time) end)
 		end)
@@ -282,24 +283,29 @@ else
 	-- itbl: Flat table of functions to run after sandbox cleanup, used to prevent various security hazards
 	get_interrupt = function(pos, itbl, send_warning)
 		-- iid = interrupt id
-		local function interrupt(time, iid)
+		local function interrupt(time, iid, lightweight)
 			-- NOTE: This runs within string metatable sandbox, so don't *rely* on anything of the form (""):y
 			-- Hence the values get moved out. Should take less time than original, so totally compatible
 			if type(time) ~= "number" then error("Delay must be a number") end
-			table.insert(itbl, function ()
-				-- Outside string metatable sandbox, can safely run this now
-				local luac_id = minetest.get_meta(pos):get_int("luac_id")
-				-- Check if IID is dodgy, so you can't use interrupts to store an infinite amount of data.
-				-- Note that this is safe from alter-after-free because this code gets run after the sandbox has ended.
-				-- This runs outside of the timer and *shouldn't* harm perf. unless dodgy data is being sent in the first place
-				iid = remove_functions(iid)
-				local msg_ser = minetest.serialize(iid)
-				if #msg_ser <= mesecon.setting("luacontroller_interruptid_maxlen", 256) then
-					mesecon.queue:add_action(pos, "lc_interrupt", {luac_id, iid}, time, iid, 1)
-				else
-					send_warning("An interrupt ID was too large!")
-				end
-			end)
+			if lightweight then
+				if iid ~= nil then send_warning("Interrupt IDs cannot be used with lightweight interrupts") end
+				table.insert(itbl, function() minetest.get_node_timer(pos):start(time) end)
+			else
+				table.insert(itbl, function ()
+					-- Outside string metatable sandbox, can safely run this now
+					local luac_id = minetest.get_meta(pos):get_int("luac_id")
+					-- Check if IID is dodgy, so you can't use interrupts to store an infinite amount of data.
+					-- Note that this is safe from alter-after-free because this code gets run after the sandbox has ended.
+					-- This runs outside of the timer and *shouldn't* harm perf. unless dodgy data is being sent in the first place
+					iid = remove_functions(iid)
+					local msg_ser = minetest.serialize(iid)
+					if #msg_ser <= mesecon.setting("luacontroller_interruptid_maxlen", 256) then
+						mesecon.queue:add_action(pos, "lc_interrupt", {luac_id, iid}, time, iid, 1)
+					else
+						send_warning("An interrupt ID was too large!")
+					end
+				end)
+			end
 		end
 		return interrupt
 	end
