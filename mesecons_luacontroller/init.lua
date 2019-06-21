@@ -24,8 +24,7 @@
 -- a very restricted environment.
 -- Actually the only way to damage the server is to
 -- use too much memory from the sandbox.
--- You can add more functions to the environment
--- (see where local env is defined)
+-- You can add more functions to the environment if you override mesecon.luacontroller.customize_environment
 -- Something nice to play is is appending minetest.env to it.
 
 local BASENAME = "mesecons_luacontroller:luacontroller"
@@ -37,6 +36,11 @@ local rules = {
 	d = {x =  0, y = 0, z = -1, name="D"},
 }
 
+
+-----------------------------
+-- luacontroller namespace --
+-----------------------------
+mesecon.luacontroller = {}
 
 ------------------
 -- Action stuff --
@@ -433,6 +437,12 @@ local safe_globals = {
 	"tonumber", "tostring", "type", "unpack", "_VERSION"
 }
 
+-- luacontroller environment customization
+-- can be overridden in dependent mods to add more functions
+function mesecon.luacontroller.customize_environment(env, pos, mem)
+	-- no-op
+end
+
 local function create_environment(pos, mem, event, itbl, send_warning)
 	-- Gather variables for the environment
 	local vports = minetest.registered_nodes[minetest.get_node(pos).name].virtual_portstates
@@ -514,6 +524,9 @@ local function create_environment(pos, mem, event, itbl, send_warning)
 	for _, name in pairs(safe_globals) do
 		env[name] = _G[name]
 	end
+
+	-- customization hook
+	mesecon.luacontroller.customize_environment(env, pos, mem)
 
 	return env
 end
@@ -901,4 +914,3 @@ minetest.register_craft({
 		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable', ''},
 	}
 })
-
