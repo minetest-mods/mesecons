@@ -91,7 +91,7 @@ local piston_on = function(pos, node)
 	if not success then
 		return
 	end
-	minetest.set_node(pos, {param2 = node.param2, name = pistonspec.onname})
+	minetest.swap_node(pos, {param2 = node.param2, name = pistonspec.onname})
 	minetest.set_node(pusher_pos, {param2 = node.param2, name = pistonspec.pusher})
 	minetest.sound_play("piston_extend", {
 		pos = pos,
@@ -104,7 +104,7 @@ end
 
 local function piston_off(pos, node)
 	local pistonspec = get_pistonspec(node.name, "onname")
-	minetest.set_node(pos, {param2 = node.param2, name = pistonspec.offname})
+	minetest.swap_node(pos, {param2 = node.param2, name = pistonspec.offname})
 	piston_remove_pusher(pos, node, not pistonspec.sticky) -- allow that even in protected area
 
 	if not pistonspec.sticky then

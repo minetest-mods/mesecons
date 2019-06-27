@@ -56,6 +56,8 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 
 		-- ### Step 2: Move the movestone ###
 		minetest.set_node(frontpos, node)
+		local meta2 = minetest.get_meta(frontpos)
+		meta2:from_table(meta:to_table())
 		minetest.remove_node(pos)
 		mesecon.on_dignode(pos, node)
 		mesecon.on_placenode(frontpos, node)

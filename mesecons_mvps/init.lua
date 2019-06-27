@@ -137,11 +137,11 @@ function mesecon.mvps_mark_owner(pos, placer)
 	local meta = minetest.get_meta(pos)
 	local owner = placer and placer.get_player_name and placer:get_player_name()
 	if owner and owner ~= "" then
-		meta.set_string("owner", owner)
-		meta.set_string("infotext", "Owned by " .. owner)
+		meta:set_string("owner", owner)
+		meta:set_string("infotext", "Owned by " .. owner)
 	else
-		meta.set_string("owner", "$unknown") -- to distinguish from older pistons
-		meta.set_string("infotext", "Unowned")
+		meta:set_string("owner", "$unknown") -- to distinguish from older pistons
+		meta:set_string("infotext", "Unowned")
 	end
 end
 
