@@ -133,6 +133,18 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	return nodes
 end
 
+function mesecon.mvps_mark_owner(pos, placer)
+	local meta = minetest.get_meta(pos)
+	local owner = placer and placer.get_player_name and placer:get_player_name()
+	if owner and owner ~= "" then
+		meta.set_string("owner", owner)
+		meta.set_string("infotext", "Owned by " .. owner)
+	else
+		meta.set_string("owner", "$unknown") -- to distinguish from older pistons
+		meta.set_string("infotext", "Unowned")
+	end
+end
+
 local function prot_deny() return true end
 local function prot_allow() return false end
 
