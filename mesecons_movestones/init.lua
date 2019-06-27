@@ -43,9 +43,11 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 	local function movestone_move(pos, node, rulename)
 		local direction = get_movestone_direction(rulename, is_vertical)
 		local frontpos = vector.add(pos, direction)
+		local meta = minetest.get_meta(pos)
+		local owner = meta:get_string("owner")
 
 		-- ### Step 1: Push nodes in front ###
-		local success, stack, oldstack = mesecon.mvps_push(frontpos, direction, max_push)
+		local success, stack, oldstack = mesecon.mvps_push(frontpos, direction, max_push, owner)
 		if not success then
 			minetest.get_node_timer(pos):start(timer_interval)
 			return
@@ -62,7 +64,7 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		-- ### Step 3: If sticky, pull stack behind ###
 		if is_sticky then
 			local backpos = vector.subtract(pos, direction)
-			success, stack, oldstack = mesecon.mvps_pull_all(backpos, direction, max_pull)
+			success, stack, oldstack = mesecon.mvps_pull_all(backpos, direction, max_pull, owner)
 			if success then
 				mesecon.mvps_move_objects(backpos, vector.multiply(direction, -1), oldstack, -1)
 			end
@@ -82,6 +84,8 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		end,
 		rules = mesecon.rules.default,
 	}}
+
+	def.after_place_node = mesecon.mvps_mark_owner
 
 	def.on_timer = function(pos, elapsed)
 		local sourcepos = mesecon.is_powered(pos)
