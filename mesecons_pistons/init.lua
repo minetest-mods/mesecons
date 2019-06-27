@@ -86,7 +86,8 @@ local piston_on = function(pos, node)
 	local pistonspec = get_pistonspec(node.name, "offname")
 	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 	local pusher_pos = vector.add(pos, dir)
-	local success, stack, oldstack = mesecon.mvps_push(pusher_pos, dir, max_push)
+	local meta = minetest.get_meta(pos)
+	local success, stack, oldstack = mesecon.mvps_push(pusher_pos, dir, max_push, meta:get_string("owner"))
 	if not success then
 		return
 	end
@@ -104,14 +105,15 @@ end
 local function piston_off(pos, node)
 	local pistonspec = get_pistonspec(node.name, "onname")
 	minetest.set_node(pos, {param2 = node.param2, name = pistonspec.offname})
-	piston_remove_pusher(pos, node, not pistonspec.sticky)
+	piston_remove_pusher(pos, node, not pistonspec.sticky) -- allow that even in protected area
 
 	if not pistonspec.sticky then
 		return
 	end
 	local dir = minetest.facedir_to_dir(node.param2)
 	local pullpos = vector.add(pos, vector.multiply(dir, -2))
-	local success, stack, oldstack = mesecon.mvps_pull_single(pullpos, dir, max_pull)
+	local meta = minetest.get_meta(pos)
+	local success, stack, oldstack = mesecon.mvps_pull_single(pullpos, dir, max_pull, meta:get_string("owner"))
 	if success then
 		mesecon.mvps_move_objects(pullpos, vector.multiply(dir, -1), oldstack, -1)
 	end
@@ -125,6 +127,7 @@ local orientations = {
 }
 
 local function piston_orientate(pos, placer)
+	mesecon.mvps_mark_owner(pos, placer)
 	if not placer then
 		return
 	end
