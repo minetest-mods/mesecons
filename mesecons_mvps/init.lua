@@ -133,16 +133,28 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	return nodes
 end
 
-function mesecon.mvps_mark_owner(pos, placer)
+function mesecon.mvps_set_owner(pos, placer)
 	local meta = minetest.get_meta(pos)
 	local owner = placer and placer.get_player_name and placer:get_player_name()
 	if owner and owner ~= "" then
 		meta:set_string("owner", owner)
-		meta:set_string("infotext", "Owned by " .. owner)
 	else
 		meta:set_string("owner", "$unknown") -- to distinguish from older pistons
-		meta:set_string("infotext", "Unowned")
 	end
+end
+
+function mesecon.mvps_claim(pos, player_name)
+	if not player_name or player_name == "" then return end
+	local meta = minetest.get_meta(pos)
+	if meta:get_string("infotext") == "" then return end
+	if meta:get_string("owner") == player_name then return end -- already owned
+	if minetest.is_protected(pos, player_name) then
+		minetest.chat_send_player(player_name, "Can't reclaim: protected")
+		return
+	end
+	meta:set_string("owner", player_name)
+	meta:set_string("infotext", "")
+	return true
 end
 
 local function add_pos(positions, pos)
@@ -170,7 +182,6 @@ local function are_protected(positions, player_name)
 	local is_protected = minetest.is_protected
 	for _, pos in pairs(positions) do
 		if is_protected(pos, name) then
-			minetest.record_protection_violation(pos, player_name)
 			return true
 		end
 	end
@@ -215,7 +226,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 		add_pos(protection_check_set, vector.add(n.pos, movedir))
 	end
 	if are_protected(protection_check_set, player_name) then
-		return
+		return false, "protected"
 	end
 
 	-- remove all nodes

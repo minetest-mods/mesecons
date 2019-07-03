@@ -49,6 +49,10 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		-- ### Step 1: Push nodes in front ###
 		local success, stack, oldstack = mesecon.mvps_push(frontpos, direction, max_push, owner)
 		if not success then
+			if stack == "protected" then
+				meta:set_string("infotext", "Can't move: protected area on the way")
+				return
+			end
 			minetest.get_node_timer(pos):start(timer_interval)
 			return
 		end
@@ -57,7 +61,7 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		-- ### Step 2: Move the movestone ###
 		minetest.set_node(frontpos, node)
 		local meta2 = minetest.get_meta(frontpos)
-		meta2:from_table(meta:to_table())
+		meta2:set_string("owner", owner)
 		minetest.remove_node(pos)
 		mesecon.on_dignode(pos, node)
 		mesecon.on_placenode(frontpos, node)
@@ -87,7 +91,15 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		rules = mesecon.rules.default,
 	}}
 
-	def.after_place_node = mesecon.mvps_mark_owner
+	def.after_place_node = mesecon.mvps_set_owner
+
+	def.on_punch = function(pos, node, player)
+		local player_name = player and player.get_player_name and player:get_player_name()
+		if mesecon.mvps_claim(pos, player_name) then
+			minetest.get_node_timer(pos):start(timer_interval)
+			minetest.chat_send_player(player_name, "Reclaimed movestone")
+		end
+	end
 
 	def.on_timer = function(pos, elapsed)
 		local sourcepos = mesecon.is_powered(pos)

@@ -89,6 +89,9 @@ local piston_on = function(pos, node)
 	local meta = minetest.get_meta(pos)
 	local success, stack, oldstack = mesecon.mvps_push(pusher_pos, dir, max_push, meta:get_string("owner"))
 	if not success then
+		if stack == "protected" then
+			meta:set_string("infotext", "Can't extend: protected area on the way")
+		end
 		return
 	end
 	minetest.swap_node(pos, {param2 = node.param2, name = pistonspec.onname})
@@ -127,7 +130,7 @@ local orientations = {
 }
 
 local function piston_orientate(pos, placer)
-	mesecon.mvps_mark_owner(pos, placer)
+	mesecon.mvps_set_owner(pos, placer)
 	if not placer then
 		return
 	end
@@ -240,6 +243,13 @@ local function piston_rotate_pusher(pos, node, player, mode)
 	return piston_rotate_on(piston_pos, piston_node, player, mode)
 end
 
+local function piston_punch(pos, node, player)
+	local player_name = player and player.get_player_name and player:get_player_name()
+	if mesecon.mvps_claim(pos, player_name) then
+		minetest.chat_send_player(player_name, "Reclaimed piston")
+	end
+end
+
 
 -- Boxes:
 
@@ -282,6 +292,7 @@ minetest.register_node("mesecons_pistons:piston_normal_off", {
 		action_on = piston_on,
 		rules = piston_get_rules,
 	}},
+	on_punch = piston_punch,
 	on_rotate = piston_rotate,
 	on_blast = mesecon.on_blastnode,
 })
@@ -360,6 +371,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 		action_on = piston_on,
 		rules = piston_get_rules,
 	}},
+	on_punch = piston_punch,
 	on_rotate = piston_rotate,
 	on_blast = mesecon.on_blastnode,
 })

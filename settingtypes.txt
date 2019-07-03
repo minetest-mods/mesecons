@@ -38,7 +38,7 @@ mesecon.luacontroller_lightweight_interrupts (Lightweight interrupts) bool false
 # - restrict: disallow legacy MVPS
 # Note that new unowned (e.g. machine-placed) MVPS are always
 # handled as in `normal` mode.
-mesecon.mvps_protection_mode (MVPS [movestones, pistons] protection handling) enum normal normal,compat,ignore,restrict
+mesecon.mvps_protection_mode (MVPS [movestones, pistons] protection handling) enum compat normal,compat,ignore,restrict
 
 [mesecons_movestones]
 
