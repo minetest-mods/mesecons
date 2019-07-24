@@ -438,9 +438,14 @@ local safe_globals = {
 }
 
 -- luacontroller environment customization
--- can be overridden in dependent mods to add more functions
-function mesecon.luacontroller.customize_environment(env, pos, mem)
-	-- no-op
+
+-- list of customization callbacks
+-- table with function(env, pos, name) entries
+local customization_callbacks = {}
+
+-- register a luacontroller customization callback in the form of function(env, pos, name)
+function mesecon.luacontroller.register_customization(callback)
+	table.insert(customization_callbacks, callback)
 end
 
 local function create_environment(pos, mem, event, itbl, send_warning)
@@ -525,8 +530,10 @@ local function create_environment(pos, mem, event, itbl, send_warning)
 		env[name] = _G[name]
 	end
 
-	-- customization hook
-	mesecon.luacontroller.customize_environment(env, pos, mem)
+	-- run customization hooks
+	for customization_callback in ipairs(customization_callbacks) do
+		customization_callback(env, pos, mem)
+	end
 
 	return env
 end
