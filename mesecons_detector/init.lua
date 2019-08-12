@@ -189,28 +189,49 @@ local function node_detector_scan(pos)
 		(frontname ~= "air" and frontname ~= "ignore" and scanname == "")
 end
 
+local function node_detector_send_node_name(pos, node, channel, meta)
+	local distance = meta:get_int("distance")
+	local distance_max = mesecon.setting("node_detector_distance_max", 10)
+	if distance < 0 then distance = 0 end
+	if distance > distance_max then distance = distance_max end
+	local nodename = minetest.get_node(
+		vector.subtract(pos, vector.multiply(minetest.facedir_to_dir(node.param2), distance + 1))
+	).name
+
+	digiline:receptor_send(pos, digiline.rules.default, channel, nodename)
+end
+
 -- set player name when receiving a digiline signal on a specific channel
 local node_detector_digiline = {
 	effector = {
 		action = function(pos, node, channel, msg)
 			local meta = minetest.get_meta(pos)
 
-			local distance = meta:get_int("distance")
-			local distance_max = mesecon.setting("node_detector_distance_max", 10)
-			if distance < 0 then distance = 0 end
-			if distance > distance_max then distance = distance_max end
-
 			if channel ~= meta:get_string("digiline_channel") then return end
 
-			if msg == GET_COMMAND then
-				local nodename = minetest.get_node(
-					vector.subtract(pos, vector.multiply(minetest.facedir_to_dir(node.param2), distance + 1))
-				).name
-
-				digiline:receptor_send(pos, digiline.rules.default, channel, nodename)
+			if type(msg) == "table" then
+				if msg.distance or msg.scanname then
+					if msg.distance then
+						meta:set_string("distance", msg.distance)
+					end
+					if msg.scanname then
+						meta:set_string("scanname", msg.scanname)
+					end
+					node_detector_make_formspec(pos)
+				end
+				if msg.command == "get" then
+					node_detector_send_node_name(pos, node, channel, meta)
+				elseif msg.command == "scan" then
+					local result = node_detector_scan(pos)
+					digiline:receptor_send(pos, digiline.rules.default, channel, result)
+				end
 			else
-				meta:set_string("scanname", msg)
-				node_detector_make_formspec(pos)
+				if msg == GET_COMMAND then
+					node_detector_send_node_name(pos, node, channel, meta)
+				else
+					meta:set_string("scanname", msg)
+					node_detector_make_formspec(pos)
+				end
 			end
 		end,
 	},
