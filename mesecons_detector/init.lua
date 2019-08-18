@@ -239,7 +239,7 @@ local node_detector_digiline = {
 }
 
 local function after_place_node_detector(pos, placer)
-	local placer_pos = placer:getpos()
+	local placer_pos = placer:get_pos()
 	if not placer_pos then
 		return
 	end

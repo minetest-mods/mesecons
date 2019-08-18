@@ -24,7 +24,7 @@ local function pp_on_timer(pos, elapsed)
 		mesecon.receptor_off(pos, mesecon.rules.pplate)
 	elseif node.name == basename .. "_off" then
 		for k, obj in pairs(objs) do
-			local objpos = obj:getpos()
+			local objpos = obj:get_pos()
 			if objpos.y > pos.y-1 and objpos.y < pos.y then
 				minetest.set_node(pos, {name = basename .. "_on"})
 				mesecon.receptor_on(pos, mesecon.rules.pplate )

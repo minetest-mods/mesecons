@@ -110,7 +110,7 @@ local function resolve_commands(commands, pos)
 	local nearest, farthest = nil, nil
 	local min_distance, max_distance = math.huge, -1
 	for index, player in pairs(players) do
-		local distance = vector.distance(pos, player:getpos())
+		local distance = vector.distance(pos, player:get_pos())
 		if distance < min_distance then
 			min_distance = distance
 			nearest = player:get_player_name()
