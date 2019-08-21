@@ -1,8 +1,11 @@
 The node detector is a receptor. It changes its state when either any node
 or a specific node is detected. Right-click it to set a nodename to scan for.
-It can also receive digiline signals. You can either send "GET" and it will
-respond with the detected nodename or you can send any other string and it will
-set this string as the node to scan for.
+It can also receive digiline signals. For example, you can send
+<code>{distance=4, scanname="default:dirt"}</code>
+to set distance to 4 and scan for dirt. You can omit either parameter.
+There is also a command parameter: <code>{command="get"}</code> will respond
+with the detected nodename and <code>{command="scan"}</code> will respond with
+a boolean using the distance and nodename of the detector.
 Nodenames must include the mod they reside in, so for instance default:dirt, not just dirt.
 The distance parameter specifies how many blocks are between the node detector and the node to detect.
 Automatic scanning with Mesecons output only works when the detector is in an active block, but Digilines queries always work.
