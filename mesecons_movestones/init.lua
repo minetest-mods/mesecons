@@ -1,3 +1,5 @@
+local S = minetest.get_translator("mesecons_movestone")
+
 -- MOVESTONE
 -- Non-sticky:
 -- Moves along mesecon lines
@@ -109,7 +111,7 @@ mesecon.register_movestone("mesecons_movestones:movestone", {
 		"jeija_movestone_arrows.png",
 	},
 	groups = {cracky = 3},
-    description = "Movestone",
+    description = S("Movestone"),
 	sounds = default.node_sound_stone_defaults()
 }, false, false)
 
@@ -123,7 +125,7 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
 		"jeija_sticky_movestone.png",
 	},
 	groups = {cracky = 3},
-    description = "Sticky Movestone",
+    description = S("Sticky Movestone"),
 	sounds = default.node_sound_stone_defaults(),
 }, true, false)
 
@@ -137,7 +139,7 @@ mesecon.register_movestone("mesecons_movestones:movestone_vertical", {
 		"jeija_movestone_arrows.png^[transformR90",
 	},
 	groups = {cracky = 3},
-    description = "Vertical Movestone",
+    description = S("Vertical Movestone"),
 	sounds = default.node_sound_stone_defaults()
 }, false, true)
 
@@ -151,7 +153,7 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone_vertical", {
 		"jeija_movestone_arrows.png^[transformR90",
 	},
 	groups = {cracky = 3},
-    description = "Vertical Sticky Movestone",
+    description = S("Vertical Sticky Movestone"),
 	sounds = default.node_sound_stone_defaults(),
 }, true, true)
 

@@ -1,3 +1,5 @@
+local S = minetest.get_translator("mesecons_fpga")
+
 local plg = {}
 plg.rules = {}
 
@@ -58,7 +60,7 @@ plg.register_nodes = function(template)
 end
 
 plg.register_nodes({
-	description = "FPGA",
+	description = S("FPGA"),
 	drawtype = "nodebox",
 	tiles = {
 		"", -- replaced later
