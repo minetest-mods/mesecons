@@ -1,0 +1,5 @@
+# textdomain: mesecons_movestone
+Movestone=
+Sticky Movestone=
+Vertical Movestone=
+Vertical Sticky Movestone=

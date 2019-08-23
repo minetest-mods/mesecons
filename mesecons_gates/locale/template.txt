@@ -1,0 +1,9 @@
+# textdomain: mesecons_gates
+Logic Gate: @1=
+Diode=
+NOT Gate=
+AND Gate=
+NAND Gate=
+XOR Gate=
+NOR Gate=
+OR Gate=

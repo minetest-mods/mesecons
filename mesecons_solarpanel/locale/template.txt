@@ -1,0 +1,2 @@
+# textdomain: mesecons_solarpanel
+Solar Panel=

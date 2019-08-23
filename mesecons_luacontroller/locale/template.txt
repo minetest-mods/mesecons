@@ -1,0 +1,10 @@
+# textdomain: mesecons_luacontroller
+Interrupt IDs are disabled on this server=
+An interrupt ID was too large!=
+Channel string too long.=
+Channel must be string, number or boolean.=
+Message was too complex, or contained invalid data.=
+Warning: @1=
+Ports set are invalid.=
+Luacontroller=
+Execute=

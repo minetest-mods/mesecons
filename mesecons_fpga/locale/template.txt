@@ -1,0 +1,26 @@
+# textdomain: mesecons_fpga
+Destination and operands must be different=
+Destination is already used register=
+FPGA=
+FPGA (functional)=
+FPGA (overheated)=
+FPGA Programmer=
+FPGA gate configuration=
+FPGA gate configuration was successfully copied!=
+FPGA ports have been rotated clockwise.=
+FPGA ports have been rotated counter-clockwise.=
+First operand is undefined register=
+Gate configuration was successfully written to FPGA!=
+Gate type required=
+Operands and destination required=
+Operands cannot be identical=
+Program=
+Second operand (only) and destination required=
+Second operand is undefined register=
+The gate configuration is erroneous in the marked area:=
+This FPGA is unprogrammed.=
+Use shift+right-click to copy a gate configuration first.=
+dest=
+gate type=
+op. 1=
+op. 2=

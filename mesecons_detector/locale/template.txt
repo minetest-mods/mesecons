@@ -1,0 +1,8 @@
+# textdomain: mesecons_detector
+Name of player to scan for (empty for any):=
+Name of node to scan for (empty for any):=
+Digiline Channel (optional):=
+Distance (0-@1):=
+Save=
+Player Detector=
+Node Detector=

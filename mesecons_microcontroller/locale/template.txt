@@ -1,0 +1,15 @@
+# textdomain: mesecons_microcontroller
+Microcontroller=
+Code:=
+AND=
+XOR=
+NOT=
+NAND=
+T-Flop=
+RS-Flop=
+Program=
+Unprogrammed Microcontroller=
+Programmed Microcontroller=
+Code not valid!=
+Working Microcontroller=
+Code in after() not valid!=

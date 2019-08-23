@@ -1,0 +1,26 @@
+# textdomain: mesecons_fpga
+Destination and operands must be different=Ziel und Operanden müssen verschieden sein
+Destination is already used register=Ziel ist ein bereits benutztes Register
+FPGA=FPGA
+FPGA (functional)=FPGA (funktional)
+FPGA (overheated)=FPGA (überhitzt)
+FPGA Programmer=FPGA-Programmierer
+FPGA gate configuration=FPGA-Gatterkonfiguration
+FPGA gate configuration was successfully copied!=FPGA-Gatterkonfiguration wurde erfolgreich kopiert!
+FPGA ports have been rotated clockwise.=FPGA-Ports wurden im Uhrzeigersinn kopiert.
+FPGA ports have been rotated counter-clockwise.=FPGA-Ports wurden entgegen dem Uhrzeigersinn kopiert.
+First operand is undefined register=Erster Operand ist ein undefiniertes Register
+Gate configuration was successfully written to FPGA!=Gatterkonfiguration wurde erfolgreich ins FPGA geschrieben!
+Gate type required=Gattertyp benötigt
+Operands and destination required=Operanden und Ziel benötigt
+Operands cannot be identical=Operanden können nicht identisch sein
+Program=Programmieren
+Second operand (only) and destination required=(Nur) zweiter Operand und Ziel benötigt
+Second operand is undefined register=Zweiter Operand ist undefiniertes Register
+The gate configuration is erroneous in the marked area:=Die Gatterkonfiguration im markierten Bereich ist fehlerhaft:
+This FPGA is unprogrammed.=Dieser FPGA ist nicht programmiert.
+Use shift+right-click to copy a gate configuration first.=Umschalt+Rechtsklick benutzen, um zuerst eine Gatterkonfiguration zu kopieren.
+dest=Ziel
+gate type=Gattertyp
+op. 1=Op. 1
+op. 2=Op. 2

@@ -1,0 +1,2 @@
+# textdomain: mesecons_lamp
+Mesecon Lamp=

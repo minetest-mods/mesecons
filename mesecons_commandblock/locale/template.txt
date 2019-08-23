@@ -1,0 +1,19 @@
+# textdomain: mesecons_commandblock
+<text>=
+Say <text> as the server=
+<name> <text>=
+Say <text> to <name> privately=
+Invalid usage: @1=
+Invalid target: @1=
+@1 whispers: @2=
+<name> <value>=
+Set health of <name> to <value> hitpoints=
+Commands=
+@@nearest, @@farthest, and @@random are replaced by the respective player names.=
+Submit=
+(not owned)=
+(owned by @1)=
+Command Block=
+Commands: @1=
+The command @1 does not exist=
+You don't have permission to run @1 (missing privileges: @2)=

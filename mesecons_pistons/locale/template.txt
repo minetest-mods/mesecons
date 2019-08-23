@@ -1,0 +1,7 @@
+# textdomain: mesecons_pistons
+Piston=
+Activated Piston Base=
+Piston Pusher=
+Sticky Piston=
+Activated Sticky Piston Base=
+Sticky Piston Pusher=

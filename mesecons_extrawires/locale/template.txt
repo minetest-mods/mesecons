@@ -1,0 +1,5 @@
+# textdomain: mesecons_extrawires
+Insulated Mesecon Corner=
+Insulated Mesecon Crossover=
+Insulated Mesecon T-junction=
+Vertical Mesecon=

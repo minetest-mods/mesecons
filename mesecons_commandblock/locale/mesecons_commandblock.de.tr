@@ -1,0 +1,19 @@
+# textdomain: mesecons_commandblock
+<text>=<Text>
+Say <text> as the server=<Text> als Server sagen
+<name> <text>=<Name> <Text>
+Say <text> to <name> privately=<Text> an <Name> privat senden
+Invalid usage: @1=Ungültige Verwendung: @1
+Invalid target: @1=Ungültiges Ziel: @1
+@1 whispers: @2=@1 flüstert: @2
+<name> <value>=<Name> <Wert>
+Set health of <name> to <value> hitpoints=Gesundheit von <Name> auf <Wert> Trefferpunkte setzen
+Commands=Befehle
+@@nearest, @@farthest, and @@random are replaced by the respective player names.=@@nearest, @@farthest und @@random werden mit den passenden Spielernamen ersetzt.
+Submit=Anwenden
+(not owned)=(kein Eigentümer)
+(owned by @1)=(Eigentum von @1)
+Command Block=Befehlsblock
+Commands: @1=Befehle: @1
+The command @1 does not exist=Der Befehl „@1“ existiert nicht
+You don't have permission to run @1 (missing privileges: @2)=Sie haben keine Erlaubnis, um @1 auszuführen (fehlende Privilegien: @1)

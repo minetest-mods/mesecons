@@ -1,0 +1,14 @@
+# textdomain: mesecons_lightstone
+Lightstone (@1)=
+Red Lightstone=
+Green Lightstone=
+Blue Lightstone=
+Grey Lightstone=
+Dark Grey Lightstone=
+Yellow Lightstone=
+Orange Lightstone=
+White Lightstone=
+Pink Lightstone=
+Magenta Lightstone=
+Cyan Lightstone=
+Violet Lightstone=

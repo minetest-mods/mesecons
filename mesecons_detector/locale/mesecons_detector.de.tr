@@ -1,0 +1,8 @@
+# textdomain: mesecons_detector
+Name of player to scan for (empty for any):=Name des zu suchenden Spielers (leer für beliebig):
+Name of node to scan for (empty for any):=Name des zu suchenden Nodes (leer für beliebig):
+Digiline Channel (optional):=Digiline-Kanal (optional):
+Distance (0-@1):=Entfernung: (0-@1):
+Save=Speichern
+Player Detector=Spielerdetektor
+Node Detector=Node-Detektor
