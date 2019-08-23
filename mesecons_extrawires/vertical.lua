@@ -144,7 +144,7 @@ mesecon.register_node("mesecons_extrawires:vertical_top", {
 
 -- Vertical wire bottom
 mesecon.register_node("mesecons_extrawires:vertical_bottom", {
-	description = S("Vertical mesecon"),
+	description = S("Vertical Mesecon"),
 	drawtype = "nodebox",
 	walkable = false,
 	paramtype = "light",
