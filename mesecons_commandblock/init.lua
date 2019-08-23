@@ -50,7 +50,7 @@ local function initialize_data(meta)
 	meta:set_string("formspec",
 		"invsize[9,5;]" ..
 		"textarea[0.5,0.5;8.5,4;commands;"..F(S("Commands"))..";"..commands.."]" ..
-		"label[1,3.8;"..F(S("@nearest, @farthest, and @random are replaced by the respective player names"))"]" ..
+		"label[1,3.8;"..F(S("@@nearest, @@farthest, and @@random are replaced by the respective player names.")).."]" ..
 		"button_exit[3.3,4.5;2,1;submit;"..F(S("Submit")).."]")
 	local owner = meta:get_string("owner")
 	local ownstr = ""
