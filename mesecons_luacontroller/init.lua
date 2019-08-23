@@ -1,4 +1,5 @@
 local S = minetest.get_translator("mesecons_luacontroller")
+local F = minetest.formspec_escape
 
 --        ______
 --       |
@@ -634,12 +635,11 @@ local function reset_formspec(meta, code, errmsg)
 	code = minetest.formspec_escape(code or "")
 	errmsg = minetest.formspec_escape(tostring(errmsg or ""))
 	meta:set_string("formspec", "size[12,10]"
-		-- FIXME: The background includes untranslatable English text
 		.."background[-0.2,-0.25;12.4,10.75;jeija_luac_background.png]"
+		.."label[5.5,-0.375;"..F(S("Luacontroller")).."]"
 		.."label[0.1,8.3;"..errmsg.."]"
 		.."textarea[0.2,0.2;12.2,9.5;code;;"..code.."]"
-		-- FIXME: This image include untranslatable English text
-		.."image_button[4.75,8.75;2.5,1;jeija_luac_runbutton.png;program;]"
+		.."button[4.75,8.75;2.5,1;program;"..F(S("Execute")).."]"
 		.."image_button_exit[11.72,-0.25;0.425,0.4;jeija_close_window.png;exit;]"
 		)
 end
