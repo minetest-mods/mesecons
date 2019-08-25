@@ -1,1 +1,0 @@
-The presence of this file indicates that the current folder is a modpack.
