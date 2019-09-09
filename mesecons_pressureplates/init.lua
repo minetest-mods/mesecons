@@ -112,10 +112,10 @@ mesecon.register_pressure_plate(
 mesecon.register_pressure_plate(
 	"mesecons_pressureplates:pressure_plate_sandstone",
 	"Sandstone Pressure Plate",
-	{"pressure_plate_sandstone_off.png","pressure_plate_sandstone_off.png","pressure_plate_sandstone_off_edges.png"},
-	{"pressure_plate_sandstone_on.png","pressure_plate_sandstone_on.png","pressure_plate_sandstone_on_edges.png"},
-	"pressure_plate_sandstone_wield.png",
-	"pressure_plate_sandstone_inv.png",
-	{{"default:sandstone_block", "default:sandstone_block"}},
+	{"mesecons_pressure_plate_sandstone_off.png","mesecons_pressure_plate_sandstone_off.png","mesecons_pressure_plate_sandstone_off_edges.png"},
+	{"mesecons_pressure_plate_sandstone_on.png","mesecons_pressure_plate_sandstone_on.png","mesecons_pressure_plate_sandstone_on_edges.png"},
+	"mesecons_pressure_plate_sandstone_wield.png",
+	"mesecons_pressure_plate_sandstone_inv.png",
+	{{"default:sandstone", "default:sandstone"}},
 	{ cracky = 3, oddly_breakable_by_hand = 3 },
 	default.node_sound_stone_defaults())
