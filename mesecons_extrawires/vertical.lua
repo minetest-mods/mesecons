@@ -239,6 +239,7 @@ mesecon.register_node("mesecons_extrawires:vertical_static_middle", {
 		node.param2 = node.param2 % 6
 		minetest.swap_node(pos, node)
 		vertical_update(pos)
+		mesecon.on_placenode(pos, node)
 		return true
 	end,
 }, {
