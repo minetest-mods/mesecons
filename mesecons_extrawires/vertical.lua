@@ -38,37 +38,33 @@ local bottom_rules = {
 	{x=0, y=2, z=0} -- receive power from pressure plate / detector / ... 2 nodes above
 }
 
-local static_middle_rules_unrotated_normal = {
-	{x=1, y=0, z=0},
-	{x=-1, y=0, z=0},
-	{x=0, y=0, z=1},
-	{x=0, y=0, z=-1},
-	{x=0, y=1, z=0},
-	{x=0, y=2, z=0}, -- receive power from pressure plate / detector / ... 2 nodes above
-	{x=0, y=-1, z=0},
-}
-local static_middle_rules_unrotated_minimum = {
-	{x=0, y=1, z=0},
-	{x=0, y=2, z=0}, -- receive power from pressure plate / detector / ... 2 nodes above
-	{x=0, y=-1, z=0},
-}
-local function static_middle_rules(node)
-	if node.param2 == 1 then
-		return static_middle_rules_unrotated_normal
-	end
-	-- rotate static_middle_rules_unrotated_minimum
-	local r = mesecon.rotate_rules_up(static_middle_rules_unrotated_minimum)
-	if node.param2 == 0 then -- upside down
-		return mesecon.rotate_rules_up(r)
-	elseif node.param2 == 2 then
-		return mesecon.rotate_rules_left(mesecon.rotate_rules_left(r))
-	elseif node.param2 == 3 then
-		return r
-	elseif node.param2 == 4 then
-		return mesecon.rotate_rules_left(r)
-	else
-		return mesecon.rotate_rules_right(r)
-	end
+local static_middle_rules = {}
+do
+	-- not rotated, plate can connect to normal wire
+	static_middle_rules[1] = {
+		{x=1, y=0, z=0},
+		{x=-1, y=0, z=0},
+		{x=0, y=0, z=1},
+		{x=0, y=0, z=-1},
+		{x=0, y=1, z=0},
+		{x=0, y=2, z=0}, -- receive power from pressure plate / detector / ... 2 nodes above
+		{x=0, y=-1, z=0},
+	}
+
+	-- otherwise rotate these rules
+	local r = mesecon.rotate_rules_up({
+		{x=0, y=1, z=0},
+		{x=0, y=2, z=0}, -- receive power from pressure plate / detector / ... 2 nodes above
+		{x=0, y=-1, z=0},
+	})
+	static_middle_rules[0] = mesecon.rotate_rules_up(r)
+	static_middle_rules[2] = mesecon.rotate_rules_left(mesecon.rotate_rules_left(r))
+	static_middle_rules[3] = r
+	static_middle_rules[4] = mesecon.rotate_rules_left(r)
+	static_middle_rules[5] = mesecon.rotate_rules_right(r)
+end
+local function static_middle_rules_get(node)
+	return static_middle_rules[node.param2] or {}
 end
 
 local function is_dynamic_vertical_wire(node)
@@ -251,7 +247,7 @@ mesecon.register_node("mesecons_extrawires:vertical_static_middle", {
 	mesecons = {conductor = {
 		state = mesecon.state.off,
 		onstate = "mesecons_extrawires:vertical_static_middle_on",
-		rules = static_middle_rules,
+		rules = static_middle_rules_get,
 	}}
 }, {
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
@@ -259,7 +255,7 @@ mesecon.register_node("mesecons_extrawires:vertical_static_middle", {
 	mesecons = {conductor = {
 		state = mesecon.state.on,
 		offstate = "mesecons_extrawires:vertical_static_middle_off",
-		rules = static_middle_rules,
+		rules = static_middle_rules_get,
 	}}
 })
 
