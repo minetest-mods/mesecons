@@ -16,6 +16,15 @@ local bottom_box = {
 	}
 }
 
+ -- like bottom_box, but mirrored iny y-direction because of wallmounted
+local static_middle_box = {
+	type = "fixed",
+	fixed = {
+		{-8/16,  7/16, -8/16, 8/16, 8/16, 8/16},
+		{-1/16, -8/16, -1/16, 1/16, 7/16, 1/16},
+	}
+}
+
 local vertical_rules = {
 	{x=0, y=1, z=0},
 	{x=0, y=-1, z=0}
@@ -41,7 +50,7 @@ local bottom_rules = {
 local static_middle_rules = {}
 do
 	-- not rotated, plate can connect to normal wire
-	static_middle_rules[1] = {
+	static_middle_rules[0] = {
 		{x=1, y=0, z=0},
 		{x=-1, y=0, z=0},
 		{x=0, y=0, z=1},
@@ -57,11 +66,11 @@ do
 		{x=0, y=2, z=0}, -- receive power from pressure plate / detector / ... 2 nodes above
 		{x=0, y=-1, z=0},
 	})
-	static_middle_rules[0] = mesecon.rotate_rules_up(r)
-	static_middle_rules[2] = mesecon.rotate_rules_left(mesecon.rotate_rules_left(r))
-	static_middle_rules[3] = r
-	static_middle_rules[4] = mesecon.rotate_rules_left(r)
-	static_middle_rules[5] = mesecon.rotate_rules_right(r)
+	static_middle_rules[1] = mesecon.rotate_rules_up(r)
+	static_middle_rules[2] = r
+	static_middle_rules[3] = mesecon.rotate_rules_left(mesecon.rotate_rules_left(r))
+	static_middle_rules[4] = mesecon.rotate_rules_right(r)
+	static_middle_rules[5] = mesecon.rotate_rules_left(r)
 end
 local function static_middle_rules_get(node)
 	return static_middle_rules[node.param2] or {}
@@ -77,7 +86,7 @@ local function is_vertical_conductor(node)
 			node.name ~= "mesecons_extrawires:vertical_static_middle_on" then
 		return is_dynamic_vertical_wire(node)
 	end
-	return node.param2 == 1 or node.param2 == 0
+	return node.param2 == 0 or node.param2 == 1
 end
 
 local function vertical_updatepos(pos)
@@ -221,12 +230,12 @@ mesecon.register_node("mesecons_extrawires:vertical_static_middle", {
 	walkable = false,
 	paramtype = "light",
 	paramtype2 = "wallmounted", -- yes, rotatable
-	place_param2 = 1, -- but no automatic rotation
+	place_param2 = 0, -- but no automatic rotation
 	node_placement_prediction = "", -- also no client-side automatic rotation
 	is_ground_content = false,
 	sunlight_propagates = true,
-	selection_box = bottom_box,
-	node_box = bottom_box,
+	selection_box = static_middle_box,
+	node_box = static_middle_box,
 	after_place_node = vertical_update,
 	after_dig_node = vertical_update,
 	sounds = default.node_sound_defaults(),
