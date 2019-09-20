@@ -133,31 +133,100 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	return nodes
 end
 
-function mesecon.mvps_push(pos, dir, maximum)
-	return mesecon.mvps_push_or_pull(pos, dir, dir, maximum)
+function mesecon.mvps_set_owner(pos, placer)
+	local meta = minetest.get_meta(pos)
+	local owner = placer and placer.get_player_name and placer:get_player_name()
+	if owner and owner ~= "" then
+		meta:set_string("owner", owner)
+	else
+		meta:set_string("owner", "$unknown") -- to distinguish from older pistons
+	end
 end
 
-function mesecon.mvps_pull_all(pos, dir, maximum)
-	return mesecon.mvps_push_or_pull(pos, vector.multiply(dir, -1), dir, maximum, true)
+function mesecon.mvps_claim(pos, player_name)
+	if not player_name or player_name == "" then return end
+	local meta = minetest.get_meta(pos)
+	if meta:get_string("infotext") == "" then return end
+	if meta:get_string("owner") == player_name then return end -- already owned
+	if minetest.is_protected(pos, player_name) then
+		minetest.chat_send_player(player_name, "Can't reclaim: protected")
+		return
+	end
+	meta:set_string("owner", player_name)
+	meta:set_string("infotext", "")
+	return true
 end
 
-function mesecon.mvps_pull_single(pos, dir, maximum)
-	return mesecon.mvps_push_or_pull(pos, vector.multiply(dir, -1), dir, maximum)
+local function add_pos(positions, pos)
+	local hash = minetest.hash_node_position(pos)
+	positions[hash] = pos
 end
 
--- pos: pos of mvps; stackdir: direction of building the stack
+local function are_protected(positions, player_name)
+	local mode = mesecon.setting("mvps_protection_mode", "normal")
+	if mode == "ignore" then
+		return false
+	end
+	local name = player_name
+	if player_name == "" or not player_name then -- legacy MVPS
+		if mode == "normal" then
+			name = "$unknown" -- sentinel, for checking for *any* protection
+		elseif mode == "compat" then
+			return false
+		elseif mode == "restrict" then
+			return true
+		else
+			error("Invalid protection mode")
+		end
+	end
+	local is_protected = minetest.is_protected
+	for _, pos in pairs(positions) do
+		if is_protected(pos, name) then
+			return true
+		end
+	end
+	return false
+end
+
+function mesecon.mvps_push(pos, dir, maximum, player_name)
+	return mesecon.mvps_push_or_pull(pos, dir, dir, maximum, false, player_name)
+end
+
+function mesecon.mvps_pull_all(pos, dir, maximum, player_name)
+	return mesecon.mvps_push_or_pull(pos, vector.multiply(dir, -1), dir, maximum, true, player_name)
+end
+
+function mesecon.mvps_pull_single(pos, dir, maximum, player_name)
+	return mesecon.mvps_push_or_pull(pos, vector.multiply(dir, -1), dir, maximum, false, player_name)
+end
+
+-- pos: pos of mvps
+-- stackdir: direction of building the stack
 -- movedir: direction of actual movement
 -- maximum: maximum nodes to be pushed
 -- all_pull_sticky: All nodes are sticky in the direction that they are pulled from
-function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sticky)
+-- player_name: Player responsible for the action.
+--  - empty string means legacy MVPS, actual check depends on configuration
+--  - "$unknown" is a sentinel for forcing the check
+function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sticky, player_name)
 	local nodes = mesecon.mvps_get_stack(pos, movedir, maximum, all_pull_sticky)
 
 	if not nodes then return end
+
+	local protection_check_set = {}
+	if vector.equals(stackdir, movedir) then -- pushing
+		add_pos(protection_check_set, pos)
+	end
 	-- determine if one of the nodes blocks the push / pull
 	for id, n in ipairs(nodes) do
 		if mesecon.is_mvps_stopper(n.node, movedir, nodes, id) then
 			return
 		end
+		add_pos(protection_check_set, n.pos)
+		add_pos(protection_check_set, vector.add(n.pos, movedir))
+	end
+	if are_protected(protection_check_set, player_name) then
+		return false, "protected"
 	end
 
 	-- remove all nodes
