@@ -163,7 +163,7 @@ local function add_pos(positions, pos)
 end
 
 local function are_protected(positions, player_name)
-	local mode = mesecon.setting("mvps_protection_mode", "normal")
+	local mode = mesecon.setting("mvps_protection_mode", "compat")
 	if mode == "ignore" then
 		return false
 	end
