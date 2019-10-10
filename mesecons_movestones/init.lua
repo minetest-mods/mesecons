@@ -66,6 +66,7 @@ function mesecon.register_movestone(name, def, is_sticky, is_vertical)
 		mesecon.on_dignode(pos, node)
 		mesecon.on_placenode(frontpos, node)
 		minetest.get_node_timer(frontpos):start(timer_interval)
+		minetest.sound_play("movestone", {pos = pos, max_hear_distance = 20, gain = 0.5,})
 
 		-- ### Step 3: If sticky, pull stack behind ###
 		if is_sticky then
