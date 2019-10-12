@@ -15,7 +15,7 @@ minetest.register_node("mesecons_stickyblocks_linear:sticky_block_x", {
 		"mesecons_stickyblocks_linear.png",
 	},                                                                
 	is_ground_content = false,
-	groups = {choppy=3, oddly_breakable_by_hand=2, sticky=1, not_in_creative_inventory = 1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, sticky = 1, not_in_creative_inventory = 1},
 	mvps_sticky = function (pos, node)
 		local connected = {}
 		for _, r in ipairs(mesecon.rules.x) do
@@ -52,7 +52,7 @@ minetest.register_node("mesecons_stickyblocks_linear:sticky_block_y", {
 		"mesecons_stickyblocks_linear.png",
 	},
 	is_ground_content = false,
-	groups = {choppy=3, oddly_breakable_by_hand=2, sticky=1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, sticky= 1},
 	mvps_sticky = function (pos, node)
 		local connected = {}
 		for _, r in ipairs(mesecon.rules.y) do
@@ -90,7 +90,7 @@ minetest.register_node("mesecons_stickyblocks_linear:sticky_block_z", {
 		"mesecons_stickyblocks_linear_sticky.png",
 	},                                                                   
 	is_ground_content = false,
-	groups = {choppy=3, oddly_breakable_by_hand=2, sticky=1, not_in_creative_inventory = 1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, sticky = 1, not_in_creative_inventory = 1},
 	mvps_sticky = function (pos, node)
 		local connected = {}
 		for _, r in ipairs(mesecon.rules.z) do
@@ -117,20 +117,14 @@ minetest.register_node("mesecons_stickyblocks_linear:sticky_block_z", {
 mesecon.rules.y = {
 	{x =  0, y =  1, z =  0},
 	{x =  0, y = -1, z =  0},
-	{x =  0, y =  0, z =  0},
-	{x =  0, y =  0, z =  0},
 }
 
 mesecon.rules.x = {
 	{x =  1, y =  0, z =  0},
 	{x = -1, y =  0, z =  0},
-	{x =  0, y =  0, z =  0},
-	{x =  0, y =  0, z =  0},
 }
 
 mesecon.rules.z = {
-	{x =  0, y =  0, z =  0},
-	{x =  0, y =  0, z =  0},
 	{x =  0, y =  0, z =  1},
 	{x =  0, y =  0, z = -1},
 }

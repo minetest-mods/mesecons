@@ -14,7 +14,7 @@ minetest.register_node("mesecons_stickyblocks_flat:sticky_block_xz", {
 		"mesecons_stickyblocks_flat_sticky.png",
 	},                                                                
 	is_ground_content = false,
-	groups = {choppy=3, oddly_breakable_by_hand=2, sticky=1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, sticky = 1},
 	mvps_sticky = function (pos, node)
 		local connected = {}
 		for _, r in ipairs(mesecon.rules.xz) do
@@ -36,7 +36,6 @@ minetest.register_node("mesecons_stickyblocks_flat:sticky_block_xz", {
 	on_punch = function(pos, node, player, pointed_thing)
 		if string.find(player:get_wielded_item():get_name(), "sticky_") then
 			minetest.swap_node(pos, {name = "mesecons_stickyblocks_flat:sticky_block_xy" })
-		--minetest.chat_send_all("The word sticky_ was found.")
 		end
 	end,
 })
@@ -55,7 +54,7 @@ minetest.register_node("mesecons_stickyblocks_flat:sticky_block_xy", {
 		"mesecons_stickyblocks_flat.png",
 	},                                                                
 	is_ground_content = false,
-	groups = {choppy=3, oddly_breakable_by_hand=2, sticky=1, not_in_creative_inventory = 1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, sticky = 1, not_in_creative_inventory = 1},
 	mvps_sticky = function (pos, node)
 		local connected = {}
 		for _, r in ipairs(mesecon.rules.xy) do
@@ -95,7 +94,7 @@ minetest.register_node("mesecons_stickyblocks_flat:sticky_block_yz", {
 		"mesecons_stickyblocks_flat_sticky.png",
 	},                                                                
 	is_ground_content = false,
-	groups = {choppy=3, oddly_breakable_by_hand=2, sticky=1, not_in_creative_inventory = 1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, sticky = 1, not_in_creative_inventory = 1},
 	mvps_sticky = function (pos, node)
 		local connected = {}
 		for _, r in ipairs(mesecon.rules.yz) do
@@ -144,8 +143,6 @@ mesecon.rules.yz = {
 	{x =  0, y =  0, z =  1},
 	{x =  0, y =  0, z = -1},
 }
-
-
 	
 	
 minetest.register_craft({
