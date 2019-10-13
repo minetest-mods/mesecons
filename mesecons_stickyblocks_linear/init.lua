@@ -6,6 +6,7 @@ minetest.register_node("mesecons_stickyblocks_linear:sticky_block_x", {
 	description = "X Sticky Block",
 	drawtype = "nodebox",
 	drop = "mesecons_stickyblocks_linear:sticky_block_y",
+	paramtype2 = "facedir",
 	tiles = {
 		"mesecons_stickyblocks_linear.png",
 		"mesecons_stickyblocks_linear.png",
@@ -37,12 +38,17 @@ minetest.register_node("mesecons_stickyblocks_linear:sticky_block_x", {
 			minetest.swap_node(pos, {name = "mesecons_stickyblocks_linear:sticky_block_y" })
 		end
 	end,
+	on_rotate = function(pos, node, player, pointed_thing)
+			minetest.swap_node(pos, {name = "mesecons_stickyblocks_linear:sticky_block_y" })
+			return true
+	end,
 })
 	
 	--  Y sticky block
 minetest.register_node("mesecons_stickyblocks_linear:sticky_block_y", {
 	description = "Linear Sticky Block",
 	drawtype = "nodebox",
+	paramtype2 = "facedir",
 	tiles = {
 		"mesecons_stickyblocks_linear_sticky.png",
 		"mesecons_stickyblocks_linear_sticky.png",
@@ -74,12 +80,17 @@ minetest.register_node("mesecons_stickyblocks_linear:sticky_block_y", {
 			minetest.swap_node(pos, {name = "mesecons_stickyblocks_linear:sticky_block_z" })
 		end
 	end,
+	on_rotate = function(pos, node, player, pointed_thing)
+			minetest.swap_node(pos, {name = "mesecons_stickyblocks_linear:sticky_block_z" })
+			return true
+	end,
 })
 	
 	--  Z sticky block
 minetest.register_node("mesecons_stickyblocks_linear:sticky_block_z", {
 	description = "Z Sticky Block",
 	drawtype = "nodebox",
+	paramtype2 = "facedir",
 	drop = "mesecons_stickyblocks_linear:sticky_block_y",
 	tiles = {
 		"mesecons_stickyblocks_linear.png",
@@ -111,6 +122,10 @@ minetest.register_node("mesecons_stickyblocks_linear:sticky_block_z", {
 		if string.find(player:get_wielded_item():get_name(), "sticky_") then
 			minetest.swap_node(pos, {name = "mesecons_stickyblocks_linear:sticky_block_x" })
 		end
+	end,
+	on_rotate = function(pos, node, player, pointed_thing)
+			minetest.swap_node(pos, {name = "mesecons_stickyblocks_linear:sticky_block_x" })
+			return true
 	end,
 })
 	

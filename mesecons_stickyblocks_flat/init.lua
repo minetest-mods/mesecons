@@ -5,6 +5,7 @@
 minetest.register_node("mesecons_stickyblocks_flat:sticky_block_xz", {
 	description = "Flat Sticky Block",
 	drawtype = "nodebox",
+	paramtype2 = "facedir",
 	tiles = {
 		"mesecons_stickyblocks_flat.png",
 		"mesecons_stickyblocks_flat.png",
@@ -38,12 +39,17 @@ minetest.register_node("mesecons_stickyblocks_flat:sticky_block_xz", {
 			minetest.swap_node(pos, {name = "mesecons_stickyblocks_flat:sticky_block_xy" })
 		end
 	end,
+	on_rotate = function(pos, node, player, pointed_thing)
+		minetest.swap_node(pos, {name = "mesecons_stickyblocks_flat:sticky_block_xy" })
+		return true
+	end,
 })
 	
 	-- Flat sticky block not Z
 minetest.register_node("mesecons_stickyblocks_flat:sticky_block_xy", {
 	description = "Flat XY Sticky Block",
 	drawtype = "nodebox",
+	paramtype2 = "facedir",
 	drop = "mesecons_stickyblocks_flat:sticky_block_xz",
 	tiles = { --+Y, -Y, +X, -X, +Z, -Z
 		"mesecons_stickyblocks_flat_sticky.png",
@@ -78,12 +84,17 @@ minetest.register_node("mesecons_stickyblocks_flat:sticky_block_xy", {
 			minetest.swap_node(pos, {name = "mesecons_stickyblocks_flat:sticky_block_yz" })
 		end
 	end,
+	on_rotate = function(pos, node, player, pointed_thing)
+		minetest.swap_node(pos, {name = "mesecons_stickyblocks_flat:sticky_block_yz" })
+		return true
+	end,
 })
 	
 	-- Flat sticky block not X
 minetest.register_node("mesecons_stickyblocks_flat:sticky_block_yz", {
 	description = "Flat YZ Sticky Block",
 	drawtype = "nodebox",
+	paramtype2 = "facedir",
 	drop = "mesecons_stickyblocks_flat:sticky_block_xz",
 	tiles = {
 		"mesecons_stickyblocks_flat_sticky.png",
@@ -118,6 +129,10 @@ minetest.register_node("mesecons_stickyblocks_flat:sticky_block_yz", {
 		if string.find(player:get_wielded_item():get_name(), "sticky_") then
 			minetest.swap_node(pos, {name = "mesecons_stickyblocks_flat:sticky_block_xz" })
 		end
+	end,
+	on_rotate = function(pos, node, player, pointed_thing)
+		minetest.swap_node(pos, {name = "mesecons_stickyblocks_flat:sticky_block_xz" })
+		return true
 	end,
 })
 	
