@@ -5,7 +5,7 @@
 	drawtype = "nodebox",
 	tiles = {"mesecons_slippyblocks.png"},
 	buildable_to = true,
-	groups = {cracky=3,oddly_breakable_by_hand=3},
+	groups = {cracky = 3, oddly_breakable_by_hand = 3},
 	drop = "mesecons_slippyblocks:slippy_block",
 	node_box = {
 		type = "fixed",
@@ -44,7 +44,7 @@
 	description = "Slippy block)",
 	drawtype = "nodebox",
 	tiles = {"mesecons_slippyblocks.png"},
-	groups = {cracky=3,oddly_breakable_by_hand=3, not_in_creative_inventory = 1},
+	groups = {cracky = 3,oddly_breakable_by_hand = 3, not_in_creative_inventory = 1},
 	drop = "mesecons_slippyblocks:slippy_block",
 	node_box = {
 		type = "fixed",
