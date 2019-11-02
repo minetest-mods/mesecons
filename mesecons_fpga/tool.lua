@@ -22,7 +22,7 @@ minetest.register_tool("mesecons_fpga:programmer", {
 		end
 		itemstack:set_metadata(meta:get_string("instr"))
 		minetest.chat_send_player(placer:get_player_name(), "FPGA gate configuration was successfully copied!")
-		
+
 		return itemstack
 	end,
 	on_use = function(itemstack, user, pointed_thing)
@@ -34,17 +34,22 @@ minetest.register_tool("mesecons_fpga:programmer", {
 		if minetest.get_node(pos).name:find("mesecons_fpga:fpga") ~= 1 then
 			return itemstack
 		end
+		local player_name = user:get_player_name()
+		if minetest.is_protected(pos, player_name) then
+			minetest.record_protection_violation(pos, player_name)
+			return itemstack
+		end
 
 		local imeta = itemstack:get_metadata()
 		if imeta == "" then
-			minetest.chat_send_player(user:get_player_name(), "Use shift+right-click to copy a gate configuration first.")
+			minetest.chat_send_player(player_name, "Use shift+right-click to copy a gate configuration first.")
 			return itemstack
 		end
 
 		local meta = minetest.get_meta(pos)
 		meta:set_string("instr", imeta)
-		plg.update_formspec(pos, imeta)
-		minetest.chat_send_player(user:get_player_name(), "Gate configuration was successfully written to FPGA!")
+		plg.update_meta(pos, imeta)
+		minetest.chat_send_player(player_name, "Gate configuration was successfully written to FPGA!")
 
 		return itemstack
 	end
