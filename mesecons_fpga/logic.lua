@@ -1,4 +1,20 @@
+
 local lg = {}
+
+local operands = {
+	-- index: Index in formspec
+	{ gate = "and",  short = "&", fs_name = " AND", func = function(a, b) return a and b end },
+	{ gate = "or",   short = "|", fs_name = "  OR", func = function(a, b) return a or b end },
+	{ gate = "not",  short = "~", fs_name = " NOT", func = function(a, b) return not b end },
+	{ gate = "xor",  short = "^", fs_name = " XOR", func = function(a, b) return a ~= b end },
+	{ gate = "nand", short = "?", fs_name = "NAND", func = function(a, b) return not (a and b) end },
+	{ gate = "buf",  short = "_", fs_name = "   =", func = function(a, b) return b end },
+	{ gate = "xnor", short = "=", fs_name = "XNOR", func = function(a, b) return a == b end }
+}
+
+lg.get_operands = function()
+	return operands
+end
 
 -- (de)serialize
 lg.serialize = function(t)
@@ -11,20 +27,14 @@ lg.serialize = function(t)
 			return tostring(t.n)
 		end
 	end
-	local function _action(s)
-		if s == nil then
-			return " "
+	-- Serialize actions (gates) from eg. "and" to "&"
+	local function _action(action)
+		for i, data in ipairs(operands) do
+			if data.gate == action then
+				return data.short
+			end
 		end
-		local mapping = {
-			["and"] = "&",
-			["or"] = "|",
-			["not"] = "~",
-			["xor"] = "^",
-			["nand"] = "?", --dunno
-			["buf"] = "_",
-			["xnor"] = "=",
-		}
-		return mapping[s]
+		return " "
 	end
 
 	local s = ""
@@ -48,18 +58,14 @@ lg.deserialize = function(s)
 			return {type = "reg", n = tonumber(c)}
 		end
 	end
-	local function _action(c)
-		local mapping = {
-			["&"] = "and",
-			["|"] = "or",
-			["~"] = "not",
-			["^"] = "xor",
-			["?"] = "nand",
-			["_"] = "buf",
-			["="] = "xnor",
-			[" "] = nil,
-		}
-		return mapping[c]
+	-- Deserialize actions (gates) from eg. "&" to "and"
+	local function _action(action)
+		for i, data in ipairs(operands) do
+			if data.short == action then
+				return data.gate
+			end
+		end
+		-- nil
 	end
 
 	local ret = {}
@@ -159,21 +165,12 @@ end
 -- interpreter
 lg.interpret = function(t, a, b, c, d)
 	local function _action(s, v1, v2)
-		if s == "and" then
-			return v1 and v2
-		elseif s == "or" then
-			return v1 or v2
-		elseif s == "not" then
-			return not v2
-		elseif s == "xor" then
-			return v1 ~= v2
-		elseif s == "nand" then
-			return not (v1 and v2)
-		elseif s == "buf" then
-			return v2
-		else -- s == "xnor"
-			return v1 == v2
+		for i, data in ipairs(operands) do
+			if data.gate == s then
+				return data.func(v1, v2)
+			end
 		end
+		return false -- unknown gate
 	end
 	local function _op(t, regs, io_in)
 		if t.type == "reg" then

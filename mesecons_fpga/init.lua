@@ -1,9 +1,9 @@
 local plg = {}
 plg.rules = {}
 
+
 local lcore = dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/logic.lua")
 dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/tool.lua")(plg)
-
 
 plg.register_nodes = function(template)
 	-- each loop is for one of the 4 IO ports
@@ -180,22 +180,16 @@ plg.to_formspec_string = function(is)
 		return s .. "]"
 	end
 	local function dropdown_action(x, y, name, val)
-		local s = "dropdown[" .. tostring(x) .. "," .. tostring(y) .. ";"
-				.. "1.125,0.5;" .. name .. ";" -- the height seems to be ignored?
-		s = s .. " , AND,  OR, NOT, XOR,NAND,   =,XNOR;"
-		if val == nil then
-			return s .. "0]" -- actually selects no field at all
+		local selected = 0
+		local titles = { " " }
+		for i, data in ipairs(lcore.get_operands()) do
+			titles[i + 1] = data.fs_name
+			if val == data.gate then
+				selected = i + 1
+			end
 		end
-		local mapping = {
-			["and"] = 1,
-			["or"] = 2,
-			["not"] = 3,
-			["xor"] = 4,
-			["nand"] = 5,
-			["buf"] = 6,
-			["xnor"] = 7,
-		}
-		return s .. tostring(1 + mapping[val]) .. "]"
+		return ("dropdown[%f,%f;1.125,0.5;%s;%s;%i]"):format(
+			x, y, name, table.concat(titles, ","), selected)
 	end
 	local s = "size[9,9]"..
 		"label[3.4,-0.15;FPGA gate configuration]"..
@@ -239,20 +233,11 @@ plg.from_formspec_fields = function(fields)
 		end
 	end
 	local function read_action(s)
-		if s == nil or s == " " then
-			return nil
+		for i, data in ipairs(lcore.get_operands()) do
+			if data.fs_name == s then
+				return data.gate
+			end
 		end
-		local mapping = {
-			["AND"] = "and",
-			["OR"] = "or",
-			["NOT"] = "not",
-			["XOR"] = "xor",
-			["NAND"] = "nand",
-			["="] = "buf",
-			["XNOR"] = "xnor",
-		}
-		s = s:gsub("^%s*", "") -- remove leading spaces
-		return mapping[s]
 	end
 	local is = {}
 	for i = 1, 14 do
