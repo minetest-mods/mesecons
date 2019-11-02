@@ -3,7 +3,6 @@ plg.rules = {}
 -- per-player formspec positions
 plg.open_formspecs = {}
 
-
 local lcore = dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/logic.lua")
 dofile(minetest.get_modpath(minetest.get_current_modname()) .. "/tool.lua")(plg)
 

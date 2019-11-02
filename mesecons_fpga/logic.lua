@@ -9,7 +9,8 @@ local operands = {
 	{ gate = "xor",  short = "^", fs_name = " XOR", func = function(a, b) return a ~= b end },
 	{ gate = "nand", short = "?", fs_name = "NAND", func = function(a, b) return not (a and b) end },
 	{ gate = "buf",  short = "_", fs_name = "   =", func = function(a, b) return b end },
-	{ gate = "xnor", short = "=", fs_name = "XNOR", func = function(a, b) return a == b end }
+	{ gate = "xnor", short = "=", fs_name = "XNOR", func = function(a, b) return a == b end },
+	{ gate = "nor",  short = "!", fs_name = " NOR", func = function(a, b) return not (a or b) end },
 }
 
 lg.get_operands = function()
