@@ -23,6 +23,7 @@ lg.serialize = function(t)
 			["nand"] = "?", --dunno
 			["buf"] = "_",
 			["xnor"] = "=",
+			["nor"] = "!" -- dunno V2
 		}
 		return mapping[s]
 	end
@@ -57,6 +58,7 @@ lg.deserialize = function(s)
 			["?"] = "nand",
 			["_"] = "buf",
 			["="] = "xnor",
+			["!"] = "nor",
 			[" "] = nil,
 		}
 		return mapping[c]
@@ -171,9 +173,12 @@ lg.interpret = function(t, a, b, c, d)
 			return not (v1 and v2)
 		elseif s == "buf" then
 			return v2
-		else -- s == "xnor"
+		elseif s == "xnor" then
 			return v1 == v2
+		elseif s == "nor" then
+			return not (v1 or v2)
 		end
+		return false -- error
 	end
 	local function _op(t, regs, io_in)
 		if t.type == "reg" then
