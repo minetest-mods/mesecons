@@ -1,20 +1,25 @@
 
 local lg = {}
 
-local operands = {
-	-- index: Index in formspec
+local operations = {
+	-- table index: Index in the formspec dropdown
+	-- gate:    Internal name
+	-- short:   Serialized form, single character
+	-- fs_name: Display name, padded to 4 characters
+	-- func:    Function that applies the operation
+	-- unary:   Whether this gate only has one input
 	{ gate = "and",  short = "&", fs_name = " AND", func = function(a, b) return a and b end },
 	{ gate = "or",   short = "|", fs_name = "  OR", func = function(a, b) return a or b end },
-	{ gate = "not",  short = "~", fs_name = " NOT", func = function(a, b) return not b end },
+	{ gate = "not",  short = "~", fs_name = " NOT", func = function(a, b) return not b end, unary = true },
 	{ gate = "xor",  short = "^", fs_name = " XOR", func = function(a, b) return a ~= b end },
 	{ gate = "nand", short = "?", fs_name = "NAND", func = function(a, b) return not (a and b) end },
-	{ gate = "buf",  short = "_", fs_name = "   =", func = function(a, b) return b end },
+	{ gate = "buf",  short = "_", fs_name = "   =", func = function(a, b) return b end, unary = true },
 	{ gate = "xnor", short = "=", fs_name = "XNOR", func = function(a, b) return a == b end },
 	{ gate = "nor",  short = "!", fs_name = " NOR", func = function(a, b) return not (a or b) end },
 }
 
-lg.get_operands = function()
-	return operands
+lg.get_operations = function()
+	return operations
 end
 
 -- (de)serialize
@@ -30,7 +35,7 @@ lg.serialize = function(t)
 	end
 	-- Serialize actions (gates) from eg. "and" to "&"
 	local function _action(action)
-		for i, data in ipairs(operands) do
+		for i, data in ipairs(operations) do
 			if data.gate == action then
 				return data.short
 			end
@@ -61,7 +66,7 @@ lg.deserialize = function(s)
 	end
 	-- Deserialize actions (gates) from eg. "&" to "and"
 	local function _action(action)
-		for i, data in ipairs(operands) do
+		for i, data in ipairs(operations) do
 			if data.short == action then
 				return data.gate
 			end
@@ -116,16 +121,25 @@ lg.validate_single = function(t, i)
 		return false
 	end
 	local elem = t[i]
+
+	local gate_data
+	for j, data in ipairs(operations) do
+		if data.gate == elem.action then
+			gate_data = data
+			break
+		end
+	end
+
 	-- check for completeness
-	if elem.action == nil then
-		return {i = i, msg = "Gate type required"}
-	elseif elem.action == "not" or elem.action == "buf" then
+	if not gate_data then
+		return {i = i, msg = "Gate type is required"}
+	elseif gate_data.unary then
 		if elem.op1 ~= nil or elem.op2 == nil or elem.dst == nil then
-			return {i = i, msg = "Second operand (only) and destination required"}
+			return {i = i, msg = "Second operand (only) and destination are required"}
 		end
 	else
 		if elem.op1 == nil or elem.op2 == nil or elem.dst == nil then
-			return {i = i, msg = "Operands and destination required"}
+			return {i = i, msg = "Operands and destination are required"}
 		end
 	end
 	-- check whether operands/destination are identical
@@ -166,7 +180,7 @@ end
 -- interpreter
 lg.interpret = function(t, a, b, c, d)
 	local function _action(s, v1, v2)
-		for i, data in ipairs(operands) do
+		for i, data in ipairs(operations) do
 			if data.gate == s then
 				return data.func(v1, v2)
 			end
