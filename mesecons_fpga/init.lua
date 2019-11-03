@@ -192,7 +192,7 @@ plg.to_formspec_string = function(is, err)
 	local function dropdown_action(x, y, name, val)
 		local selected = 0
 		local titles = { " " }
-		for i, data in ipairs(lcore.get_operands()) do
+		for i, data in ipairs(lcore.get_operations()) do
 			titles[i + 1] = data.fs_name
 			if val == data.gate then
 				selected = i + 1
@@ -249,7 +249,7 @@ plg.from_formspec_fields = function(fields)
 		end
 	end
 	local function read_action(s)
-		for i, data in ipairs(lcore.get_operands()) do
+		for i, data in ipairs(lcore.get_operations()) do
 			if data.fs_name == s then
 				return data.gate
 			end
