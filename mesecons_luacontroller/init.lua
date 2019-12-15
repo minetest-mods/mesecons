@@ -463,6 +463,7 @@ local function create_environment(pos, mem, event, itbl, send_warning)
 			reverse = string.reverse,
 			sub = string.sub,
 			find = safe_string_find,
+			split = string.split,
 		},
 		math = {
 			abs = math.abs,
