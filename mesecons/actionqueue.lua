@@ -1,3 +1,28 @@
+--[[
+Mesecons uses something it calls an ActionQueue.
+
+The ActionQueue holds functions and actions.
+Functions are added on load time with a specified name.
+Actions are preserved over server restarts.
+
+Each action consists of a position, the name of an added function to be called,
+the params that should be used in this function call (additionally to the pos),
+the time after which it should be executed, an optional overwritecheck and a
+priority.
+
+If time = 0, the action will be executed in the next globalstep, otherwise the
+earliest globalstep when it will be executed is the after next globalstep.
+
+It is guaranteed, that for two actions ac1, ac2 where ac1 ~= ac2,
+ac1.time == ac2.time, ac1.priority == ac2.priority and ac1 was added earlier
+than ac2, ac1 will be executed before ac2 (but in the same globalstep).
+
+Note: Do not pass references in params, as they can not be preserved.
+
+Also note: Some of the guarantees here might be dropped at some time.
+]]
+
+
 -- localize for speed
 local queue = mesecon.queue
 
@@ -29,49 +54,46 @@ function queue:add_action(pos, func, params, time, overwritecheck, priority)
 		for i, ac in ipairs(queue.actions) do
 			if vector.equals(pos, ac.pos)
 					and mesecon.cmpAny(overwritecheck, ac.owcheck) then
-				-- replace the old action
-				queue.actions[i] = action
-				return
+				-- remove the old action
+				table.remove(queue.actions, i)
+				break
 			end
 		end
 	end
 
-	-- otherwise just add to queue
 	table.insert(queue.actions, action)
 end
 
 -- execute the stored functions on a globalstep
 -- if however, the pos of a function is not loaded (get_node_or_nil == nil), do NOT execute the function
--- this makes sure that resuming mesecons circuits when restarting minetest works fine
+-- this makes sure that resuming mesecons circuits when restarting minetest works fine (hm, where do we do this?)
 -- However, even that does not work in some cases, that's why we delay the time the globalsteps
--- start to be execute by 5 (4?) seconds
+-- start to be execute by 4 seconds
 
 local function globalstep_func(dtime)
-	-- sort out the actions to execute now (actions_now)
+	local actions = queue.actions
+	-- split into two categories:
+	-- actions_now: actions to execute now
+	-- queue.actions: actions to execute later
 	local actions_now = {}
-	local actions_count = #queue.actions
+	queue.actions = {}
 
-	-- iterating downwards makes it easier to remove actions
-	for i = actions_count, 1, -1 do
-		local ac = queue.actions[i]
-		ac.time = ac.time - dtime
-
-		if ac.time <= 0 then
+	for _, ac in ipairs(actions) do
+		if ac.time > 0 then
+			-- action ac is to be executed later
+			-- ~> insert into queue.actions
+			ac.time = ac.time - dtime
+			table.insert(queue.actions, ac)
+		else
 			-- action ac is to be executed now
 			-- ~> insert into actions_now
 			table.insert(actions_now, ac)
-
-			-- ~> remove from queue.actions
-			queue.actions[i] = queue.actions[actions_count]
-			queue.actions[actions_count] = nil
-			actions_count = actions_count - 1
 		end
 	end
 
 	-- stable-sort the executed actions after their priority
-	-- (some constructions might depend on the execution order for acions with delay 0)
-	-- note that the actions were added in inverse order because of the downwards iteration,
-	-- hence we first execute the actions that had a higher index in actions_now
+	-- some constructions might depend on the execution order, hence we first
+	-- execute the actions that had a lower index in actions_now
 	local old_action_order = {}
 	for i, ac in ipairs(actions_now) do
 		old_action_order[ac] = i
@@ -80,23 +102,23 @@ local function globalstep_func(dtime)
 		if ac1.priority ~= ac2.priority then
 			return ac1.priority > ac2.priority
 		else
-			return old_action_order[ac1] > old_action_order[ac2]
+			return old_action_order[ac1] < old_action_order[ac2]
 		end
 	end)
 
 	-- execute highest priorities first, until all are executed
-	for i, ac in ipairs(actions_now) do
+	for _, ac in ipairs(actions_now) do
 		queue:execute(ac)
 	end
 end
 
--- delay the time the globalsteps start to be execute by 5 (4?) seconds
+-- delay the time the globalsteps start to be execute by 4 seconds
 do
 	local m_time = 0
 	local resumetime = mesecon.setting("resumetime", 4)
 	local globalstep_func_index = #minetest.registered_globalsteps + 1
 
-	minetest.register_globalstep(function (dtime)
+	minetest.register_globalstep(function(dtime)
 		m_time = m_time + dtime
 		-- don't even try if server has not been running for XY seconds; resumetime = time to wait
 		-- after starting the server before processing the ActionQueue, don't set this too low
