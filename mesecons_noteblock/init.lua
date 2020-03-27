@@ -43,19 +43,33 @@ local soundnames = {
 }
 
 local node_sounds = {
-	["default:glass"] = "mesecons_noteblock_hihat",
-	["default:stone"] = "mesecons_noteblock_kick",
 	["default:lava_source"] = "fire_fire",
 	["default:chest"] = "mesecons_noteblock_snare",
-	["default:tree"] = "mesecons_noteblock_crash",
-	["default:wood"] = "mesecons_noteblock_litecrash",
+	["default:chest_locked"] = "mesecons_noteblock_snare",
 	["default:coalblock"] = "tnt_explode",
+	["default:glass"] = "mesecons_noteblock_hihat",
+	["default:obsidian_glass"] = "mesecons_noteblock_hihat",
+}
+
+local node_sounds_group = {
+	["stone"] = "mesecons_noteblock_kick",
+	["tree"] = "mesecons_noteblock_crash",
+	["wood"] = "mesecons_noteblock_litecrash",
 }
 
 mesecon.noteblock_play = function(pos, param2)
 	pos.y = pos.y-1
 	local nodeunder = minetest.get_node(pos).name
 	local soundname = node_sounds[nodeunder]
+	if not soundname then
+		for k,v in pairs(node_sounds_group) do
+			local g = minetest.get_item_group(nodeunder, k)
+			if g ~= 0 then
+				soundname = v
+				break
+			end
+		end
+	end
 	if not soundname then
 		soundname = soundnames[param2]
 		if not soundname then
