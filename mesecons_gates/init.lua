@@ -1,6 +1,14 @@
+local selection_box = {
+	type = "fixed",
+	fixed = { -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 }
+}
+
 local nodebox = {
 	type = "fixed",
-	fixed = {{-8/16, -8/16, -8/16, 8/16, -7/16, 8/16 }},
+	fixed = {
+		{ -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 }, -- bottom slab
+		{ -6/16, -7/16, -6/16, 6/16, -6/16, 6/16 }
+	},
 }
 
 local function gate_rotate_rules(node, rules)
@@ -68,7 +76,7 @@ local function register_gate(name, inputnumber, assess, recipe, description)
 		is_ground_content = false,
 		drawtype = "nodebox",
 		drop = basename.."_off",
-		selection_box = nodebox,
+		selection_box = selection_box,
 		node_box = nodebox,
 		walkable = true,
 		sounds = default.node_sound_stone_defaults(),
@@ -78,8 +86,16 @@ local function register_gate(name, inputnumber, assess, recipe, description)
 		inputnumber = inputnumber,
 		after_dig_node = mesecon.do_cooldown,
 	},{
-		tiles = {"jeija_microcontroller_bottom.png^".."jeija_gate_off.png^"..
-			"jeija_gate_"..name..".png"},
+		tiles = {
+			"jeija_microcontroller_bottom.png^".."jeija_gate_off.png^"..
+			"jeija_gate_output_off.png^".."jeija_gate_"..name..".png",
+			"jeija_microcontroller_bottom.png^".."jeija_gate_output_off.png^"..
+			"[transformFY",
+			"jeija_gate_side.png^".."jeija_gate_side_output_off.png",
+			"jeija_gate_side.png",
+			"jeija_gate_side.png",
+			"jeija_gate_side.png"
+		},
 		groups = {dig_immediate = 2, overheat = 1},
 		mesecons = { receptor = {
 			state = "off",
@@ -89,8 +105,16 @@ local function register_gate(name, inputnumber, assess, recipe, description)
 			action_change = update_gate
 		}}
 	},{
-		tiles = {"jeija_microcontroller_bottom.png^".."jeija_gate_on.png^"..
-			"jeija_gate_"..name..".png"},
+		tiles = {
+			"jeija_microcontroller_bottom.png^".."jeija_gate_on.png^"..
+			"jeija_gate_output_on.png^".."jeija_gate_"..name..".png",
+			"jeija_microcontroller_bottom.png^".."jeija_gate_output_on.png^"..
+			"[transformFY",
+			"jeija_gate_side.png^".."jeija_gate_side_output_on.png",
+			"jeija_gate_side.png",
+			"jeija_gate_side.png",
+			"jeija_gate_side.png"
+		},
 		groups = {dig_immediate = 2, not_in_creative_inventory = 1, overheat = 1},
 		mesecons = { receptor = {
 			state = "on",
