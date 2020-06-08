@@ -1,2 +1,0 @@
-mesecons
-mesecons_receiver
