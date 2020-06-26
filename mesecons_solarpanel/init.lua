@@ -13,10 +13,10 @@ mesecon.register_node("mesecons_solarpanel:solar_panel", {
 		type = "wallmounted",
 		wall_bottom = {-7/16, -8/16, -7/16,  7/16, -7/16, 7/16},
 		wall_top    = {-7/16,  7/16, -7/16,  7/16,  8/16, 7/16},
-		wall_side   = {-8/16, -7/16, -7/16, -7/16,  7/16, 7/16}
+		wall_side   = {-8/16, -7/16, -7/16, -7/16,  7/16, 7/16},
 	},
 	sounds = default.node_sound_glass_defaults(),
-	on_blast = mesecon.on_blastnode
+	on_blast = mesecon.on_blastnode,
 },{
 	groups = {dig_immediate = 3},
 	mesecons = {receptor = {
@@ -28,14 +28,14 @@ mesecon.register_node("mesecons_solarpanel:solar_panel", {
 	mesecons = {receptor = {
 		state = mesecon.state.on,
 		rules = mesecon.rules.wallmounted_get
-	}}
+	}},
 })
 
 minetest.register_craft({
 	output = "mesecons_solarpanel:solar_panel_off",
 	recipe = {
 		{"mesecons_materials:silicon", "mesecons_materials:silicon"},
-		{"mesecons_materials:silicon", "mesecons_materials:silicon"}
+		{"mesecons_materials:silicon", "mesecons_materials:silicon"},
 	}
 })
 
@@ -59,5 +59,5 @@ minetest.register_abm({
 			minetest.swap_node(pos, node)
 			mesecon.receptor_off(pos, mesecon.rules.wallmounted_get(node))
 		end
-	end
+	end,
 })
