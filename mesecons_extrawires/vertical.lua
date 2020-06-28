@@ -239,6 +239,10 @@ mesecon.register_node("mesecons_extrawires:vertical_static_middle", {
 	after_place_node = vertical_update,
 	after_dig_node = vertical_update,
 	sounds = default.node_sound_defaults(),
+	on_rotate = false,
+}, {
+	groups = {dig_immediate = 3},
+	tiles = {"mesecons_wire_off.png"},
 	on_rotate = minetest.global_exists("screwdriver") and function(pos, node, _, mode, _)
 		if mode == screwdriver.ROTATE_FACE then -- left click
 			node.param2 = node.param2 + 1
@@ -251,9 +255,6 @@ mesecon.register_node("mesecons_extrawires:vertical_static_middle", {
 		mesecon.on_placenode(pos, node)
 		return true
 	end,
-}, {
-	groups = {dig_immediate = 3},
-	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
 		state = mesecon.state.off,
 		onstate = "mesecons_extrawires:vertical_static_middle_on",
