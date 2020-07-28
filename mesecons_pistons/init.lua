@@ -67,11 +67,7 @@ local function piston_remove_pusher(pos, node, check_falling)
 	end
 
 	minetest.remove_node(pusherpos)
-	minetest.sound_play("piston_retract", {
-		pos = pos,
-		max_hear_distance = 20,
-		gain = 0.3,
-	})
+	minetest.sound_play("piston_retract", { pos = pos, max_hear_distance = 20, gain = 0.3 }, true)
 
 	if check_falling then
 		minetest.check_for_falling(pusherpos)
@@ -96,11 +92,7 @@ local piston_on = function(pos, node)
 	end
 	minetest.swap_node(pos, {param2 = node.param2, name = pistonspec.onname})
 	minetest.set_node(pusher_pos, {param2 = node.param2, name = pistonspec.pusher})
-	minetest.sound_play("piston_extend", {
-		pos = pos,
-		max_hear_distance = 20,
-		gain = 0.3,
-	})
+	minetest.sound_play("piston_extend", { pos = pos, max_hear_distance = 20, gain = 0.3 }, true)
 	mesecon.mvps_process_stack(stack)
 	mesecon.mvps_move_objects(pusher_pos, dir, oldstack)
 end

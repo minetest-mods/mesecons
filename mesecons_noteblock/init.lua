@@ -67,5 +67,5 @@ mesecon.noteblock_play = function(pos, param2)
 		end
 	end
 	pos.y = pos.y+1
-	minetest.sound_play(soundname, {pos = pos})
+	minetest.sound_play(soundname, { pos = pos }, true)
 end
