@@ -22,7 +22,7 @@ mesecon.register_node("mesecons_walllever:wall_lever", {
 		else
 			mesecon.receptor_off(pos, mesecon.rules.buttonlike_get(node))
 		end
-		minetest.sound_play("mesecons_lever", {pos=pos})
+		minetest.sound_play("mesecons_lever", { pos = pos }, true)
 	end
 },{
 	tiles = {

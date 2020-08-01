@@ -11,7 +11,7 @@ mesecon.register_node("mesecons_switch:mesecon_switch", {
 		else
 			mesecon.receptor_off(pos)
 		end
-		minetest.sound_play("mesecons_switch", {pos=pos})
+		minetest.sound_play("mesecons_switch", { pos = pos }, true)
 	end
 },{
 	groups = {dig_immediate=2},
