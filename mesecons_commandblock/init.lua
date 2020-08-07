@@ -174,7 +174,7 @@ end
 local function can_dig(pos, player)
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
-	return owner == "" or owner == player:get_player_name()
+	return owner == "" or owner == player:get_player_name() or minetest.check_player_privs(player, "protection_bypass")
 end
 
 minetest.register_node("mesecons_commandblock:commandblock_off", {
