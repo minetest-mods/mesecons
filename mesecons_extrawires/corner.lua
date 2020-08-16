@@ -1,12 +1,5 @@
 local screwdriver_exists = minetest.global_exists("screwdriver")
 
-local corner_nodebox = {
-	type = "fixed",
-	-- ±0.001 is to prevent z-fighting
-	fixed = {{ -16/32-0.001, -17/32, -3/32, 0, -13/32, 3/32 },
-		   { -3/32, -17/32, -16/32+0.001, 3/32, -13/32, 3/32}}
-}
-
 local corner_selectionbox = {
 		type = "fixed",
 		fixed = { -16/32, -16/32, -16/32, 5/32, -12/32, 5/32 },
@@ -25,14 +18,11 @@ local corner_get_rules = function (node)
 end
 
 minetest.register_node("mesecons_extrawires:corner_on", {
-	drawtype = "nodebox",
+	drawtype = "mesh",
+	mesh = "mesecons_extrawires_corner.obj",
 	tiles = {
-		"jeija_insulated_wire_curved_tb_on.png",
-		"jeija_insulated_wire_curved_tb_on.png^[transformR270",
-		"jeija_insulated_wire_sides_on.png",
-		"jeija_insulated_wire_ends_on.png",
-		"jeija_insulated_wire_sides_on.png",
-		"jeija_insulated_wire_ends_on.png"
+		{ name = "jeija_insulated_wire_sides_on.png", backface_culling = true },
+		{ name = "jeija_insulated_wire_ends_on.png", backface_culling = true },
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -55,15 +45,12 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 })
 
 minetest.register_node("mesecons_extrawires:corner_off", {
-	drawtype = "nodebox",
+	drawtype = "mesh",
 	description = "Insulated Mesecon Corner",
+	mesh = "mesecons_extrawires_corner.obj",
 	tiles = {
-		"jeija_insulated_wire_curved_tb_off.png",
-		"jeija_insulated_wire_curved_tb_off.png^[transformR270",
-		"jeija_insulated_wire_sides_off.png",
-		"jeija_insulated_wire_ends_off.png",
-		"jeija_insulated_wire_sides_off.png",
-		"jeija_insulated_wire_ends_off.png"
+		{ name = "jeija_insulated_wire_sides_off.png", backface_culling = true },
+		{ name = "jeija_insulated_wire_ends_off.png", backface_culling = true },
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
