@@ -6,7 +6,7 @@ local doublecorner_selectionbox = {
 	fixed = { -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 },
 }
 
-local doublecorner_rules = {
+local rules = {
 	{
 		{ x = 1, y = 0, z = 0 },
 		{ x = 0, y = 0, z = 1 },
@@ -16,6 +16,18 @@ local doublecorner_rules = {
 		{ x = 0, y = 0, z = -1 },
 	},
 }
+
+local doublecorner_rules = {}
+for k = 1, 4 do
+	doublecorner_rules[k] = table.copy(rules)
+	for i, r in ipairs(rules) do
+		rules[i] = mesecon.rotate_rules_left(r)
+	end
+end
+
+local function doublecorner_get_rules(node)
+	return doublecorner_rules[node.param2 % 4 + 1]
+end
 
 local doublecorner_states = {
 	"mesecons_extrawires:doublecorner_00",
@@ -53,7 +65,7 @@ for k, state in ipairs(doublecorner_states) do
 		mesecons = {
 			conductor = {
 				states = doublecorner_states,
-				rules = doublecorner_rules,
+				rules = doublecorner_get_rules,
 			},
 		},
 		on_blast = mesecon.on_blastnode,
