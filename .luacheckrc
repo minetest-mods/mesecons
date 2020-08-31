@@ -20,7 +20,8 @@ read_globals = {
 	"DIR_DELIM",
 
 	-- deps
-	"default", "screwdriver"
+	"default", "screwdriver",
+	"digiline", "doors"
 }
 
 ignore = {

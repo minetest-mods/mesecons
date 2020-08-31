@@ -142,11 +142,11 @@ local function commandblock_action_on(pos, node)
 
 	local commands = resolve_commands(meta:get_string("commands"), pos)
 	for _, command in pairs(commands:split("\n")) do
-		local pos = command:find(" ")
+		local space_pos = command:find(" ")
 		local cmd, param = command, ""
-		if pos then
-			cmd = command:sub(1, pos - 1)
-			param = command:sub(pos + 1)
+		if space_pos then
+			cmd = command:sub(1, space_pos - 1)
+			param = command:sub(space_pos + 1)
 		end
 		local cmddef = minetest.chatcommands[cmd]
 		if not cmddef then

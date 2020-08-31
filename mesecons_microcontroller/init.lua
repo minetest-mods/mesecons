@@ -188,9 +188,9 @@ yc.update = function(pos)
 
 	if (mesecon.do_overheat(pos)) then
 		minetest.remove_node(pos)
-		minetest.after(0.2, function (pos)
+		minetest.after(0.2, function()
 			mesecon.receptor_off(pos, mesecon.rules.flat)
-		end , pos) -- wait for pending parsings
+		end) -- wait for pending parsings
 		minetest.add_item(pos, "mesecons_microcontroller:microcontroller0000")
 	end
 
@@ -251,9 +251,9 @@ yc.parsecode = function(code, pos)
 			if not params then return nil end
 		end
 		if command == "on" then
-			L = yc.command_on (params, Lvirtual)
+			yc.command_on (params, Lvirtual)
 		elseif command == "off" then
-			L = yc.command_off(params, Lvirtual)
+			yc.command_off(params, Lvirtual)
 		elseif command == "print" then
 			local su = yc.command_print(params, eeprom, yc.merge_portstates(Lreal, Lvirtual))
 			if su ~= true then return nil end

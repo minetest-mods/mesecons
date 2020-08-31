@@ -231,8 +231,8 @@ local function safe_string_find(...)
 	return string.find(...)
 end
 
-local function remove_functions(x)
-	local tp = type(x)
+local function remove_functions(obj)
+	local tp = type(obj)
 	if tp == "function" then
 		return nil
 	end
@@ -261,9 +261,9 @@ local function remove_functions(x)
 		end
 	end
 
-	rfuncs(x)
+	rfuncs(obj)
 
-	return x
+	return obj
 end
 
 -- The setting affects API so is not intended to be changeable at runtime
@@ -582,7 +582,7 @@ local function run_inner(pos, code, event)
 
 	-- Load code & mem from meta
 	local mem  = load_memory(meta)
-	local code = meta:get_string("code")
+	code = meta:get_string("code")
 
 	-- 'Last warning' label.
 	local warning = ""
@@ -602,7 +602,8 @@ local function run_inner(pos, code, event)
 	-- If a string sandbox is already up yet inconsistent, something is very wrong
 	assert(onetruestring.__index == string)
 	onetruestring.__index = env.string
-	local success, msg = pcall(f)
+	local success
+	success, msg = pcall(f)
 	onetruestring.__index = string
 	-- End string true sandboxing
 	if not success then return false, msg end
@@ -901,4 +902,3 @@ minetest.register_craft({
 		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable', ''},
 	}
 })
-

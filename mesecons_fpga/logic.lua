@@ -24,13 +24,13 @@ end
 
 -- (de)serialize
 lg.serialize = function(t)
-	local function _op(t)
-		if t == nil then
+	local function _op(_t)
+		if _t == nil then
 			return " "
-		elseif t.type == "io" then
-			return t.port
-		else -- t.type == "reg"
-			return tostring(t.n)
+		elseif _t.type == "io" then
+			return _t.port
+		else -- _t.type == "reg"
+			return tostring(_t.n)
 		end
 	end
 	-- Serialize actions (gates) from eg. "and" to "&"
@@ -97,11 +97,11 @@ end
 
 -- validation
 lg.validate_single = function(t, i)
-	local function is_reg_written_to(t, n, max)
-		for i = 1, max-1 do
-			if next(t[i]) ~= nil
-					and t[i].dst and t[i].dst.type == "reg"
-					and t[i].dst.n == n then
+	local function is_reg_written_to(_t, n, max)
+		for j = 1, max-1 do
+			if next(_t[j]) ~= nil
+					and _t[j].dst and _t[j].dst.type == "reg"
+					and _t[j].dst.n == n then
 				return true
 			end
 		end
@@ -187,11 +187,11 @@ lg.interpret = function(t, a, b, c, d)
 		end
 		return false -- unknown gate
 	end
-	local function _op(t, regs, io_in)
-		if t.type == "reg" then
-			return regs[t.n]
-		else -- t.type == "io"
-			return io_in[t.port]
+	local function _op(_t, regs, io_in)
+		if _t.type == "reg" then
+			return regs[_t.n]
+		else -- _t.type == "io"
+			return io_in[_t.port]
 		end
 	end
 
