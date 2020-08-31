@@ -405,7 +405,7 @@ yc.command_print = function(params, eeprom, L)
 		if param:sub(1,1) == '"' and param:sub(#param, #param) == '"' then
 			s = s..param:sub(2, #param-1)
 		else
-			r = yc.command_parsecondition(param, L, eeprom)
+			local r = yc.command_parsecondition(param, L, eeprom)
 			if r == "1" or r == "0" then
 				s = s..r
 			else return nil end
@@ -543,12 +543,13 @@ yc.command_parsecondition = function(cond, L, eeprom)
 	cond = string.gsub(cond, "!0", "1")
 	cond = string.gsub(cond, "!1", "0")
 
-	local i = 2
-	local l = string.len(cond)
+	i = 2
+	l = string.len(cond)
 	while i<=l do
 		local s = cond:sub(i,i)
 		local b = tonumber(cond:sub(i-1, i-1))
 		local a = tonumber(cond:sub(i+1, i+1))
+		local buf
 		if cond:sub(i+1, i+1) == nil then break end
 		if s == "=" then
 			if a==nil then return nil end
@@ -562,8 +563,8 @@ yc.command_parsecondition = function(cond, L, eeprom)
 		i = i + 1
 	end
 
-	local i = 2
-	local l = string.len(cond)
+	i = 2
+	l = string.len(cond)
 	while i<=l do
 		local s = cond:sub(i,i)
 		local b = tonumber(cond:sub(i-1, i-1))

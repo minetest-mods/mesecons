@@ -22,7 +22,7 @@ local function get_pistonspec_name(name, part)
 		return
 	end
 	for spec_name, spec in pairs(specs) do
-		for part, value in pairs(spec)  do
+		for _, value in pairs(spec)  do
 			if name == value then
 				return spec_name, part
 			end
@@ -462,8 +462,8 @@ end
 
 local function piston_get_stopper(node, dir, stack, stackid)
 	local pistonspec = get_pistonspec(node.name, "onname")
-	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
-	local pusherpos = vector.add(stack[stackid].pos, dir)
+	local inverted_dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
+	local pusherpos = vector.add(stack[stackid].pos, inverted_dir)
 	local pushernode = minetest.get_node(pusherpos)
 	if pistonspec.pusher == pushernode.name then
 		for _, s in ipairs(stack) do

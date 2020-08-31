@@ -50,8 +50,8 @@ function mesecon.register_pressure_plate(basename, description, textures_off, te
 	if not groups then
 		groups = {}
 	end
-	local groups_off = table.copy(groups)
-	local groups_on = table.copy(groups)
+	groups_off = table.copy(groups)
+	groups_on = table.copy(groups)
 	groups_on.not_in_creative_inventory = 1
 
 	mesecon.register_node(basename, {
