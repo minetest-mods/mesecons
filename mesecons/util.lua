@@ -204,7 +204,7 @@ function mesecon.cmpAny(t1, t2)
 	return true
 end
 
--- does not overwrite values; number keys (ipairs) are appended, not overwritten
+-- Deprecated. Use `merge_replace` or `merge_rule_sets` as appropriate.
 function mesecon.mergetable(source, dest)
 	local rval = mesecon.tablecopy(dest)
 
@@ -216,6 +216,32 @@ function mesecon.mergetable(source, dest)
 	end
 
 	return rval
+end
+
+-- Merges several rule sets in one. Order may not be preserved. Nil arguments
+-- are ignored.
+-- The rule sets must be of the same kind (either all single-level or all two-level).
+-- The function may be changed to normalize the resulting set in some way.
+function mesecon.merge_rule_sets(...)
+	local rval = {}
+	for _, t in pairs({...}) do -- ignores nils automatically
+		table.insert_all(rval, mesecon.tablecopy(t))
+	end
+	return rval
+end
+
+-- Merges two tables, with entries from `replacements` taking precedence over
+-- those from `base`. Returns the new table.
+-- Numerical indices aren’t handled specially.
+-- Values are copied, keys are referenced.
+function mesecon.merge_replace(base, replacements)
+	local ret = mesecon.tablecopy(replacements) -- these are never overriden so have to be copied in any case
+	for k, v in pairs(base) do
+		if ret[k] == nil then -- it could be `false`
+			ret[k] = mesecon.tablecopy(v)
+		end
+	end
+	return ret
 end
 
 function mesecon.register_node(name, spec_common, spec_off, spec_on)
