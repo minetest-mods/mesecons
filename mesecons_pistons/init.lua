@@ -500,4 +500,4 @@ minetest.register_craft({
 
 
 -- load legacy code
-dofile(minetest.get_modpath("mesecons_pistons")..DIR_DELIM.."legacy.lua")
+dofile(minetest.get_modpath("mesecons_pistons").."/legacy.lua")

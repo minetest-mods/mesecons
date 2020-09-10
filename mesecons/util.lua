@@ -248,7 +248,7 @@ end
 -- File writing / reading utilities
 local wpath = minetest.get_worldpath()
 function mesecon.file2table(filename)
-	local f = io.open(wpath..DIR_DELIM..filename, "r")
+	local f = io.open(wpath.."/"..filename, "r")
 	if f == nil then return {} end
 	local t = f:read("*all")
 	f:close()
@@ -257,7 +257,7 @@ function mesecon.file2table(filename)
 end
 
 function mesecon.table2file(filename, table)
-	local f = io.open(wpath..DIR_DELIM..filename, "w")
+	local f = io.open(wpath.."/"..filename, "w")
 	f:write(minetest.serialize(table))
 	f:close()
 end

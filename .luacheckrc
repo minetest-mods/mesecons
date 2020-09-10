@@ -16,9 +16,6 @@ read_globals = {
 	"vector", "ItemStack",
 	"dump", "VoxelArea",
 
-	-- system
-	"DIR_DELIM",
-
 	-- deps
 	"default", "screwdriver",
 	"digiline", "doors"
