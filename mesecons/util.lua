@@ -251,8 +251,8 @@ function mesecon.register_node(name, spec_common, spec_off, spec_on)
 	spec_on.__mesecon_state = "on"
 	spec_off.__mesecon_state = "off"
 
-	spec_on = mesecon.mergetable(spec_common, spec_on);
-	spec_off = mesecon.mergetable(spec_common, spec_off);
+	spec_on = mesecon.merge_replace(spec_common, spec_on);
+	spec_off = mesecon.merge_replace(spec_common, spec_off);
 
 	minetest.register_node(name .. "_on", spec_on)
 	minetest.register_node(name .. "_off", spec_off)
