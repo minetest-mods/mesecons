@@ -206,6 +206,7 @@ end
 
 -- Deprecated. Use `merge_replace` or `merge_rule_sets` as appropriate.
 function mesecon.mergetable(source, dest)
+	minetest.log("warning", debug.traceback("Deprecated call to mesecon.mergetable"))
 	local rval = mesecon.tablecopy(dest)
 
 	for k, v in pairs(source) do
