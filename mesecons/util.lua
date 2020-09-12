@@ -193,12 +193,21 @@ function mesecon.tablecopy(obj) -- deep copy
 	return obj
 end
 
+-- Returns whether two values are equal.
+-- In tables, keys are compared for identity but values are compared recursively.
+-- There is no protection from infinite recursion.
 function mesecon.cmpAny(t1, t2)
 	if type(t1) ~= type(t2) then return false end
-	if type(t1) ~= "table" and type(t2) ~= "table" then return t1 == t2 end
+	if type(t1) ~= "table" then return t1 == t2 end
 
+	-- Check that for each key of `t1` both tables have the same value
 	for i, e in pairs(t1) do
 		if not mesecon.cmpAny(e, t2[i]) then return false end
+	end
+
+	-- Check that all keys of `t2` are also keys of `t1` so were checked in the previous loop
+	for i, _ in pairs(t2) do
+		if t1[i] == nil then return false end
 	end
 
 	return true
