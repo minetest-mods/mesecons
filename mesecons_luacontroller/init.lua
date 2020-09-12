@@ -303,7 +303,7 @@ local function validate_iid(iid)
 		return false, "An interrupt ID was too large!"
 	end
 
-	return true, "Table interrupt IDs are deprecated; use strings instead"
+	return true, "Table interrupt IDs are deprecated and are unreliable; use strings instead"
 end
 
 -- The setting affects API so is not intended to be changeable at runtime
