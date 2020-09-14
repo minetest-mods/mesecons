@@ -460,10 +460,10 @@ local piston_up_down_get_stopper = function (node, dir, stack, stackid)
 	return true
 end
 
-local function piston_get_stopper(node, dir, stack, stackid)
+local function piston_get_stopper(node, _, stack, stackid)
 	local pistonspec = get_pistonspec(node.name, "onname")
-	local inverted_dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
-	local pusherpos = vector.add(stack[stackid].pos, inverted_dir)
+	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
+	local pusherpos = vector.add(stack[stackid].pos, dir)
 	local pushernode = minetest.get_node(pusherpos)
 	if pistonspec.pusher == pushernode.name then
 		for _, s in ipairs(stack) do

@@ -574,15 +574,13 @@ end
 
 -- Returns success (boolean), errmsg (string)
 -- run (as opposed to run_inner) is responsible for setting up meta according to this output
-local function run_inner(pos, code, event)
-	local meta = minetest.get_meta(pos)
+local function run_inner(pos, meta, event)
 	-- Note: These return success, presumably to avoid changing LC ID.
 	if overheat(pos) then return true, "" end
 	if ignore_event(event, meta) then return true, "" end
 
 	-- Load code & mem from meta
 	local mem  = load_memory(meta)
-	code = meta:get_string("code")
 
 	-- 'Last warning' label.
 	local warning = ""
@@ -595,7 +593,7 @@ local function run_inner(pos, code, event)
 	local env = create_environment(pos, mem, event, itbl, send_warning)
 
 	-- Create the sandbox and execute code
-	local f, msg = create_sandbox(code, env)
+	local f, msg = create_sandbox(meta:get_string("code"), env)
 	if not f then return false, msg end
 	-- Start string true sandboxing
 	local onetruestring = getmetatable("")
@@ -651,7 +649,7 @@ end
 local function run(pos, event)
 	local meta = minetest.get_meta(pos)
 	local code = meta:get_string("code")
-	local ok, errmsg = run_inner(pos, code, event)
+	local ok, errmsg = run_inner(pos, meta, event)
 	if not ok then
 		reset_meta(pos, code, errmsg)
 	else
