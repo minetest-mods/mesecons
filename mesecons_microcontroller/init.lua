@@ -469,8 +469,8 @@ yc.command_after_execute = function(params)
 		if yc.parsecode(params.code, params.pos) == nil then
 			meta:set_string("infotext", "Code in after() not valid!")
 		else
-			if code ~= nil then
-				meta:set_string("infotext", "Working Microcontroller\n"..code)
+			if params.code ~= nil then
+				meta:set_string("infotext", "Working Microcontroller\n"..params.code)
 			else
 				meta:set_string("infotext", "Working Microcontroller")
 			end
