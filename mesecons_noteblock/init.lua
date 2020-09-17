@@ -81,5 +81,11 @@ mesecon.noteblock_play = function(pos, param2)
 		end
 	end
 	pos.y = pos.y+1
-	minetest.sound_play(soundname, { pos = pos }, true)
+	if soundname == "fire_fire" then
+		-- Smoothly fade out fire sound
+		local handle = minetest.sound_play(soundname, {pos = pos, loop = true})
+		minetest.after(3.0, minetest.sound_fade, handle, -1.5, 0.0)
+	else
+		minetest.sound_play(soundname, {pos = pos}, true)
+	end
 end
