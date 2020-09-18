@@ -14,6 +14,7 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 			mesecon.noteblock_play(pos, node.param2)
 		end
 	}},
+	place_param2 = 11, -- initialize at C note
 	on_blast = mesecon.on_blastnode,
 })
 
@@ -39,7 +40,7 @@ local soundnames = {
 	"mesecons_noteblock_a",
 	"mesecons_noteblock_asharp",
 	"mesecons_noteblock_b",
-	"mesecons_noteblock_c"
+	"mesecons_noteblock_c" -- << noteblock is initialized here
 }
 
 local node_sounds = {
