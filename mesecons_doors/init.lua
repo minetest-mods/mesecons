@@ -73,6 +73,7 @@ meseconify_door("doors:door_wood")
 meseconify_door("doors:door_steel")
 meseconify_door("doors:door_glass")
 meseconify_door("doors:door_obsidian_glass")
+meseconify_door("xpanes:door_steel_bar")
 
 -- Trapdoor
 local function trapdoor_switch(pos, node)
@@ -110,6 +111,12 @@ if doors and doors.get then
 	minetest.override_item("doors:trapdoor_open", override)
 	minetest.override_item("doors:trapdoor_steel", override)
 	minetest.override_item("doors:trapdoor_steel_open", override)
+
+	if minetest.registered_items["xpanes:trapdoor_steel_bar"] then
+		minetest.override_item("xpanes:trapdoor_steel_bar", override)
+		minetest.override_item("xpanes:trapdoor_steel_bar_open", override)
+	end
+
 else
 	if minetest.registered_nodes["doors:trapdoor"] then
 		minetest.override_item("doors:trapdoor", {
