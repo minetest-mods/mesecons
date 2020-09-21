@@ -280,7 +280,7 @@ local function validate_iid(iid)
 	local seen = {}
 	local function check(t)
 		if type(t) == "function" then
-			warn = "Functions can't be used in interrupt IDs"
+			warn = "Functions cannot be used in interrupt IDs"
 			return false
 		end
 		if type(t) ~= "table" then
@@ -933,4 +933,3 @@ minetest.register_craft({
 		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable', ''},
 	}
 })
-
