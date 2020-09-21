@@ -266,6 +266,46 @@ local function remove_functions(x)
 	return x
 end
 
+local function validate_iid(iid)
+	if not iid then return true end -- nil is OK
+
+	local limit = mesecon.setting("luacontroller_interruptid_maxlen", 256)
+	if type(iid) == "string" then
+		if #iid <= limit then return true end -- string is OK unless too long
+		return false, "An interrupt ID was too large!"
+	end
+	if type(iid) == "number" or type(iid) == "boolean" then return true, "Non-string interrupt IDs are deprecated" end
+
+	local warn
+	local seen = {}
+	local function check(t)
+		if type(t) == "function" then
+			warn = "Functions cannot be used in interrupt IDs"
+			return false
+		end
+		if type(t) ~= "table" then
+			return true
+		end
+		if seen[t] then
+			warn = "Non-tree-like tables are forbidden as interrupt IDs"
+			return false
+		end
+		seen[t] = true
+		for k, v in pairs(t) do
+			if not check(k) then return false end
+			if not check(v) then return false end
+		end
+		return true
+	end
+	if not check(iid) then return false, warn end
+
+	if #minetest.serialize(iid) > limit then
+		return false, "An interrupt ID was too large!"
+	end
+
+	return true, "Table interrupt IDs are deprecated and are unreliable; use strings instead"
+end
+
 -- The setting affects API so is not intended to be changeable at runtime
 local get_interrupt
 if mesecon.setting("luacontroller_lightweight_interrupts", false) then
@@ -282,26 +322,18 @@ else
 	-- itbl: Flat table of functions to run after sandbox cleanup, used to prevent various security hazards
 	get_interrupt = function(pos, itbl, send_warning)
 		-- iid = interrupt id
-		local function interrupt(time, iid)
+		return function (time, iid)
 			-- NOTE: This runs within string metatable sandbox, so don't *rely* on anything of the form (""):y
 			-- Hence the values get moved out. Should take less time than original, so totally compatible
 			if type(time) ~= "number" then error("Delay must be a number") end
 			table.insert(itbl, function ()
 				-- Outside string metatable sandbox, can safely run this now
 				local luac_id = minetest.get_meta(pos):get_int("luac_id")
-				-- Check if IID is dodgy, so you can't use interrupts to store an infinite amount of data.
-				-- Note that this is safe from alter-after-free because this code gets run after the sandbox has ended.
-				-- This runs outside of the timer and *shouldn't* harm perf. unless dodgy data is being sent in the first place
-				iid = remove_functions(iid)
-				local msg_ser = minetest.serialize(iid)
-				if #msg_ser <= mesecon.setting("luacontroller_interruptid_maxlen", 256) then
-					mesecon.queue:add_action(pos, "lc_interrupt", {luac_id, iid}, time, iid, 1)
-				else
-					send_warning("An interrupt ID was too large!")
-				end
+				local ok, warn = validate_iid(iid)
+				if ok then mesecon.queue:add_action(pos, "lc_interrupt", {luac_id, iid}, time, iid, 1) end
+				if warn then send_warning(warn) end
 			end)
 		end
-		return interrupt
 	end
 end
 
@@ -901,4 +933,3 @@ minetest.register_craft({
 		{'group:mesecon_conductor_craftable', 'group:mesecon_conductor_craftable', ''},
 	}
 })
-
