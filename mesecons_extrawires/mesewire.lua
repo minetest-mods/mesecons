@@ -18,7 +18,7 @@ minetest.override_item("default:mese", {
 
 -- Copy node definition of powered mese from normal mese
 -- and brighten texture tiles to indicate mese is powered
-local powered_def = mesecon.merge_replace(minetest.registered_nodes["default:mese"], {
+local powered_def = mesecon.merge_tables(minetest.registered_nodes["default:mese"], {
 	drop = "default:mese",
 	light_source = 5,
 	mesecons = {conductor = {

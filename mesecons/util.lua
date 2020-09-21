@@ -204,7 +204,7 @@ function mesecon.cmpAny(t1, t2)
 	return true
 end
 
--- Deprecated. Use `merge_replace` or `merge_rule_sets` as appropriate.
+-- Deprecated. Use `merge_tables` or `merge_rule_sets` as appropriate.
 function mesecon.mergetable(source, dest)
 	minetest.log("warning", debug.traceback("Deprecated call to mesecon.mergetable"))
 	local rval = mesecon.tablecopy(dest)
@@ -233,9 +233,9 @@ end
 
 -- Merges two tables, with entries from `replacements` taking precedence over
 -- those from `base`. Returns the new table.
+-- Values are deep-copied from either table, keys are referenced.
 -- Numerical indices aren’t handled specially.
--- Values are copied, keys are referenced.
-function mesecon.merge_replace(base, replacements)
+function mesecon.merge_tables(base, replacements)
 	local ret = mesecon.tablecopy(replacements) -- these are never overriden so have to be copied in any case
 	for k, v in pairs(base) do
 		if ret[k] == nil then -- it could be `false`
@@ -252,8 +252,8 @@ function mesecon.register_node(name, spec_common, spec_off, spec_on)
 	spec_on.__mesecon_state = "on"
 	spec_off.__mesecon_state = "off"
 
-	spec_on = mesecon.merge_replace(spec_common, spec_on);
-	spec_off = mesecon.merge_replace(spec_common, spec_off);
+	spec_on = mesecon.merge_tables(spec_common, spec_on);
+	spec_off = mesecon.merge_tables(spec_common, spec_off);
 
 	minetest.register_node(name .. "_on", spec_on)
 	minetest.register_node(name .. "_off", spec_off)
