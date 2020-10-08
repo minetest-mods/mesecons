@@ -312,7 +312,8 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 minetest.register_craft({
 	output = "mesecons_scanner:mesecon_scanner_off 1",
 	recipe = {
-		{"mesecons_torch:mesecon_torch_on", "default:mese_crystal", "mesecons_torch:mesecon_torch_on"},
-		{"default:stone",                   "default:stone",        "default:stone"},
+		{"", "group:mesecon_conductor_craftable", ""},
+		{"", "mesecons_microcontroller:microcontroller0000", ""},
+		{"default:stone", "default:stone", "default:stone"},
 	}
 })
