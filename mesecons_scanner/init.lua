@@ -226,6 +226,7 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 		local output = false
 		local i_name = meta:get_string("selected_inv")
 		local i_size = i_inv:get_size(i_name)
+		meta:set_int("inventory_size", i_size)
 		local count = 0
 		if i_size > 0 then
 			-- Get number of slots with items in them
@@ -238,6 +239,7 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 				output = not output
 			end
 		end
+		meta:set_int("current", count)
 
 		-- Update if there's a change
 		if old_output ~= output then
@@ -245,7 +247,6 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 
 			-- Save the new state
 			meta:set_string("output", output_string)
-			meta:set_int("current", count)
 
 			-- Update node
 			set_receptor(pos, output, {scanner_get_output_rules(node)})
@@ -288,8 +289,18 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 					update_watermarks(pos, meta)
 				else
 					if msg == "GET" or msg == "get" then
+						local size = meta:get_int("inventory_size")
+						local current = meta:get_int("current")
+						local current_pct = 0
+						if size > 0 and current > 0 then
+							current_pct = math.ceil((100 * current) / size)
+						end
 						digilines.receptor_send(pos, digilines.rules.default, channel, {
 							output = meta:get_string("output"),
+							inventory = meta:get_string("selected_inv"),
+							low = meta:get_int("low_pct"),
+							high = meta:get_int("high_pct"),
+							current = current_pct,
 						})
 					end
 				end
