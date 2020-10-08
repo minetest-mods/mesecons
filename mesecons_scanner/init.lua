@@ -61,7 +61,7 @@ local function update_formspec(pos, meta)
 					"button[2,4.5;2,1;has_items;Has items]"..
 					"button[4,4.5;2,1;full;Full]"..
 
-					"label[0,6;Digiline Channel]"..
+					"label[0,6;Digiline Channel (optional)]"..
 					"field[4,6;2,1;channel;;" .. meta:get_string("channel") .. "]"..
 
 					"checkbox[0,7;invert;Invert output;".. meta:get_string("invert") .."]"..
@@ -196,7 +196,6 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 		meta:set_int("high_pct", 100)
 		meta:set_string("invert", "false")
 		meta:set_string("output", "off")
-		meta:set_string("channel", "channel")
 		update_keys(pos, node)
 		update_watermarks(pos, meta)
 		update_formspec(pos, meta)
@@ -227,9 +226,9 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 		local output = false
 		local i_name = meta:get_string("selected_inv")
 		local i_size = i_inv:get_size(i_name)
+		local count = 0
 		if i_size > 0 then
 			-- Get number of slots with items in them
-			local count = 0
 			for i = 1, i_size do
 				if not i_inv:get_stack(i_name, i):is_empty() then count = count + 1 end
 			end
@@ -246,13 +245,14 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 
 			-- Save the new state
 			meta:set_string("output", output_string)
+			meta:set_int("current", count)
 
 			-- Update node
 			set_receptor(pos, output, {scanner_get_output_rules(node)})
 			mesecon.setstate(pos, node, output_string)
 
 			-- Send digiline message
-			if digilines_enabled then
+			if digilines_enabled and meta:get_string("channel") ~= "" then
 				digilines.receptor_send(pos, digilines.rules.default,
 							meta:get_string("channel"),
 							{ output = output_string }
@@ -265,16 +265,34 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 		receptor = {action = function() end},
 		effector = {
 			action = function(pos, node, channel, msg)
-				if msg ~= "GET" and msg ~= "get" then
-					return
-				end
 				local meta = minetest.get_meta(pos)
 				if channel ~= meta:get_string("channel") then
 					return
 				end
-				digilines.receptor_send(pos, digilines.rules.default, channel, {
-								output = meta:get_string("output"),
-				})
+				if type(msg) == "table" then
+					if msg.inventory then
+						meta:set_string("selected_inv", msg.inventory)
+					end
+					if msg.low then
+						-- 0-100
+						meta:set_int("low_pct", msg.low)
+					end
+					if msg.high then
+						-- 0-100
+						meta:set_int("high_pct", msg.high)
+					end
+					if msg.invert then
+						-- "true" or "false"
+						meta:set_string("invert", msg.invert)
+					end
+					update_watermarks(pos, meta)
+				else
+					if msg == "GET" or msg == "get" then
+						digilines.receptor_send(pos, digilines.rules.default, channel, {
+							output = meta:get_string("output"),
+						})
+					end
+				end
 			end
 		},
 	},
