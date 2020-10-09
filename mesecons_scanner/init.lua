@@ -111,6 +111,15 @@ local function update_watermarks(pos, meta)
 	meta:set_int("high", high)
 end
 
+local function update_state(pos, node, state)
+	mesecon.setstate(pos, node, state)
+	if state == "on" then
+		mesecon.receptor_on(pos, scanner_get_output_rules(node))
+	else
+		mesecon.receptor_off(pos, scanner_get_output_rules(node))
+	end
+end
+
 local function on_receive_fields(pos, form_name, fields, sender)
 	local meta = minetest.get_meta(pos)
 	if fields.inventory then
@@ -146,14 +155,6 @@ local function on_receive_fields(pos, form_name, fields, sender)
 	update_watermarks(pos, meta)
 end
 
-local function set_receptor(pos, output, rules)
-	if output then
-		mesecon.receptor_on(pos, rules)
-	else
-		mesecon.receptor_off(pos, rules)
-	end
-end
-
 local boxes = {
 	 { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },		-- the bottom slab
 	 { -7/16, -7/16, -4/16, 4/16, -4/16, 4/16 },		-- the "box"
@@ -164,10 +165,10 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 	paramtype2="facedir",
 	description = "Inventory scanner",
 	is_ground_content = false,
-	sunlight_propagates = true,
+	sunlight_propagates = false,
 	inventory_image = "mesecons_scanner_preview.png",
 	drawtype = "nodebox",
-	wield_image = "mesecons_scanner_preview.png",
+	wield_image = "mesecons_scanner_top_off.png",
 	selection_box = {
 		type = "fixed",
 		fixed =	{
@@ -180,7 +181,7 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 	},
 	after_dig_node = function (pos, node)
 		mesecon.do_cooldown(pos)
-		mesecon.receptor_off(pos, output_rules)
+		mesecon.receptor_off(pos, scanner_get_output_rules(node))
 	end,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
@@ -236,16 +237,16 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 		end
 		meta:set_int("current", count)
 
-		-- Update node
-		local output_string = (output and "on") or "off"
-		set_receptor(pos, output, {scanner_get_output_rules(node)})
-		mesecon.setstate(pos, node, output_string)
-
-		-- Save the new state
-		meta:set_string("output", output_string)
-
-		-- Send digiline message on change
+		-- Do update if output changed
 		if old_output ~= output then
+			-- Update node
+			local output_string = (output and "on") or "off"
+			update_state(pos, node, output_string)
+
+			-- Save the new state
+			meta:set_string("output", output_string)
+
+			-- Send digiline message
 			if digilines_enabled and meta:get_string("channel") ~= "" then
 				digilines.receptor_send(pos, digilines.rules.default,
 							meta:get_string("channel"),
@@ -317,7 +318,10 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 		-- back
 		"mesecons_scanner_left_off.png",
 	},
-	mesecons = { receptor = { state = mesecon.state.off } }
+	mesecons = { receptor = {
+			     state = mesecon.state.off,
+			     rules = scanner_get_output_rules,
+		   } }
 },{
 	groups = { dig_immediate=2, not_in_creative_inventory=1 },
 	tiles = {
@@ -328,7 +332,10 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 		"mesecons_scanner_right_on.png",
 		"mesecons_scanner_left_on.png",
 	},
-	mesecons = { receptor = { state = mesecon.state.off } }
+	mesecons = { receptor = {
+			     state = mesecon.state.on,
+			     rules = scanner_get_output_rules,
+		   } }
 })
 
 minetest.register_craft({
