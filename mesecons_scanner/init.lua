@@ -104,8 +104,14 @@ local function update_watermarks(pos, meta)
 	local low_pct = meta:get_int("low_pct")
 	local high_pct = meta:get_int("high_pct")
 
-	local low = math.ceil(i_size * (low_pct / 100.0))
+	local low = math.floor(i_size * (low_pct / 100.0))
 	local high = math.floor(i_size * (high_pct / 100.0))
+
+	-- We want low watermark % > 0 to enable output if a single slot has items
+	-- regardless of inventory size so add 1 to low here if needed.
+	if low_pct > 0 and low == 0 then
+		low = 1
+	end
 
 	meta:set_int("low", low)
 	meta:set_int("high", high)
@@ -122,7 +128,7 @@ end
 
 local function on_receive_fields(pos, form_name, fields, sender)
 	local meta = minetest.get_meta(pos)
-	if fields.inventory then
+	if fields.inventory and fields.inventory ~= "" then
 		meta:set_string("selected_inv", fields.inventory)
 	end
 	if fields.channel then
@@ -222,7 +228,13 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 		local output = false
 		local i_name = meta:get_string("selected_inv")
 		local i_size = i_inv:get_size(i_name)
-		meta:set_int("inventory_size", i_size)
+
+		-- Re-calculate low/high if inventory size changed
+		if meta:get_int("inventory_size") ~= i_size then
+			meta:set_int("inventory_size", i_size)
+			update_watermarks(pos, meta)
+		end
+
 		local count = 0
 		if i_size > 0 then
 			-- Get number of slots with items in them
@@ -287,7 +299,7 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 						local current = meta:get_int("current")
 						local current_pct = 0
 						if size > 0 and current > 0 then
-							current_pct = math.ceil((100 * current) / size)
+							current_pct = math.floor(0.5 + ((100 * current) / size))
 						end
 						digilines.receptor_send(pos, digilines.rules.default, channel, {
 							output = meta:get_string("output"),
