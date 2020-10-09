@@ -41,7 +41,7 @@ end
 
 local function update_formspec(pos, meta)
 	if digilines_enabled then
-		meta:set_string("formspec", "size[6,8]"..
+		meta:set_string("formspec", "size[6,7.2]"..
 					((default and default.gui_bg) or "")..
 					((default and default.gui_bg_img) or "")..
 					"label[0,0;Inventory Scanner]"..
@@ -49,27 +49,24 @@ local function update_formspec(pos, meta)
 					"label[5,0;(?)]"..
 					"tooltip[5,0;1,1;Watermark values are in percent of slots occupied with one or more items.;black;white]"..
 
-					"label[0,1;Select inventory]"..
+					"label[0,1.05;Select inventory]"..
 					"dropdown[3,1;3,1;inventory;" .. meta:get_string("keys") .. ";" .. meta:get_string("selected_key") .. "]"..
-					"label[0,2;Low watermark]"..
-					"field[4,2;2,1;low;;" .. meta:get_int("low_pct") .. "]"..
-					"label[0,3;High watermark]"..
-					"field[4,3;2,1;high;;" .. meta:get_int("high_pct") .. "]"..
+					"field[0.3,2.6;2.9,1;low;Low watermark;" .. meta:get_int("low_pct") .. "]"..
+					"field[3.3,2.6;2.9,1;high;High watermark;" .. meta:get_int("high_pct") .. "]"..
 
-					"label[0,4;Presets]"..
-					"button[0,4.5;2,1;empty;Empty]"..
-					"button[2,4.5;2,1;has_items;Has items]"..
-					"button[4,4.5;2,1;full;Full]"..
+					"label[0,3.35;Presets]"..
+					"button[0,3.8;2,1;empty;Empty]"..
+					"button[2,3.8;2,1;has_items;Has items]"..
+					"button[4,3.8;2,1;full;Full]"..
 
-					"label[0,6;Digiline Channel (optional)]"..
-					"field[4,6;2,1;channel;;" .. meta:get_string("channel") .. "]"..
+					"field[0.3,5.5;6,1;channel;Digiline Channel (optional);" .. meta:get_string("channel") .. "]"..
 
-					"checkbox[0,7;invert;Invert output;".. meta:get_string("invert") .."]"..
-					"button_exit[4,7;2,1;save;Save]"..
+					"checkbox[0.1,6.4;invert;Invert output;".. meta:get_string("invert") .."]"..
+					"button_exit[4,6.4;2,1;save;Save]"..
 					""
 		)
 	else
-		meta:set_string("formspec", "size[6,7]"..
+		meta:set_string("formspec", "size[6,6.2]"..
 					((default and default.gui_bg) or "")..
 					((default and default.gui_bg_img) or "")..
 					"label[0,0;Inventory Scanner]"..
@@ -77,20 +74,18 @@ local function update_formspec(pos, meta)
 					"label[5,0;(?)]"..
 					"tooltip[5,0;1,1;Watermark values are in percent of slots occupied with one or more items.;black;white]"..
 
-					"label[0,1;Select inventory]"..
+					"label[0,1.05;Select inventory]"..
 					"dropdown[3,1;3,1;inventory;" .. meta:get_string("keys") .. ";" .. meta:get_string("selected_key") .. "]"..
-					"label[0,2;Low watermark]"..
-					"field[4,2;2,1;low;;" .. meta:get_int("low_pct") .. "]"..
-					"label[0,3;High watermark]"..
-					"field[4,3;2,1;high;;" .. meta:get_int("high_pct") .. "]"..
+					"field[0.3,2.6;2.9,1;low;Low watermark;" .. meta:get_int("low_pct") .. "]"..
+					"field[3.3,2.6;2.9,1;high;High watermark;" .. meta:get_int("high_pct") .. "]"..
 
-					"label[0,4;Presets]"..
-					"button[0,4.5;2,1;empty;Empty]"..
-					"button[2,4.5;2,1;has_items;Has items]"..
-					"button[4,4.5;2,1;full;Full]"..
+					"label[0,3.35;Presets]"..
+					"button[0,3.8;2,1;empty;Empty]"..
+					"button[2,3.8;2,1;has_items;Has items]"..
+					"button[4,3.8;2,1;full;Full]"..
 
-					"checkbox[0,6;invert;Invert output;".. meta:get_string("invert") .."]"..
-					"button_exit[4,6;2,1;save;Save]"..
+					"checkbox[0.1,5.3;invert;Invert output;".. meta:get_string("invert") .."]"..
+					"button_exit[4,5.3;2,1;save;Save]"..
 					""
 		)
 	end
