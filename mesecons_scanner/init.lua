@@ -241,18 +241,16 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 		end
 		meta:set_int("current", count)
 
-		-- Update if there's a change
+		-- Update node
+		local output_string = (output and "on") or "off"
+		set_receptor(pos, output, {scanner_get_output_rules(node)})
+		mesecon.setstate(pos, node, output_string)
+
+		-- Save the new state
+		meta:set_string("output", output_string)
+
+		-- Send digiline message on change
 		if old_output ~= output then
-			local output_string = (output and "on") or "off"
-
-			-- Save the new state
-			meta:set_string("output", output_string)
-
-			-- Update node
-			set_receptor(pos, output, {scanner_get_output_rules(node)})
-			mesecon.setstate(pos, node, output_string)
-
-			-- Send digiline message
 			if digilines_enabled and meta:get_string("channel") ~= "" then
 				digilines.receptor_send(pos, digilines.rules.default,
 							meta:get_string("channel"),
