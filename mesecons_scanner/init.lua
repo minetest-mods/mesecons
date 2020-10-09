@@ -107,10 +107,13 @@ local function update_watermarks(pos, meta)
 	local low = math.floor(i_size * (low_pct / 100.0))
 	local high = math.floor(i_size * (high_pct / 100.0))
 
-	-- We want low watermark % > 0 to enable output if a single slot has items
-	-- regardless of inventory size so add 1 to low here if needed.
+	-- We want watermark % > 0 to enable output if a single slot has items
+	-- regardless of inventory size so add 1 here if needed.
 	if low_pct > 0 and low == 0 then
 		low = 1
+	end
+	if high_pct > 0 and high == 0 then
+		high = 1
 	end
 
 	meta:set_int("low", low)
