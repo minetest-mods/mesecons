@@ -55,6 +55,11 @@ end
 
 -- tests if the node can be pushed into, e.g. air, water, grass
 local function node_replaceable(name)
+	if name == "ignore" then
+		-- ignore is buildable_to, but we do not want to push into it
+		return false
+	end
+
 	if minetest.registered_nodes[name] then
 		return minetest.registered_nodes[name].buildable_to or false
 	end
