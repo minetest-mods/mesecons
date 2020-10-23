@@ -3,7 +3,11 @@
 local digilines_enabled = minetest.get_modpath("digilines") ~= nil
 
 local scanner_get_output_rules = function(node)
-	local rules = {{x = 0, y = 0, z = 1}}
+	local rules = {
+		{ x =  0, y = 0, z = 1 },
+		{ x =  1, y = 0, z = 0 },
+		{ x = -1, y = 0, z = 0 },
+	}
 	for i = 0, node.param2 do
 		rules = mesecon.rotate_rules_left(rules)
 	end
