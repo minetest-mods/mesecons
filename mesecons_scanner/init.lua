@@ -181,7 +181,6 @@ mesecon.register_node("mesecons_scanner:mesecon_scanner", {
 	sunlight_propagates = false,
 	inventory_image = "mesecons_scanner_preview.png",
 	drawtype = "nodebox",
-	wield_image = "mesecons_scanner_top_off.png",
 	selection_box = {
 		type = "fixed",
 		fixed =	{
