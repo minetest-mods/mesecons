@@ -3,7 +3,11 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 	tiles = {"mesecons_noteblock.png"},
 	is_ground_content = false,
 	groups = {snappy=2, choppy=2, oddly_breakable_by_hand=2},
-	on_punch = function(pos, node) -- change sound when punched
+	on_punch = function(pos, node, puncher) -- change sound when punched
+		if minetest.is_protected(pos, puncher and puncher:get_player_name()) then
+			return
+		end
+
 		node.param2 = (node.param2+1)%12
 		mesecon.noteblock_play(pos, node.param2)
 		minetest.set_node(pos, node)
