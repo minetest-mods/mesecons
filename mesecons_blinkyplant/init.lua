@@ -32,7 +32,13 @@ mesecon.register_node("mesecons_blinkyplant:blinky_plant", {
 		fixed = {-0.3, -0.5, -0.3, 0.3, -0.5+0.7, 0.3},
 	},
 	on_timer = on_timer,
-	on_rightclick = toggle_timer,
+	on_rightclick = function(pos, node, clicker)
+		if minetest.is_protected(pos, clicker and clicker:get_player_name()) then
+			return
+		end
+
+		toggle_timer(pos)
+	end,
 	on_construct = toggle_timer
 },{
 	tiles = {"jeija_blinky_plant_off.png"},
