@@ -33,7 +33,7 @@ mesecon.register_node("mesecons_blinkyplant:blinky_plant", {
 	},
 	on_timer = on_timer,
 	on_rightclick = function(pos, node, clicker)
-		if minetest.is_protected(pos, clicker and clicker:get_player_name()) then
+		if minetest.is_protected(pos, clicker and clicker:get_player_name() or "") then
 			return
 		end
 

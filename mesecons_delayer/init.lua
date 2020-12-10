@@ -93,7 +93,7 @@ local off_state = {
 	wield_image = "mesecons_delayer_off_1.png",
 	groups = off_groups,
 	on_punch = function(pos, node, puncher)
-		if minetest.is_protected(pos, puncher and puncher:get_player_name()) then
+		if minetest.is_protected(pos, puncher and puncher:get_player_name() or "") then
 			return
 		end
 
@@ -134,7 +134,7 @@ local on_state = {
 	},
 	groups = {bendy = 2, snappy = 1, dig_immediate = 2, not_in_creative_inventory = 1},
 	on_punch = function(pos, node, puncher)
-		if minetest.is_protected(pos, puncher and puncher:get_player_name()) then
+		if minetest.is_protected(pos, puncher and puncher:get_player_name() or "") then
 			return
 		end
 
