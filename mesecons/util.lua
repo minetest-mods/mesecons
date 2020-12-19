@@ -213,8 +213,9 @@ function mesecon.cmpAny(t1, t2)
 	return true
 end
 
--- does not overwrite values; number keys (ipairs) are appended, not overwritten
+-- Deprecated. Use `merge_tables` or `merge_rule_sets` as appropriate.
 function mesecon.mergetable(source, dest)
+	minetest.log("warning", debug.traceback("Deprecated call to mesecon.mergetable"))
 	local rval = mesecon.tablecopy(dest)
 
 	for k, v in pairs(source) do
@@ -227,6 +228,32 @@ function mesecon.mergetable(source, dest)
 	return rval
 end
 
+-- Merges several rule sets in one. Order may not be preserved. Nil arguments
+-- are ignored.
+-- The rule sets must be of the same kind (either all single-level or all two-level).
+-- The function may be changed to normalize the resulting set in some way.
+function mesecon.merge_rule_sets(...)
+	local rval = {}
+	for _, t in pairs({...}) do -- ignores nils automatically
+		table.insert_all(rval, mesecon.tablecopy(t))
+	end
+	return rval
+end
+
+-- Merges two tables, with entries from `replacements` taking precedence over
+-- those from `base`. Returns the new table.
+-- Values are deep-copied from either table, keys are referenced.
+-- Numerical indices aren’t handled specially.
+function mesecon.merge_tables(base, replacements)
+	local ret = mesecon.tablecopy(replacements) -- these are never overriden so have to be copied in any case
+	for k, v in pairs(base) do
+		if ret[k] == nil then -- it could be `false`
+			ret[k] = mesecon.tablecopy(v)
+		end
+	end
+	return ret
+end
+
 function mesecon.register_node(name, spec_common, spec_off, spec_on)
 	spec_common.drop = spec_common.drop or name .. "_off"
 	spec_common.on_blast = spec_common.on_blast or mesecon.on_blastnode
@@ -234,8 +261,8 @@ function mesecon.register_node(name, spec_common, spec_off, spec_on)
 	spec_on.__mesecon_state = "on"
 	spec_off.__mesecon_state = "off"
 
-	spec_on = mesecon.mergetable(spec_common, spec_on);
-	spec_off = mesecon.mergetable(spec_common, spec_off);
+	spec_on = mesecon.merge_tables(spec_common, spec_on);
+	spec_off = mesecon.merge_tables(spec_common, spec_off);
 
 	minetest.register_node(name .. "_on", spec_on)
 	minetest.register_node(name .. "_off", spec_off)
