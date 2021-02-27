@@ -10,6 +10,7 @@ minetest.register_chatcommand("say", {
 minetest.register_chatcommand("tell", {
 	params = "<name> <text>",
 	description = "Say <text> to <name> privately",
+	privs = {shout=true},
 	func = function(name, param)
 		local found, _, target, message = param:find("^([^%s]+)%s+(.*)$")
 		if found == nil then
