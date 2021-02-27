@@ -30,7 +30,6 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 	walkable = false,
 	sunlight_propagates = true,
 	selection_box = corner_selectionbox,
-	node_box = corner_nodebox,
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons_extrawires:corner_off",
 	sounds = default.node_sound_defaults(),
@@ -58,7 +57,6 @@ minetest.register_node("mesecons_extrawires:corner_off", {
 	walkable = false,
 	sunlight_propagates = true,
 	selection_box = corner_selectionbox,
-	node_box = corner_nodebox,
 	groups = {dig_immediate = 3},
 	sounds = default.node_sound_defaults(),
 	mesecons = {conductor =
