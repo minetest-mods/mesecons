@@ -459,6 +459,16 @@ local function get_digiline_send(pos, itbl, send_warning)
 	end
 end
 
+mesecon.luacontroller_libraries = {}
+
+local function get_require(env)
+	return function(name)
+		if mesecon.luacontroller_libraries[name] then
+			return mesecon.tablecopy_change_env(mesecon.luacontroller_libraries[name],env)
+		end
+	end
+end
+
 local safe_globals = {
 	-- Don't add pcall/xpcall unless willing to deal with the consequences (unless very careful, incredibly likely to allow killing server indirectly)
 	"assert", "error", "ipairs", "next", "pairs", "select",
@@ -546,6 +556,8 @@ local function create_environment(pos, mem, event, itbl, send_warning)
 	for _, name in pairs(safe_globals) do
 		env[name] = _G[name]
 	end
+	
+	env.require = get_require(env)
 
 	return env
 end
