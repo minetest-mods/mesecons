@@ -47,7 +47,6 @@
 -- These functions return rules that have been rotated in the specific direction
 
 local fifo_queue = dofile(minetest.get_modpath("mesecons").."/fifo_queue.lua")
---~ local fifo_queue = dofile(minetest.get_modpath("mesecons").."/fifo_queue_stupid.lua") -- TODO: remove that file before merging
 
 -- General
 function mesecon.get_effector(nodename)
