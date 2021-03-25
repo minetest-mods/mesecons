@@ -449,8 +449,10 @@ function mesecon.turnoff(pos, link)
 					-- Check if an onstate receptor is connected. If that is the case,
 					-- abort this turnoff process by returning false. `receptor_off` will
 					-- discard all the changes that we made in the voxelmanip:
-					if mesecon.is_receptor_on(mesecon.get_node_force(np).name) then
-						return false
+					if mesecon.rules_link_rule_all_inverted(f.pos, r)[1] then
+						if mesecon.is_receptor_on(mesecon.get_node_force(np).name) then
+							return false
+						end
 					end
 
 					-- Call turnoff on neighbors
