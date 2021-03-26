@@ -201,9 +201,8 @@ function mesecon.tablecopy_change_env(t, env, seen)
 	seen[t] = n
 	for k, v in pairs(t) do
 		if type(v) == "function" then
-			local newfunc = v
-			setfenv(newfunc, env)
-			n[(type(k) == "table" and (seen[k] or mesecon.tablecopy_change_env(k, env, seen))) or k] = newfunc
+			setfenv(v, env)
+			n[(type(k) == "table" and (seen[k] or mesecon.tablecopy_change_env(k, env, seen))) or k] = v
 		else
 		n[(type(k) == "table" and (seen[k] or mesecon.tablecopy_change_env(k, env, seen))) or k] =
 			(type(v) == "table" and (seen[v] or mesecon.tablecopy_change_env(v, env, seen))) or v
