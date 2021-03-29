@@ -75,7 +75,7 @@ minetest.register_on_dignode(mesecon.on_dignode)
 
 -- Overheating service for fast circuits
 local OVERHEAT_MAX = math.max(1.0, mesecon.setting("overheat_max", 20.0))
-local COOLDOWN_MODE = mesecon.setting("cooldown_mode", "seconds")
+local COOLDOWN_MODE = mesecon.setting("cooldown_mode", "steps")
 local COOLDOWN_IN_STEPS = COOLDOWN_MODE == "steps"
 -- default for steps assumes a dtime of 0.016 seconds
 local COOLDOWN_TIME = math.max(0.0, COOLDOWN_IN_STEPS and

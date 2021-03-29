@@ -13,7 +13,7 @@ mesecon.overheat_max (Device heat limit) float 20.0 1.0
 #   Use mesecon.cooldown_time and mesecon.cooldown_granularity for further configuration.
 # - steps: The cooldown will happen per server steps.
 #   Use mesecon.cooldown_time_steps and mesecon.cooldown_granularity_steps for further configuration.
-mesecon.cooldown_mode (Device cooldown mode) enum seconds seconds,steps
+mesecon.cooldown_mode (Device cooldown mode) enum steps seconds,steps
 
 # The time in seconds it takes for a device to fully cool down from max heat.
 # Only used if mesecon.cooldown_mode is seconds.
