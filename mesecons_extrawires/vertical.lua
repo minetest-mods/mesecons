@@ -175,9 +175,9 @@ mesecon.register_node("mesecons_extrawires:vertical_bottom", {
 minetest.register_craft({
 	output = "mesecons_extrawires:vertical_off 3",
 	recipe = {
-		{"mesecons:wire_00000000_off"},
-		{"mesecons:wire_00000000_off"},
-		{"mesecons:wire_00000000_off"}
+		{"group:mesecon_conductor_craftable"},
+		{"group:mesecon_conductor_craftable"},
+		{"group:mesecon_conductor_craftable"},
 	}
 })
 
