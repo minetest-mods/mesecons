@@ -12,6 +12,7 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 		"jeija_hydro_turbine_turbine_top_bottom_off.png",
 		"jeija_hydro_turbine_turbine_misc_off.png"
 	},
+	use_texture_alpha = minetest.features.use_texture_alpha_string_modes and "opaque" or nil,
 	inventory_image = "jeija_hydro_turbine_inv.png",
 	is_ground_content = false,
 	wield_scale = {x=0.75, y=0.75, z=0.75},
@@ -42,6 +43,7 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 		{ name = "jeija_hydro_turbine_turbine_misc_on.png",
 		    animation = {type = "vertical_frames", aspect_w = 256, aspect_h = 32, length = 0.4} }
 	},
+	use_texture_alpha = minetest.features.use_texture_alpha_string_modes and "clip" or nil,
 	inventory_image = "jeija_hydro_turbine_inv.png",
 	drop = "mesecons_hydroturbine:hydro_turbine_off 1",
 	groups = {dig_immediate=2,not_in_creative_inventory=1},
