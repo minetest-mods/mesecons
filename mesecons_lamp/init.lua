@@ -9,9 +9,12 @@ local mesecon_lamp_box = {
 	wall_side = {-0.375,-0.3125,-0.3125,-0.5,0.3125,0.3125},
 }
 
+local use_texture_alpha = minetest.features.use_texture_alpha_string_modes and "opaque" or nil
+
 minetest.register_node("mesecons_lamp:lamp_on", {
 	drawtype = "nodebox",
 	tiles = {"jeija_meselamp_on.png"},
+	use_texture_alpha = use_texture_alpha,
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	is_ground_content = false,
@@ -36,6 +39,7 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 minetest.register_node("mesecons_lamp:lamp_off", {
 	drawtype = "nodebox",
 	tiles = {"jeija_meselamp_off.png"},
+	use_texture_alpha = use_texture_alpha,
 	inventory_image = "jeija_meselamp.png",
 	wield_image = "jeija_meselamp.png",
 	paramtype = "light",

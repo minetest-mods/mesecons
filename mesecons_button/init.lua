@@ -13,16 +13,19 @@ mesecon.button_turnoff = function (pos)
 	mesecon.receptor_off(pos, rules)
 end
 
+local use_texture_alpha = minetest.features.use_texture_alpha_string_modes and "opaque" or nil
+
 minetest.register_node("mesecons_button:button_off", {
 	drawtype = "nodebox",
 	tiles = {
-	"jeija_wall_button_sides.png",
-	"jeija_wall_button_sides.png",
-	"jeija_wall_button_sides.png",
-	"jeija_wall_button_sides.png",
-	"jeija_wall_button_sides.png",
-	"jeija_wall_button_off.png"
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_sides.png",
+		"jeija_wall_button_off.png"
 	},
+	use_texture_alpha = use_texture_alpha,
 	paramtype = "light",
 	paramtype2 = "facedir",
 	is_ground_content = false,
@@ -66,7 +69,8 @@ minetest.register_node("mesecons_button:button_on", {
 		"jeija_wall_button_sides.png",
 		"jeija_wall_button_sides.png",
 		"jeija_wall_button_on.png"
-		},
+	},
+	use_texture_alpha = use_texture_alpha,
 	paramtype = "light",
 	paramtype2 = "facedir",
 	is_ground_content = false,

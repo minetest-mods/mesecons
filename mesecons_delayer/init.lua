@@ -54,6 +54,7 @@ local boxes = {
 -- Delayer definition defaults
 local def = {
 	drawtype = "nodebox",
+	use_texture_alpha = minetest.features.use_texture_alpha_string_modes and "opaque" or nil,
 	walkable = true,
 	selection_box = {
 		type = "fixed",
