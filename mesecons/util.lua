@@ -163,12 +163,9 @@ function mesecon.getbinstate(nodename, states)
 end
 
 function mesecon.get_bit(binary,bit)
+	bit = bit or 1
 	local len = binary:len()
-	if bit then
-		if bit > len then return false end
-	else
-		bit = 1
-	end
+	if bit > len then return false end
 	local c = len-(bit-1)
 	return binary:sub(c,c) == "1"
 end
