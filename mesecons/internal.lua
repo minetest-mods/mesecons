@@ -368,6 +368,48 @@ function mesecon.is_power_off(pos, rulename)
 	return false
 end
 
+-- This is the callback for swap_node_force in turnon and turnoff. It determines
+-- whether a conductor node necessitates a lighting update.
+local cached_update_light = {}
+local function get_update_light_conductor(pos, name)
+	local update_light = cached_update_light[name]
+
+	if update_light == nil then
+		-- Calculate and cache whether the conductor needs light updates.
+
+		local def = minetest.registered_nodes[name]
+
+		local conductor = mesecon.get_conductor(name)
+		local other_states
+		if conductor.onstate then
+			other_states = {conductor.onstate}
+		elseif conductor.offstate then
+			other_states = {conductor.offstate}
+		else
+			other_states = conductor.states
+		end
+
+		update_light = false
+		for _, other_state in ipairs(other_states) do
+			local other_def = minetest.registered_nodes[other_state]
+			if (def.paramtype == "light") ~= (other_def.paramtype == "light")
+			or def.sunlight_propagates ~= other_def.sunlight_propagates
+			or def.light_source ~= other_def.light_source then
+				-- The light characteristics change depending on the state.
+				update_light = true
+				break
+			end
+		end
+
+		cached_update_light[name] = update_light
+		for _, other_state in ipairs(other_states) do
+			cached_update_light[other_state] = update_light
+		end
+	end
+
+	return update_light
+end
+
 -- Turn off an equipotential section starting at `pos`, which outputs in the direction of `link`.
 -- Breadth-first search. Map is abstracted away in a voxelmanip.
 -- Follow all all conductor paths replacing conductors that were already
@@ -398,7 +440,7 @@ function mesecon.turnon(pos, link)
 					end
 				end
 
-				mesecon.swap_node_force(f.pos, mesecon.get_conductor_on(node, f.link))
+				mesecon.swap_node_force(f.pos, mesecon.get_conductor_on(node, f.link), get_update_light_conductor)
 			end
 
 			-- Only conductors with flat rules can be reliably skipped later
@@ -470,7 +512,7 @@ function mesecon.turnoff(pos, link)
 					end
 				end
 
-				mesecon.swap_node_force(f.pos, mesecon.get_conductor_off(node, f.link))
+				mesecon.swap_node_force(f.pos, mesecon.get_conductor_off(node, f.link), get_update_light_conductor)
 			end
 
 			-- Only conductors with flat rules can be reliably skipped later
