@@ -383,35 +383,33 @@ local function find_light_update_conductors()
 	local checked = {}
 	for name, def in pairs(minetest.registered_nodes) do
 		local conductor = mesecon.get_conductor(name)
-		if conductor then
-			if not checked[name] then
-				-- Find the other states of the conductor besides the current one.
-				local other_states
-				if conductor.onstate then
-					other_states = {conductor.onstate}
-				elseif conductor.offstate then
-					other_states = {conductor.offstate}
-				else
-					other_states = conductor.states
-				end
+		if conductor and not checked[name] then
+			-- Find the other states of the conductor besides the current one.
+			local other_states
+			if conductor.onstate then
+				other_states = {conductor.onstate}
+			elseif conductor.offstate then
+				other_states = {conductor.offstate}
+			else
+				other_states = conductor.states
+			end
 
-				-- Check the conductor. Other states are marked as checked.
-				for _, other_state in ipairs(other_states) do
-					local other_def = minetest.registered_nodes[other_state]
-					if (def.paramtype == "light") ~= (other_def.paramtype == "light")
-					or def.sunlight_propagates ~= other_def.sunlight_propagates
-					or def.light_source ~= other_def.light_source then
-						-- The light characteristics change depending on the state.
-						-- The states are added to the set.
-						light_update_conductors[name] = true
-						for _, other_state in ipairs(other_states) do
-							light_update_conductors[other_state] = true
-							checked[other_state] = true
-						end
-						break
+			-- Check the conductor. Other states are marked as checked.
+			for _, other_state in ipairs(other_states) do
+				local other_def = minetest.registered_nodes[other_state]
+				if (def.paramtype == "light") ~= (other_def.paramtype == "light")
+				or def.sunlight_propagates ~= other_def.sunlight_propagates
+				or def.light_source ~= other_def.light_source then
+					-- The light characteristics change depending on the state.
+					-- The states are added to the set.
+					light_update_conductors[name] = true
+					for _, other_state in ipairs(other_states) do
+						light_update_conductors[other_state] = true
+						checked[other_state] = true
 					end
-					checked[other_state] = true
+					break
 				end
+				checked[other_state] = true
 			end
 		end
 	end
