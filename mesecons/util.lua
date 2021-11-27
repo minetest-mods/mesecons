@@ -343,7 +343,7 @@ function mesecon.vm_commit()
 		if tbl.dirty then
 			local vm = tbl.vm
 			vm:set_data(tbl.data)
-			vm:write_to_map()
+			vm:write_to_map(tbl.update_light)
 			vm:update_map()
 		end
 	end
@@ -364,7 +364,7 @@ local function vm_get_or_create_entry(pos)
 		local vm = minetest.get_voxel_manip(pos, pos)
 		local min_pos, max_pos = vm:get_emerged_area()
 		local va = VoxelArea:new{MinEdge = min_pos, MaxEdge = max_pos}
-		tbl = {vm = vm, va = va, data = vm:get_data(), param1 = vm:get_light_data(), param2 = vm:get_param2_data(), dirty = false}
+		tbl = {vm = vm, va = va, data = vm:get_data(), param1 = vm:get_light_data(), param2 = vm:get_param2_data(), dirty = false, update_light = false}
 		vm_cache[hash] = tbl
 	end
 	return tbl
@@ -388,8 +388,11 @@ end
 -- Sets a node’s name during a VoxelManipulator-based transaction.
 --
 -- Existing param1, param2, and metadata are left alone.
-function mesecon.vm_swap_node(pos, name)
+--
+-- See mesecon.swap_node_force for documentation about get_update_light.
+function mesecon.vm_swap_node(pos, name, get_update_light)
 	local tbl = vm_get_or_create_entry(pos)
+	tbl.update_light = tbl.update_light or (get_update_light == nil or get_update_light(pos, name))
 	local index = tbl.va:indexp(pos)
 	tbl.data[index] = minetest.get_content_id(name)
 	tbl.dirty = true
@@ -423,13 +426,15 @@ end
 -- Outside a VM transaction, if the mapblock is not loaded, it is pulled into
 -- the server’s main map data cache and then accessed from there.
 --
--- Inside a VM transaction, the transaction’s VM cache is used.
+-- Inside a VM transaction, the transaction’s VM cache is used. If a third
+-- argument is supplied, it may be called. If it returns false, the swap does
+-- not necessitate a lighting update.
 --
 -- This function can only be used to change the node’s name, not its parameters
 -- or metadata.
-function mesecon.swap_node_force(pos, name)
+function mesecon.swap_node_force(pos, name, get_update_light)
 	if vm_cache then
-		return mesecon.vm_swap_node(pos, name)
+		return mesecon.vm_swap_node(pos, name, get_update_light)
 	else
 		-- This serves to both ensure the mapblock is loaded and also hand us
 		-- the old node table so we can preserve param2.
