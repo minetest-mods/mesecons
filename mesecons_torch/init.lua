@@ -27,9 +27,13 @@ local torch_get_output_rules = function(node)
 	return rotate_torch_rules(rules, node.param2)
 end
 
+local torch_input_rules_unrotated_horizontal = {vector.new(-2, 0, 0), vector.new(-1, 1, 0)}
+local torch_input_rules_unrotated_vertical   = {vector.new(-2, 0, 0)}
+
 local torch_get_input_rules = function(node)
-	local rules = 	{{x = -2, y = 0, z = 0},
-				 {x = -1, y = 1, z = 0}}
+	local rules = (node.param2 == 0 or node.param2 == 1)
+		and torch_input_rules_unrotated_vertical
+		or  torch_input_rules_unrotated_horizontal
 
 	return rotate_torch_rules(rules, node.param2)
 end
