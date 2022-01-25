@@ -42,11 +42,36 @@ local function update_gate(pos, node, link, newstate)
 	if gate.inputnumber == 1 then
 		set_gate(pos, node, gate.assess(newstate == "on"))
 	elseif gate.inputnumber == 2 then
-		local meta = minetest.get_meta(pos)
-		meta:set_int(link.name, newstate == "on" and 1 or 0)
-
-		local val1 = meta:get_int("input1") == 1
-		local val2 = meta:get_int("input2") == 1
+		-- Inputs are stored in param2. Bit 5 is always set.
+		-- input1 is bit 6 and input2 is bit 7.
+		local val1, val2
+		if node.param2 >= 32 then
+			-- Bit 5 is set, so param2 is in the proper format.
+			if link.name == "input1" then
+				val1 = newstate == "on"
+				val2 = node.param2 >= 128
+			else
+				val1 = node.param2 % 128 >= 64
+				val2 = newstate == "on"
+			end
+		else
+			-- Migrate old gates where the inputs are stored as metadata.
+			-- This also triggers for newly placed gates.
+			local meta = minetest.get_meta(pos)
+			if link.name == "input1" then
+				val1 = newstate == "on"
+				val2 = meta:get("input2") == "1"
+			else
+				val1 = meta:get("input1") == "1"
+				val2 = newstate == "on"
+			end
+			-- Set bit 5 so this won't happen again.
+			node.param2 = node.param2 + 32
+			-- Clear the metadata.
+			meta:set_string("input1", "")
+			meta:set_string("input2", "")
+		end
+		node.param2 = node.param2 % 64 + (val1 and 64 or 0) + (val2 and 128 or 0)
 		set_gate(pos, node, gate.assess(val1, val2))
 	end
 end
