@@ -270,5 +270,6 @@ function mesecon.buttonlike_onrotate(pos, node, user, mode, new_param2)
 	minetest.swap_node(pos, node)
 	mesecon.on_placenode(pos, node)
 	mesecon.receiver_place(pos)
+	minetest.check_for_falling(pos)
 	return true
 end

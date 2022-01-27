@@ -6,6 +6,25 @@ function mesecon.move_node(pos, newpos)
 	minetest.get_meta(pos):from_table(meta)
 end
 
+-- An on_rotate callback for mesecons components.
+function mesecon.on_rotate(pos, node, user, mode, new_param2)
+	minetest.swap_node(pos, {name = "air"})
+	mesecon.on_dignode(pos, node)
+	node.param2 = new_param2
+	minetest.swap_node(pos, node)
+	mesecon.on_placenode(pos, node)
+	minetest.check_for_falling(pos)
+	return true
+end
+
+-- An on_rotate callback for components which stay horizontal.
+function mesecon.on_rotate_horiz(pos, node, user, mode, new_param2)
+	if not minetest.global_exists("screwdriver") or mode ~= screwdriver.ROTATE_FACE then
+		return false
+	end
+	return mesecon.on_rotate(pos, node, user, mode, new_param2)
+end
+
 -- Rules rotation Functions:
 function mesecon.rotate_rules_right(rules)
 	local nr = {}
@@ -450,22 +469,6 @@ function mesecon.swap_node_force(pos, name, update_light)
 		node.name = name
 		minetest.swap_node(pos, node)
 	end
-end
-
--- An on_rotate callback for components which stay horizontal.
-function mesecon.on_rotate_horiz(pos, node, user, mode, new_param2)
-	if not minetest.global_exists("screwdriver") then
-		return false
-	end
-	if mode ~= screwdriver.ROTATE_FACE then
-		return false
-	end
-	minetest.swap_node(pos, {name = "air"})
-	mesecon.on_dignode(pos, node)
-	node.param2 = new_param2
-	minetest.swap_node(pos, node)
-	mesecon.on_placenode(pos, node)
-	return true
 end
 
 -- Autoconnect Hooks
