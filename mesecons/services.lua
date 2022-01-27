@@ -14,6 +14,7 @@ mesecon.on_placenode = function(pos, node)
 	if mesecon.is_conductor(node.name) then
 		local conductor = mesecon.get_conductor(node.name)
 		if conductor.state ~= mesecon.state.off then
+			-- Turn the conductor off.
 			node.name = conductor.offstate or conductor.states[1]
 			minetest.swap_node(pos, node)
 		end
