@@ -263,12 +263,11 @@ minetest.register_on_placenode(function (pos, node)
 end)
 
 function mesecon.buttonlike_onrotate(pos, node, user, mode, new_param2)
-	minetest.swap_node(pos, {name = "air"})
+	local new_node = {name = node.name, param1 = node.param1, param2 = new_param2}
+	minetest.swap_node(pos, new_node)
 	mesecon.receiver_remove(pos, node)
 	mesecon.on_dignode(pos, node)
-	node.param2 = new_param2
-	minetest.swap_node(pos, node)
-	mesecon.on_placenode(pos, node)
+	mesecon.on_placenode(pos, new_node)
 	mesecon.receiver_place(pos)
 	minetest.check_for_falling(pos)
 	return true
