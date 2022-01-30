@@ -372,7 +372,6 @@ end
 local light_update_conductors
 
 -- Calculate the contents of the above set if they have not been calculated.
--- This must be called before get_update_light_conductor.
 local function find_light_update_conductors()
 	-- The expensive calculation is only done the first time.
 	if light_update_conductors then return end
@@ -415,12 +414,6 @@ local function find_light_update_conductors()
 	end
 end
 
--- This is the callback for swap_node_force in turnon and turnoff. It determines
--- whether a conductor node necessitates a lighting update.
-local function get_update_light_conductor(pos, name)
-	return light_update_conductors[name] ~= nil
-end
-
 -- Turn off an equipotential section starting at `pos`, which outputs in the direction of `link`.
 -- Breadth-first search. Map is abstracted away in a voxelmanip.
 -- Follow all all conductor paths replacing conductors that were already
@@ -453,7 +446,7 @@ function mesecon.turnon(pos, link)
 					end
 				end
 
-				mesecon.swap_node_force(f.pos, mesecon.get_conductor_on(node, f.link), get_update_light_conductor)
+				mesecon.swap_node_force(f.pos, mesecon.get_conductor_on(node, f.link), light_update_conductors[node.name] ~= nil)
 			end
 
 			-- Only conductors with flat rules can be reliably skipped later
@@ -527,7 +520,7 @@ function mesecon.turnoff(pos, link)
 					end
 				end
 
-				mesecon.swap_node_force(f.pos, mesecon.get_conductor_off(node, f.link), get_update_light_conductor)
+				mesecon.swap_node_force(f.pos, mesecon.get_conductor_off(node, f.link), light_update_conductors[node.name] ~= nil)
 			end
 
 			-- Only conductors with flat rules can be reliably skipped later

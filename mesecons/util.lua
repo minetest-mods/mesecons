@@ -389,10 +389,10 @@ end
 --
 -- Existing param1, param2, and metadata are left alone.
 --
--- See mesecon.swap_node_force for documentation about get_update_light.
-function mesecon.vm_swap_node(pos, name, get_update_light)
+-- The swap will necessitate a light update unless update_light equals false.
+function mesecon.vm_swap_node(pos, name, update_light)
 	local tbl = vm_get_or_create_entry(pos)
-	tbl.update_light = tbl.update_light or (get_update_light == nil or get_update_light(pos, name))
+	tbl.update_light = update_light ~= false or tbl.update_light
 	local index = tbl.va:indexp(pos)
 	tbl.data[index] = minetest.get_content_id(name)
 	tbl.dirty = true
@@ -426,15 +426,15 @@ end
 -- Outside a VM transaction, if the mapblock is not loaded, it is pulled into
 -- the server’s main map data cache and then accessed from there.
 --
--- Inside a VM transaction, the transaction’s VM cache is used. If a third
--- argument is supplied, it may be called. If it returns false, the swap does
--- not necessitate a lighting update.
+-- Inside a VM transaction, the transaction’s VM cache is used.
 --
 -- This function can only be used to change the node’s name, not its parameters
 -- or metadata.
-function mesecon.swap_node_force(pos, name, get_update_light)
+--
+-- The swap will necessitate a light update unless update_light equals false.
+function mesecon.swap_node_force(pos, name, update_light)
 	if vm_cache then
-		return mesecon.vm_swap_node(pos, name, get_update_light)
+		return mesecon.vm_swap_node(pos, name, update_light)
 	else
 		-- This serves to both ensure the mapblock is loaded and also hand us
 		-- the old node table so we can preserve param2.
