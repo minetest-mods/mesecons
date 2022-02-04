@@ -24,6 +24,11 @@ mesecon.luacontroller_digiline_maxlen (Digiline message size limit) int 50000 10
 mesecon.luacontroller_maxevents (Controller execution time limit) int 10000 1000 100000
 mesecon.luacontroller_memsize (Controller memory limit) int 100000 10000 1000000
 
+# The amount of server memory a controller is allowed, measured in kilobytes.
+# This actually measures the memory usage after the script is done, not during its runtime.
+# Thus, controllers can lag the server even with a low limit.
+mesecon.luacontroller_volatile_mem_limit (Controller volatile memory limit) int 2000 10 10000000
+
 # Use node timer for interrupts (runs in active blocks only).
 # IID is ignored and at most one interrupt may be queued if this setting is enabled.
 mesecon.luacontroller_lightweight_interrupts (Lightweight interrupts) bool false

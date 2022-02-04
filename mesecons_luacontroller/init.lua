@@ -590,8 +590,12 @@ local function load_memory(meta)
 end
 
 
-local function save_memory(pos, meta, mem)
-	local memstring = minetest.serialize(remove_functions(mem))
+local function serialize_memory(mem)
+	return minetest.serialize(remove_functions(mem))
+end
+
+
+local function save_serialized_memory(pos, meta, memstring)
 	local memsize_max = mesecon.setting("luacontroller_memsize", 100000)
 
 	if (#memstring <= memsize_max) then
@@ -629,6 +633,8 @@ local function run_inner(pos, code, event)
 	-- Create the sandbox and execute code
 	local f, msg = create_sandbox(code, env)
 	if not f then return false, msg end
+	local mem_use_limit = collectgarbage("count") + mesecon.setting("luacontroller_volatile_mem_limit", 2000)
+	local oom_msg = "not enough memory" -- Used to detect OOM errors, kind of a hack.
 	-- Start string true sandboxing
 	local onetruestring = getmetatable("")
 	-- If a string sandbox is already up yet inconsistent, something is very wrong
@@ -637,16 +643,43 @@ local function run_inner(pos, code, event)
 	local success, msg = pcall(f)
 	onetruestring.__index = string
 	-- End string true sandboxing
-	if not success then return false, msg end
+	if collectgarbage("count") > mem_use_limit then
+		-- Volatile memory limit exceeded.
+		success = false
+		msg = oom_msg
+	end
+	-- Serialize the persistent memory.
+	local memstring
+	if success then
+		success, memstring = pcall(serialize_memory, env.mem)
+		if not success then
+			msg = memstring
+			-- Rethrow non-OOM errors.
+			if msg ~= oom_msg then error(msg, 0) end
+		end
+	end
+	if not success then
+		-- Handle OOM errors by collecting garbage.
+		if msg == oom_msg then
+			env, itbl, mem = nil -- Let the memory be collected.
+			collectgarbage()
+			print("Error: Luacontroller at " .. minetest.pos_to_string(pos)
+					.. " exhausted its available volatile memory. Controller overheats.")
+			burn_controller(pos)
+		end
+		return false, msg
+	end
 	if type(env.port) ~= "table" then
 		return false, "Ports set are invalid."
 	end
+	local success, memstring = pcall(serialize_memory, env.mem)
+	if not success then return false, memstring end -- memstring is the error message here.
 
 	-- Actually set the ports
 	set_port_states(pos, env.port)
 
 	-- Save memory. This may burn the luacontroller if a memory overflow occurs.
-	save_memory(pos, meta, env.mem)
+	save_serialized_memory(pos, meta, memstring)
 
 	-- Execute deferred tasks
 	for _, v in ipairs(itbl) do
