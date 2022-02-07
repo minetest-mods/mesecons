@@ -1,6 +1,5 @@
 std = "lua51c"
 
---unused_args = false
 ignore = {
 	"21/_+", -- Unused variable, except "_", "__", etc.
 	"213", -- Unused loop variable
