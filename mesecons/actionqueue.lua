@@ -29,7 +29,7 @@ local queue = mesecon.queue
 queue.actions = {} -- contains all ActionQueue actions
 
 function queue:add_function(name, func)
-	queue.funcs[name] = func
+	self.funcs[name] = func
 end
 
 -- If add_action with twice the same overwritecheck and same position are called, the first one is overwritten
@@ -51,17 +51,17 @@ function queue:add_action(pos, func, params, time, overwritecheck, priority)
 
 	 -- check if old action has to be overwritten / removed:
 	if overwritecheck then
-		for i, ac in ipairs(queue.actions) do
+		for i, ac in ipairs(self.actions) do
 			if vector.equals(pos, ac.pos)
 					and mesecon.cmpAny(overwritecheck, ac.owcheck) then
 				-- remove the old action
-				table.remove(queue.actions, i)
+				table.remove(self.actions, i)
 				break
 			end
 		end
 	end
 
-	table.insert(queue.actions, action)
+	table.insert(self.actions, action)
 end
 
 -- execute the stored functions on a globalstep
@@ -133,8 +133,8 @@ end
 function queue:execute(action)
 	-- ignore if action queue function name doesn't exist,
 	-- (e.g. in case the action queue savegame was written by an old mesecons version)
-	if queue.funcs[action.func] then
-		queue.funcs[action.func](action.pos, unpack(action.params))
+	if self.funcs[action.func] then
+		self.funcs[action.func](action.pos, unpack(action.params))
 	end
 end
 

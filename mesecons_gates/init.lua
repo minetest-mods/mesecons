@@ -65,7 +65,6 @@ end
 local function register_gate(name, inputnumber, assess, recipe, description)
 	local get_inputrules = inputnumber == 2 and gate_get_input_rules_twoinputs or
 		gate_get_input_rules_oneinput
-	description = "Logic Gate: "..name
 
 	local basename = "mesecons_gates:"..name
 	mesecon.register_node(basename, {

@@ -1,15 +1,13 @@
-local function crossover_get_rules(node)
-	return {
-		{--first wire
-			{x=-1,y=0,z=0},
-			{x=1,y=0,z=0},
-		},
-		{--second wire
-			{x=0,y=0,z=-1},
-			{x=0,y=0,z=1},
-		},
-	}
-end
+local crossover_rules = {
+	{--first wire
+		{x=-1,y=0,z=0},
+		{x=1,y=0,z=0},
+	},
+	{--second wire
+		{x=0,y=0,z=-1},
+		{x=0,y=0,z=1},
+	},
+}
 
 local crossover_states = {
 	"mesecons_extrawires:crossover_off",
@@ -38,7 +36,7 @@ minetest.register_node("mesecons_extrawires:crossover_off", {
 	mesecons = {
 		conductor = {
 			states = crossover_states,
-			rules = crossover_get_rules(),
+			rules = crossover_rules,
 		}
 	},
 	on_blast = mesecon.on_blastnode,
@@ -65,7 +63,7 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 	mesecons = {
 		conductor = {
 			states = crossover_states,
-			rules = crossover_get_rules(),
+			rules = crossover_rules,
 		}
 	},
 	on_blast = mesecon.on_blastnode,
@@ -92,7 +90,7 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 	mesecons = {
 		conductor = {
 			states = crossover_states,
-			rules = crossover_get_rules(),
+			rules = crossover_rules,
 		}
 	},
 	on_blast = mesecon.on_blastnode,
@@ -119,7 +117,7 @@ minetest.register_node("mesecons_extrawires:crossover_on", {
 	mesecons = {
 		conductor = {
 			states = crossover_states,
-			rules = crossover_get_rules(),
+			rules = crossover_rules,
 		}
 	},
 	on_blast = mesecon.on_blastnode,

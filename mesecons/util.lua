@@ -376,7 +376,7 @@ function mesecon.vm_get_node(pos)
 	local tbl = vm_get_or_create_entry(pos)
 	local index = tbl.va:indexp(pos)
 	local node_value = tbl.data[index]
-	if node_value == core.CONTENT_IGNORE then
+	if node_value == minetest.CONTENT_IGNORE then
 		return nil
 	else
 		local node_param1 = tbl.param1[index]

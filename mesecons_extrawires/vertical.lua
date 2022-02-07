@@ -69,7 +69,7 @@ local vertical_updatepos = function (pos)
 	end
 end
 
-local vertical_update = function (pos, node)
+local vertical_update = function (pos)
 	vertical_updatepos(pos) -- this one
 	vertical_updatepos(vector.add(pos, vertical_rules[1])) -- above
 	vertical_updatepos(vector.add(pos, vertical_rules[2])) -- below

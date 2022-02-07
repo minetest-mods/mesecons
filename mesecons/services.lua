@@ -63,7 +63,7 @@ mesecon.on_dignode = function(pos, node)
 	mesecon.execute_autoconnect_hooks_queue(pos, node)
 end
 
-function mesecon.on_blastnode(pos, intensity)
+function mesecon.on_blastnode(pos)
 	local node = minetest.get_node(pos)
 	minetest.remove_node(pos)
 	mesecon.on_dignode(pos, node)

@@ -22,11 +22,11 @@ end
 local function meseconify_door(name)
 	if minetest.registered_items[name .. "_b_1"] then
 		-- old style double-node doors
-		local function toggle_state1 (pos, node)
+		local function toggle_state1 (pos)
 			on_rightclick(pos, 1, name.."_t_1", name.."_b_2", name.."_t_2", {1,2,3,0})
 		end
 
-		local function toggle_state2 (pos, node)
+		local function toggle_state2 (pos)
 			on_rightclick(pos, 1, name.."_t_2", name.."_b_1", name.."_t_1", {3,0,1,2})
 		end
 
@@ -49,13 +49,13 @@ local function meseconify_door(name)
 		-- new style mesh node based doors
 		local override = {
 			mesecons = {effector = {
-				action_on = function(pos, node)
+				action_on = function(pos)
 					local door = doors.get(pos)
 					if door then
 						door:open()
 					end
 				end,
-				action_off = function(pos, node)
+				action_off = function(pos)
 					local door = doors.get(pos)
 					if door then
 						door:close()
@@ -93,13 +93,13 @@ end
 if doors and doors.get then
 	local override = {
 		mesecons = {effector = {
-			action_on = function(pos, node)
+			action_on = function(pos)
 				local door = doors.get(pos)
 				if door then
 					door:open()
 				end
 			end,
-			action_off = function(pos, node)
+			action_off = function(pos)
 				local door = doors.get(pos)
 				if door then
 					door:close()

@@ -79,7 +79,7 @@ local function after_place(pos, placer)
 	end
 end
 
-local function receive_fields(pos, formname, fields, sender)
+local function receive_fields(pos, _, fields, sender)
 	if not fields.submit then
 		return
 	end

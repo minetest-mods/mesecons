@@ -108,7 +108,7 @@ local function piston_off(pos, node)
 	local dir = minetest.facedir_to_dir(node.param2)
 	local pullpos = vector.add(pos, vector.multiply(dir, -2))
 	local meta = minetest.get_meta(pos)
-	local success, stack, oldstack = mesecon.mvps_pull_single(pullpos, dir, max_pull, meta:get_string("owner"))
+	local success, _, oldstack = mesecon.mvps_pull_single(pullpos, dir, max_pull, meta:get_string("owner"))
 	if success then
 		mesecon.mvps_move_objects(pullpos, vector.multiply(dir, -1), oldstack, -1)
 	end
@@ -235,7 +235,7 @@ local function piston_rotate_pusher(pos, node, player, mode)
 	return piston_rotate_on(piston_pos, piston_node, player, mode)
 end
 
-local function piston_punch(pos, node, player)
+local function piston_punch(pos, _, player)
 	local player_name = player and player.get_player_name and player:get_player_name()
 	if mesecon.mvps_claim(pos, player_name) then
 		minetest.chat_send_player(player_name, "Reclaimed piston")
@@ -423,7 +423,7 @@ minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 
 
 -- Register pushers as stoppers if they would be seperated from the piston
-local function piston_pusher_get_stopper(node, dir, stack, stackid)
+local function piston_pusher_get_stopper(node, _, stack, stackid)
 	if (stack[stackid + 1]
 	and stack[stackid + 1].node.name   == get_pistonspec(node.name, "pusher").onname
 	and stack[stackid + 1].node.param2 == node.param2)
@@ -435,32 +435,12 @@ local function piston_pusher_get_stopper(node, dir, stack, stackid)
 	return true
 end
 
-local function piston_pusher_up_down_get_stopper(node, dir, stack, stackid)
-	if (stack[stackid + 1]
-	and stack[stackid + 1].node.name   == get_pistonspec(node.name, "pusher").onname)
-	or (stack[stackid - 1]
-	and stack[stackid - 1].node.name   == get_pistonspec(node.name, "pusher").onname) then
-		return false
-	end
-	return true
-end
-
 mesecon.register_mvps_stopper("mesecons_pistons:piston_pusher_normal", piston_pusher_get_stopper)
 mesecon.register_mvps_stopper("mesecons_pistons:piston_pusher_sticky", piston_pusher_get_stopper)
 
 
 -- Register pistons as stoppers if they would be seperated from the stopper
-local piston_up_down_get_stopper = function (node, dir, stack, stackid)
-	if (stack[stackid + 1]
-	and stack[stackid + 1].node.name   == get_pistonspec(node.name, "onname").pusher)
-	or (stack[stackid - 1]
-	and stack[stackid - 1].node.name   == get_pistonspec(node.name, "onname").pusher) then
-		return false
-	end
-	return true
-end
-
-local function piston_get_stopper(node, dir, stack, stackid)
+local function piston_get_stopper(node, _, stack, stackid)
 	local pistonspec = get_pistonspec(node.name, "onname")
 	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 	local pusherpos = vector.add(stack[stackid].pos, dir)

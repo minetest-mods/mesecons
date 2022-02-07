@@ -318,7 +318,7 @@ function mesecon.get_conductor_on(node_off, rulename)
 			return conductor.states[tonumber(binstate,2)+1]
 		end
 	end
-	return offstate
+	return nil
 end
 
 function mesecon.get_conductor_off(node_on, rulename)
@@ -334,7 +334,7 @@ function mesecon.get_conductor_off(node_on, rulename)
 			return conductor.states[tonumber(binstate,2)+1]
 		end
 	end
-	return onstate
+	return nil
 end
 
 function mesecon.conductor_get_rules(node)

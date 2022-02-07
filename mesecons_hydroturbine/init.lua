@@ -72,7 +72,7 @@ minetest.register_abm({
 nodenames = {"mesecons_hydroturbine:hydro_turbine_off"},
 	interval = 1,
 	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
+	action = function(pos)
 		local waterpos={x=pos.x, y=pos.y+1, z=pos.z}
 		if is_flowing_water(waterpos) then
 			minetest.set_node(pos, {name="mesecons_hydroturbine:hydro_turbine_on"})
@@ -85,7 +85,7 @@ minetest.register_abm({
 nodenames = {"mesecons_hydroturbine:hydro_turbine_on"},
 	interval = 1,
 	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
+	action = function(pos)
 		local waterpos={x=pos.x, y=pos.y+1, z=pos.z}
 		if not is_flowing_water(waterpos) then
 			minetest.set_node(pos, {name="mesecons_hydroturbine:hydro_turbine_off"})

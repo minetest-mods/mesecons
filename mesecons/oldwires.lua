@@ -11,7 +11,7 @@ minetest.register_node("mesecons:mesecon_off", {
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 	groups = {dig_immediate=3, mesecon=1, mesecon_conductor_craftable=1},
-    	description="Mesecons",
+	description="Mesecons",
 	mesecons = {conductor={
 		state = mesecon.state.off,
 		onstate = "mesecons:mesecon_on"

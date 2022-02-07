@@ -59,7 +59,7 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 	}},
 	on_construct = function(pos)
 		-- remove shadow
-		shadowpos = vector.add(pos, vector.new(0, 1, 0))
+		local shadowpos = vector.add(pos, vector.new(0, 1, 0))
 		if (minetest.get_node(shadowpos).name == "air") then
 			minetest.dig_node(shadowpos)
 		end
