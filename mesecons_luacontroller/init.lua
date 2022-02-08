@@ -672,8 +672,6 @@ local function run_inner(pos, code, event)
 	if type(env.port) ~= "table" then
 		return false, "Ports set are invalid."
 	end
-	local success, memstring = pcall(serialize_memory, env.mem)
-	if not success then return false, memstring end -- memstring is the error message here.
 
 	-- Actually set the ports
 	set_port_states(pos, env.port)
