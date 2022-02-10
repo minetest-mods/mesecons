@@ -326,6 +326,9 @@ end
 -- Nil if no VM-based transaction is in progress.
 local vm_cache = nil
 
+-- Whether the current transaction will need a light update afterward.
+local vm_update_light = false
+
 -- Starts a VoxelManipulator-based transaction.
 --
 -- During a VM transaction, calls to vm_get_node and vm_swap_node operate on a
@@ -334,6 +337,7 @@ local vm_cache = nil
 -- vm_abort.
 function mesecon.vm_begin()
 	vm_cache = {}
+	vm_update_light = false
 end
 
 -- Finishes a VoxelManipulator-based transaction, freeing the VMs and map data
@@ -343,7 +347,7 @@ function mesecon.vm_commit()
 		if tbl.dirty then
 			local vm = tbl.vm
 			vm:set_data(tbl.data)
-			vm:write_to_map(tbl.update_light)
+			vm:write_to_map(vm_update_light)
 			vm:update_map()
 		end
 	end
@@ -364,7 +368,7 @@ local function vm_get_or_create_entry(pos)
 		local vm = minetest.get_voxel_manip(pos, pos)
 		local min_pos, max_pos = vm:get_emerged_area()
 		local va = VoxelArea:new{MinEdge = min_pos, MaxEdge = max_pos}
-		tbl = {vm = vm, va = va, data = vm:get_data(), param1 = vm:get_light_data(), param2 = vm:get_param2_data(), dirty = false, update_light = false}
+		tbl = {vm = vm, va = va, data = vm:get_data(), param1 = vm:get_light_data(), param2 = vm:get_param2_data(), dirty = false}
 		vm_cache[hash] = tbl
 	end
 	return tbl
@@ -391,8 +395,8 @@ end
 --
 -- The swap will necessitate a light update unless update_light equals false.
 function mesecon.vm_swap_node(pos, name, update_light)
+	vm_update_light = vm_update_light or update_light ~= false
 	local tbl = vm_get_or_create_entry(pos)
-	tbl.update_light = update_light ~= false or tbl.update_light
 	local index = tbl.va:indexp(pos)
 	tbl.data[index] = minetest.get_content_id(name)
 	tbl.dirty = true
