@@ -17,7 +17,6 @@ max_line_length = 200
 read_globals = {
 	"default",
 	"digiline",
-	"DIR_DELIM",
 	"doors",
 	"dump",
 	"jit",
