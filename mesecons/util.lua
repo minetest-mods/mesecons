@@ -395,7 +395,10 @@ end
 --
 -- The swap will necessitate a light update unless update_light equals false.
 function mesecon.vm_swap_node(pos, name, update_light)
+	-- If one node needs a light update, all VMs should use light updates to
+	-- prevent newly calculated light from being overwritten by other VMs.
 	vm_update_light = vm_update_light or update_light ~= false
+
 	local tbl = vm_get_or_create_entry(pos)
 	local index = tbl.va:indexp(pos)
 	tbl.data[index] = minetest.get_content_id(name)
