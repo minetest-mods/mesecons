@@ -29,7 +29,8 @@ read_globals = {
 	"VoxelArea",
 }
 
-globals = {
-	"mesecon",
-	"minetest.registered_globalsteps",
+globals = {"mesecon"}
+
+files["mesecons/actionqueue.lua"] = {
+	globals = {"minetest.registered_globalsteps"},
 }
