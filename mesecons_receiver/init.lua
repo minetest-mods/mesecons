@@ -47,7 +47,7 @@ mesecon.register_node("mesecons_receiver:receiver", {
 	walkable = false,
 	on_rotate = false,
 	selection_box = {
-             	type = "fixed",
+		type = "fixed",
 		fixed = { -3/16, -8/16, -8/16, 3/16, 3/16, 8/16 }
 	},
 	node_box = {
@@ -96,7 +96,7 @@ mesecon.register_node("mesecons_receiver:receiver_up", {
 	walkable = false,
 	on_rotate = false,
 	selection_box = {
-             	type = "fixed",
+		type = "fixed",
 		fixed = up_rcvboxes
 	},
 	node_box = {
@@ -141,7 +141,7 @@ mesecon.register_node("mesecons_receiver:receiver_down", {
 	walkable = false,
 	on_rotate = false,
 	selection_box = {
-             	type = "fixed",
+		type = "fixed",
 		fixed = down_rcvboxes
 	},
 	node_box = {

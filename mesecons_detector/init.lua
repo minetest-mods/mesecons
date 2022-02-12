@@ -12,7 +12,7 @@ local function object_detector_make_formspec(pos)
 		"button_exit[7,0.75;2,3;;Save]")
 end
 
-local function object_detector_on_receive_fields(pos, formname, fields, sender)
+local function object_detector_on_receive_fields(pos, _, fields, sender)
 	if not fields.scanname or not fields.digiline_channel then return end
 
 	if minetest.is_protected(pos, sender:get_player_name()) then return end
@@ -53,7 +53,7 @@ end
 -- set player name when receiving a digiline signal on a specific channel
 local object_detector_digiline = {
 	effector = {
-		action = function(pos, node, channel, msg)
+		action = function(pos, _, channel, msg)
 			local meta = minetest.get_meta(pos)
 			if channel == meta:get_string("digiline_channel") then
 				meta:set_string("scanname", msg)
@@ -156,7 +156,7 @@ local function node_detector_make_formspec(pos)
 		"button_exit[7,0.75;2,3;;Save]")
 end
 
-local function node_detector_on_receive_fields(pos, fieldname, fields, sender)
+local function node_detector_on_receive_fields(pos, _, fields, sender)
 	if not fields.scanname or not fields.digiline_channel then return end
 
 	if minetest.is_protected(pos, sender:get_player_name()) then return end
@@ -237,23 +237,6 @@ local node_detector_digiline = {
 	},
 	receptor = {}
 }
-
-local function after_place_node_detector(pos, placer)
-	local placer_pos = placer:get_pos()
-	if not placer_pos then
-		return
-	end
-
-	--correct for the player's height
-	if placer:is_player() then
-		placer_pos.y = placer_pos.y + 1.625
-	end
-
-	--correct for 6d facedir
-	local node = minetest.get_node(pos)
-	node.param2 = minetest.dir_to_facedir(vector.subtract(pos, placer_pos), true)
-	minetest.set_node(pos, node)
-end
 
 minetest.register_node("mesecons_detector:node_detector_off", {
 	tiles = {"default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "jeija_node_detector_off.png"},

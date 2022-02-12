@@ -60,7 +60,7 @@ local function update_real_port_states(pos, rule_name, new_state)
 	if rule_name.x == nil then
 		for _, rname in ipairs(rule_name) do
 			local port = pos_to_side[rname.x + (2 * rname.z) + 3]
-			L[port] = (newstate == "on") and 1 or 0
+			L[port] = (new_state == "on") and 1 or 0
 		end
 	else
 		local port = pos_to_side[rule_name.x + (2 * rule_name.z) + 3]
@@ -172,7 +172,7 @@ local function burn_controller(pos)
 	minetest.after(0.2, mesecon.receptor_off, pos, mesecon.rules.flat)
 end
 
-local function overheat(pos, meta)
+local function overheat(pos)
 	if mesecon.do_overheat(pos) then -- If too hot
 		burn_controller(pos)
 		return true
@@ -612,9 +612,8 @@ local function run_inner(pos, code, event)
 	if overheat(pos) then return true, "" end
 	if ignore_event(event, meta) then return true, "" end
 
-	-- Load code & mem from meta
+	-- Load mem from meta
 	local mem  = load_memory(meta)
-	local code = meta:get_string("code")
 
 	-- 'Last warning' label.
 	local warning = ""
@@ -626,15 +625,17 @@ local function run_inner(pos, code, event)
 	local itbl = {}
 	local env = create_environment(pos, mem, event, itbl, send_warning)
 
+	local success, msg
 	-- Create the sandbox and execute code
-	local f, msg = create_sandbox(code, env)
+	local f
+	f, msg = create_sandbox(code, env)
 	if not f then return false, msg end
 	-- Start string true sandboxing
 	local onetruestring = getmetatable("")
 	-- If a string sandbox is already up yet inconsistent, something is very wrong
 	assert(onetruestring.__index == string)
 	onetruestring.__index = env.string
-	local success, msg = pcall(f)
+	success, msg = pcall(f)
 	onetruestring.__index = string
 	-- End string true sandboxing
 	if not success then return false, msg end
@@ -748,7 +749,7 @@ local selection_box = {
 local digiline = {
 	receptor = {},
 	effector = {
-		action = function(pos, node, channel, msg)
+		action = function(pos, _, channel, msg)
 			msg = clean_and_weigh_digiline_message(msg)
 			run(pos, {type = "digiline", channel = channel, msg = msg})
 		end
@@ -766,7 +767,7 @@ local function set_program(pos, code)
 	return run(pos, {type="program"})
 end
 
-local function on_receive_fields(pos, form_name, fields, sender)
+local function on_receive_fields(pos, _, fields, sender)
 	if not fields.program then
 		return
 	end
@@ -871,7 +872,7 @@ for d = 0, 1 do
 			c = c == 1,
 			d = d == 1,
 		},
-		after_dig_node = function (pos, node)
+		after_dig_node = function (pos)
 			mesecon.do_cooldown(pos)
 			mesecon.receptor_off(pos, output_rules)
 		end,

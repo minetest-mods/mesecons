@@ -1,0 +1,15 @@
+on: [push, pull_request]
+name: Check & Release
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@main
+    - name: apt
+      run: sudo apt-get install -y luarocks
+    - name: luacheck install
+      run: luarocks install --local luacheck
+    - name: luacheck run
+      run: $HOME/.luarocks/bin/luacheck ./

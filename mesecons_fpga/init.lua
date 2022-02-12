@@ -96,7 +96,7 @@ plg.register_nodes({
 		meta:set_int("valid", 0)
 		meta:set_string("infotext", "FPGA")
 	end,
-	on_rightclick = function(pos, node, clicker)
+	on_rightclick = function(pos, _, clicker)
 		if not minetest.is_player(clicker) then
 			return
 		end
@@ -113,7 +113,7 @@ plg.register_nodes({
 	mesecons = {
 		effector = {
 			rules = {}, -- replaced later
-			action_change = function(pos, node, rule, newstate)
+			action_change = function(pos, _, rule, newstate)
 				plg.ports_changed(pos, rule, newstate)
 				plg.update(pos)
 			end
@@ -129,7 +129,7 @@ plg.register_nodes({
 		end
 	end,
 	on_blast = mesecon.on_blastnode,
-	on_rotate = function(pos, node, user, mode)
+	on_rotate = function(pos, _, user, mode)
 		local abcd1 = {"A", "B", "C", "D"}
 		local abcd2 = {A = 1, B = 2, C = 3, D = 4}
 		local ops = {"op1", "op2", "dst"}

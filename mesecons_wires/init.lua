@@ -14,7 +14,7 @@ local wire_getconnect = function (from_pos, self_pos)
 	if minetest.registered_nodes[node.name]
 	and minetest.registered_nodes[node.name].mesecons then
 		-- rules of node to possibly connect to
-		local rules = {}
+		local rules
 		if (minetest.registered_nodes[node.name].mesecon_wire) then
 			rules = mesecon.rules.default
 		else
@@ -73,7 +73,7 @@ local update_on_place_dig = function (pos, node)
 	end
 
 	-- Update nodes around it
-	local rules = {}
+	local rules
 	if minetest.registered_nodes[node.name]
 	and minetest.registered_nodes[node.name].mesecon_wire then
 		rules = mesecon.rules.default

@@ -10,10 +10,10 @@ local operations = {
 	-- unary:   Whether this gate only has one input
 	{ gate = "and",  short = "&", fs_name = " AND", func = function(a, b) return a and b end },
 	{ gate = "or",   short = "|", fs_name = "  OR", func = function(a, b) return a or b end },
-	{ gate = "not",  short = "~", fs_name = " NOT", func = function(a, b) return not b end, unary = true },
+	{ gate = "not",  short = "~", fs_name = " NOT", func = function(_, b) return not b end, unary = true },
 	{ gate = "xor",  short = "^", fs_name = " XOR", func = function(a, b) return a ~= b end },
 	{ gate = "nand", short = "?", fs_name = "NAND", func = function(a, b) return not (a and b) end },
-	{ gate = "buf",  short = "_", fs_name = "   =", func = function(a, b) return b end, unary = true },
+	{ gate = "buf",  short = "_", fs_name = "   =", func = function(_, b) return b end, unary = true },
 	{ gate = "xnor", short = "=", fs_name = "XNOR", func = function(a, b) return a == b end },
 	{ gate = "nor",  short = "!", fs_name = " NOR", func = function(a, b) return not (a or b) end },
 }

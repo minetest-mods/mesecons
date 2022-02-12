@@ -8,7 +8,7 @@ minetest.register_node("mesecons_stickyblocks:sticky_block_all", {
 	tiles = {"mesecons_stickyblocks_sticky.png"},
 	is_ground_content = false,
 	groups = {choppy=3, oddly_breakable_by_hand=2},
-	mvps_sticky = function (pos, node)
+	mvps_sticky = function (pos)
 		local connected = {}
 		for _, r in ipairs(mesecon.rules.alldirs) do
 			table.insert(connected, vector.add(pos, r))

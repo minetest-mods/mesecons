@@ -271,7 +271,6 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 end
 
 function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
-	local objects_to_move = {}
 	local dir_k
 	local dir_l
 	for k, v in pairs(dir) do
