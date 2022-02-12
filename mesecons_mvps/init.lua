@@ -46,9 +46,9 @@ local function on_mvps_move(moved_nodes)
 	end
 end
 
-function mesecon.mvps_process_stack(stack)
+function mesecon.mvps_process_stack()
 	-- This function is kept for compatibility.
-	-- It used to call on_placenode on the moved nodes, but that is now done automatically.
+	-- It used to call on_placenode on moved nodes, but that is now done automatically.
 end
 
 -- tests if the node can be pushed into, e.g. air, water, grass
