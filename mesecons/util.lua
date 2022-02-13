@@ -7,7 +7,7 @@ function mesecon.move_node(pos, newpos)
 end
 
 -- An on_rotate callback for mesecons components.
-function mesecon.on_rotate(pos, node, user, mode, new_param2)
+function mesecon.on_rotate(pos, node, _, _, new_param2)
 	local new_node = {name = node.name, param1 = node.param1, param2 = new_param2}
 	minetest.swap_node(pos, new_node)
 	mesecon.on_dignode(pos, node)

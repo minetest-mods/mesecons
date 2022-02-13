@@ -260,7 +260,7 @@ minetest.register_on_placenode(function (pos, node)
 	end
 end)
 
-function mesecon.buttonlike_onrotate(pos, node, user, mode, new_param2)
+function mesecon.buttonlike_onrotate(pos, node, _, _, new_param2)
 	local new_node = {name = node.name, param1 = node.param1, param2 = new_param2}
 	minetest.swap_node(pos, new_node)
 	mesecon.receiver_remove(pos, node)
