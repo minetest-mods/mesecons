@@ -47,9 +47,10 @@ local function update_real_port_states(pos, rule_name, new_state)
 	local meta = minetest.get_meta(pos)
 	if rule_name == nil then
 		meta:set_int("real_portstates", 1)
-		return
+		return true
 	end
-	local n = meta:get_int("real_portstates") - 1
+	local real_portstates = meta:get_int("real_portstates")
+	local n = real_portstates - 1
 	local L = {}
 	for i = 1, 4 do
 		L[i] = n % 2
@@ -66,12 +67,12 @@ local function update_real_port_states(pos, rule_name, new_state)
 		local port = pos_to_side[rule_name.x + (2 * rule_name.z) + 3]
 		L[port] = (new_state == "on") and 1 or 0
 	end
-	meta:set_int("real_portstates",
-		1 +
-		1 * L[1] +
-		2 * L[2] +
-		4 * L[3] +
-		8 * L[4])
+	local new_portstates = 1 + 1 * L[1] + 2 * L[2] + 4 * L[3] + 8 * L[4]
+	if new_portstates ~= real_portstates then
+		meta:set_int("real_portstates", new_portstates)
+		return true
+	end
+	return false
 end
 
 
@@ -826,8 +827,9 @@ for d = 0, 1 do
 		effector = {
 			rules = input_rules[cid],
 			action_change = function (pos, _, rule_name, new_state)
-				update_real_port_states(pos, rule_name, new_state)
-				run(pos, {type=new_state, pin=rule_name})
+				if update_real_port_states(pos, rule_name, new_state) then
+					run(pos, {type=new_state, pin=rule_name})
+				end
 			end,
 		},
 		receptor = {

@@ -44,8 +44,9 @@ local mesecons = {effector =
 {
 	rules = input_rules,
 	action_change = function (pos, node, rulename, newstate)
-		yc.update_real_portstates(pos, node, rulename, newstate)
-		yc.update(pos)
+		if yc.update_real_portstates(pos, node, rulename, newstate) then
+			yc.update(pos)
+		end
 	end
 }}
 if nodename ~= "mesecons_microcontroller:microcontroller0000" then
@@ -659,9 +660,10 @@ yc.update_real_portstates = function(pos, _, rulename, newstate)
 	local meta = minetest.get_meta(pos)
 	if rulename == nil then
 		meta:set_int("real_portstates", 1)
-		return
+		return true
 	end
-	local n = meta:get_int("real_portstates") - 1
+	local real_portstates = meta:get_int("real_portstates")
+	local n = real_portstates - 1
 	local L = {}
 	for i = 1, 4 do
 		L[i] = n%2
@@ -676,7 +678,12 @@ yc.update_real_portstates = function(pos, _, rulename, newstate)
 		local port = ({4, 1, nil, 3, 2})[rulename.x+2*rulename.z+3]
 		L[port] = (newstate == "on") and 1 or 0
 	end
-	meta:set_int("real_portstates", 1 + L[1] + 2*L[2] + 4*L[3] + 8*L[4])
+	local new_portstates = 1 + L[1] + 2*L[2] + 4*L[3] + 8*L[4]
+	if new_portstates ~= real_portstates then
+		meta:set_int("real_portstates", new_portstates)
+		return true
+	end
+	return false
 end
 
 yc.get_real_portstates = function(pos) -- determine if ports are powered (by itself or from outside)

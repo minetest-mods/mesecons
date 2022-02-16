@@ -114,8 +114,9 @@ plg.register_nodes({
 		effector = {
 			rules = {}, -- replaced later
 			action_change = function(pos, _, rule, newstate)
-				plg.ports_changed(pos, rule, newstate)
-				plg.update(pos)
+				if plg.ports_changed(pos, rule, newstate) then
+					plg.update(pos)
+				end
 			end
 		}
 	},
@@ -327,7 +328,7 @@ plg.update = function(pos)
 end
 
 plg.ports_changed = function(pos, rule, newstate)
-	if rule == nil then return end
+	if rule == nil then return false end
 	local meta = minetest.get_meta(pos)
 	local states
 
@@ -347,10 +348,14 @@ plg.ports_changed = function(pos, rule, newstate)
 	local portno = ({4, 1, nil, 3, 2})[3 + rule.x + 2*rule.z]
 	states[portno] = (newstate == "on")
 
-	meta:set_string("portstates",
+	local new_portstates =
 			(states[1] and "1" or "0") .. (states[2] and "1" or "0") ..
 			(states[3] and "1" or "0") .. (states[4] and "1" or "0")
-	)
+	if new_portstates ~= s then
+		meta:set_string("portstates", new_portstates)
+		return true
+	end
+	return false
 end
 
 plg.getports = function(pos) -- gets merged states of INPUT & OUTPUT
