@@ -324,6 +324,14 @@ function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 	end
 end
 
+-- This code is deferred until after a node is moved.
+mesecon.queue:add_function("after_move_node", function(pos, oldpos, node)
+	minetest.get_voxel_manip(pos, pos) -- Force load
+	mesecon.on_placenode(pos, node)
+	minetest.check_for_falling(oldpos)
+	minetest.check_for_falling(pos)
+end)
+
 -- Never push into unloaded blocks. Don’t try to pull from them, either.
 -- TODO: load blocks instead, as with wires.
 mesecon.register_mvps_stopper("ignore")
@@ -337,11 +345,7 @@ mesecon.register_on_mvps_move(mesecon.move_hot_nodes)
 mesecon.register_on_mvps_move(function(moved_nodes)
 	for i = 1, #moved_nodes do
 		local moved_node = moved_nodes[i]
-		mesecon.on_placenode(moved_node.pos, moved_node.node)
-		minetest.after(0, function()
-			minetest.check_for_falling(moved_node.oldpos)
-			minetest.check_for_falling(moved_node.pos)
-		end)
+		mesecon.queue:add_action(moved_node.pos, "after_move_node", {moved_node.oldpos, moved_node.node})
 		local node_def = minetest.registered_nodes[moved_node.node.name]
 		if node_def and node_def.mesecon and node_def.mesecon.on_mvps_move then
 			node_def.mesecon.on_mvps_move(moved_node.pos, moved_node.node,
