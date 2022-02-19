@@ -1,6 +1,3 @@
-local rotate
-if minetest.global_exists("screwdriver") then rotate = screwdriver.rotate_simple end
-
 local doublecorner_selectionbox = {
 	type = "fixed",
 	fixed = { -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 },
@@ -69,7 +66,7 @@ for k, state in ipairs(doublecorner_states) do
 			},
 		},
 		on_blast = mesecon.on_blastnode,
-		on_rotate = rotate,
+		on_rotate = mesecon.on_rotate_horiz,
 	})
 end
 

@@ -229,6 +229,12 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	for _, n in ipairs(nodes) do
 		local np = vector.add(n.pos, movedir)
 
+		-- Turn off conductors in transit
+		local conductor = mesecon.get_conductor(n.node.name)
+		if conductor and conductor.state ~= mesecon.state.off then
+			n.node.name = conductor.offstate or conductor.states[1]
+		end
+
 		minetest.set_node(np, n.node)
 		minetest.get_meta(np):from_table(n.meta)
 		if n.node_timer then

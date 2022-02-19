@@ -1,5 +1,3 @@
-local screwdriver_exists = minetest.global_exists("screwdriver")
-
 local function insulated_wire_get_rules(node)
 	local rules = 	{{x = 1,  y = 0,  z = 0},
 			 {x =-1,  y = 0,  z = 0}}
@@ -43,7 +41,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 		rules = insulated_wire_get_rules
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = screwdriver_exists and screwdriver.rotate_simple,
+	on_rotate = mesecon.on_rotate_horiz,
 })
 
 minetest.register_node("mesecons_insulated:insulated_off", {
@@ -79,7 +77,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 		rules = insulated_wire_get_rules
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = screwdriver_exists and screwdriver.rotate_simple,
+	on_rotate = mesecon.on_rotate_horiz,
 })
 
 minetest.register_craft({

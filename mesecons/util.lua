@@ -452,6 +452,22 @@ function mesecon.swap_node_force(pos, name, update_light)
 	end
 end
 
+-- An on_rotate callback for components which stay horizontal.
+function mesecon.on_rotate_horiz(pos, node, user, mode, new_param2)
+	if not minetest.global_exists("screwdriver") then
+		return false
+	end
+	if mode ~= screwdriver.ROTATE_FACE then
+		return false
+	end
+	minetest.swap_node(pos, {name = "air"})
+	mesecon.on_dignode(pos, node)
+	node.param2 = new_param2
+	minetest.swap_node(pos, node)
+	mesecon.on_placenode(pos, node)
+	return true
+end
+
 -- Autoconnect Hooks
 -- Nodes like conductors may change their appearance and their connection rules
 -- right after being placed or after being dug, e.g. the default wires use this

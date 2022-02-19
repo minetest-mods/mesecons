@@ -2,6 +2,7 @@
 
 mesecon.on_placenode = function(pos, node)
 	mesecon.execute_autoconnect_hooks_now(pos, node)
+	node = minetest.get_node(pos)
 
 	-- Receptors: Send on signal when active
 	if mesecon.is_receptor_on(node.name) then
@@ -11,18 +12,19 @@ mesecon.on_placenode = function(pos, node)
 	-- Conductors: Send turnon signal when powered or replace by respective offstate conductor
 	-- if placed conductor is an onstate one
 	if mesecon.is_conductor(node.name) then
+		local conductor = mesecon.get_conductor(node.name)
+		if conductor.state ~= mesecon.state.off then
+			node.name = conductor.offstate or conductor.states[1]
+			minetest.swap_node(pos, node)
+		end
 		local sources = mesecon.is_powered(pos)
 		if sources then
-			-- also call receptor_on if itself is powered already, so that neighboring
-			-- conductors will be activated (when pushing an on-conductor with a piston)
+			mesecon.vm_begin()
 			for _, s in ipairs(sources) do
 				local rule = vector.subtract(s, pos)
 				mesecon.turnon(pos, rule)
 			end
-			--mesecon.receptor_on (pos, mesecon.conductor_get_rules(node))
-		elseif mesecon.is_conductor_on(node) then
-			node.name = mesecon.get_conductor_off(node)
-			minetest.swap_node(pos, node)
+			mesecon.vm_commit()
 		end
 	end
 
