@@ -2,7 +2,7 @@
 
 mesecon.on_placenode = function(pos, node)
 	mesecon.execute_autoconnect_hooks_now(pos, node)
-	node = minetest.get_node(pos)
+	node = minetest.get_node(pos) -- Update the node in case it was just changed.
 
 	-- Receptors: Send on signal when active
 	if mesecon.is_receptor_on(node.name) then
