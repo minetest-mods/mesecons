@@ -368,17 +368,9 @@ function mesecon.is_power_off(pos, rulename)
 	return false
 end
 
--- The set of conductor states which require light updates when they change.
-local light_update_conductors
-
--- Calculate the contents of the above set if they have not been calculated.
-local function find_light_update_conductors()
-	-- The expensive calculation is only done the first time.
-	if light_update_conductors then return end
-
-	light_update_conductors = {}
-
-	-- Find conductors whose lighting characteristics change depending on their state.
+-- Calculates conductors whose lighting characteristics change depending on their state.
+-- Puts into the given set the names of all such conducting nodes.
+local function calculate_light_update_conductors(set)
 	local checked = {}
 	for name, def in pairs(minetest.registered_nodes) do
 		local conductor = mesecon.get_conductor(name)
@@ -401,9 +393,9 @@ local function find_light_update_conductors()
 				or def.light_source ~= other_def.light_source then
 					-- The light characteristics change depending on the state.
 					-- The states are added to the set.
-					light_update_conductors[name] = true
+					set[name] = true
 					for _, other_state in ipairs(other_states) do
-						light_update_conductors[other_state] = true
+						set[other_state] = true
 						checked[other_state] = true
 					end
 					break
@@ -414,13 +406,21 @@ local function find_light_update_conductors()
 	end
 end
 
+-- The set of conductor states that require light updates when they change.
+local light_update_conductors = setmetatable({}, {
+	__index = function(self, key)
+		-- Calculate the set. This only happens once.
+		setmetatable(self, nil)
+		calculate_light_update_conductors(self)
+		return self[key]
+	end,
+})
+
 -- Turn off an equipotential section starting at `pos`, which outputs in the direction of `link`.
 -- Breadth-first search. Map is abstracted away in a voxelmanip.
 -- Follow all all conductor paths replacing conductors that were already
 -- looked at, activating / changing all effectors along the way.
 function mesecon.turnon(pos, link)
-	find_light_update_conductors()
-
 	local frontiers = fifo_queue.new()
 	frontiers:add({pos = pos, link = link})
 	local pos_can_be_skipped = {}
@@ -482,8 +482,6 @@ end
 --	depth = indicates order in which signals wire fired, higher is later
 -- }
 function mesecon.turnoff(pos, link)
-	find_light_update_conductors()
-
 	local frontiers = fifo_queue.new()
 	frontiers:add({pos = pos, link = link})
 	local signals = {}
