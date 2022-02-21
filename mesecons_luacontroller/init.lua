@@ -43,6 +43,8 @@ local rules = {
 ------------------
 -- These helpers are required to set the port states of the luacontroller
 
+-- Updates the real port states according to the signal change.
+-- Returns whether the real port states actually changed.
 local function update_real_port_states(pos, rule_name, new_state)
 	local meta = minetest.get_meta(pos)
 	if rule_name == nil then

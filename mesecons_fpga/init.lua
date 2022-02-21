@@ -327,6 +327,8 @@ plg.update = function(pos)
 	plg.setports(pos, A, B, C, D)
 end
 
+-- Updates the port states according to the signal change.
+-- Returns whether the port states actually changed.
 plg.ports_changed = function(pos, rule, newstate)
 	if rule == nil then return false end
 	local meta = minetest.get_meta(pos)

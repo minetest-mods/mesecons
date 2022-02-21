@@ -656,6 +656,8 @@ yc.set_portstate = function(port, state, L)
 	return L
 end
 
+-- Updates the real port states according to the signal change.
+-- Returns whether the real port states actually changed.
 yc.update_real_portstates = function(pos, _, rulename, newstate)
 	local meta = minetest.get_meta(pos)
 	if rulename == nil then
