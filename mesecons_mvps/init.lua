@@ -253,7 +253,8 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	return true, nodes, oldstack
 end
 
--- Returns whether the given area intersects any nodes in the given set of position hashes.
+-- Returns whether the given area intersects any nodes in the given set of position hashes,
+-- or any walkable nodes in the map if no set is given.
 local function area_intersects_nodes(min_pos, max_pos, positions)
 	min_pos = vector.round(min_pos)
 	max_pos = vector.round(max_pos)
@@ -261,8 +262,15 @@ local function area_intersects_nodes(min_pos, max_pos, positions)
 	while pos.x <= max_pos.x do
 		while pos.y <= max_pos.y do
 			while pos.z <= max_pos.z do
-				if positions[minetest.hash_node_position(pos)] then
-					return true
+				if positions then
+					if positions[minetest.hash_node_position(pos)] then
+						return true
+					end
+				else
+					local def = minetest.registered_nodes[minetest.get_node(pos).name]
+					if def.walkable then
+						return true
+					end
 				end
 				pos.z = pos.z + 1
 			end
@@ -351,15 +359,13 @@ function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 		if ok then
 			local ent = obj:get_luaentity()
 			if obj:is_player() or (ent and not mesecon.is_mvps_unmov(ent.name)) then
-				local np = vector.add(obj_pos, dir)
 				-- Move only if destination is not solid or object is inside stack:
-				local nn = minetest.get_node(np)
-				local node_def = minetest.registered_nodes[nn.name]
-				local obj_offset = dir_l * (obj_pos[dir_k] - pos[dir_k])
-				if (node_def and not node_def.walkable) or
-						(obj_offset >= 0 and
-						obj_offset <= #nodestack - 0.5) then
-					obj:move_to(np)
+				-- (A small bias is added to prevent rounding issues.)
+				local min_pos = vector.offset(obj_pos, cbox[1] + 0.01, cbox[2] + 0.01, cbox[3] + 0.01)
+				local max_pos = vector.offset(obj_pos, cbox[4] - 0.01, cbox[5] - 0.01, cbox[6] - 0.01)
+				if not area_intersects_nodes(vector.add(min_pos, dir), vector.add(max_pos, dir)) or
+						area_intersects_nodes(min_pos, max_pos, moved_positions) then
+					obj:move_to(vector.add(obj_pos, dir))
 				end
 			end
 		end
