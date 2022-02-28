@@ -364,7 +364,7 @@ function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 				local min_pos = vector.offset(obj_pos, cbox[1] + 0.01, cbox[2] + 0.01, cbox[3] + 0.01)
 				local max_pos = vector.offset(obj_pos, cbox[4] - 0.01, cbox[5] - 0.01, cbox[6] - 0.01)
 				if not area_intersects_nodes(vector.add(min_pos, dir), vector.add(max_pos, dir)) or
-						area_intersects_nodes(min_pos, max_pos, moved_positions) then
+						(nodestack[1] ~= nil and area_intersects_nodes(min_pos, max_pos, moved_positions)) then
 					obj:move_to(vector.add(obj_pos, dir))
 				end
 			end
