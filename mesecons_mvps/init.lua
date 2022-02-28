@@ -268,7 +268,7 @@ local function area_intersects_nodes(min_pos, max_pos, positions)
 					end
 				else
 					local def = minetest.registered_nodes[minetest.get_node(pos).name]
-					if def.walkable then
+					if not def or def.walkable then
 						return true
 					end
 				end
