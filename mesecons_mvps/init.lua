@@ -65,7 +65,7 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	local nodes = {}
 	local pos_set = {}
 	local frontiers = mesecon.fifo_queue.new()
-	frontiers:add(pos)
+	frontiers:add(vector.new(pos))
 
 	for np in frontiers:iter() do
 		local np_hash = minetest.hash_node_position(np)
