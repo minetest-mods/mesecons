@@ -317,14 +317,13 @@ end
 --
 -- Contents of the table are:
 -- “vm” → the VoxelManipulator
--- “va” → the VoxelArea
--- “data” → the data array
--- “param1” → the param1 array
--- “param2” → the param2 array
 -- “dirty” → true if data has been modified
 --
 -- Nil if no VM-based transaction is in progress.
 local vm_cache = nil
+
+-- Cache from node position hashes to nodes (represented as tables).
+local vm_node_cache = nil
 
 -- Whether the current transaction will need a light update afterward.
 local vm_update_light = false
@@ -337,6 +336,7 @@ local vm_update_light = false
 -- vm_abort.
 function mesecon.vm_begin()
 	vm_cache = {}
+	vm_node_cache = {}
 	vm_update_light = false
 end
 
@@ -346,18 +346,19 @@ function mesecon.vm_commit()
 	for hash, tbl in pairs(vm_cache) do
 		if tbl.dirty then
 			local vm = tbl.vm
-			vm:set_data(tbl.data)
 			vm:write_to_map(vm_update_light)
 			vm:update_map()
 		end
 	end
 	vm_cache = nil
+	vm_node_cache = nil
 end
 
 -- Finishes a VoxelManipulator-based transaction, freeing the VMs and throwing
 -- away any modified areas.
 function mesecon.vm_abort()
 	vm_cache = nil
+	vm_node_cache = nil
 end
 
 -- Gets the cache entry covering a position, populating it if necessary.
@@ -365,10 +366,7 @@ local function vm_get_or_create_entry(pos)
 	local hash = hash_blockpos(pos)
 	local tbl = vm_cache[hash]
 	if not tbl then
-		local vm = minetest.get_voxel_manip(pos, pos)
-		local min_pos, max_pos = vm:get_emerged_area()
-		local va = VoxelArea:new{MinEdge = min_pos, MaxEdge = max_pos}
-		tbl = {vm = vm, va = va, data = vm:get_data(), param1 = vm:get_light_data(), param2 = vm:get_param2_data(), dirty = false}
+		tbl = {vm = minetest.get_voxel_manip(pos, pos), dirty = false}
 		vm_cache[hash] = tbl
 	end
 	return tbl
@@ -377,16 +375,13 @@ end
 -- Gets the node at a given position during a VoxelManipulator-based
 -- transaction.
 function mesecon.vm_get_node(pos)
-	local tbl = vm_get_or_create_entry(pos)
-	local index = tbl.va:indexp(pos)
-	local node_value = tbl.data[index]
-	if node_value == minetest.CONTENT_IGNORE then
-		return nil
-	else
-		local node_param1 = tbl.param1[index]
-		local node_param2 = tbl.param2[index]
-		return {name = minetest.get_name_from_content_id(node_value), param1 = node_param1, param2 = node_param2}
+	local hash = minetest.hash_node_position(pos)
+	local node = vm_node_cache[hash]
+	if not node then
+		node = vm_get_or_create_entry(pos).vm:get_node_at(pos)
+		vm_node_cache[hash] = node
 	end
+	return node.name ~= "ignore" and {name = node.name, param1 = node.param1, param2 = node.param2} or nil
 end
 
 -- Sets a node’s name during a VoxelManipulator-based transaction.
@@ -400,8 +395,14 @@ function mesecon.vm_swap_node(pos, name, update_light)
 	vm_update_light = vm_update_light or update_light ~= false
 
 	local tbl = vm_get_or_create_entry(pos)
-	local index = tbl.va:indexp(pos)
-	tbl.data[index] = minetest.get_content_id(name)
+	local hash = minetest.hash_node_position(pos)
+	local node = vm_node_cache[hash]
+	if not node then
+		node = tbl.vm:get_node_at(pos)
+		vm_node_cache[hash] = node
+	end
+	node.name = name
+	tbl.vm:set_node_at(pos, node)
 	tbl.dirty = true
 end
 
