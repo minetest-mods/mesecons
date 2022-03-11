@@ -23,16 +23,18 @@ local gate_get_input_rules_twoinputs = mesecon.horiz_rules_getter({
 local function set_gate(pos, node, state)
 	local gate = minetest.registered_nodes[node.name]
 
-	if mesecon.do_overheat(pos) then
-		minetest.remove_node(pos)
-		mesecon.receptor_off(pos, gate_get_output_rules(node))
-		minetest.add_item(pos, gate.drop)
-	elseif state then
-		minetest.swap_node(pos, {name = gate.onstate, param2=node.param2})
-		mesecon.receptor_on(pos, gate_get_output_rules(node))
-	else
-		minetest.swap_node(pos, {name = gate.offstate, param2=node.param2})
-		mesecon.receptor_off(pos, gate_get_output_rules(node))
+	local new_nodename = state and gate.onstate or gate.offstate
+	minetest.swap_node(pos, {name = new_nodename, param2 = node.param2})
+	if new_nodename ~= node.name then
+		if mesecon.do_overheat(pos) then
+			minetest.remove_node(pos)
+			mesecon.receptor_off(pos, gate_get_output_rules(node))
+			minetest.add_item(pos, gate.drop)
+		elseif state then
+			mesecon.receptor_on(pos, gate_get_output_rules(node))
+		else
+			mesecon.receptor_off(pos, gate_get_output_rules(node))
+		end
 	end
 end
 
