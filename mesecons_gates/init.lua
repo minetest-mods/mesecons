@@ -62,9 +62,9 @@ local function update_gate(pos, node, link, newstate)
 			local meta = minetest.get_meta(pos)
 			if link.name == "input1" then
 				val1 = newstate == "on"
-				val2 = meta:get("input2") == "1"
+				val2 = meta:get_int("input2") == 1
 			else
-				val1 = meta:get("input1") == "1"
+				val1 = meta:get_int("input1") == 1
 				val2 = newstate == "on"
 			end
 			-- Set bit 5 so this won't happen again.
