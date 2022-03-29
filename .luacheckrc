@@ -34,3 +34,11 @@ globals = {"mesecon"}
 files["mesecons/actionqueue.lua"] = {
 	globals = {"minetest.registered_globalsteps"},
 }
+
+files["*/spec/**/*.lua"] = {
+	read_globals = {"assert", "fixture", "mineunit", "sourcefile", "world"},
+}
+
+files["mesecons/spec/fixtures/voxelmanip.lua"] = {
+	globals = {"minetest.get_voxel_manip"},
+}
