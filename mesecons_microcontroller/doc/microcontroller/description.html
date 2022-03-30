@@ -1,0 +1,64 @@
+<!-- Generate `description.html` from this by using `$ md2html -o description.html description.md`. -->
+<p>The Microcontroller is a semi-advanced programmable component with a persistent
+256 bit EEPROM memory.</p>
+<p>Warning: This device is largely considered deprecated and might contain bugs. It
+is recommended to use a Luacontroller instead.</p>
+<p>Detailed documentation can be found below:</p>
+<ul>
+<li>The Microcontroller's code is executed whenever any of the following events
+happens:<ul>
+<li>The Microcontroller is programmed. In this case the EEPROM and ports are all
+reset to <code>0</code> before.</li>
+<li>An incoming signal changes its state.</li>
+<li>An <code>after</code> event happens (see command <code>after</code> below).</li>
+</ul>
+</li>
+<li>There are 4 I/O ports (ABCD) and 256 EEPROM bits (1 to 256).</li>
+<li>The code consists of a sequence of commands.</li>
+<li>Everything after <code>:</code> is a comment.</li>
+<li>Strings are enclosed in <code>&quot;</code>s.</li>
+<li>Spaces and tabs outside of strings are ignored.</li>
+<li>Basic command syntax:<pre><code>    command_name`(`param1`,` param2`,` ...`)`
+</code></pre>
+</li>
+<li>Commands:<ul>
+<li><code>if(condition) commands [&gt; else_commands];</code>:
+Evaluates the given condition and takes the corresponding branch.
+The else branch is optional (as indicated by the <code>[</code> and <code>]</code>). The <code>&gt;</code> is part
+of the syntax and indicates the start of the else branch. The <code>;</code> marks the
+end of the if command.</li>
+<li><code>on(port1, port2, ...)</code>:
+Sets the given ports to <code>1</code>.</li>
+<li><code>off(port1, port2, ...)</code>:
+Sets the given ports to <code>0</code>.</li>
+<li><code>print(&quot;string&quot; or codition, ...)</code>:
+Evaluates the conditions and prints the concatenation of all params to stdout
+(only useful in singleplayer).</li>
+<li><code>after(time, &quot;more commands&quot;)</code>:
+Executes the commands in the string after the given time in seconds.
+There can only be one waiting <code>after</code> event at once.
+Warning: This is not reliable, ie. <code>minetest.after</code> is used.</li>
+<li><code>sbi(port_or_eeprom, condition)</code>:
+Evaluates the condition and sets the port or EEPROM bit to the resulting value.
+Note: EEPROM indices don't use <code>#</code> here, ie. it's <code>sbi(1, #2)</code>, not <code>sbi(#1, #2)</code>.</li>
+</ul>
+</li>
+<li>Conditions (sorted by descending precedence; they are all evaluated from left
+to right):<ul>
+<li><code>0</code>, <code>1</code>: constant</li>
+<li><code>A</code>, ..., <code>D</code>: value of a port. Takes writes that already happened during the
+current execution into account.</li>
+<li><code>#1</code>, ..., <code>#256</code>: value of an EEPROM bit. Takes writes that already happened
+during the current execution into account.</li>
+<li><code>!condition</code>: negation (can only be applied once, ie. not <code>!!1</code>)</li>
+<li><code>condition1 = condition2</code>: XNOR (equality)</li>
+<li><code>condition1 op condition2</code> where <code>op</code> is one of:<ul>
+<li><code>&amp;</code>: AND</li>
+<li><code>|</code>: OR</li>
+<li><code>~</code>: XOR (inequality)</li>
+</ul>
+</li>
+<li>Note: There are no parentheses.</li>
+</ul>
+</li>
+</ul>

@@ -120,7 +120,7 @@ minetest.register_node(nodename, {
 		elseif fields.bnand then
 			fields.code = "sbi(C, !A|!B) :A and B are inputs, C is output"
 		elseif fields.btflop then
-			fields.code = "if(A)sbi(1,1);if(!A&#1)sbi(B,!B)sbi(1,0); if(C)off(B,1); :A is input, B is output (Q), C is reset, toggles with falling edge"
+			fields.code = "if(A)sbi(1,1);if(!A&#1)sbi(B,!B)sbi(1,0); if(C)off(B); :A is input, B is output (Q), C is reset, toggles with falling edge"
 		elseif fields.brsflop then
 			fields.code = "if(A)on(C);if(B)off(C); :A is S (Set), B is R (Reset), C is output (R dominates)"
 		end
