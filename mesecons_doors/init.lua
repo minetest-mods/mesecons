@@ -66,6 +66,10 @@ local function meseconify_door(name)
 		}
 		minetest.override_item(name .. "_a", override)
 		minetest.override_item(name .. "_b", override)
+		if minetest.registered_items[name .. "_c"] then
+			minetest.override_item(name .. "_c", override)
+			minetest.override_item(name .. "_d", override)
+		end
 	end
 end
 
