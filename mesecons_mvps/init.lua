@@ -63,28 +63,31 @@ end
 function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	-- determine the number of nodes to be pushed
 	local nodes = {}
-	local frontiers = {pos}
+	local pos_set = {}
+	local frontiers = mesecon.fifo_queue.new()
+	frontiers:add(vector.new(pos))
 
-	while #frontiers > 0 do
-		local np = frontiers[1]
-		local nn = minetest.get_node(np)
-
-		if not node_replaceable(nn.name) then
+	for np in frontiers:iter() do
+		local np_hash = minetest.hash_node_position(np)
+		local nn = not pos_set[np_hash] and minetest.get_node(np)
+		if nn and not node_replaceable(nn.name) then
+			pos_set[np_hash] = true
 			table.insert(nodes, {node = nn, pos = np})
 			if #nodes > maximum then return nil end
 
-			-- add connected nodes to frontiers, connected is a vector list
-			-- the vectors must be absolute positions
-			local connected = {}
+			-- add connected nodes to frontiers
 			if minetest.registered_nodes[nn.name]
 			and minetest.registered_nodes[nn.name].mvps_sticky then
-				connected = minetest.registered_nodes[nn.name].mvps_sticky(np, nn)
+				local connected = minetest.registered_nodes[nn.name].mvps_sticky(np, nn)
+				for _, cp in ipairs(connected) do
+					frontiers:add(cp)
+				end
 			end
 
-			table.insert(connected, vector.add(np, dir))
+			frontiers:add(vector.add(np, dir))
 
 			-- If adjacent node is sticky block and connects add that
-			-- position to the connected table
+			-- position
 			for _, r in ipairs(mesecon.rules.alldirs) do
 				local adjpos = vector.add(np, r)
 				local adjnode = minetest.get_node(adjpos)
@@ -96,36 +99,16 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 					-- connects to this position?
 					for _, link in ipairs(sticksto) do
 						if vector.equals(link, np) then
-							table.insert(connected, adjpos)
+							frontiers:add(adjpos)
 						end
 					end
 				end
 			end
 
 			if all_pull_sticky then
-				table.insert(connected, vector.subtract(np, dir))
-			end
-
-			-- Make sure there are no duplicates in frontiers / nodes before
-			-- adding nodes in "connected" to frontiers
-			for _, cp in ipairs(connected) do
-				local duplicate = false
-				for _, rp in ipairs(nodes) do
-					if vector.equals(cp, rp.pos) then
-						duplicate = true
-					end
-				end
-				for _, fp in ipairs(frontiers) do
-					if vector.equals(cp, fp) then
-						duplicate = true
-					end
-				end
-				if not duplicate then
-					table.insert(frontiers, cp)
-				end
+				frontiers:add(vector.subtract(np, dir))
 			end
 		end
-		table.remove(frontiers, 1)
 	end
 
 	return nodes

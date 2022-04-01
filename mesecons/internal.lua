@@ -46,7 +46,8 @@
 -- mesecon.rotate_rules_down(rules)
 -- These functions return rules that have been rotated in the specific direction
 
-local fifo_queue = dofile(minetest.get_modpath("mesecons").."/fifo_queue.lua")
+-- See fifo_queue.lua for documentation.
+mesecon.fifo_queue = dofile(minetest.get_modpath("mesecons").."/fifo_queue.lua")
 
 -- General
 function mesecon.get_effector(nodename)
@@ -421,7 +422,7 @@ end
 function mesecon.turnon(pos, link)
 	find_light_update_conductors()
 
-	local frontiers = fifo_queue.new()
+	local frontiers = mesecon.fifo_queue.new()
 	frontiers:add({pos = pos, link = link})
 	local pos_can_be_skipped = {}
 
@@ -484,7 +485,7 @@ end
 function mesecon.turnoff(pos, link)
 	find_light_update_conductors()
 
-	local frontiers = fifo_queue.new()
+	local frontiers = mesecon.fifo_queue.new()
 	frontiers:add({pos = pos, link = link})
 	local signals = {}
 	local pos_can_be_skipped = {}
