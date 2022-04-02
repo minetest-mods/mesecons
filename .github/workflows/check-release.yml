@@ -13,3 +13,20 @@ jobs:
       run: luarocks install --local luacheck
     - name: luacheck run
       run: $HOME/.luarocks/bin/luacheck ./
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@main
+    - name: apt
+      run: sudo apt-get install -y luarocks
+    - name: busted install
+      run: luarocks install --local busted
+    - name: luacov install
+      run: luarocks install --local luacov
+    - name: mineunit install
+      run: luarocks install --server=https://luarocks.org/dev --local mineunit
+    - name: run mesecons tests
+      working-directory: ./mesecons/
+      run: $HOME/.luarocks/bin/mineunit -q
