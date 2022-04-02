@@ -81,6 +81,29 @@ do
 end
 
 do
+	local function get_rules(node)
+		local rules = {{x = 1, y = 0, z = 0}, {x = -1, y = 0, z = 0}}
+		if node.param2 == 1 or node.param2 == 3 then
+			rules = mesecon.rotate_rules_right(rules)
+		end
+		return rules
+	end
+	local off_spec = {conductor = {
+		state = mesecon.state.off,
+		rules = get_rules,
+		onstate = "mesecons:test_conductor_rot_on",
+	}}
+	local on_spec = {conductor = {
+		state = mesecon.state.on,
+		rules = get_rules,
+		offstate = "mesecons:test_conductor_rot_off",
+	}}
+	mesecon.register_node("mesecons:test_conductor_rot", {
+		description = "Rotatable Test Conductor",
+	}, {mesecons = off_spec}, {mesecons = on_spec})
+end
+
+do
 	local mesecons_spec = {conductor = {
 		rules = {
 			{{x = 1, y = 0, z = 0}, {x = 0, y = -1, z = 0}},

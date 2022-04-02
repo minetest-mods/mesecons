@@ -68,6 +68,37 @@ describe("state", function()
 	end)
 end)
 
+describe("rotation", function()
+	local layout = {
+		{{x =  0, y = 0, z =  0}, "mesecons:test_receptor_off"},
+		{{x =  1, y = 0, z =  0}, {name = "mesecons:test_conductor_rot_off", param2 = 0}},
+		{{x =  0, y = 0, z =  1}, {name = "mesecons:test_conductor_rot_off", param2 = 1}},
+		{{x = -1, y = 0, z =  0}, {name = "mesecons:test_conductor_rot_off", param2 = 2}},
+		{{x =  0, y = 0, z = -1}, {name = "mesecons:test_conductor_rot_off", param2 = 3}},
+	}
+
+	before_each(function()
+		for _, entry in ipairs(layout) do
+			world.set_node(entry[1], entry[2])
+		end
+	end)
+
+	after_each(function()
+		mesecon._test_reset()
+		world.clear()
+	end)
+
+	it("works", function()
+		mesecon.swap_node_force(layout[1][1], "mesecons:test_receptor_on")
+		mesecon.receptor_on(layout[1][1], mesecon.rules.alldirs)
+		mineunit:execute_globalstep()
+		assert.equal("mesecons:test_conductor_rot_on", world.get_node(layout[2][1]).name)
+		assert.equal("mesecons:test_conductor_rot_on", world.get_node(layout[3][1]).name)
+		assert.equal("mesecons:test_conductor_rot_on", world.get_node(layout[4][1]).name)
+		assert.equal("mesecons:test_conductor_rot_on", world.get_node(layout[5][1]).name)
+	end)
+end)
+
 describe("multiconductor", function()
 	local layout = {
 		{{x =  1, y = 0, z =  0}, "mesecons:test_receptor_off"},
