@@ -3,7 +3,9 @@ mineunit("server")
 
 fixture("voxelmanip")
 
-sourcefile("init")
+mineunit:set_current_modname("mesecons")
+mineunit:set_modpath("mesecons", "../mesecons")
+sourcefile("../mesecons/init")
 
 do
 	local off_spec = {conductor = {
