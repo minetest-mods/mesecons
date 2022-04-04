@@ -122,9 +122,9 @@ describe("node movement", function()
 	it("calls move callbacks", function()
 		local pos = {x = 0, y = 0, z = 0}
 		local dir = {x = 1, y = 0, z = 0}
-		world.set_node(pos, "mesecons_mvps:test_on_move")
+		world.set_node(pos, {name = "mesecons_mvps:test_on_move", param2 = 123})
 		minetest.get_meta(pos):set_string("foo", "bar")
-		local move_info = {vector.add(pos, dir), pos, minetest.get_meta(pos):to_table()}
+		local move_info = {vector.add(pos, dir), world.get_node(pos), pos, minetest.get_meta(pos):to_table()}
 
 		mesecon.mvps_push(pos, dir, 1, "")
 		assert.equal(1, #mesecon._test_moves)

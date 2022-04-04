@@ -33,8 +33,8 @@ mesecon._test_moves = {}
 minetest.register_node("mesecons_mvps:test_on_move", {
 	description = "Test Moveable",
 	mesecon = {
-		on_mvps_move = function(pos, _, oldpos, meta)
-			table.insert(mesecon._test_moves, {pos, oldpos, meta})
+		on_mvps_move = function(pos, node, oldpos, meta)
+			table.insert(mesecon._test_moves, {pos, node, oldpos, meta})
 		end
 	},
 })
