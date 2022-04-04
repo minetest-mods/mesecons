@@ -30,3 +30,6 @@ jobs:
     - name: run mesecons tests
       working-directory: ./mesecons/
       run: $HOME/.luarocks/bin/mineunit -q
+    - name: run mesecons_mvps tests
+      working-directory: ./mesecons_mvps/
+      run: $HOME/.luarocks/bin/mineunit -q
