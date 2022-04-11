@@ -729,7 +729,7 @@ mesecon.queue:add_function("lc_digiline_relay", function (pos, channel, luac_id,
 	if (minetest.get_meta(pos):get_int("luac_id") ~= luac_id) then return end
 	if (minetest.registered_nodes[minetest.get_node(pos).name].is_burnt) then return end
 	-- The actual work
-	local send_rules = (port and digiline_port_rules[string.lower(port)]) or digilines.rules.default
+	local send_rules = (port and type(port) == 'string' and digiline_port_rules[string.lower(port)]) or digilines.rules.default
 	digiline:receptor_send(pos, send_rules, channel, msg)
 end)
 
