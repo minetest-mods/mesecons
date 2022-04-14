@@ -36,7 +36,14 @@ files["mesecons/actionqueue.lua"] = {
 }
 
 files["*/spec/**/*.lua"] = {
-	read_globals = {"assert", "fixture", "mineunit", "Player", "sourcefile", "world"},
+	read_globals = {
+		"assert",
+		"fixture",
+		"mineunit",
+		"Player",
+		"sourcefile",
+		"world",
+	},
 }
 
 files["mesecons/spec/fixtures/voxelmanip.lua"] = {
