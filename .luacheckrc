@@ -36,9 +36,13 @@ files["mesecons/actionqueue.lua"] = {
 }
 
 files["*/spec/**/*.lua"] = {
-	read_globals = {"assert", "fixture", "mineunit", "sourcefile", "world"},
+	read_globals = {"assert", "fixture", "mineunit", "Player", "sourcefile", "world"},
 }
 
 files["mesecons/spec/fixtures/voxelmanip.lua"] = {
 	globals = {"minetest.get_voxel_manip"},
+}
+
+files["mesecons_fpga/spec/fixtures/mesecons_fpga.lua"] = {
+	globals = {"minetest.register_on_player_receive_fields"},
 }
