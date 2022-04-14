@@ -43,6 +43,10 @@ files["mesecons/spec/fixtures/voxelmanip.lua"] = {
 	globals = {"minetest.get_voxel_manip"},
 }
 
+files["mesecons_fpga/spec/fixtures/screwdriver.lua"] = {
+	globals = {"screwdriver"},
+}
+
 files["mesecons_fpga/spec/fixtures/mesecons_fpga.lua"] = {
 	globals = {"minetest.register_on_player_receive_fields"},
 }
