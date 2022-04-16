@@ -127,7 +127,7 @@ describe("FPGA logic", function()
 	end)
 
 	it("allows double port assignment", function()
-		test_program({a = true}, {b = true}, {{"=", "A", "B"}, {"=", "A", "B"}})
+		test_program({a = true}, {b = true}, {{"NOT", "A", "B"}, {"=", "A", "B"}})
 	end)
 
 	it("allows assignment to port operand", function()
