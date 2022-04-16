@@ -161,6 +161,45 @@ describe("FPGA logic", function()
 		})
 	end)
 
+	it("transmits changes", function()
+		mesecon._test_program_fpga(pos, {
+			{"=", "A", "B"},
+			{"=", "A", "C"},
+			{"NOT", "A", "D"},
+		})
+		mesecon._test_place(pos_b, "mesecons:test_effector")
+		mesecon._test_place(pos_c, "mesecons:test_effector")
+		mesecon._test_place(pos_d, "mesecons:test_effector")
+		mineunit:execute_globalstep()
+		mineunit:execute_globalstep()
+
+		-- Makes an object from the last three effector events in the list for use with assert.same.
+		-- This is necessary to ignore the ordering of events.
+		local function event_tester(list)
+			local o = {list[#list - 2], list[#list - 1], list[#list - 0]}
+			table.sort(o, function(a, b)
+				return minetest.write_json(a) < minetest.write_json(b)
+			end)
+			return o
+		end
+
+		mesecon._test_place(pos_a, "mesecons:test_receptor_on")
+		mineunit:execute_globalstep()
+		mineunit:execute_globalstep()
+		mineunit:execute_globalstep()
+		mineunit:execute_globalstep()
+		assert.equal("mesecons_fpga:fpga0110", world.get_node(pos).name)
+		assert.same(event_tester({{"on", pos_b}, {"on", pos_c}, {"off", pos_d}}), event_tester(mesecon._test_effector_events))
+
+		mesecon._test_dig(pos_a)
+		mineunit:execute_globalstep()
+		mineunit:execute_globalstep()
+		mineunit:execute_globalstep()
+		mineunit:execute_globalstep()
+		assert.equal("mesecons_fpga:fpga1000", world.get_node(pos).name)
+		assert.same(event_tester({{"off", pos_b}, {"off", pos_c}, {"on", pos_d}}), event_tester(mesecon._test_effector_events))
+	end)
+
 	it("considers past outputs in determining inputs", function()
 		-- Memory cell: Turning on A turns on C; turning on B turns off C.
 		mesecon._test_program_fpga(pos, {
