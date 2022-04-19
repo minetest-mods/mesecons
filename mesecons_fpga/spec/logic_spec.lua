@@ -178,7 +178,8 @@ describe("FPGA logic", function()
 		local function event_tester(list)
 			local o = {list[#list - 2], list[#list - 1], list[#list - 0]}
 			table.sort(o, function(a, b)
-				return minetest.write_json(a) < minetest.write_json(b)
+				local fmt = "%s %d %d %d"
+				return fmt:format(a[1], a[2].x, a[2].y, a[2].z) < fmt:format(b[1], b[2].x, b[2].y, b[2].z)
 			end)
 			return o
 		end
