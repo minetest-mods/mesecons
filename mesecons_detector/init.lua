@@ -1,3 +1,5 @@
+local side_texture = mesecon.steel_block_texture or "mesecons_detector_side.png"
+
 local GET_COMMAND = "GET"
 
 -- Object detector
@@ -64,7 +66,7 @@ local object_detector_digiline = {
 }
 
 minetest.register_node("mesecons_detector:object_detector_off", {
-	tiles = {"default_steel_block.png", "default_steel_block.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png"},
+	tiles = {side_texture, side_texture, "jeija_object_detector_off.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png", "jeija_object_detector_off.png"},
 	paramtype = "light",
 	is_ground_content = false,
 	walkable = true,
@@ -76,13 +78,13 @@ minetest.register_node("mesecons_detector:object_detector_off", {
 	}},
 	on_construct = object_detector_make_formspec,
 	on_receive_fields = object_detector_on_receive_fields,
-	sounds = default.node_sound_stone_defaults(),
+	sounds = mesecon.node_sound_stone_defaults,
 	digiline = object_detector_digiline,
 	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_detector:object_detector_on", {
-	tiles = {"default_steel_block.png", "default_steel_block.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png"},
+	tiles = {side_texture, side_texture, "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png", "jeija_object_detector_on.png"},
 	paramtype = "light",
 	is_ground_content = false,
 	walkable = true,
@@ -94,7 +96,7 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	}},
 	on_construct = object_detector_make_formspec,
 	on_receive_fields = object_detector_on_receive_fields,
-	sounds = default.node_sound_stone_defaults(),
+	sounds = mesecon.node_sound_stone_defaults,
 	digiline = object_detector_digiline,
 	on_blast = mesecon.on_blastnode,
 })
@@ -102,18 +104,18 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 minetest.register_craft({
 	output = 'mesecons_detector:object_detector_off',
 	recipe = {
-		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-		{"default:steel_ingot", "mesecons_luacontroller:luacontroller0000", "default:steel_ingot"},
-		{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_compat:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot"},
 	}
 })
 
 minetest.register_craft({
 	output = 'mesecons_detector:object_detector_off',
 	recipe = {
-		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-		{"default:steel_ingot", "mesecons_microcontroller:microcontroller0000", "default:steel_ingot"},
-		{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "mesecons_microcontroller:microcontroller0000", "mesecons_compat:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot"},
 	}
 })
 
@@ -239,7 +241,7 @@ local node_detector_digiline = {
 }
 
 minetest.register_node("mesecons_detector:node_detector_off", {
-	tiles = {"default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "jeija_node_detector_off.png"},
+	tiles = {side_texture, side_texture, side_texture, side_texture, side_texture, "jeija_node_detector_off.png"},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	is_ground_content = false,
@@ -251,13 +253,13 @@ minetest.register_node("mesecons_detector:node_detector_off", {
 	}},
 	on_construct = node_detector_make_formspec,
 	on_receive_fields = node_detector_on_receive_fields,
-	sounds = default.node_sound_stone_defaults(),
+	sounds = mesecon.node_sound_stone_defaults,
 	digiline = node_detector_digiline,
 	on_blast = mesecon.on_blastnode,
 })
 
 minetest.register_node("mesecons_detector:node_detector_on", {
-	tiles = {"default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "default_steel_block.png", "jeija_node_detector_on.png"},
+	tiles = {side_texture, side_texture, side_texture, side_texture, side_texture, "jeija_node_detector_on.png"},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	is_ground_content = false,
@@ -269,7 +271,7 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 	}},
 	on_construct = node_detector_make_formspec,
 	on_receive_fields = node_detector_on_receive_fields,
-	sounds = default.node_sound_stone_defaults(),
+	sounds = mesecon.node_sound_stone_defaults,
 	digiline = node_detector_digiline,
 	on_blast = mesecon.on_blastnode,
 })
@@ -277,18 +279,18 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 minetest.register_craft({
 	output = 'mesecons_detector:node_detector_off',
 	recipe = {
-		{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
-		{"default:steel_ingot", "mesecons_luacontroller:luacontroller0000", "default:steel_ingot"},
-		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_compat:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot"},
 	}
 })
 
 minetest.register_craft({
 	output = 'mesecons_detector:node_detector_off',
 	recipe = {
-		{"default:steel_ingot", "group:mesecon_conductor_craftable", "default:steel_ingot"},
-		{"default:steel_ingot", "mesecons_microcontroller:microcontroller0000", "default:steel_ingot"},
-		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "mesecons_microcontroller:microcontroller0000", "mesecons_compat:steel_ingot"},
+		{"mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot"},
 	}
 })
 
