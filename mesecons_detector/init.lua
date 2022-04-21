@@ -104,18 +104,18 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 minetest.register_craft({
 	output = 'mesecons_detector:object_detector_off',
 	recipe = {
-		{"mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot"},
-		{"mesecons_compat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_compat:steel_ingot"},
-		{"mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_gamecompat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot"},
 	}
 })
 
 minetest.register_craft({
 	output = 'mesecons_detector:object_detector_off',
 	recipe = {
-		{"mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot"},
-		{"mesecons_compat:steel_ingot", "mesecons_microcontroller:microcontroller0000", "mesecons_compat:steel_ingot"},
-		{"mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_microcontroller:microcontroller0000", "mesecons_gamecompat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot"},
 	}
 })
 
@@ -279,18 +279,18 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 minetest.register_craft({
 	output = 'mesecons_detector:node_detector_off',
 	recipe = {
-		{"mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot"},
-		{"mesecons_compat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_compat:steel_ingot"},
-		{"mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_gamecompat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot"},
 	}
 })
 
 minetest.register_craft({
 	output = 'mesecons_detector:node_detector_off',
 	recipe = {
-		{"mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot"},
-		{"mesecons_compat:steel_ingot", "mesecons_microcontroller:microcontroller0000", "mesecons_compat:steel_ingot"},
-		{"mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot", "mesecons_compat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_microcontroller:microcontroller0000", "mesecons_gamecompat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot"},
 	}
 })
 

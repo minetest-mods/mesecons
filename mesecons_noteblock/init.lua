@@ -25,7 +25,7 @@ minetest.register_craft({
 	output = "mesecons_noteblock:noteblock 1",
 	recipe = {
 		{"group:wood", "group:wood", "group:wood"},
-		{"group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable"},
+		{"group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable"},
 		{"group:wood", "group:wood", "group:wood"},
 	}
 })
@@ -48,12 +48,12 @@ local soundnames = {
 
 local node_sounds = {}
 for alias, sound in pairs({
-	["mesecons_compat:lava_source"] = mesecon.sound_name_fire,
-	["mesecons_compat:chest"] = "mesecons_noteblock_snare",
-	["mesecons_compat:chest_locked"] = "mesecons_noteblock_snare",
-	["mesecons_compat:coalblock"] = mesecon.sound_name_explode,
-	["mesecons_compat:glass"] = "mesecons_noteblock_hihat",
-	["mesecons_compat:obsidian_glass"] = "mesecons_noteblock_hihat",
+	["mesecons_gamecompat:lava_source"] = mesecon.sound_name_fire,
+	["mesecons_gamecompat:chest"] = "mesecons_noteblock_snare",
+	["mesecons_gamecompat:chest_locked"] = "mesecons_noteblock_snare",
+	["mesecons_gamecompat:coalblock"] = mesecon.sound_name_explode,
+	["mesecons_gamecompat:glass"] = "mesecons_noteblock_hihat",
+	["mesecons_gamecompat:obsidian_glass"] = "mesecons_noteblock_hihat",
 }) do
 	local nodename = minetest.registered_aliases[alias]
 	if nodename then
@@ -67,7 +67,7 @@ local node_sounds_group = {
 	["wood"] = "mesecons_noteblock_litecrash",
 }
 
-local steelblock_nodename = minetest.registered_aliases["mesecons_compat:steelblock"]
+local steelblock_nodename = minetest.registered_aliases["mesecons_gamecompat:steelblock"]
 mesecon.noteblock_play = function(pos, param2)
 	pos.y = pos.y-1
 	local nodeunder = minetest.get_node(pos).name

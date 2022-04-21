@@ -180,9 +180,9 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone_vertical", {
 minetest.register_craft({
 	output = "mesecons_movestones:movestone 2",
 	recipe = {
-		{"mesecons_compat:stone", "mesecons_compat:stone", "mesecons_compat:stone"},
+		{"mesecons_gamecompat:stone", "mesecons_gamecompat:stone", "mesecons_gamecompat:stone"},
 		{"group:mesecon_conductor_craftable", "group:mesecon_conductor_craftable", "group:mesecon_conductor_craftable"},
-		{"mesecons_compat:stone", "mesecons_compat:stone", "mesecons_compat:stone"},
+		{"mesecons_gamecompat:stone", "mesecons_gamecompat:stone", "mesecons_gamecompat:stone"},
 	}
 })
 

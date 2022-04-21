@@ -52,22 +52,22 @@ function mesecon.lightstone_add(name, base_item, texture_off, texture_on, desc)
 		output = "mesecons_lightstone:lightstone_" .. name .. "_off",
 		recipe = {
 			{"",base_item,""},
-			{base_item,"mesecons_compat:torch",base_item},
+			{base_item,"mesecons_gamecompat:torch",base_item},
 			{"","group:mesecon_conductor_craftable",""}
 		}
 	})
 end
 
 
-mesecon.lightstone_add("red", "mesecons_compat:dye_red", "jeija_lightstone_red_off.png", "jeija_lightstone_red_on.png", "Red Lightstone")
-mesecon.lightstone_add("green", "mesecons_compat:dye_green", "jeija_lightstone_green_off.png", "jeija_lightstone_green_on.png", "Green Lightstone")
-mesecon.lightstone_add("blue", "mesecons_compat:dye_blue", "jeija_lightstone_blue_off.png", "jeija_lightstone_blue_on.png", "Blue Lightstone")
-mesecon.lightstone_add("gray", "mesecons_compat:dye_grey", "jeija_lightstone_gray_off.png", "jeija_lightstone_gray_on.png", "Grey Lightstone")
-mesecon.lightstone_add("darkgray", "mesecons_compat:dye_dark_grey", "jeija_lightstone_darkgray_off.png", "jeija_lightstone_darkgray_on.png", "Dark Grey Lightstone")
-mesecon.lightstone_add("yellow", "mesecons_compat:dye_yellow", "jeija_lightstone_yellow_off.png", "jeija_lightstone_yellow_on.png", "Yellow Lightstone")
-mesecon.lightstone_add("orange", "mesecons_compat:dye_orange", "jeija_lightstone_orange_off.png", "jeija_lightstone_orange_on.png", "Orange Lightstone")
-mesecon.lightstone_add("white", "mesecons_compat:dye_white", "jeija_lightstone_white_off.png", "jeija_lightstone_white_on.png", "White Lightstone")
-mesecon.lightstone_add("pink", "mesecons_compat:dye_pink", "jeija_lightstone_pink_off.png", "jeija_lightstone_pink_on.png", "Pink Lightstone")
-mesecon.lightstone_add("magenta", "mesecons_compat:dye_magenta", "jeija_lightstone_magenta_off.png", "jeija_lightstone_magenta_on.png", "Magenta Lightstone")
-mesecon.lightstone_add("cyan", "mesecons_compat:dye_cyan", "jeija_lightstone_cyan_off.png", "jeija_lightstone_cyan_on.png", "Cyan Lightstone")
-mesecon.lightstone_add("violet", "mesecons_compat:dye_violet", "jeija_lightstone_violet_off.png", "jeija_lightstone_violet_on.png", "Violet Lightstone")
+mesecon.lightstone_add("red", "mesecons_gamecompat:dye_red", "jeija_lightstone_red_off.png", "jeija_lightstone_red_on.png", "Red Lightstone")
+mesecon.lightstone_add("green", "mesecons_gamecompat:dye_green", "jeija_lightstone_green_off.png", "jeija_lightstone_green_on.png", "Green Lightstone")
+mesecon.lightstone_add("blue", "mesecons_gamecompat:dye_blue", "jeija_lightstone_blue_off.png", "jeija_lightstone_blue_on.png", "Blue Lightstone")
+mesecon.lightstone_add("gray", "mesecons_gamecompat:dye_grey", "jeija_lightstone_gray_off.png", "jeija_lightstone_gray_on.png", "Grey Lightstone")
+mesecon.lightstone_add("darkgray", "mesecons_gamecompat:dye_dark_grey", "jeija_lightstone_darkgray_off.png", "jeija_lightstone_darkgray_on.png", "Dark Grey Lightstone")
+mesecon.lightstone_add("yellow", "mesecons_gamecompat:dye_yellow", "jeija_lightstone_yellow_off.png", "jeija_lightstone_yellow_on.png", "Yellow Lightstone")
+mesecon.lightstone_add("orange", "mesecons_gamecompat:dye_orange", "jeija_lightstone_orange_off.png", "jeija_lightstone_orange_on.png", "Orange Lightstone")
+mesecon.lightstone_add("white", "mesecons_gamecompat:dye_white", "jeija_lightstone_white_off.png", "jeija_lightstone_white_on.png", "White Lightstone")
+mesecon.lightstone_add("pink", "mesecons_gamecompat:dye_pink", "jeija_lightstone_pink_off.png", "jeija_lightstone_pink_on.png", "Pink Lightstone")
+mesecon.lightstone_add("magenta", "mesecons_gamecompat:dye_magenta", "jeija_lightstone_magenta_off.png", "jeija_lightstone_magenta_on.png", "Magenta Lightstone")
+mesecon.lightstone_add("cyan", "mesecons_gamecompat:dye_cyan", "jeija_lightstone_cyan_off.png", "jeija_lightstone_cyan_on.png", "Cyan Lightstone")
+mesecon.lightstone_add("violet", "mesecons_gamecompat:dye_violet", "jeija_lightstone_violet_off.png", "jeija_lightstone_violet_on.png", "Violet Lightstone")

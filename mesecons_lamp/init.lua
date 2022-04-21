@@ -64,8 +64,8 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 minetest.register_craft({
 	output = "mesecons_lamp:lamp_off 1",
 	recipe = {
-		{"", "mesecons_compat:glass", ""},
-		{"group:mesecon_conductor_craftable", "mesecons_compat:steel_ingot", "group:mesecon_conductor_craftable"},
-		{"", "mesecons_compat:glass", ""},
+		{"", "mesecons_gamecompat:glass", ""},
+		{"group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable"},
+		{"", "mesecons_gamecompat:glass", ""},
 	}
 })

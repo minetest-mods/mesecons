@@ -1,4 +1,4 @@
-local mese_nodename = minetest.registered_aliases["mesecons_compat:mese"]
+local mese_nodename = minetest.registered_aliases["mesecons_gamecompat:mese"]
 if not mese_nodename then
 	return
 end

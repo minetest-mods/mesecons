@@ -232,20 +232,20 @@ register_wires()
 minetest.register_craft({
 	type = "cooking",
 	output = "mesecons:wire_00000000_off 2",
-	recipe = "mesecons_compat:mese_crystal_fragment",
+	recipe = "mesecons_gamecompat:mese_crystal_fragment",
 	cooktime = 3,
 })
 
 minetest.register_craft({
 	type = "cooking",
 	output = "mesecons:wire_00000000_off 18",
-	recipe = "mesecons_compat:mese_crystal",
+	recipe = "mesecons_gamecompat:mese_crystal",
 	cooktime = 15,
 })
 
 minetest.register_craft({
 	type = "cooking",
 	output = "mesecons:wire_00000000_off 162",
-	recipe = "mesecons_compat:mese",
+	recipe = "mesecons_gamecompat:mese",
 	cooktime = 30,
 })

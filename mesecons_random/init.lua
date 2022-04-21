@@ -20,9 +20,9 @@ minetest.register_node("mesecons_random:removestone", {
 minetest.register_craft({
 	output = 'mesecons_random:removestone 4',
 	recipe = {
-		{"", "mesecons_compat:cobble", ""},
-		{"mesecons_compat:cobble", "group:mesecon_conductor_craftable", "mesecons_compat:cobble"},
-		{"", "mesecons_compat:cobble", ""},
+		{"", "mesecons_gamecompat:cobble", ""},
+		{"mesecons_gamecompat:cobble", "group:mesecon_conductor_craftable", "mesecons_gamecompat:cobble"},
+		{"", "mesecons_gamecompat:cobble", ""},
 	}
 })
 
@@ -71,8 +71,8 @@ minetest.register_node("mesecons_random:ghoststone_active", {
 minetest.register_craft({
 	output = 'mesecons_random:ghoststone 4',
 	recipe = {
-		{"mesecons_compat:steel_ingot", "mesecons_compat:cobble", "mesecons_compat:steel_ingot"},
-		{"mesecons_compat:cobble", "group:mesecon_conductor_craftable", "mesecons_compat:cobble"},
-		{"mesecons_compat:steel_ingot", "mesecons_compat:cobble", "mesecons_compat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:cobble", "mesecons_gamecompat:steel_ingot"},
+		{"mesecons_gamecompat:cobble", "group:mesecon_conductor_craftable", "mesecons_gamecompat:cobble"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:cobble", "mesecons_gamecompat:steel_ingot"},
 	}
 })

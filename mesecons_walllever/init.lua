@@ -58,7 +58,7 @@ minetest.register_craft({
 	output = "mesecons_walllever:wall_lever_off 2",
 	recipe = {
 	    {"group:mesecon_conductor_craftable"},
-		{"mesecons_compat:stone"},
+		{"mesecons_gamecompat:stone"},
 		{"group:stick"},
 	}
 })

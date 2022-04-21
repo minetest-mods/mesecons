@@ -30,7 +30,7 @@ mesecon.register_node("mesecons_switch:mesecon_switch", {
 minetest.register_craft({
 	output = "mesecons_switch:mesecon_switch_off 2",
 	recipe = {
-		{"mesecons_compat:steel_ingot", "mesecons_compat:cobble", "mesecons_compat:steel_ingot"},
+		{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:cobble", "mesecons_gamecompat:steel_ingot"},
 		{"group:mesecon_conductor_craftable","", "group:mesecon_conductor_craftable"},
 	}
 })
