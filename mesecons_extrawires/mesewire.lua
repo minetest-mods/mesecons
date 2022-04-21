@@ -35,15 +35,17 @@ minetest.override_item(mese_nodename, {
 
 -- Copy node definition of powered mese from normal mese
 -- and brighten texture tiles to indicate mese is powered
-local powered_def = mesecon.merge_tables(minetest.registered_nodes[mese_nodename], {
+local unpowered_def = minetest.registered_nodes[mese_nodename]
+local powered_def = mesecon.merge_tables(unpowered_def, {
 	drop = mese_nodename,
-	light_source = 5,
+	paramtype = "light",
+	light_source = math.min(unpowered_def.light_source + 2, minetest.LIGHT_MAX),
 	mesecons = {conductor = {
 		state = mesecon.state.on,
 		offstate = mese_nodename,
 		rules = mesewire_rules
 	}},
-	groups = {cracky = 1, not_in_creative_inventory = 1},
+	groups = mesecon.merge_tables(unpowered_def.groups or {}, {not_in_creative_inventory = 1}),
 	on_blast = mesecon.on_blastnode,
 })
 
