@@ -23,6 +23,16 @@ if minetest.get_modpath("default") then
 	mesecon.steel_block_texture = "default_steel_block.png"
 end
 
+local dye_colors = {
+	"red", "green", "blue", "grey", "dark_grey", "yellow",
+	"orange", "white", "pink", "magenta", "cyan", "violet",
+}
+if minetest.get_modpath("dye") then
+	for _, color in ipairs(dye_colors) do
+		minetest.register_alias("mesecons_compat:dye_" .. color, "dye:" .. color)
+	end
+end
+
 if minetest.get_modpath("fire") then
 	mesecon.sound_name_fire = "fire_fire"
 end
