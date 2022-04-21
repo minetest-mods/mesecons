@@ -78,7 +78,7 @@ local function register_gate(name, inputnumber, assess, recipe, description)
 		selection_box = selection_box,
 		node_box = nodebox,
 		walkable = true,
-		sounds = mesecon.node_sound_stone_defaults,
+		sounds = mesecon.node_sound.stone,
 		assess = assess,
 		onstate = basename.."_on",
 		offstate = basename.."_off",

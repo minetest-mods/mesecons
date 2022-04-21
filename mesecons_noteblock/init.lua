@@ -12,7 +12,7 @@ minetest.register_node("mesecons_noteblock:noteblock", {
 		mesecon.noteblock_play(pos, node.param2)
 		minetest.set_node(pos, node)
 	end,
-	sounds = mesecon.node_sound_wood_defaults,
+	sounds = mesecon.node_sound.wood,
 	mesecons = {effector = { -- play sound when activated
 		action_on = function(pos, node)
 			mesecon.noteblock_play(pos, node.param2)
@@ -48,10 +48,10 @@ local soundnames = {
 
 local node_sounds = {}
 for alias, sound in pairs({
-	["mesecons_gamecompat:lava_source"] = mesecon.sound_name_fire,
+	["mesecons_gamecompat:lava_source"] = mesecon.sound_name.fire,
 	["mesecons_gamecompat:chest"] = "mesecons_noteblock_snare",
 	["mesecons_gamecompat:chest_locked"] = "mesecons_noteblock_snare",
-	["mesecons_gamecompat:coalblock"] = mesecon.sound_name_explode,
+	["mesecons_gamecompat:coalblock"] = mesecon.sound_name.explode,
 	["mesecons_gamecompat:glass"] = "mesecons_noteblock_hihat",
 	["mesecons_gamecompat:obsidian_glass"] = "mesecons_noteblock_hihat",
 }) do

@@ -6,7 +6,7 @@ minetest.register_node("mesecons_random:removestone", {
 	inventory_image = minetest.inventorycube("jeija_removestone_inv.png"),
 	groups = {cracky=3},
 	description="Removestone",
-	sounds = mesecon.node_sound_stone_defaults,
+	sounds = mesecon.node_sound.stone,
 	mesecons = {effector = {
 		action_on = function (pos, node)
 			minetest.remove_node(pos)
@@ -34,7 +34,7 @@ minetest.register_node("mesecons_random:ghoststone", {
 	is_ground_content = false,
 	inventory_image = minetest.inventorycube("jeija_ghoststone_inv.png"),
 	groups = {cracky=3},
-	sounds = mesecon.node_sound_stone_defaults,
+	sounds = mesecon.node_sound.stone,
 	mesecons = {conductor = {
 		state = mesecon.state.off,
 		rules = mesecon.rules.alldirs,

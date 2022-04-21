@@ -69,7 +69,7 @@ local def = {
 	sunlight_propagates = true,
 	is_ground_content = false,
 	delayer_time = delaytime[i],
-	sounds = mesecon.node_sound_stone_defaults,
+	sounds = mesecon.node_sound.stone,
 	on_blast = mesecon.on_blastnode,
 	drop = "mesecons_delayer:delayer_off_1",
 }

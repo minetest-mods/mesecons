@@ -15,5 +15,5 @@ minetest.register_node("mesecons_stickyblocks:sticky_block_all", {
 		end
 		return connected
 	end,
-	sounds = mesecon.node_sound_wood_defaults,
+	sounds = mesecon.node_sound.wood,
 })

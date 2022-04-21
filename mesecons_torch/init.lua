@@ -64,7 +64,7 @@ minetest.register_node("mesecons_torch:mesecon_torch_off", {
 	selection_box = torch_selectionbox,
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons_torch:mesecon_torch_on",
-	sounds = mesecon.node_sound_defaults,
+	sounds = mesecon.node_sound.default,
 	mesecons = {receptor = {
 		state = mesecon.state.off,
 		rules = torch_get_output_rules
@@ -86,7 +86,7 @@ minetest.register_node("mesecons_torch:mesecon_torch_on", {
 	groups = {dig_immediate=3},
 	light_source = minetest.LIGHT_MAX-5,
 	description="Mesecon Torch",
-	sounds = mesecon.node_sound_defaults,
+	sounds = mesecon.node_sound.default,
 	mesecons = {receptor = {
 		state = mesecon.state.on,
 		rules = torch_get_output_rules
