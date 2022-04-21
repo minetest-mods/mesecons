@@ -1,6 +1,18 @@
 local mese_nodename = minetest.registered_aliases["mesecons_gamecompat:mese"]
-if not mese_nodename then
-	return
+if mese_nodename then
+	-- Convert placeholders.
+	minetest.register_alias("mesecons_extrawires:mese", mese_nodename)
+else
+	-- Register placeholder.
+	mese_nodename = "mesecons_extrawires:mese"
+	minetest.register_node("mesecons_extrawires:mese", {
+		description = "Mese Wire",
+		tiles = {"mesecons_wire_off.png"},
+		paramtype = "light",
+		light_source = 3,
+		groups = {cracky = 1},
+		sounds = mesecon.node_sound.stone,
+	})
 end
 
 local mesewire_rules =
