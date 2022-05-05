@@ -2,7 +2,7 @@ The LGPLv3 applies to all code in this project.
 The CC-BY-SA-3.0 license applies to textures and any other content in this project which is not source code.
 
 The file mesecons_detector/textures/mesecons_detector_side.png is an unmodified copy of
-"default_steel_block.png" by kilbith <https://github.com/kilbith>, which can be found at
+"default_steel_block.png" by Jean-Patrick Guerrero <https://github.com/kilbith>, which can be found at
 <https://github.com/minetest/minetest_game/blob/9528c0f8b93d6934930e99c3c116df275fb0e4bc/mods/default/textures/default_steel_block.png>.
 "default_steel_block.png" is licensed under a CC BY-SA 3.0 license. This license can be found later in this document, and can also be found at
 <https://creativecommons.org/licenses/by-sa/3.0/>. The artwork is reportedly copyright (C) 2010-2018 kilbith.
