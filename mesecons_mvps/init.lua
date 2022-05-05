@@ -311,31 +311,6 @@ end
 -- TODO: load blocks instead, as with wires.
 mesecon.register_mvps_stopper("ignore")
 
--- All of the locked and internal nodes in Minetest Game
-for _, name in ipairs({
-	"default:chest_locked",
-	"default:chest_locked_open",
-	"doors:door_steel_b_1", -- old style doors
-	"doors:door_steel_b_2", --
-	"doors:door_steel_t_1", --
-	"doors:door_steel_t_2", --
-	"doors:door_steel_a",   -- new style doors
-	"doors:door_steel_b",   --
-	"doors:door_steel_c",   --
-	"doors:door_steel_d",   --
-	"doors:hidden",
-	"doors:trapdoor_steel",
-	"doors:trapdoor_steel_open",
-	"xpanes:door_steel_bar_a",
-	"xpanes:door_steel_bar_b",
-	"xpanes:door_steel_bar_c",
-	"xpanes:door_steel_bar_d",
-	"xpanes:trapdoor_steel_bar",
-	"xpanes:trapdoor_steel_bar_open",
-}) do
-	mesecon.register_mvps_stopper(name)
-end
-
 mesecon.register_on_mvps_move(mesecon.move_hot_nodes)
 mesecon.register_on_mvps_move(function(moved_nodes)
 	for i = 1, #moved_nodes do

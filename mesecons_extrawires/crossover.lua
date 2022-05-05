@@ -32,7 +32,7 @@ minetest.register_node("mesecons_extrawires:crossover_off", {
 	stack_max = 99,
 	selection_box = {type="fixed", fixed={-16/32, -16/32, -16/32, 16/32, -5/32, 16/32}},
 	groups = {dig_immediate=3, mesecon=3},
-	sounds = default.node_sound_defaults(),
+	sounds = mesecon.node_sound.default,
 	mesecons = {
 		conductor = {
 			states = crossover_states,
@@ -59,7 +59,7 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 	stack_max = 99,
 	selection_box = {type="fixed", fixed={-16/32, -16/32, -16/32, 16/32, -5/32, 16/32}},
 	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
-	sounds = default.node_sound_defaults(),
+	sounds = mesecon.node_sound.default,
 	mesecons = {
 		conductor = {
 			states = crossover_states,
@@ -86,7 +86,7 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 	stack_max = 99,
 	selection_box = {type="fixed", fixed={-16/32, -16/32, -16/32, 16/32, -5/32, 16/32}},
 	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
-	sounds = default.node_sound_defaults(),
+	sounds = mesecon.node_sound.default,
 	mesecons = {
 		conductor = {
 			states = crossover_states,
@@ -113,7 +113,7 @@ minetest.register_node("mesecons_extrawires:crossover_on", {
 	stack_max = 99,
 	selection_box = {type="fixed", fixed={-16/32, -16/32, -16/32, 16/32, -5/32, 16/32}},
 	groups = {dig_immediate=3, mesecon=3, not_in_creative_inventory=1},
-	sounds = default.node_sound_defaults(),
+	sounds = mesecon.node_sound.default,
 	mesecons = {
 		conductor = {
 			states = crossover_states,

@@ -61,7 +61,7 @@ for k, state in ipairs(doublecorner_states) do
 		selection_box = doublecorner_selectionbox,
 		groups = groups,
 		drop = doublecorner_states[1],
-		sounds = default.node_sound_defaults(),
+		sounds = mesecon.node_sound.default,
 		mesecons = {
 			conductor = {
 				states = doublecorner_states,

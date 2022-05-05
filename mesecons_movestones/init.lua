@@ -129,7 +129,7 @@ mesecon.register_movestone("mesecons_movestones:movestone", {
 	},
 	groups = {cracky = 3},
     description = "Movestone",
-	sounds = default.node_sound_stone_defaults()
+	sounds = mesecon.node_sound.stone
 }, false, false)
 
 mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
@@ -143,7 +143,7 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
 	},
 	groups = {cracky = 3},
     description = "Sticky Movestone",
-	sounds = default.node_sound_stone_defaults(),
+	sounds = mesecon.node_sound.stone,
 }, true, false)
 
 mesecon.register_movestone("mesecons_movestones:movestone_vertical", {
@@ -157,7 +157,7 @@ mesecon.register_movestone("mesecons_movestones:movestone_vertical", {
 	},
 	groups = {cracky = 3},
     description = "Vertical Movestone",
-	sounds = default.node_sound_stone_defaults()
+	sounds = mesecon.node_sound.stone
 }, false, true)
 
 mesecon.register_movestone("mesecons_movestones:sticky_movestone_vertical", {
@@ -171,7 +171,7 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone_vertical", {
 	},
 	groups = {cracky = 3},
     description = "Vertical Sticky Movestone",
-	sounds = default.node_sound_stone_defaults(),
+	sounds = mesecon.node_sound.stone,
 }, true, true)
 
 
@@ -180,9 +180,9 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone_vertical", {
 minetest.register_craft({
 	output = "mesecons_movestones:movestone 2",
 	recipe = {
-		{"default:stone", "default:stone", "default:stone"},
+		{"mesecons_gamecompat:stone", "mesecons_gamecompat:stone", "mesecons_gamecompat:stone"},
 		{"group:mesecon_conductor_craftable", "group:mesecon_conductor_craftable", "group:mesecon_conductor_craftable"},
-		{"default:stone", "default:stone", "default:stone"},
+		{"mesecons_gamecompat:stone", "mesecons_gamecompat:stone", "mesecons_gamecompat:stone"},
 	}
 })
 

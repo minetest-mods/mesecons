@@ -44,7 +44,7 @@ minetest.register_node("mesecons_extrawires:tjunction_on", {
 	node_box = tjunction_nodebox,
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons_extrawires:tjunction_off",
-	sounds = default.node_sound_defaults(),
+	sounds = mesecon.node_sound.default,
 	mesecons = {conductor =
 	{
 		state = mesecon.state.on,
@@ -74,7 +74,7 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 	selection_box = tjunction_selectionbox,
 	node_box = tjunction_nodebox,
 	groups = {dig_immediate = 3},
-	sounds = default.node_sound_defaults(),
+	sounds = mesecon.node_sound.default,
 	mesecons = {conductor =
 	{
 		state = mesecon.state.off,

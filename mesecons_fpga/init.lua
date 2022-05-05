@@ -109,7 +109,7 @@ plg.register_nodes({
 		local is = lcore.deserialize(meta:get_string("instr"))
 		minetest.show_formspec(name, "mesecons:fpga", plg.to_formspec_string(is, nil))
 	end,
-	sounds = default.node_sound_stone_defaults(),
+	sounds = mesecon.node_sound.stone,
 	mesecons = {
 		effector = {
 			rules = {}, -- replaced later

@@ -23,7 +23,7 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_off", {
 		type = "fixed",
 		fixed = { -0.5, -0.5, -0.5, 0.5, 1.5, 0.5 },
 	},
-	sounds = default.node_sound_metal_defaults(),
+	sounds = mesecon.node_sound.metal,
 	mesecons = {receptor = {
 		state = mesecon.state.off
 	}},
@@ -53,7 +53,7 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 		type = "fixed",
 		fixed = { -0.5, -0.5, -0.5, 0.5, 1.5, 0.5 },
 	},
-	sounds = default.node_sound_metal_defaults(),
+	sounds = mesecon.node_sound.metal,
 	mesecons = {receptor = {
 		state = mesecon.state.on
 	}},
@@ -97,9 +97,9 @@ nodenames = {"mesecons_hydroturbine:hydro_turbine_on"},
 minetest.register_craft({
 	output = "mesecons_hydroturbine:hydro_turbine_off 2",
 	recipe = {
-	{"","default:stick", ""},
-	{"default:stick", "default:steel_ingot", "default:stick"},
-	{"","default:stick", ""},
+	{"","grup:stick", ""},
+	{"group:stick", "mesecons_gamecompat:steel_ingot", "group:stick"},
+	{"","group:stick", ""},
 	}
 })
 
