@@ -2,6 +2,8 @@ mineunit("player")
 
 fixture("mesecons")
 
+mesecon.node_sound = {}
+
 local registered_on_player_receive_fields = {}
 local old_register_on_player_receive_fields = minetest.register_on_player_receive_fields
 function minetest.register_on_player_receive_fields(func)
