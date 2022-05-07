@@ -6,6 +6,24 @@ function mesecon.move_node(pos, newpos)
 	minetest.get_meta(pos):from_table(meta)
 end
 
+-- An on_rotate callback for mesecons components.
+function mesecon.on_rotate(pos, node, _, _, new_param2)
+	local new_node = {name = node.name, param1 = node.param1, param2 = new_param2}
+	minetest.swap_node(pos, new_node)
+	mesecon.on_dignode(pos, node)
+	mesecon.on_placenode(pos, new_node)
+	minetest.check_for_falling(pos)
+	return true
+end
+
+-- An on_rotate callback for components which stay horizontal.
+function mesecon.on_rotate_horiz(pos, node, user, mode, new_param2)
+	if not minetest.global_exists("screwdriver") or mode ~= screwdriver.ROTATE_FACE then
+		return false
+	end
+	return mesecon.on_rotate(pos, node, user, mode, new_param2)
+end
+
 -- Rules rotation Functions:
 function mesecon.rotate_rules_right(rules)
 	local nr = {}

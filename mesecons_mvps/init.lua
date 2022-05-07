@@ -220,6 +220,8 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 		minetest.remove_node(n.pos)
 	end
 
+	local oldstack = mesecon.tablecopy(nodes)
+
 	-- update mesecons for removed nodes ( has to be done after all nodes have been removed )
 	for _, n in ipairs(nodes) do
 		mesecon.on_dignode(n.pos, n.node)
@@ -229,6 +231,12 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	for _, n in ipairs(nodes) do
 		local np = vector.add(n.pos, movedir)
 
+		-- Turn off conductors in transit
+		local conductor = mesecon.get_conductor(n.node.name)
+		if conductor and conductor.state ~= mesecon.state.off then
+			n.node.name = conductor.offstate or conductor.states[1]
+		end
+
 		minetest.set_node(np, n.node)
 		minetest.get_meta(np):from_table(n.meta)
 		if n.node_timer then
@@ -237,7 +245,6 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	end
 
 	local moved_nodes = {}
-	local oldstack = mesecon.tablecopy(nodes)
 	for i in ipairs(nodes) do
 		moved_nodes[i] = {}
 		moved_nodes[i].oldpos = nodes[i].pos

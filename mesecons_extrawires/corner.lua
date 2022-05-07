@@ -1,5 +1,3 @@
-local screwdriver_exists = minetest.global_exists("screwdriver")
-
 local corner_selectionbox = {
 		type = "fixed",
 		fixed = { -16/32, -16/32, -16/32, 5/32, -12/32, 5/32 },
@@ -40,7 +38,7 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 		offstate = "mesecons_extrawires:corner_off"
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = screwdriver_exists and screwdriver.rotate_simple,
+	on_rotate = mesecon.on_rotate_horiz,
 })
 
 minetest.register_node("mesecons_extrawires:corner_off", {
@@ -66,7 +64,7 @@ minetest.register_node("mesecons_extrawires:corner_off", {
 		onstate = "mesecons_extrawires:corner_on"
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = screwdriver_exists and screwdriver.rotate_simple,
+	on_rotate = mesecon.on_rotate_horiz,
 })
 
 minetest.register_craft({

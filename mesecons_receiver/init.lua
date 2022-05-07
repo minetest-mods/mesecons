@@ -209,8 +209,10 @@ function mesecon.receiver_place(rcpt_pos)
 	local param2 = minetest.dir_to_facedir(minetest.facedir_to_dir(node.param2))
 
 	if string.find(nn.name, "mesecons:wire_") ~= nil then
-		minetest.set_node(pos, {name = rcvtype, param2 = param2})
-		mesecon.on_placenode(pos, nn)
+		local rcv_node = {name = rcvtype, param2 = param2}
+		minetest.set_node(pos, rcv_node)
+		mesecon.on_dignode(pos, nn)
+		mesecon.on_placenode(pos, rcv_node)
 	end
 end
 
@@ -220,6 +222,7 @@ function mesecon.receiver_remove(rcpt_pos, dugnode)
 	if string.find(nn.name, "mesecons_receiver:receiver_") ~= nil then
 		local node = {name = "mesecons:wire_00000000_off"}
 		minetest.set_node(pos, node)
+		mesecon.on_dignode(pos, nn)
 		mesecon.on_placenode(pos, node)
 	end
 end
@@ -257,7 +260,13 @@ minetest.register_on_placenode(function (pos, node)
 	end
 end)
 
-function mesecon.buttonlike_onrotate(pos, node)
-	minetest.after(0, mesecon.receiver_remove, pos, node)
-	minetest.after(0, mesecon.receiver_place, pos)
+function mesecon.buttonlike_onrotate(pos, node, _, _, new_param2)
+	local new_node = {name = node.name, param1 = node.param1, param2 = new_param2}
+	minetest.swap_node(pos, new_node)
+	mesecon.receiver_remove(pos, node)
+	mesecon.on_dignode(pos, node)
+	mesecon.on_placenode(pos, new_node)
+	mesecon.receiver_place(pos)
+	minetest.check_for_falling(pos)
+	return true
 end
