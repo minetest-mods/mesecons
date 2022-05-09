@@ -229,23 +229,31 @@ register_wires()
 -- ##############
 -- ## Crafting ##
 -- ##############
-minetest.register_craft({
-	type = "cooking",
-	output = "mesecons:wire_00000000_off 2",
-	recipe = "mesecons_gamecompat:mese_crystal_fragment",
-	cooktime = 3,
-})
+-- (Resolve aliases to avoid bug with cooking/fuel recipes.)
 
-minetest.register_craft({
-	type = "cooking",
-	output = "mesecons:wire_00000000_off 18",
-	recipe = "mesecons_gamecompat:mese_crystal",
-	cooktime = 15,
-})
+if minetest.registered_aliases["mesecons_gamecompat:mese_crystal_fragment"] then
+	minetest.register_craft({
+		type = "cooking",
+		output = "mesecons:wire_00000000_off 2",
+		recipe = minetest.registered_aliases["mesecons_gamecompat:mese_crystal_fragment"],
+		cooktime = 3,
+	})
+end
 
-minetest.register_craft({
-	type = "cooking",
-	output = "mesecons:wire_00000000_off 162",
-	recipe = "mesecons_gamecompat:mese",
-	cooktime = 30,
-})
+if minetest.registered_aliases["mesecons_gamecompat:mese_crystal"] then
+	minetest.register_craft({
+		type = "cooking",
+		output = "mesecons:wire_00000000_off 18",
+		recipe = minetest.registered_aliases["mesecons_gamecompat:mese_crystal"],
+		cooktime = 15,
+	})
+end
+
+if minetest.registered_aliases["mesecons_gamecompat:mese"] then
+	minetest.register_craft({
+		type = "cooking",
+		output = "mesecons:wire_00000000_off 162",
+		recipe = minetest.registered_aliases["mesecons_gamecompat:mese"],
+		cooktime = 30,
+	})
+end
