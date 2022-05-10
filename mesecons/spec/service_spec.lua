@@ -68,8 +68,7 @@ describe("placement/digging service", function()
 		assert.equal("mesecons:test_conductor_off", world.get_node(pos).name)
 	end)
 
-	-- Will work once #584 is merged.
-	pending("turns off multiconductors on placement", function()
+	it("turns off multiconductors on placement", function()
 		local pos = {x = 3, y = 0, z = 0}
 		mesecon._test_place(pos, "mesecons:test_multiconductor_on")
 		assert.equal("mesecons:test_multiconductor_off", world.get_node(pos).name)
