@@ -50,48 +50,55 @@
 mesecon.fifo_queue = dofile(minetest.get_modpath("mesecons").."/fifo_queue.lua")
 
 -- General
-function mesecon.get_effector(nodename)
-	if  minetest.registered_nodes[nodename]
-	and minetest.registered_nodes[nodename].mesecons
-	and minetest.registered_nodes[nodename].mesecons.effector then
-		return minetest.registered_nodes[nodename].mesecons.effector
+
+local function get_mesecons_spec(nodename)
+	local def = minetest.registered_nodes[nodename]
+	return def and def.mesecons
+end
+
+local function get_rules(def, node)
+	local rules = def.rules
+	if type(rules) == 'function' then
+		return rules(node)
+	elseif rules then
+		return rules
 	end
+	return mesecon.rules.default
+end
+
+function mesecon.get_effector(nodename)
+	local mesecons_spec = get_mesecons_spec(nodename)
+	return mesecons_spec and mesecons_spec.effector
 end
 
 function mesecon.get_receptor(nodename)
-	if  minetest.registered_nodes[nodename]
-	and minetest.registered_nodes[nodename].mesecons
-	and minetest.registered_nodes[nodename].mesecons.receptor then
-		return minetest.registered_nodes[nodename].mesecons.receptor
-	end
+	local mesecons_spec = get_mesecons_spec(nodename)
+	return mesecons_spec and mesecons_spec.receptor
 end
 
 function mesecon.get_conductor(nodename)
-	if  minetest.registered_nodes[nodename]
-	and minetest.registered_nodes[nodename].mesecons
-	and minetest.registered_nodes[nodename].mesecons.conductor then
-		return minetest.registered_nodes[nodename].mesecons.conductor
-	end
+	local mesecons_spec = get_mesecons_spec(nodename)
+	return mesecons_spec and mesecons_spec.conductor
 end
 
 function mesecon.get_any_outputrules(node)
-	if not node then return nil end
-
-	if mesecon.is_conductor(node.name) then
-		return mesecon.conductor_get_rules(node)
-	elseif mesecon.is_receptor(node.name) then
-		return mesecon.receptor_get_rules(node)
-	end
+	if not node then return end
+	local mesecons_spec = get_mesecons_spec(node.name)
+	if not mesecons_spec then return end
+	local conductor = mesecons_spec.conductor
+	if conductor then return get_rules(conductor, node) end
+	local receptor = mesecons_spec.receptor
+	if receptor then return get_rules(receptor, node) end
 end
 
 function mesecon.get_any_inputrules(node)
-	if not node then return nil end
-
-	if mesecon.is_conductor(node.name) then
-		return mesecon.conductor_get_rules(node)
-	elseif mesecon.is_effector(node.name) then
-		return mesecon.effector_get_rules(node)
-	end
+	if not node then return end
+	local mesecons_spec = get_mesecons_spec(node.name)
+	if not mesecons_spec then return end
+	local conductor = mesecons_spec.conductor
+	if conductor then return get_rules(conductor, node) end
+	local effector = mesecons_spec.effector
+	if effector then return get_rules(effector, node) end
 end
 
 function mesecon.get_any_rules(node)
@@ -127,16 +134,7 @@ end
 
 function mesecon.receptor_get_rules(node)
 	local receptor = mesecon.get_receptor(node.name)
-	if receptor then
-		local rules = receptor.rules
-		if type(rules) == 'function' then
-			return rules(node)
-		elseif rules then
-			return rules
-		end
-	end
-
-	return mesecon.rules.default
+	return receptor and get_rules(receptor, node) or mesecon.rules.default
 end
 
 -- Effectors
@@ -167,15 +165,7 @@ end
 
 function mesecon.effector_get_rules(node)
 	local effector = mesecon.get_effector(node.name)
-	if effector then
-		local rules = effector.rules
-		if type(rules) == 'function' then
-			return rules(node)
-		elseif rules then
-			return rules
-		end
-	end
-	return mesecon.rules.default
+	return effector and get_rules(effector, node) or mesecon.rules.default
 end
 
 -- #######################
@@ -340,15 +330,7 @@ end
 
 function mesecon.conductor_get_rules(node)
 	local conductor = mesecon.get_conductor(node.name)
-	if conductor then
-		local rules = conductor.rules
-		if type(rules) == 'function' then
-			return rules(node)
-		elseif rules then
-			return rules
-		end
-	end
-	return mesecon.rules.default
+	return conductor and get_rules(conductor, node) or mesecon.rules.default
 end
 
 -- some more general high-level stuff
