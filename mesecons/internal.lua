@@ -423,7 +423,8 @@ function mesecon.turnon(pos, link)
 				for _, r in ipairs(mesecon.rule2meta(f.link, rules)) do
 					local np = vector.add(f.pos, r)
 					if not pos_can_be_skipped[minetest.hash_node_position(np)] then
-						for _, l in ipairs(mesecon.rules_link_rule_all(f.pos, r)) do
+						local l = mesecon.link(f.pos, np)
+						if l then
 							frontiers:add({pos = np, link = l})
 						end
 					end
@@ -490,14 +491,15 @@ function mesecon.turnoff(pos, link)
 						-- Check if an onstate receptor is connected. If that is the case,
 						-- abort this turnoff process by returning false. `receptor_off` will
 						-- discard all the changes that we made in the voxelmanip:
-						if mesecon.rules_link_rule_all_inverted(f.pos, r)[1] then
+						if mesecon.link_inverted(f.pos, np) then
 							if mesecon.is_receptor_on(mesecon.get_node_force(np).name) then
 								return false
 							end
 						end
 
 						-- Call turnoff on neighbors
-						for _, l in ipairs(mesecon.rules_link_rule_all(f.pos, r)) do
+						local l = mesecon.link(f.pos, np)
+						if l then
 							frontiers:add({pos = np, link = l})
 						end
 					end
@@ -533,44 +535,35 @@ function mesecon.turnoff(pos, link)
 	return true
 end
 
--- Get all linking inputrules of inputnode (effector or conductor) that is connected to
--- outputnode (receptor or conductor) at position `output` and has an output in direction `rule`
-function mesecon.rules_link_rule_all(output, rule)
-	local input = vector.add(output, rule)
+-- Get the linking inputrule of inputnode (effector or conductor) that is connected to
+-- outputnode (receptor or conductor) between positions `output` and `input`
+function mesecon.link(output, input)
 	local inputnode = mesecon.get_node_force(input)
 	local inputrules = mesecon.get_any_inputrules(inputnode)
-	if not inputrules then
-		return {}
-	end
-	local rules = {}
+	if not inputrules then return end
 
+	local dx, dy, dz = output.x - input.x, output.y - input.y, output.z - input.z
 	for _, inputrule in ipairs(mesecon.flattenrules(inputrules)) do
 		-- Check if input accepts from output
-		if  vector.equals(vector.add(input, inputrule), output) then
-			table.insert(rules, inputrule)
+		if inputrule.x == dx and inputrule.y == dy and inputrule.z == dz then
+			return inputrule
 		end
 	end
-
-	return rules
 end
 
--- Get all linking outputnodes of outputnode (receptor or conductor) that is connected to
--- inputnode (effector or conductor) at position `input` and has an input in direction `rule`
-function mesecon.rules_link_rule_all_inverted(input, rule)
-	local output = vector.add(input, rule)
+-- Get the linking outputrule of outputnode (receptor or conductor) that is connected to
+-- inputnode (effector or conductor) between positions `input` and `output`
+function mesecon.link_inverted(input, output)
 	local outputnode = mesecon.get_node_force(output)
 	local outputrules = mesecon.get_any_outputrules(outputnode)
-	if not outputrules then
-		return {}
-	end
-	local rules = {}
+	if not outputrules then return end
 
+	local dx, dy, dz = input.x - output.x, input.y - output.y, input.z - output.z
 	for _, outputrule in ipairs(mesecon.flattenrules(outputrules)) do
-		if  vector.equals(vector.add(output, outputrule), input) then
-			table.insert(rules, mesecon.invertRule(outputrule))
+		if outputrule.x == dx and outputrule.y == dy and outputrule.z == dz then
+			return outputrule
 		end
 	end
-	return rules
 end
 
 function mesecon.is_powered(pos, rule)
@@ -583,8 +576,8 @@ function mesecon.is_powered(pos, rule)
 
 	if not rule then
 		for _, rule in ipairs(mesecon.flattenrules(rules)) do
-			local rulenames = mesecon.rules_link_rule_all_inverted(pos, rule)
-			for _, rname in ipairs(rulenames) do
+			local rname = mesecon.link_inverted(pos, vector.add(pos, rule))
+			if rname then
 				local np = vector.add(pos, rname)
 				local nn = mesecon.get_node_force(np)
 
@@ -595,8 +588,8 @@ function mesecon.is_powered(pos, rule)
 			end
 		end
 	else
-		local rulenames = mesecon.rules_link_rule_all_inverted(pos, rule)
-		for _, rname in ipairs(rulenames) do
+		local rname = mesecon.link_inverted(pos, vector.add(pos, rule))
+		if rname then
 			local np = vector.add(pos, rname)
 			local nn = mesecon.get_node_force(np)
 			if (mesecon.is_conductor_on (nn, mesecon.invertRule(rname))
