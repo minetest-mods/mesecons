@@ -62,6 +62,7 @@ for k, state in ipairs(doublecorner_states) do
 		mesecons = {
 			conductor = {
 				states = doublecorner_states,
+				const_node = true,
 				rules = doublecorner_get_rules,
 			},
 		},

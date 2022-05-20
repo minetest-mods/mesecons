@@ -390,16 +390,21 @@ local function vm_get_or_create_entry(pos)
 	return tbl
 end
 
--- Gets the node at a given position during a VoxelManipulator-based
--- transaction.
-function mesecon.vm_get_node(pos)
+local function vm_get_node_nocopy(pos)
 	local hash = minetest.hash_node_position(pos)
 	local node = vm_node_cache[hash]
 	if not node then
 		node = vm_get_or_create_entry(pos).vm:get_node_at(pos)
 		vm_node_cache[hash] = node
 	end
-	return node.name ~= "ignore" and {name = node.name, param1 = node.param1, param2 = node.param2} or nil
+	return node.name ~= "ignore" and node or nil
+end
+
+-- Gets the node at a given position during a VoxelManipulator-based
+-- transaction.
+function mesecon.vm_get_node(pos)
+	local node = vm_get_node_nocopy(pos)
+	return node and {name = node.name, param1 = node.param1, param2 = node.param2}
 end
 
 -- Sets a node’s name during a VoxelManipulator-based transaction.
@@ -424,6 +429,18 @@ function mesecon.vm_swap_node(pos, name, update_light)
 	tbl.dirty = true
 end
 
+-- Get node, loading map if necessary.
+local function get_node_load(pos)
+	local node = minetest.get_node_or_nil(pos)
+	if node == nil then
+		-- Node is not currently loaded; use a VoxelManipulator to prime
+		-- the mapblock cache and try again.
+		minetest.get_voxel_manip(pos, pos)
+		node = minetest.get_node_or_nil(pos)
+	end
+	return node
+end
+
 -- Gets the node at a given position, regardless of whether it is loaded or
 -- not, respecting a transaction if one is in progress.
 --
@@ -435,14 +452,16 @@ function mesecon.get_node_force(pos)
 	if vm_cache then
 		return mesecon.vm_get_node(pos)
 	else
-		local node = minetest.get_node_or_nil(pos)
-		if node == nil then
-			-- Node is not currently loaded; use a VoxelManipulator to prime
-			-- the mapblock cache and try again.
-			minetest.get_voxel_manip(pos, pos)
-			node = minetest.get_node_or_nil(pos)
-		end
-		return node
+		return get_node_load(pos)
+	end
+end
+
+-- Same without copying the internal node. Not part of public API.
+function mesecon.get_node_force_nocopy(pos)
+	if vm_cache then
+		return vm_get_node_nocopy(pos)
+	else
+		return get_node_load(pos)
 	end
 end
 

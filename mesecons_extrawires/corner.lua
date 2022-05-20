@@ -34,6 +34,7 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 	mesecons = {conductor =
 	{
 		state = mesecon.state.on,
+		const_node = true,
 		rules = corner_get_rules,
 		offstate = "mesecons_extrawires:corner_off"
 	}},
@@ -60,6 +61,7 @@ minetest.register_node("mesecons_extrawires:corner_off", {
 	mesecons = {conductor =
 	{
 		state = mesecon.state.off,
+		const_node = true,
 		rules = corner_get_rules,
 		onstate = "mesecons_extrawires:corner_on"
 	}},

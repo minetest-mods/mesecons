@@ -59,6 +59,10 @@ end
 local function get_rules(def, node)
 	local rules = def.rules
 	if type(rules) == 'function' then
+		if not def.const_node then
+			-- Copy the node to avoid overwriting data in the cache
+			node = {name = node.name, param1 = node.param1, param2 = node.param2}
+		end
 		return rules(node)
 	elseif rules then
 		return rules
@@ -336,7 +340,7 @@ end
 -- some more general high-level stuff
 
 function mesecon.is_power_on(pos, rulename)
-	local node = mesecon.get_node_force(pos)
+	local node = mesecon.get_node_force_nocopy(pos)
 	if node and (mesecon.is_conductor_on(node, rulename) or mesecon.is_receptor_on(node.name)) then
 		return true
 	end
@@ -344,7 +348,7 @@ function mesecon.is_power_on(pos, rulename)
 end
 
 function mesecon.is_power_off(pos, rulename)
-	local node = mesecon.get_node_force(pos)
+	local node = mesecon.get_node_force_nocopy(pos)
 	if node and (mesecon.is_conductor_off(node, rulename) or mesecon.is_receptor_off(node.name)) then
 		return true
 	end
@@ -410,7 +414,7 @@ function mesecon.turnon(pos, link)
 
 	local depth = 1
 	for f in frontiers:iter() do
-		local node = mesecon.get_node_force(f.pos)
+		local node = mesecon.get_node_force_nocopy(f.pos)
 
 		if not node then
 			-- Area does not exist; do nothing
@@ -475,7 +479,7 @@ function mesecon.turnoff(pos, link)
 
 	local depth = 1
 	for f in frontiers:iter() do
-		local node = mesecon.get_node_force(f.pos)
+		local node = mesecon.get_node_force_nocopy(f.pos)
 
 		if not node then
 			-- Area does not exist; do nothing
@@ -492,7 +496,7 @@ function mesecon.turnoff(pos, link)
 						-- abort this turnoff process by returning false. `receptor_off` will
 						-- discard all the changes that we made in the voxelmanip:
 						if mesecon.link_inverted(f.pos, np) then
-							if mesecon.is_receptor_on(mesecon.get_node_force(np).name) then
+							if mesecon.is_receptor_on(mesecon.get_node_force_nocopy(np).name) then
 								return false
 							end
 						end
@@ -538,7 +542,7 @@ end
 -- Get the linking inputrule of inputnode (effector or conductor) that is connected to
 -- outputnode (receptor or conductor) between positions `output` and `input`
 function mesecon.link(output, input)
-	local inputnode = mesecon.get_node_force(input)
+	local inputnode = mesecon.get_node_force_nocopy(input)
 	local inputrules = mesecon.get_any_inputrules(inputnode)
 	if not inputrules then return end
 
@@ -554,7 +558,7 @@ end
 -- Get the linking outputrule of outputnode (receptor or conductor) that is connected to
 -- inputnode (effector or conductor) between positions `input` and `output`
 function mesecon.link_inverted(input, output)
-	local outputnode = mesecon.get_node_force(output)
+	local outputnode = mesecon.get_node_force_nocopy(output)
 	local outputrules = mesecon.get_any_outputrules(outputnode)
 	if not outputrules then return end
 
@@ -567,7 +571,7 @@ function mesecon.link_inverted(input, output)
 end
 
 function mesecon.is_powered(pos, rule)
-	local node = mesecon.get_node_force(pos)
+	local node = mesecon.get_node_force_nocopy(pos)
 	local rules = mesecon.get_any_inputrules(node)
 	if not rules then return false end
 
@@ -579,7 +583,7 @@ function mesecon.is_powered(pos, rule)
 			local rname = mesecon.link_inverted(pos, vector.add(pos, rule))
 			if rname then
 				local np = vector.add(pos, rname)
-				local nn = mesecon.get_node_force(np)
+				local nn = mesecon.get_node_force_nocopy(np)
 
 				if (mesecon.is_conductor_on(nn, mesecon.invertRule(rname))
 				or mesecon.is_receptor_on(nn.name)) then
@@ -591,7 +595,7 @@ function mesecon.is_powered(pos, rule)
 		local rname = mesecon.link_inverted(pos, vector.add(pos, rule))
 		if rname then
 			local np = vector.add(pos, rname)
-			local nn = mesecon.get_node_force(np)
+			local nn = mesecon.get_node_force_nocopy(np)
 			if (mesecon.is_conductor_on (nn, mesecon.invertRule(rname))
 			or mesecon.is_receptor_on (nn.name)) then
 				table.insert(sourcepos, np)
