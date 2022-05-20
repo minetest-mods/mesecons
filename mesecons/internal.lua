@@ -580,23 +580,23 @@ function mesecon.is_powered(pos, rule)
 
 	if not rule then
 		for _, rule in ipairs(mesecon.flattenrules(rules)) do
-			local rname = mesecon.link_inverted(pos, vector.add(pos, rule))
+			local np = vector.add(pos, rule)
+			local rname = mesecon.link_inverted(pos, np)
 			if rname then
-				local np = vector.add(pos, rname)
 				local nn = mesecon.get_node_force_nocopy(np)
 
-				if (mesecon.is_conductor_on(nn, mesecon.invertRule(rname))
+				if (mesecon.is_conductor_on(nn, rname)
 				or mesecon.is_receptor_on(nn.name)) then
 					table.insert(sourcepos, np)
 				end
 			end
 		end
 	else
-		local rname = mesecon.link_inverted(pos, vector.add(pos, rule))
+		local np = vector.add(pos, rule)
+		local rname = mesecon.link_inverted(pos, np)
 		if rname then
-			local np = vector.add(pos, rname)
 			local nn = mesecon.get_node_force_nocopy(np)
-			if (mesecon.is_conductor_on (nn, mesecon.invertRule(rname))
+			if (mesecon.is_conductor_on (nn, rname)
 			or mesecon.is_receptor_on (nn.name)) then
 				table.insert(sourcepos, np)
 			end
