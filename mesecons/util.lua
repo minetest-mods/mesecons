@@ -483,7 +483,7 @@ function mesecon.swap_node_force(pos, name, update_light)
 	else
 		-- This serves to both ensure the mapblock is loaded and also hand us
 		-- the old node table so we can preserve param2.
-		local node = mesecon.get_node_force(pos)
+		local node = get_node_load(pos)
 		node.name = name
 		minetest.swap_node(pos, node)
 	end
