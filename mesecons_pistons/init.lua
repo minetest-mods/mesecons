@@ -281,7 +281,7 @@ minetest.register_node("mesecons_pistons:piston_normal_off", {
 	sounds = mesecon.node_sound.wood,
 	mesecons = {effector={
 		action_on = piston_on,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = piston_get_rules,
 	}},
 	on_punch = piston_punch,
@@ -312,7 +312,7 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 	sounds = mesecon.node_sound.wood,
 	mesecons = {effector={
 		action_off = piston_off,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = piston_get_rules,
 	}},
 	on_rotate = piston_rotate_on,
@@ -362,7 +362,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 	sounds = mesecon.node_sound.wood,
 	mesecons = {effector={
 		action_on = piston_on,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = piston_get_rules,
 	}},
 	on_punch = piston_punch,
@@ -393,7 +393,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 	sounds = mesecon.node_sound.wood,
 	mesecons = {effector={
 		action_off = piston_off,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = piston_get_rules,
 	}},
 	on_rotate = piston_rotate_on,

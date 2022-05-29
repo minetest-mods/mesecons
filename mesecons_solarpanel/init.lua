@@ -21,14 +21,14 @@ mesecon.register_node("mesecons_solarpanel:solar_panel", {
 	groups = {dig_immediate = 3},
 	mesecons = {receptor = {
 		state = mesecon.state.off,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = mesecon.rules.wallmounted_get
 	}}
 },{
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	mesecons = {receptor = {
 		state = mesecon.state.on,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = mesecon.rules.wallmounted_get
 	}},
 })

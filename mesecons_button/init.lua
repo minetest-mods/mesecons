@@ -55,7 +55,7 @@ minetest.register_node("mesecons_button:button_off", {
 	sounds = mesecon.node_sound.stone,
 	mesecons = {receptor = {
 		state = mesecon.state.off,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = mesecon.rules.buttonlike_get
 	}},
 	on_blast = mesecon.on_blastnode,
@@ -97,7 +97,7 @@ minetest.register_node("mesecons_button:button_on", {
 	sounds = mesecon.node_sound.stone,
 	mesecons = {receptor = {
 		state = mesecon.state.on,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = mesecon.rules.buttonlike_get
 	}},
 	on_timer = mesecon.button_turnoff,

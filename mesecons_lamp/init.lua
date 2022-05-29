@@ -31,7 +31,7 @@ minetest.register_node("mesecons_lamp:lamp_on", {
 		action_off = function (pos, node)
 			minetest.swap_node(pos, {name = "mesecons_lamp:lamp_off", param2 = node.param2})
 		end,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = mesecon.rules.wallmounted_get,
 	}},
 	on_blast = mesecon.on_blastnode,
@@ -57,7 +57,7 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 		action_on = function (pos, node)
 			minetest.swap_node(pos, {name = "mesecons_lamp:lamp_on", param2 = node.param2})
 		end,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = mesecon.rules.wallmounted_get,
 	}},
 	on_blast = mesecon.on_blastnode,

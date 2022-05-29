@@ -68,7 +68,7 @@ mesecon.register_node("mesecons_receiver:receiver", {
 	},
 	mesecons = {conductor = {
 		state = mesecon.state.off,
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = receiver_get_rules,
 		onstate = "mesecons_receiver:receiver_on"
 	}}

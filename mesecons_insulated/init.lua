@@ -38,7 +38,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 	mesecons = {conductor = {
 		state = mesecon.state.on,
 		offstate = "mesecons_insulated:insulated_off",
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = insulated_wire_get_rules
 	}},
 	on_blast = mesecon.on_blastnode,
@@ -75,7 +75,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 	mesecons = {conductor = {
 		state = mesecon.state.off,
 		onstate = "mesecons_insulated:insulated_on",
-		const_node = true,
+		rule_node_nocopy = true,
 		rules = insulated_wire_get_rules
 	}},
 	on_blast = mesecon.on_blastnode,

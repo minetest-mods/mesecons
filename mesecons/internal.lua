@@ -59,7 +59,7 @@ end
 local function get_rules(def, node)
 	local rules = def.rules
 	if type(rules) == 'function' then
-		if not def.const_node then
+		if not def.rule_node_nocopy then
 			-- Copy the node to avoid overwriting data in the cache
 			node = {name = node.name, param1 = node.param1, param2 = node.param2}
 		end
