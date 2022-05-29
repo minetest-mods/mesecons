@@ -1,7 +1,6 @@
 mineunit("core")
 mineunit("server")
-
-fixture("voxelmanip")
+mineunit("voxelmanip")
 
 mineunit:set_current_modname("mesecons")
 mineunit:set_modpath("mesecons", "../mesecons")
