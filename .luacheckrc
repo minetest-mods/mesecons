@@ -35,7 +35,9 @@ files["mesecons/actionqueue.lua"] = {
 	globals = {"minetest.registered_globalsteps"},
 }
 
-files["*/spec/**/*.lua"] = {
+-- Test-specific stuff follows.
+
+local test_conf = {
 	read_globals = {
 		"assert",
 		"fixture",
@@ -45,15 +47,13 @@ files["*/spec/**/*.lua"] = {
 		"world",
 	},
 }
+files["*/spec/*.lua"] = test_conf
+files["test_fixtures/*.lua"] = test_conf
 
-files["mesecons/spec/fixtures/voxelmanip.lua"] = {
-	globals = {"minetest.get_voxel_manip"},
-}
-
-files["mesecons_fpga/spec/fixtures/screwdriver.lua"] = {
+files["test_fixtures/screwdriver.lua"] = {
 	globals = {"screwdriver"},
 }
 
-files["mesecons_fpga/spec/fixtures/mesecons_fpga.lua"] = {
+files["test_fixtures/mesecons_fpga.lua"] = {
 	globals = {"minetest.register_on_player_receive_fields"},
 }
