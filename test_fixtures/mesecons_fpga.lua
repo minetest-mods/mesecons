@@ -1,8 +1,7 @@
 mineunit("player")
 
 fixture("mesecons")
-
-mesecon.node_sound = {}
+fixture("mesecons_gamecompat")
 
 local registered_on_player_receive_fields = {}
 local old_register_on_player_receive_fields = minetest.register_on_player_receive_fields
