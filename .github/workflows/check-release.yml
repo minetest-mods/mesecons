@@ -36,3 +36,6 @@ jobs:
     - name: run mesecons_fpga tests
       working-directory: ./mesecons_fpga/
       run: $HOME/.luarocks/bin/mineunit -q
+    - name: run mesecons_luacontroller tests
+      working-directory: ./mesecons_luacontroller/
+      run: $HOME/.luarocks/bin/mineunit -q
