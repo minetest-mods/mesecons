@@ -48,12 +48,12 @@ local test_conf = {
 	},
 }
 files["*/spec/*.lua"] = test_conf
-files["test_fixtures/*.lua"] = test_conf
+files[".test_fixtures/*.lua"] = test_conf
 
-files["test_fixtures/screwdriver.lua"] = {
+files[".test_fixtures/screwdriver.lua"] = {
 	globals = {"screwdriver"},
 }
 
-files["test_fixtures/mesecons_fpga.lua"] = {
+files[".test_fixtures/mesecons_fpga.lua"] = {
 	globals = {"minetest.register_on_player_receive_fields"},
 }
