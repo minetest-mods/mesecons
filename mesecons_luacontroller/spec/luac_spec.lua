@@ -176,7 +176,7 @@ describe("LuaController", function()
 	it("limits run time", function()
 		mesecon._test_program_luac(pos, [[
 			port.a = true
-			while true do end
+			for i = 1, 1000000 do end
 		]])
 		mineunit:execute_globalstep()
 		assert.equal("mesecons_luacontroller:luacontroller0000", world.get_node(pos).name)
