@@ -6,7 +6,7 @@ fixture("mesecons_luacontroller")
 
 describe("LuaController", function()
 	local pos = {x = 0, y = 0, z = 0}
-	local pos_a = {x = -1, y = 0, z =  0}
+	local pos_a = {x = -1, y = 0, z = 0}
 
 	before_each(function()
 		mesecon._test_place(pos, "mesecons_luacontroller:luacontroller0000")
