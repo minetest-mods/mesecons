@@ -80,13 +80,7 @@ do
 end
 
 do
-	local function get_rules(node)
-		local rules = {{x = 1, y = 0, z = 0}, {x = -1, y = 0, z = 0}}
-		if node.param2 == 1 or node.param2 == 3 then
-			rules = mesecon.rotate_rules_right(rules)
-		end
-		return rules
-	end
+	local get_rules = mesecon.horiz_rules_getter({{x = 1, y = 0, z = 0}, {x = -1, y = 0, z = 0}})
 	local off_spec = {conductor = {
 		state = mesecon.state.off,
 		rules = get_rules,
