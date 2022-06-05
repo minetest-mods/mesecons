@@ -93,6 +93,7 @@ do
 	}}
 	mesecon.register_node("mesecons:test_conductor_rot", {
 		description = "Rotatable Test Conductor",
+		on_rotate = mesecon.on_rotate_horiz,
 	}, {mesecons = off_spec}, {mesecons = on_spec})
 end
 

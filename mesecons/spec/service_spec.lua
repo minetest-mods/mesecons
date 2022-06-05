@@ -1,6 +1,7 @@
 require("mineunit")
 
 fixture("mesecons")
+fixture("screwdriver")
 
 describe("placement/digging service", function()
 	local layout = {
@@ -136,5 +137,50 @@ describe("overheating service", function()
 		until minetest.get_node(layout[2][1]).name ~= "mesecons:test_effector"
 		assert.same({"overheat", layout[2][1]}, mesecon._test_effector_events[#mesecon._test_effector_events])
 		assert.equal(0, mesecon.get_heat(layout[2][1]))
+	end)
+end)
+
+describe("screwdriver service", function()
+	local layout = {
+		{{x =  0, y = 0, z =  0}, "mesecons:test_conductor_rot_on"},
+		{{x =  1, y = 0, z =  0}, "mesecons:test_receptor_on"},
+		{{x = -1, y = 0, z =  0}, "mesecons:test_conductor_on"},
+		{{x =  0, y = 0, z =  1}, "mesecons:test_receptor_on"},
+		{{x =  0, y = 0, z = -1}, "mesecons:test_conductor_off"},
+	}
+
+	local function rotate(new_param2)
+		local pos = layout[1][1]
+		local node = world.get_node(pos)
+		local on_rotate = minetest.registered_nodes[node.name].on_rotate
+		on_rotate(pos, node, nil, screwdriver.ROTATE_FACE, new_param2)
+	end
+
+	before_each(function()
+		world.layout(layout)
+	end)
+
+	after_each(function()
+		mesecon._test_reset()
+		world.clear()
+	end)
+
+	it("updates conductors", function()
+		rotate(1)
+		mineunit:execute_globalstep()
+		assert.equal("mesecons:test_conductor_off", world.get_node(layout[3][1]).name)
+		assert.equal("mesecons:test_conductor_on", world.get_node(layout[5][1]).name)
+		rotate(2)
+		mineunit:execute_globalstep()
+		assert.equal("mesecons:test_conductor_on", world.get_node(layout[3][1]).name)
+		assert.equal("mesecons:test_conductor_off", world.get_node(layout[5][1]).name)
+		rotate(3)
+		mineunit:execute_globalstep()
+		assert.equal("mesecons:test_conductor_off", world.get_node(layout[3][1]).name)
+		assert.equal("mesecons:test_conductor_on", world.get_node(layout[5][1]).name)
+		rotate(0)
+		mineunit:execute_globalstep()
+		assert.equal("mesecons:test_conductor_on", world.get_node(layout[3][1]).name)
+		assert.equal("mesecons:test_conductor_off", world.get_node(layout[5][1]).name)
 	end)
 end)
