@@ -25,18 +25,10 @@ local up_rcvboxes = {
 	{6/16,  -8/16, 1/16,  8/16, -7/16, -1/16}, -- Plate extension (East)
 }
 
-local receiver_get_rules = function (node)
-	local rules = {	{x =  1, y = 0, z = 0},
-			{x = -2, y = 0, z = 0}}
-	if node.param2 == 2 then
-		rules = mesecon.rotate_rules_left(rules)
-	elseif node.param2 == 3 then
-		rules = mesecon.rotate_rules_right(mesecon.rotate_rules_right(rules))
-	elseif node.param2 == 0 then
-		rules = mesecon.rotate_rules_right(rules)
-	end
-	return rules
-end
+local receiver_get_rules = mesecon.horiz_rules_getter({
+	{x = 0, y = 0, z = 1},
+	{x = 0, y = 0, z = -2},
+})
 
 mesecon.register_node("mesecons_receiver:receiver", {
 	drawtype = "nodebox",

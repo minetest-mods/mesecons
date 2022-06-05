@@ -72,7 +72,28 @@ function mesecon.rotate_rules_up(rules)
 	end
 	return nr
 end
---
+
+-- Returns a rules getter function that returns different rules depending on the node's horizontal rotation.
+-- If param2 % 4 == 0, then the rules returned by the getter are a copy of base_rules.
+function mesecon.horiz_rules_getter(base_rules)
+	local rotations = {mesecon.tablecopy(base_rules)}
+	for i = 2, 4 do
+		local right_rules = rotations[i - 1]
+		if not right_rules[1] or right_rules[1].x then
+			-- flat rules
+			rotations[i] = mesecon.rotate_rules_left(right_rules)
+		else
+			-- not flat
+			rotations[i] = {}
+			for j, rules in ipairs(right_rules) do
+				rotations[i][j] = mesecon.rotate_rules_left(rules)
+			end
+		end
+	end
+	return function(node)
+		return rotations[node.param2 % 4 + 1]
+	end
+end
 
 function mesecon.flattenrules(allrules)
 --[[

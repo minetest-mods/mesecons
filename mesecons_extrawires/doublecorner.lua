@@ -3,7 +3,7 @@ local doublecorner_selectionbox = {
 	fixed = { -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 },
 }
 
-local rules = {
+local doublecorner_get_rules = mesecon.horiz_rules_getter({
 	{
 		{ x = 1, y = 0, z = 0 },
 		{ x = 0, y = 0, z = 1 },
@@ -12,19 +12,7 @@ local rules = {
 		{ x = -1, y = 0, z = 0 },
 		{ x = 0, y = 0, z = -1 },
 	},
-}
-
-local doublecorner_rules = {}
-for k = 1, 4 do
-	doublecorner_rules[k] = table.copy(rules)
-	for i, r in ipairs(rules) do
-		rules[i] = mesecon.rotate_rules_left(r)
-	end
-end
-
-local function doublecorner_get_rules(node)
-	return doublecorner_rules[node.param2 % 4 + 1]
-end
+})
 
 local doublecorner_states = {
 	"mesecons_extrawires:doublecorner_00",

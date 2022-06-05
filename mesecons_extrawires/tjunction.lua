@@ -10,18 +10,11 @@ local tjunction_selectionbox = {
 		fixed = { -16/32, -16/32, -16/32, 16/32, -12/32, 7/32 },
 }
 
-local tjunction_get_rules = function (node)
-	local rules =
-	{{x = 0,  y = 0,  z =  1},
-	 {x = 1,  y = 0,  z =  0},
-	 {x = 0,  y = 0,  z = -1}}
-
-	for i = 0, node.param2 do
-		rules = mesecon.rotate_rules_left(rules)
-	end
-
-	return rules
-end
+local tjunction_get_rules = mesecon.horiz_rules_getter({
+	{x = 1, y = 0, z = 0},
+	{x = 0, y = 0, z = -1},
+	{x = -1, y = 0, z = 0},
+})
 
 minetest.register_node("mesecons_extrawires:tjunction_on", {
 	drawtype = "nodebox",

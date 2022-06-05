@@ -1,19 +1,7 @@
 -- Function that get the input/output rules of the delayer
-local delayer_get_output_rules = function(node)
-	local rules = {{x = 0, y = 0, z = 1}}
-	for i = 0, node.param2 do
-		rules = mesecon.rotate_rules_left(rules)
-	end
-	return rules
-end
+local delayer_get_output_rules = mesecon.horiz_rules_getter({{x = 1, y = 0, z = 0}})
 
-local delayer_get_input_rules = function(node)
-	local rules = {{x = 0, y = 0, z = -1}}
-	for i = 0, node.param2 do
-		rules = mesecon.rotate_rules_left(rules)
-	end
-	return rules
-end
+local delayer_get_input_rules = mesecon.horiz_rules_getter({{x = -1, y = 0, z = 0}})
 
 -- Functions that are called after the delay time
 

@@ -11,25 +11,14 @@ local nodebox = {
 	},
 }
 
-local function gate_rotate_rules(node, rules)
-	for rotations = 0, node.param2 - 1 do
-		rules = mesecon.rotate_rules_left(rules)
-	end
-	return rules
-end
+local gate_get_output_rules = mesecon.horiz_rules_getter({{x = 1, y = 0, z = 0}})
 
-local function gate_get_output_rules(node)
-	return gate_rotate_rules(node, {{x=1, y=0, z=0}})
-end
+local gate_get_input_rules_oneinput = mesecon.horiz_rules_getter({{x =-1, y = 0, z = 0}})
 
-local function gate_get_input_rules_oneinput(node)
-	return gate_rotate_rules(node, {{x=-1, y=0, z=0}})
-end
-
-local function gate_get_input_rules_twoinputs(node)
-	return gate_rotate_rules(node, {{x=0, y=0, z=1, name="input1"},
-		{x=0, y=0, z=-1, name="input2"}})
-end
+local gate_get_input_rules_twoinputs = mesecon.horiz_rules_getter({
+	{x = 0, y = 0, z = 1, name = "input1"},
+	{x = 0, y = 0, z = -1, name = "input2"},
+})
 
 local function set_gate(pos, node, state)
 	local gate = minetest.registered_nodes[node.name]
