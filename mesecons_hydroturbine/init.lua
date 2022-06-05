@@ -64,8 +64,8 @@ minetest.register_node("mesecons_hydroturbine:hydro_turbine_on", {
 local function is_flowing_water(pos)
 	local name = minetest.get_node(pos).name
 	local is_water = minetest.get_item_group(name, "water") > 0
-	local is_flowing = minetest.registered_items[name].liquidtype == "flowing"
-	return (is_water and is_flowing)
+	local def = minetest.registered_items[name]
+	return is_water and (def and def.liquidtype == "flowing")
 end
 
 minetest.register_abm({
