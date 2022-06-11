@@ -470,8 +470,12 @@ local safe_globals = {
 
 local function create_environment(pos, mem, event, itbl, send_warning)
 	-- Gather variables for the environment
-	local vports = minetest.registered_nodes[minetest.get_node(pos).name].virtual_portstates
+	local node_def = minetest.registered_nodes[minetest.get_node(pos).name]
+	if not node_def then return end
+
+	local vports = node_def.virtual_portstates
 	if not vports then return end
+
 	local vports_copy = {}
 	for k, v in pairs(vports) do vports_copy[k] = v end
 	local rports = get_real_port_states(pos)
