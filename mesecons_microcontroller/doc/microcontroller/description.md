@@ -56,4 +56,4 @@ Detailed documentation can be found below:
     * `&`: AND
     * `|`: OR
     * `~`: XOR (inequality)
-  * Note: Explicit precedence using parenthesis is not supported.
+  * Note: Explicit precedence using parentheses is not supported.
