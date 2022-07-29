@@ -332,7 +332,8 @@ yc.parse_get_eeprom_param = function(cond, starti)
 	local addr
 	while s ~= "" do
 		s = string.sub(cond, i, i)
-		if string.find("0123456789", s) == nil or s == "" then
+		local b = s:byte()
+		if s == "" or 48 > b or b > 57 then
 			addr = string.sub(cond, starti, i-1) -- i: last number i+1 after last number
 			return addr, i
 		end
@@ -419,7 +420,8 @@ yc.command_sbi = function(params, eeprom, L, Lv)
 
 	if status == nil then return nil, nil end
 
-	if string.find("ABCD", params[1])~=nil and #params[1]==1 then --is a port
+	local b = params[1]:byte()
+	if #params[1]==1 and 65 <= b and b <= 68 then -- is a port
 		if status == "1" then
 			Lv = yc.set_portstate (params[1], true,  Lv)
 		else
