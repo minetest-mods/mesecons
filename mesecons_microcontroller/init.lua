@@ -420,14 +420,16 @@ yc.command_sbi = function(params, eeprom, L, Lv)
 
 	if status == nil then return nil, nil end
 
-	local b = params[1]:byte()
-	if #params[1]==1 and 65 <= b and b <= 68 then -- is a port
-		if status == "1" then
-			Lv = yc.set_portstate (params[1], true,  Lv)
-		else
-			Lv = yc.set_portstate (params[1], false, Lv)
+	if #params[1]==1 then
+		local b = params[1]:byte()
+		if 65 <= b and b <= 68 then -- is a port
+			if status == "1" then
+				Lv = yc.set_portstate (params[1], true,  Lv)
+			else
+				Lv = yc.set_portstate (params[1], false, Lv)
+			end
+			return eeprom, Lv;
 		end
-		return eeprom, Lv;
 	end
 
 	--is an eeprom address
