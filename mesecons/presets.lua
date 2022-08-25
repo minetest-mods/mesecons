@@ -64,6 +64,8 @@ local rules_buttonlike = {
 }
 
 local function rules_from_dir(ruleset, dir)
+	if not dir then return {} end
+
 	if dir.x ==  1 then return ruleset.xp end
 	if dir.y ==  1 then return ruleset.yp end
 	if dir.z ==  1 then return ruleset.zp end
