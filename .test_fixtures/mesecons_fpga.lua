@@ -22,6 +22,7 @@ function mesecon._test_program_fpga(pos, program)
 
 	local fields = {program = true}
 	for i, instr in ipairs(program) do
+		-- Translate the instruction into formspec fields.
 		local op1, act, op2, dst
 		if #instr == 3 then
 			act, op2, dst = unpack(instr)
