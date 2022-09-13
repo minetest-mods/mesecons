@@ -54,6 +54,7 @@ do
 			minetest.remove_node(pos)
 			return
 		end
+		-- Set the value of a bit in param2 according to the rule name and new state.
 		local bit = tonumber(rule_name.name, 2)
 		local bits_above = node.param2 - node.param2 % (bit * 2)
 		local bits_below = node.param2 % bit
