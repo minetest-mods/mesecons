@@ -10,7 +10,7 @@ describe("node movement", function()
 		world.clear()
 	end)
 
-	it("works with no nodes", function()
+	it("works with no moved nodes", function()
 		local pos = {x = 0, y = 0, z = 0}
 		local dir = {x = 1, y = 0, z = 0}
 
