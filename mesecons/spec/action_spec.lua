@@ -38,7 +38,7 @@ describe("action queue", function()
 		assert.same({"off", layout[5][1]}, mesecon._test_effector_events[4])
 	end)
 
-	it("ignores overwritten actions", function()
+	it("discards outdated/overwritten node events", function()
 		world.set_node(layout[1][1], "mesecons:test_receptor_on")
 		mesecon.receptor_on(layout[1][1], mesecon.rules.alldirs)
 		world.set_node(layout[1][1], "mesecons:test_receptor_off")
