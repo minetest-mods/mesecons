@@ -6,6 +6,7 @@ mineunit:set_current_modname("mesecons")
 mineunit:set_modpath("mesecons", "../mesecons")
 sourcefile("../mesecons/init")
 
+-- Utility node: this conductor is used to test the connectivity and state of adjacent wires.
 do
 	local off_spec = {conductor = {
 		state = mesecon.state.off,
@@ -22,6 +23,7 @@ do
 	}, {mesecons = off_spec}, {mesecons = on_spec})
 end
 
+-- Utility node: this receptor is used to test power sources.
 do
 	local off_spec = {receptor = {
 		state = mesecon.state.off,
@@ -36,16 +38,19 @@ do
 	}, {mesecons = off_spec}, {mesecons = on_spec})
 end
 
+-- Utility node: this effector is used to test circuit outputs.
 do
+	-- This is a list of actions in the form {<kind>, <pos>},
+	-- where <kind> is "on", "off", or "overheat".
 	mesecon._test_effector_events = {}
 	local function action_on(pos, node)
 		table.insert(mesecon._test_effector_events, {"on", pos})
-		node.param2 = node.param2 % 64 + 128
+		node.param2 = node.param2 % 64 + 128 -- Turn on bit 7
 		minetest.swap_node(pos, node)
 	end
 	local function action_off(pos, node)
 		table.insert(mesecon._test_effector_events, {"off", pos})
-		node.param2 = node.param2 % 64
+		node.param2 = node.param2 % 64 -- Turn off bit 7
 		minetest.swap_node(pos, node)
 	end
 	local function action_change(pos, node, rule_name, new_state)
@@ -80,6 +85,7 @@ do
 	})
 end
 
+-- Utility node: this conductor is used to test rotation.
 do
 	local get_rules = mesecon.horiz_rules_getter({{x = 1, y = 0, z = 0}, {x = -1, y = 0, z = 0}})
 	local off_spec = {conductor = {
@@ -98,6 +104,7 @@ do
 	}, {mesecons = off_spec}, {mesecons = on_spec})
 end
 
+-- Utility node: this is used to test multiple conductors within a single node.
 do
 	local mesecons_spec = {conductor = {
 		rules = {
