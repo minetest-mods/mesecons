@@ -185,10 +185,10 @@ describe("FPGA logic", function()
 		end
 
 		mesecon._test_place(pos_a, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Transmit the input to the FPGA
+		mineunit:execute_globalstep() -- Run the FPGA
+		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off events
+		mineunit:execute_globalstep() -- Execute activate/deactivate/change events
 		assert.equal("mesecons_fpga:fpga0110", world.get_node(pos).name)
 		assert.same(event_tester({{"on", pos_b}, {"on", pos_c}, {"off", pos_d}}), event_tester(mesecon._test_effector_events))
 
