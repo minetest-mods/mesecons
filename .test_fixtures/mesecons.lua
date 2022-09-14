@@ -145,7 +145,7 @@ end
 
 function mesecon._test_reset()
 	-- First let circuits settle by simulating many globalsteps.
-	for i = 1, 30 do
+	for i = 1, 10 do
 		mineunit:execute_globalstep(60)
 	end
 	mesecon.queue.actions = {}
