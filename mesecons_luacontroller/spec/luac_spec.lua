@@ -10,7 +10,7 @@ describe("LuaController", function()
 
 	before_each(function()
 		mesecon._test_place(pos, "mesecons_luacontroller:luacontroller0000")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
 	end)
 
 	after_each(function()
@@ -25,19 +25,18 @@ describe("LuaController", function()
 
 	it("I/O", function()
 		mesecon._test_place(pos_a, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		mesecon._test_program_luac(pos, [[
 			port.a = not pin.a
 			port.b = not pin.b
 			port.c = not pin.c
 			port.d = not pin.d
 		]])
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_luacontroller:luacontroller1110", world.get_node(pos).name)
 		mesecon._test_dig(pos_a)
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
+		mineunit:execute_globalstep() -- Execute deactivate/change actions
 		assert.equal("mesecons_luacontroller:luacontroller0001", world.get_node(pos).name)
 	end)
 
@@ -53,11 +52,10 @@ describe("LuaController", function()
 				end
 			end
 		]])
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_luacontroller:luacontroller0000", world.get_node(pos).name)
 		mesecon._test_place(pos_a, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		assert.equal("mesecons_luacontroller:luacontroller1000", world.get_node(pos).name)
 	end)
 
@@ -128,13 +126,11 @@ describe("LuaController", function()
 			(" "):rep(64000)
 			port.a = true
 		]])
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_luacontroller:luacontroller0001", world.get_node(pos).name)
 		mesecon._test_program_luac(pos, [[
 			(" "):rep(64001)
 			port.b = true
 		]])
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_luacontroller:luacontroller0000", world.get_node(pos).name)
 	end)
 
@@ -142,13 +138,11 @@ describe("LuaController", function()
 		mesecon._test_program_luac(pos, [[
 			port.a = (" a"):find("a", nil, true) == 2
 		]])
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_luacontroller:luacontroller0001", world.get_node(pos).name)
 		mesecon._test_program_luac(pos, [[
 			(" a"):find("a", nil)
 			port.b = true
 		]])
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_luacontroller:luacontroller0000", world.get_node(pos).name)
 	end)
 
@@ -157,10 +151,10 @@ describe("LuaController", function()
 			interrupt(0)
 			interrupt(0)
 		]])
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute 2 interrupts
+		mineunit:execute_globalstep() -- Execute 4 interrupts
+		mineunit:execute_globalstep() -- Execute 8 interrupts
+		mineunit:execute_globalstep() -- Execute 16 interrupts
 		assert.equal("mesecons_luacontroller:luacontroller_burnt", world.get_node(pos).name)
 	end)
 
@@ -169,7 +163,6 @@ describe("LuaController", function()
 			port.a = true
 			mem.x = (" "):rep(50000) .. (" "):rep(50000)
 		]])
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_luacontroller:luacontroller_burnt", world.get_node(pos).name)
 	end)
 
@@ -178,7 +171,6 @@ describe("LuaController", function()
 			port.a = true
 			for i = 1, 1000000 do end
 		]])
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_luacontroller:luacontroller0000", world.get_node(pos).name)
 	end)
 end)

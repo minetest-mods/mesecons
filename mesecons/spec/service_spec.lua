@@ -26,15 +26,15 @@ describe("placement/digging service", function()
 		-- Dig then replace a receptor and check that the connected effectors changed.
 
 		mesecon._test_dig(layout[1][1])
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
 		assert.equal("mesecons:test_conductor_off", world.get_node(layout[2][1]).name)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute deactivate/change actions
 		assert.equal(3, #mesecon._test_effector_events)
 
 		mesecon._test_place(layout[1][1], "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
 		assert.equal("mesecons:test_conductor_on", world.get_node(layout[2][1]).name)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute activate/change action
 		assert.equal(6, #mesecon._test_effector_events)
 	end)
 
@@ -42,22 +42,22 @@ describe("placement/digging service", function()
 		-- Dig then replace a powered conductor and check that the connected effectors changed.
 
 		mesecon._test_dig(layout[2][1])
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
 		assert.equal("mesecons:test_conductor_off", world.get_node(layout[3][1]).name)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute deactivate/change actions
 		assert.equal(2, #mesecon._test_effector_events)
 
 		mesecon._test_place(layout[2][1], "mesecons:test_conductor_off")
 		assert.equal("mesecons:test_conductor_on", world.get_node(layout[2][1]).name)
 		assert.equal("mesecons:test_conductor_on", world.get_node(layout[3][1]).name)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		assert.equal(4, #mesecon._test_effector_events)
 	end)
 
 	it("updates effectors on placement", function()
 		local pos = {x = 0, y = 0, z = 1}
 		mesecon._test_place(pos, "mesecons:test_effector")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		assert.equal(tonumber("10100000", 2), world.get_node(pos).param2)
 	end)
 
@@ -81,7 +81,7 @@ describe("placement/digging service", function()
 
 	it("triggers autoconnect hooks", function()
 		mesecon._test_dig(layout[2][1])
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute delayed hook
 		assert.equal(1, #mesecon._test_autoconnects)
 
 		mesecon._test_place(layout[2][1], layout[2][2])
@@ -138,7 +138,7 @@ describe("overheating service", function()
 			else
 				mesecon.receptor_off(layout[1][1], mesecon.rules.alldirs)
 			end
-			mineunit:execute_globalstep(0)
+			mineunit:execute_globalstep(0) -- Execute receptor_on/receptor_off/activate/deactivate/change actions
 		until minetest.get_node(layout[2][1]).name ~= "mesecons:test_effector"
 		assert.same({"overheat", layout[2][1]}, mesecon._test_effector_events[#mesecon._test_effector_events])
 		assert.equal(0, mesecon.get_heat(layout[2][1]))
@@ -173,19 +173,19 @@ describe("screwdriver service", function()
 	it("updates conductors", function()
 		-- Rotate a conductor and see that the circuit state changes.
 		rotate(1)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
 		assert.equal("mesecons:test_conductor_off", world.get_node(layout[3][1]).name)
 		assert.equal("mesecons:test_conductor_on", world.get_node(layout[5][1]).name)
 		rotate(2)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
 		assert.equal("mesecons:test_conductor_on", world.get_node(layout[3][1]).name)
 		assert.equal("mesecons:test_conductor_off", world.get_node(layout[5][1]).name)
 		rotate(3)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
 		assert.equal("mesecons:test_conductor_off", world.get_node(layout[3][1]).name)
 		assert.equal("mesecons:test_conductor_on", world.get_node(layout[5][1]).name)
 		rotate(0)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
 		assert.equal("mesecons:test_conductor_on", world.get_node(layout[3][1]).name)
 		assert.equal("mesecons:test_conductor_off", world.get_node(layout[5][1]).name)
 	end)

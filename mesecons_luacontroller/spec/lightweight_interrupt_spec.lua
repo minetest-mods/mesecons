@@ -11,7 +11,7 @@ describe("LuaController lightweight interrupt", function()
 
 	before_each(function()
 		mesecon._test_place(pos, "mesecons_luacontroller:luacontroller0000")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
 	end)
 
 	after_each(function()

@@ -23,16 +23,16 @@ describe("action queue", function()
 	it("executes in order", function()
 		world.set_node(layout[1][1], "mesecons:test_receptor_on")
 		mesecon.receptor_on(layout[1][1], mesecon.rules.alldirs)
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		assert.equal(2, #mesecon._test_effector_events)
 		assert.same({"on", layout[4][1]}, mesecon._test_effector_events[1])
 		assert.same({"on", layout[5][1]}, mesecon._test_effector_events[2])
 
 		world.set_node(layout[1][1], "mesecons:test_receptor_off")
 		mesecon.receptor_off(layout[1][1], mesecon.rules.alldirs)
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
+		mineunit:execute_globalstep() -- Execute deactivate/change actions
 		assert.equal(4, #mesecon._test_effector_events)
 		assert.same({"off", layout[4][1]}, mesecon._test_effector_events[3])
 		assert.same({"off", layout[5][1]}, mesecon._test_effector_events[4])
@@ -43,8 +43,8 @@ describe("action queue", function()
 		mesecon.receptor_on(layout[1][1], mesecon.rules.alldirs)
 		world.set_node(layout[1][1], "mesecons:test_receptor_off")
 		mesecon.receptor_off(layout[1][1], mesecon.rules.alldirs)
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
+		mineunit:execute_globalstep() -- Execute deactivate/change actions
 		assert.equal(0, #mesecon._test_effector_events)
 	end)
 
@@ -54,9 +54,9 @@ describe("action queue", function()
 		mineunit:execute_globalstep(0.1)
 		mineunit:execute_globalstep(1)
 		assert.equal(0, #mesecon._test_effector_events)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
 		assert.equal(0, #mesecon._test_effector_events)
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		assert.equal(2, #mesecon._test_effector_events)
 	end)
 end)

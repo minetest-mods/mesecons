@@ -26,14 +26,14 @@ describe("FPGA rotation", function()
 		minetest.registered_nodes[node.name].on_rotate(pos, node, nil, screwdriver.ROTATE_FACE)
 
 		mesecon._test_place(pos_b, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		assert.equal("mesecons_fpga:fpga1000", world.get_node(pos).name)
 
 		mesecon._test_dig(pos_b)
 		mesecon._test_place(pos_c, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off actions
+		mineunit:execute_globalstep() -- Execute activate/deactivate/change actions
 		assert.equal("mesecons_fpga:fpga1000", world.get_node(pos).name)
 	end)
 
@@ -44,21 +44,19 @@ describe("FPGA rotation", function()
 		minetest.registered_nodes[node.name].on_rotate(pos, node, nil, screwdriver.ROTATE_AXIS)
 
 		mesecon._test_place(pos_d, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		assert.equal("mesecons_fpga:fpga0010", world.get_node(pos).name)
 
 		mesecon._test_dig(pos_d)
 		mesecon._test_place(pos_a, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off actions
+		mineunit:execute_globalstep() -- Execute activate/deactivate/change actions
 		assert.equal("mesecons_fpga:fpga0010", world.get_node(pos).name)
 	end)
 
 	it("updates ports", function()
 		mesecon._test_program_fpga(pos, {{"NOT", "A", "B"}})
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_fpga:fpga0010", world.get_node(pos).name)
 
 		local node = world.get_node(pos)
@@ -83,52 +81,27 @@ pending("FPGA programmer", function()
 
 	it("transfers instructions", function()
 		mesecon._test_program_fpga(pos2, {{"NOT", "A", "B"}})
-
 		mesecon._test_paste_fpga_program(pos, mesecon._test_copy_fpga_program(pos2))
-
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_fpga:fpga0010", world.get_node(pos).name)
 	end)
 
 	it("does not copy from new FPGAs", function()
 		mesecon._test_program_fpga(pos, {{"NOT", "A", "B"}})
-
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
-
 		mesecon._test_paste_fpga_program(pos, mesecon._test_copy_fpga_program(pos2))
-
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_fpga:fpga0010", world.get_node(pos).name)
 	end)
 
 	it("does not copy from cleared FPGAs", function()
 		mesecon._test_program_fpga(pos, {{"NOT", "A", "B"}})
-
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
-
 		mesecon._test_program_fpga(pos2, {{"=", "A", "B"}})
 		mesecon._test_program_fpga(pos2, {})
 		mesecon._test_paste_fpga_program(pos, mesecon._test_copy_fpga_program(pos2))
-
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_fpga:fpga0010", world.get_node(pos).name)
 	end)
 
 	it("does not copy from non-FPGA nodes", function()
 		mesecon._test_program_fpga(pos, {{"NOT", "A", "B"}})
-
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
-
 		mesecon._test_paste_fpga_program(pos, mesecon._test_copy_fpga_program(vector.add(pos2, 1)))
-
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
 		assert.equal("mesecons_fpga:fpga0010", world.get_node(pos).name)
 	end)
 end)

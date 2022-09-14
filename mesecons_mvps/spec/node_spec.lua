@@ -138,7 +138,7 @@ describe("node movement", function()
 		world.set_node(pos, "mesecons:test_conductor_off")
 
 		mesecon.mvps_push(pos, dir, 1, "")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute delayed autoconnect hook
 		assert.equal(2, #mesecon._test_autoconnects)
 	end)
 
@@ -153,10 +153,10 @@ describe("node movement", function()
 		mesecon._test_place(pos3, "mesecons:test_conductor_off")
 		mesecon._test_place(pos4, "mesecons:test_conductor_off")
 		mesecon._test_place(vector.add(pos4, dir), "mesecons:test_conductor_off")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
 
 		mesecon.mvps_push(pos1, dir, 1, "")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off actions
 		assert.equal("mesecons:test_conductor_off", world.get_node(pos2).name)
 		assert.equal("mesecons:test_conductor_on", world.get_node(pos3).name)
 		assert.equal("mesecons:test_conductor_on", world.get_node(pos4).name)
@@ -170,15 +170,15 @@ describe("node movement", function()
 		mesecon._test_place(pos1, "mesecons:test_conductor_off")
 		mesecon._test_place(pos2, "mesecons:test_receptor_on")
 		mesecon._test_place(pos3, "mesecons:test_conductor_off")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
 
 		mesecon.mvps_push(pos1, dir, 1, "")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
 		assert.equal("mesecons:test_conductor_off", world.get_node(vector.add(pos1, dir)).name)
 		assert.equal("mesecons:test_conductor_off", world.get_node(pos3).name)
 
 		mesecon.mvps_pull_all(vector.add(pos1, dir), vector.multiply(dir, -1), 1, "")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
 		assert.equal("mesecons:test_conductor_on", world.get_node(pos1).name)
 		assert.equal("mesecons:test_conductor_on", world.get_node(pos3).name)
 	end)
@@ -189,14 +189,14 @@ describe("node movement", function()
 		mesecon._test_place(pos, "mesecons:test_effector")
 		mesecon._test_place(vector.offset(pos, 0, 1, 0), "mesecons:test_receptor_on")
 		mesecon._test_place(vector.add(pos, dir), "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on action
 
 		mesecon.mvps_push(pos, dir, 2, "")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute activate/deactivate/change actions
 		assert.equal(tonumber("10000001", 2), world.get_node(vector.add(pos, dir)).param2)
 
 		mesecon.mvps_pull_single(vector.add(pos, dir), vector.multiply(dir, -1), 1, "")
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute activate/deactivate/change actions
 		assert.equal(tonumber("10000100", 2), world.get_node(pos).param2)
 	end)
 

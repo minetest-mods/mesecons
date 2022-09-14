@@ -37,8 +37,8 @@ describe("FPGA logic", function()
 		if inputs.b then mesecon._test_place(pos_b, "mesecons:test_receptor_on") end
 		if inputs.c then mesecon._test_place(pos_c, "mesecons:test_receptor_on") end
 		if inputs.d then mesecon._test_place(pos_d, "mesecons:test_receptor_on") end
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on actions
+		mineunit:execute_globalstep() -- Execute activate/change actions
 
 		local expected_name = "mesecons_fpga:fpga"
 				.. (outputs.d and 1 or 0) .. (outputs.c and 1 or 0)
@@ -170,8 +170,8 @@ describe("FPGA logic", function()
 		mesecon._test_place(pos_b, "mesecons:test_effector")
 		mesecon._test_place(pos_c, "mesecons:test_effector")
 		mesecon._test_place(pos_d, "mesecons:test_effector")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on actions
+		mineunit:execute_globalstep() -- Execute activate/change actions
 
 		-- Makes an object from the last three effector events in the list for use with assert.same.
 		-- This is necessary to ignore the ordering of events.
@@ -185,18 +185,18 @@ describe("FPGA logic", function()
 		end
 
 		mesecon._test_place(pos_a, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep() -- Transmit the input to the FPGA
-		mineunit:execute_globalstep() -- Run the FPGA
-		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off events
-		mineunit:execute_globalstep() -- Execute activate/deactivate/change events
+		mineunit:execute_globalstep() -- Execute receptor_on action
+		mineunit:execute_globalstep() -- Execute activate/change actions
+		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off actions
+		mineunit:execute_globalstep() -- Execute activate/deactivate/change actions
 		assert.equal("mesecons_fpga:fpga0110", world.get_node(pos).name)
 		assert.same(event_tester({{"on", pos_b}, {"on", pos_c}, {"off", pos_d}}), event_tester(mesecon._test_effector_events))
 
 		mesecon._test_dig(pos_a)
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off action
+		mineunit:execute_globalstep() -- Execute deactivate/change actions
+		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off actions
+		mineunit:execute_globalstep() -- Execute activate/deactivate/change actions
 		assert.equal("mesecons_fpga:fpga1000", world.get_node(pos).name)
 		assert.same(event_tester({{"off", pos_b}, {"off", pos_c}, {"on", pos_d}}), event_tester(mesecon._test_effector_events))
 	end)
@@ -213,23 +213,23 @@ describe("FPGA logic", function()
 		})
 
 		mesecon._test_place(pos_a, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on actions
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		assert.equal("mesecons_fpga:fpga0100", world.get_node(pos).name)
 
 		mesecon._test_dig(pos_a)
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off actions
+		mineunit:execute_globalstep() -- Execute deactivate/change actions
 		assert.equal("mesecons_fpga:fpga0100", world.get_node(pos).name)
 
 		mesecon._test_place(pos_b, "mesecons:test_receptor_on")
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_on actions
+		mineunit:execute_globalstep() -- Execute activate/change actions
 		assert.equal("mesecons_fpga:fpga1000", world.get_node(pos).name)
 
 		mesecon._test_dig(pos_b)
-		mineunit:execute_globalstep()
-		mineunit:execute_globalstep()
+		mineunit:execute_globalstep() -- Execute receptor_off actions
+		mineunit:execute_globalstep() -- Execute deactivate/change actions
 		assert.equal("mesecons_fpga:fpga1000", world.get_node(pos).name)
 	end)
 end)
