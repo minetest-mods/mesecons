@@ -23,6 +23,8 @@ describe("placement/digging service", function()
 	end)
 
 	it("updates components when a receptor changes", function()
+		-- Dig then replace a receptor and check that the connected effectors changed.
+
 		mesecon._test_dig(layout[1][1])
 		mineunit:execute_globalstep()
 		assert.equal("mesecons:test_conductor_off", world.get_node(layout[2][1]).name)
@@ -37,6 +39,8 @@ describe("placement/digging service", function()
 	end)
 
 	it("updates components when a conductor changes", function()
+		-- Dig then replace a powered conductor and check that the connected effectors changed.
+
 		mesecon._test_dig(layout[2][1])
 		mineunit:execute_globalstep()
 		assert.equal("mesecons:test_conductor_off", world.get_node(layout[3][1]).name)
@@ -127,6 +131,7 @@ describe("overheating service", function()
 	end)
 
 	it("causes overheating", function()
+		-- Switch the first receptor on and off until it overheats/breaks a receptor.
 		repeat
 			if mesecon.flipstate(layout[1][1], minetest.get_node(layout[1][1])) == "on" then
 				mesecon.receptor_on(layout[1][1], mesecon.rules.alldirs)
@@ -166,6 +171,7 @@ describe("screwdriver service", function()
 	end)
 
 	it("updates conductors", function()
+		-- Rotate a conductor and see that the circuit state changes.
 		rotate(1)
 		mineunit:execute_globalstep()
 		assert.equal("mesecons:test_conductor_off", world.get_node(layout[3][1]).name)

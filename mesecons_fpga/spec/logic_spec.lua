@@ -161,7 +161,7 @@ describe("FPGA logic", function()
 		})
 	end)
 
-	it("transmits changes", function()
+	it("transmits output signals to adjacent nodes", function()
 		mesecon._test_program_fpga(pos, {
 			{"=", "A", "B"},
 			{"=", "A", "C"},
