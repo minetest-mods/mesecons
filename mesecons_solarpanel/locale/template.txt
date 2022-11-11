@@ -1,0 +1,4 @@
+# textdomain: mesecons_solarpanel
+
+### init.lua ###
+Solar Panel=

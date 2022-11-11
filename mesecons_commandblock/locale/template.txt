@@ -1,0 +1,7 @@
+# textdomain: mesecons_commandblock
+
+### init.lua ###
+Say <text> as the server=
+Say <text> to <name> privately=
+Set health of <name> to <value> hitpoints=
+Command Block=

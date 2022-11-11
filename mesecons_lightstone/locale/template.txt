@@ -1,0 +1,15 @@
+# textdomain: mesecons_lightstone
+
+### init.lua ###
+Red Lightstone=
+Green Lightstone=
+Blue Lightstone=
+Grey Lightstone=
+Dark Grey Lightstone=
+Yellow Lightstone=
+Orange Lightstone=
+White Lightstone=
+Pink Lightstone=
+Magenta Lightstone=
+Cyan Lightstone=
+Violet Lightstone=

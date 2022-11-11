@@ -1,0 +1,7 @@
+# textdomain: mesecons_commandblock
+
+### init.lua ###
+Say <text> as the server=Diru <teksto> kiel la servilo
+Say <text> to <name> privately=Diru <teksto> al <nomo> private
+Set health of <name> to <value> hitpoints=Agordu sanon de <nomo> al <valoro>
+Command Block=Komando-Bloko

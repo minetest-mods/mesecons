@@ -28,6 +28,8 @@
 -- (see where local env is defined)
 -- Something nice to play is is appending minetest.env to it.
 
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local BASENAME = "mesecons_luacontroller:luacontroller"
 
 local rules = {
@@ -851,7 +853,7 @@ for d = 0, 1 do
 	}
 
 	minetest.register_node(node_name, {
-		description = "Luacontroller",
+		description = S("Luacontroller"),
 		drawtype = "nodebox",
 		tiles = {
 			top,

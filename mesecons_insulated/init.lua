@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local insulated_wire_get_rules = mesecon.horiz_rules_getter({
 	{x = 1, y = 0, z = 0},
 	{x = -1, y = 0, z = 0},
@@ -5,7 +7,7 @@ local insulated_wire_get_rules = mesecon.horiz_rules_getter({
 
 minetest.register_node("mesecons_insulated:insulated_on", {
 	drawtype = "nodebox",
-	description = "Straight Insulated Mesecon",
+	description = S("Straight Insulated Mesecon"),
 	tiles = {
 		"jeija_insulated_wire_sides_on.png",
 		"jeija_insulated_wire_sides_on.png",
@@ -42,7 +44,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 
 minetest.register_node("mesecons_insulated:insulated_off", {
 	drawtype = "nodebox",
-	description = "Straight Insulated Mesecon",
+	description = S("Straight Insulated Mesecon"),
 	tiles = {
 		"jeija_insulated_wire_sides_off.png",
 		"jeija_insulated_wire_sides_off.png",

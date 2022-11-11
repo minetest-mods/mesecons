@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 minetest.register_node("mesecons:mesecon_off", {
 	drawtype = "raillike",
 	tiles = {"jeija_mesecon_off.png", "jeija_mesecon_curved_off.png", "jeija_mesecon_t_junction_off.png", "jeija_mesecon_crossing_off.png"},
@@ -11,7 +13,7 @@ minetest.register_node("mesecons:mesecon_off", {
 		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 	groups = {dig_immediate=3, mesecon=1, mesecon_conductor_craftable=1},
-	description="Mesecons",
+	description= S("Mesecons"),
 	mesecons = {conductor={
 		state = mesecon.state.off,
 		onstate = "mesecons:mesecon_on"

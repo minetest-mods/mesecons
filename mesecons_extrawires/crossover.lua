@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local crossover_rules = {
 	{--first wire
 		{x=-1,y=0,z=0},
@@ -17,7 +19,7 @@ local crossover_states = {
 }
 
 minetest.register_node("mesecons_extrawires:crossover_off", {
-	description = "Insulated Mesecon Crossover",
+	description = S("Insulated Mesecon Crossover"),
 	drawtype = "mesh",
 	mesh = "mesecons_extrawires_crossover.b3d",
 	tiles = {
@@ -43,7 +45,7 @@ minetest.register_node("mesecons_extrawires:crossover_off", {
 })
 
 minetest.register_node("mesecons_extrawires:crossover_01", {
-	description = "You hacker you!",
+	description = S("You hacker you!"),
 	drop = "mesecons_extrawires:crossover_off",
 	drawtype = "mesh",
 	mesh = "mesecons_extrawires_crossover.b3d",
@@ -70,7 +72,7 @@ minetest.register_node("mesecons_extrawires:crossover_01", {
 })
 
 minetest.register_node("mesecons_extrawires:crossover_10", {
-	description = "You hacker you!",
+	description = S("You hacker you!"),
 	drop = "mesecons_extrawires:crossover_off",
 	drawtype = "mesh",
 	mesh = "mesecons_extrawires_crossover.b3d",
@@ -97,7 +99,7 @@ minetest.register_node("mesecons_extrawires:crossover_10", {
 })
 
 minetest.register_node("mesecons_extrawires:crossover_on", {
-	description = "You hacker you!",
+	description = S("You hacker you!"),
 	drop = "mesecons_extrawires:crossover_off",
 	drawtype = "mesh",
 	mesh = "mesecons_extrawires_crossover.b3d",

@@ -1,5 +1,7 @@
 -- The BLINKY_PLANT
 
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local toggle_timer = function (pos)
 	local timer = minetest.get_node_timer(pos)
 	if timer:is_started() then
@@ -20,7 +22,7 @@ local on_timer = function (pos)
 end
 
 mesecon.register_node("mesecons_blinkyplant:blinky_plant", {
-	description="Blinky Plant",
+	description= S("Blinky Plant"),
 	drawtype = "plantlike",
 	inventory_image = "jeija_blinky_plant_off.png",
 	paramtype = "light",

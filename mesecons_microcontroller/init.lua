@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local EEPROM_SIZE = 255
 
 local microc_rules = {}
@@ -57,7 +59,7 @@ if nodename ~= "mesecons_microcontroller:microcontroller0000" then
 end
 
 minetest.register_node(nodename, {
-	description = "Microcontroller",
+	description = S("Microcontroller"),
 	drawtype = "nodebox",
 	tiles = {
 		top,

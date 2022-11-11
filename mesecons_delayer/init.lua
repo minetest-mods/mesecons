@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 -- Function that get the input/output rules of the delayer
 local delayer_get_output_rules = mesecon.horiz_rules_getter({{x = 1, y = 0, z = 0}})
 
@@ -69,7 +71,7 @@ if i > 1 then
 end
 
 local off_state = {
-	description = "Delayer",
+	description = S("Delayer"),
 	tiles = {
 		"mesecons_delayer_off_"..tostring(i)..".png",
 		"mesecons_delayer_bottom.png",
@@ -112,7 +114,7 @@ minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), off_state)
 
 -- Activated delayer definition defaults
 local on_state = {
-	description = "You hacker you",
+	description = S("You hacker you"),
 	tiles = {
 		"mesecons_delayer_on_"..tostring(i)..".png",
 		"mesecons_delayer_bottom.png",

@@ -1,0 +1,9 @@
+# textdomain: mesecons_pistons
+
+### init.lua ###
+Piston=Piŝto
+Activated Piston Base=Aktivigita Piŝta Bazo
+Piston Pusher=Piŝta Pushero
+Sticky Piston=Glueca Piŝto
+Activated Sticky Piston Base=Aktivigita Glueca Piŝta Bazo
+Sticky Piston Pusher=Glueca Piŝta Puŝilo

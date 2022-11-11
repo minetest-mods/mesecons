@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 -- MESELAMPS
 -- A lamp is "is an electrical device used to create artificial light" (wikipedia)
 -- guess what?
@@ -50,7 +52,7 @@ minetest.register_node("mesecons_lamp:lamp_off", {
 	node_box = mesecon_lamp_box,
 	selection_box = mesecon_lamp_box,
 	groups = {dig_immediate=3, mesecon_receptor_off = 1, mesecon_effector_off = 1},
-	description = "Mesecon Lamp",
+	description = S("Mesecon Lamp"),
 	sounds = mesecon.node_sound.glass,
 	mesecons = {effector = {
 		action_on = function (pos, node)

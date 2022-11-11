@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local corner_selectionbox = {
 		type = "fixed",
 		fixed = { -16/32, -16/32, -16/32, 5/32, -12/32, 5/32 },
@@ -36,7 +38,7 @@ minetest.register_node("mesecons_extrawires:corner_on", {
 
 minetest.register_node("mesecons_extrawires:corner_off", {
 	drawtype = "mesh",
-	description = "Insulated Mesecon Corner",
+	description = S("Insulated Mesecon Corner"),
 	mesh = "mesecons_extrawires_corner.obj",
 	tiles = {
 		{ name = "jeija_insulated_wire_sides_off.png", backface_culling = true },
