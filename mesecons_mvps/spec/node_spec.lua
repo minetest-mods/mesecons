@@ -205,6 +205,22 @@ describe("node movement", function()
 		assert.equal(tonumber("10000100", 2), world.get_node(pos).param2)
 	end)
 
+	-- Since turnon is called before turnoff when pushing, effectors may be incorrectly turned off.
+	pending("does not overwrite turnon with receptor_off", function()
+		local pos = {x = 0, y = 0, z = 0}
+		local dir = {x = 1, y = 0, z = 0}
+		mesecon._test_place(pos, "mesecons:test_effector")
+		mesecon._test_place(vector.add(pos, dir), "mesecons:test_conductor_off")
+		mesecon._test_place(vector.add(pos, vector.multiply(dir, 2)), "mesecons:test_receptor_on")
+		mineunit:execute_globalstep() -- Execute receptor_on action
+		mineunit:execute_globalstep() -- Execute activate/change actions
+
+		mesecon.mvps_push(pos, dir, 3, "")
+		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off actions
+		mineunit:execute_globalstep() -- Execute activate/deactivate/change actions
+		assert.equal(tonumber("10000001", 2), world.get_node(vector.add(pos, dir)).param2)
+	end)
+
 	-- mineunit doesn't yet implement minetest.check_for_falling.
 	pending("causes nodes to fall", function()
 	end)
