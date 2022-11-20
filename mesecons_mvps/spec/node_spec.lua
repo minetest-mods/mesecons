@@ -190,12 +190,17 @@ describe("node movement", function()
 		mesecon._test_place(vector.offset(pos, 0, 1, 0), "mesecons:test_receptor_on")
 		mesecon._test_place(vector.add(pos, dir), "mesecons:test_receptor_on")
 		mineunit:execute_globalstep() -- Execute receptor_on action
+		mineunit:execute_globalstep() -- Execute activate/change actions
 
 		mesecon.mvps_push(pos, dir, 2, "")
+		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off actions
 		mineunit:execute_globalstep() -- Execute activate/deactivate/change actions
 		assert.equal(tonumber("10000001", 2), world.get_node(vector.add(pos, dir)).param2)
 
+		mineunit:execute_globalstep() -- Let the component cool down
+
 		mesecon.mvps_pull_single(vector.add(pos, dir), vector.multiply(dir, -1), 1, "")
+		mineunit:execute_globalstep() -- Execute receptor_on/receptor_off actions
 		mineunit:execute_globalstep() -- Execute activate/deactivate/change actions
 		assert.equal(tonumber("10000100", 2), world.get_node(pos).param2)
 	end)
