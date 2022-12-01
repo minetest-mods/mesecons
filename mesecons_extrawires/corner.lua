@@ -67,3 +67,9 @@ minetest.register_craft({
 		{"", "mesecons_insulated:insulated_off"},
 	}
 })
+
+minetest.register_craft({
+	output = "mesecons_insulated:insulated_off",
+	type = "shapeless",
+	recipe = {"mesecons_extrawires:corner_off"}
+})
