@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local pp_box_off = {
 	type = "fixed",
 	fixed = { -7/16, -8/16, -7/16, 7/16, -7/16, 7/16 },
@@ -87,7 +89,7 @@ end
 
 mesecon.register_pressure_plate(
 	"mesecons_pressureplates:pressure_plate_wood",
-	"Wooden Pressure Plate",
+	S("Wooden Pressure Plate"),
 	{"jeija_pressure_plate_wood_off.png","jeija_pressure_plate_wood_off.png","jeija_pressure_plate_wood_off_edges.png"},
 	{"jeija_pressure_plate_wood_on.png","jeija_pressure_plate_wood_on.png","jeija_pressure_plate_wood_on_edges.png"},
 	"jeija_pressure_plate_wood_wield.png",
@@ -98,7 +100,7 @@ mesecon.register_pressure_plate(
 
 mesecon.register_pressure_plate(
 	"mesecons_pressureplates:pressure_plate_stone",
-	"Stone Pressure Plate",
+	S("Stone Pressure Plate"),
 	{"jeija_pressure_plate_stone_off.png","jeija_pressure_plate_stone_off.png","jeija_pressure_plate_stone_off_edges.png"},
 	{"jeija_pressure_plate_stone_on.png","jeija_pressure_plate_stone_on.png","jeija_pressure_plate_stone_on_edges.png"},
 	"jeija_pressure_plate_stone_wield.png",

@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local mese_nodename = minetest.registered_aliases["mesecons_gamecompat:mese"]
 if mese_nodename then
 	-- Convert placeholders.
@@ -6,7 +8,7 @@ else
 	-- Register placeholder.
 	mese_nodename = "mesecons_extrawires:mese"
 	minetest.register_node("mesecons_extrawires:mese", {
-		description = "Mese Wire",
+		description = S("Mese Wire"),
 		tiles = {"mesecons_wire_off.png"},
 		paramtype = "light",
 		light_source = 3,

@@ -8,6 +8,8 @@
 -- Pushes all block in front of it
 -- Pull all blocks in its back
 
+local S = minetest.get_translator(minetest.get_current_modname())
+
 -- settings:
 local timer_interval = 1 / mesecon.setting("movestone_speed", 3)
 local max_push = mesecon.setting("movestone_max_push", 50)
@@ -128,7 +130,7 @@ mesecon.register_movestone("mesecons_movestones:movestone", {
 		"jeija_movestone_arrows.png",
 	},
 	groups = {cracky = 3},
-    description = "Movestone",
+    description = S("Movestone"),
 	sounds = mesecon.node_sound.stone
 }, false, false)
 
@@ -142,7 +144,7 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone", {
 		"jeija_sticky_movestone.png",
 	},
 	groups = {cracky = 3},
-    description = "Sticky Movestone",
+    description = S("Sticky Movestone"),
 	sounds = mesecon.node_sound.stone,
 }, true, false)
 
@@ -156,7 +158,7 @@ mesecon.register_movestone("mesecons_movestones:movestone_vertical", {
 		"jeija_movestone_arrows.png^[transformR90",
 	},
 	groups = {cracky = 3},
-    description = "Vertical Movestone",
+    description = S("Vertical Movestone"),
 	sounds = mesecon.node_sound.stone
 }, false, true)
 
@@ -170,7 +172,7 @@ mesecon.register_movestone("mesecons_movestones:sticky_movestone_vertical", {
 		"jeija_movestone_arrows.png^[transformR90",
 	},
 	groups = {cracky = 3},
-    description = "Vertical Sticky Movestone",
+    description = S("Vertical Sticky Movestone"),
 	sounds = mesecon.node_sound.stone,
 }, true, true)
 

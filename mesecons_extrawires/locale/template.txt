@@ -1,0 +1,20 @@
+# textdomain: mesecons_extrawires
+
+### corner.lua ###
+Insulated Mesecon Corner=
+
+### crossover.lua ###
+Insulated Mesecon Crossover=
+You hacker you!=
+
+### doublecorner.lua ###
+Insulated Mesecon Double Corner=
+
+### mesewire.lua ###
+Mese Wire=
+
+### tjunction.lua ###
+Insulated Mesecon T-junction=
+
+### vertical.lua ###
+Vertical Mesecon=

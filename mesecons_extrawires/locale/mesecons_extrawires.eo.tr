@@ -1,0 +1,20 @@
+# textdomain: mesecons_extrawires
+
+### corner.lua ###
+Insulated Mesecon Corner=Izolita Mesekonduktila Angulo
+
+### crossover.lua ###
+Insulated Mesecon Crossover=Izolita Mesekonduktila Interkruciĝo
+You hacker you!=Vi hakisto
+
+### doublecorner.lua ###
+Insulated Mesecon Double Corner=Izolita Mesekonduktila Duobla Angulo
+
+### mesewire.lua ###
+Mese Wire=Mesea Drato
+
+### tjunction.lua ###
+Insulated Mesecon T-junction=Izolita Mesekonduktila T-Kruciĝo
+
+### vertical.lua ###
+Vertical Mesecon=Vertikala Mesekonduktilo

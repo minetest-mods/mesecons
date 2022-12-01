@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local side_texture = mesecon.texture.steel_block or "mesecons_detector_side.png"
 
 local GET_COMMAND = "GET"
@@ -71,7 +73,7 @@ minetest.register_node("mesecons_detector:object_detector_off", {
 	is_ground_content = false,
 	walkable = true,
 	groups = {cracky=3},
-	description="Player Detector",
+	description= S("Player Detector"),
 	mesecons = {receptor = {
 		state = mesecon.state.off,
 		rules = mesecon.rules.pplate
@@ -247,7 +249,7 @@ minetest.register_node("mesecons_detector:node_detector_off", {
 	is_ground_content = false,
 	walkable = true,
 	groups = {cracky=3},
-	description="Node Detector",
+	description = S("Node Detector"),
 	mesecons = {receptor = {
 		state = mesecon.state.off
 	}},

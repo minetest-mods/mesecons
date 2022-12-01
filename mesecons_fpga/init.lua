@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local plg = {}
 plg.rules = {}
 -- per-player formspec positions
@@ -59,7 +61,7 @@ plg.register_nodes = function(template)
 end
 
 plg.register_nodes({
-	description = "FPGA",
+	description = S("FPGA"),
 	drawtype = "nodebox",
 	tiles = {
 		"", -- replaced later

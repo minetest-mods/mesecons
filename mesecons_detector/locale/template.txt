@@ -1,0 +1,5 @@
+# textdomain: mesecons_detector
+
+### init.lua ###
+Player Detector=
+Node Detector=

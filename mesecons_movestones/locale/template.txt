@@ -1,0 +1,7 @@
+# textdomain: mesecons_movestones
+
+### init.lua ###
+Movestone=
+Sticky Movestone=
+Vertical Movestone=
+Vertical Sticky Movestone=
