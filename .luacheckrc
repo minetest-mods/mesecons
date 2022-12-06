@@ -34,3 +34,26 @@ globals = {"mesecon"}
 files["mesecons/actionqueue.lua"] = {
 	globals = {"minetest.registered_globalsteps"},
 }
+
+-- Test-specific stuff follows.
+
+local test_conf = {
+	read_globals = {
+		"assert",
+		"fixture",
+		"mineunit",
+		"Player",
+		"sourcefile",
+		"world",
+	},
+}
+files["*/spec/*.lua"] = test_conf
+files[".test_fixtures/*.lua"] = test_conf
+
+files[".test_fixtures/screwdriver.lua"] = {
+	globals = {"screwdriver"},
+}
+
+files[".test_fixtures/mesecons_fpga.lua"] = {
+	globals = {"minetest.register_on_player_receive_fields"},
+}
