@@ -312,6 +312,37 @@ plg.red_box_around = function(i)
 end
 
 
+local compile_cache = {}
+
+plg.compile_with_cache = function(instr)
+	local entry = compile_cache[instr]
+	if entry then
+		-- Prevent removal from the cache
+		entry.age = 0
+	else
+		entry = {
+			func = lcore.compile(lcore.deserialize(instr)),
+			age = 0,
+		}
+		compile_cache[instr] = entry
+	end
+	return entry.func
+end
+
+-- Entries are removed from the cache if they are unused for at least a minute.
+local function clean_compile_cache()
+	for instr, entry in pairs(compile_cache) do
+		if entry.age < 1 then
+			entry.age = entry.age + 1
+		else
+			compile_cache[instr] = nil
+		end
+	end
+	minetest.after(60, clean_compile_cache)
+end
+minetest.after(60, clean_compile_cache)
+
+
 plg.update = function(pos)
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("valid") ~= 1 then
@@ -323,9 +354,9 @@ plg.update = function(pos)
 		return
 	end
 
-	local is = lcore.deserialize(meta:get_string("instr"))
+	local func = plg.compile_with_cache(meta:get_string("instr"))
 	local A, B, C, D = plg.getports(pos)
-	A, B, C, D = lcore.interpret(is, A, B, C, D)
+	A, B, C, D = func(A, B, C, D)
 	plg.setports(pos, A, B, C, D)
 end
 

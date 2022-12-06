@@ -6,16 +6,16 @@ local operations = {
 	-- gate:    Internal name
 	-- short:   Serialized form, single character
 	-- fs_name: Display name, padded to 4 characters
-	-- func:    Function that applies the operation
+	-- func:    Function that returns tokens representing the operation
 	-- unary:   Whether this gate only has one input
-	{ gate = "and",  short = "&", fs_name = " AND", func = function(a, b) return a and b end },
-	{ gate = "or",   short = "|", fs_name = "  OR", func = function(a, b) return a or b end },
-	{ gate = "not",  short = "~", fs_name = " NOT", func = function(_, b) return not b end, unary = true },
-	{ gate = "xor",  short = "^", fs_name = " XOR", func = function(a, b) return a ~= b end },
-	{ gate = "nand", short = "?", fs_name = "NAND", func = function(a, b) return not (a and b) end },
+	{ gate = "and",  short = "&", fs_name = " AND", func = function(a, b) return a, "and", b end },
+	{ gate = "or",   short = "|", fs_name = "  OR", func = function(a, b) return a, "or", b end },
+	{ gate = "not",  short = "~", fs_name = " NOT", func = function(_, b) return "not", b end, unary = true },
+	{ gate = "xor",  short = "^", fs_name = " XOR", func = function(a, b) return a, "~=", b end },
+	{ gate = "nand", short = "?", fs_name = "NAND", func = function(a, b) return "not (", a, "and", b, ")" end },
 	{ gate = "buf",  short = "_", fs_name = "   =", func = function(_, b) return b end, unary = true },
-	{ gate = "xnor", short = "=", fs_name = "XNOR", func = function(a, b) return a == b end },
-	{ gate = "nor",  short = "!", fs_name = " NOR", func = function(a, b) return not (a or b) end },
+	{ gate = "xnor", short = "=", fs_name = "XNOR", func = function(a, b) return a, "==", b end },
+	{ gate = "nor",  short = "!", fs_name = " NOR", func = function(a, b) return "not (", a, "or", b, ")" end },
 }
 
 lg.get_operations = function()
@@ -177,46 +177,63 @@ lg.validate = function(t)
 	return nil
 end
 
--- interpreter
-lg.interpret = function(t, a, b, c, d)
-	local function _action(s, v1, v2)
+local fpga_env = setmetatable({}, {
+	__index = function(_, var)
+		error("FPGA code tried to read undeclared variable " .. var)
+	end,
+	__newindex = function(_, var)
+		error("FPGA code tried to set undeclared variable " .. var)
+	end,
+})
+
+-- compiler
+lg.compile = function(t)
+	-- Get token generation function from action gate string
+	local function _action(s)
 		for i, data in ipairs(operations) do
 			if data.gate == s then
-				return data.func(v1, v2)
+				return data.func
 			end
 		end
-		return false -- unknown gate
+		return nil -- unknown gate
 	end
-	local function _op(t, regs, io_in)
-		if t.type == "reg" then
-			return regs[t.n]
+	-- Serialize input operand
+	local function _op(t)
+		if t == nil then
+			return nil
+		elseif t.type == "reg" then
+			return "r" .. t.n
 		else -- t.type == "io"
-			return io_in[t.port]
+			return "i" .. t.port
+		end
+	end
+	-- Serialize destination
+	local function _dst(t)
+		if t.type == "reg" then
+			return "local r" .. t.n
+		else -- t.type == "io"
+			return "o" .. t.port
 		end
 	end
 
-	local io_in = {A=a, B=b, C=c, D=d}
-	local regs = {}
-	local io_out = {}
+	local tokens = {
+		-- Declare inputs and outputs:
+		"return function(iA, iB, iC, iD) local oA, oB, oC, oD",
+	}
 	for i = 1, 14 do
 		local cur = t[i]
 		if next(cur) ~= nil then
-			local v1, v2
-			if cur.op1 ~= nil then
-				v1 = _op(cur.op1, regs, io_in)
-			end
-			v2 = _op(cur.op2, regs, io_in)
-
-			local result = _action(cur.action, v1, v2)
-
-			if cur.dst.type == "reg" then
-				regs[cur.dst.n] = result
-			else -- cur.dst.type == "io"
-				io_out[cur.dst.port] = result
-			end
+			table.insert(tokens, _dst(cur.dst))
+			table.insert(tokens, "=")
+			table.insert_all(tokens, {_action(cur.action)(_op(cur.op1), _op(cur.op2))})
 		end
 	end
-	return io_out.A, io_out.B, io_out.C, io_out.D
+	table.insert(tokens, "return oA, oB, oC, oD end")
+
+	local code = table.concat(tokens, " ")
+	local func = assert(loadstring(code))()
+	setfenv(func, fpga_env)
+	return func
 end
 
 return lg
