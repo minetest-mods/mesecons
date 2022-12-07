@@ -542,9 +542,12 @@ function mesecon.turnoff(pos, link)
 	end
 
 	for _, sig in ipairs(signals) do
-		mesecon.changesignal(sig.pos, sig.node, sig.link, mesecon.state.off, sig.depth)
-		if mesecon.is_effector_on(sig.node.name) and not mesecon.is_powered(sig.pos) then
-			mesecon.deactivate(sig.pos, sig.node, sig.link, sig.depth)
+		-- If sig.depth is 1, it has not yet been checked that the power source is actually off.
+		if sig.depth > 1 or not mesecon.is_powered(sig.pos, sig.link) then
+			mesecon.changesignal(sig.pos, sig.node, sig.link, mesecon.state.off, sig.depth)
+			if mesecon.is_effector_on(sig.node.name) and not mesecon.is_powered(sig.pos) then
+				mesecon.deactivate(sig.pos, sig.node, sig.link, sig.depth)
+			end
 		end
 	end
 

@@ -206,7 +206,7 @@ describe("node movement", function()
 	end)
 
 	-- Since turnon is called before turnoff when pushing, effectors may be incorrectly turned off.
-	pending("does not overwrite turnon with receptor_off", function()
+	it("does not overwrite turnon with receptor_off", function()
 		local pos = {x = 0, y = 0, z = 0}
 		local dir = {x = 1, y = 0, z = 0}
 		mesecon._test_place(pos, "mesecons:test_effector")
