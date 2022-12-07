@@ -65,8 +65,7 @@ describe("FPGA rotation", function()
 	end)
 end)
 
--- mineunit does not support deprecated ItemStack:get_metadata()
-pending("FPGA programmer", function()
+describe("FPGA programmer", function()
 	local pos2 = {x = 10, y = 0, z = 0}
 
 	before_each(function()
