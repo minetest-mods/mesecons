@@ -218,7 +218,7 @@ lg.compile = function(t)
 
 	local tokens = {
 		-- Declare inputs and outputs:
-		"return function(iA, iB, iC, iD) local oA, oB, oC, oD",
+		"return function(iA, iB, iC, iD) local oA, oB, oC, oD;",
 	}
 	for i = 1, 14 do
 		local cur = t[i]
@@ -226,6 +226,7 @@ lg.compile = function(t)
 			table.insert(tokens, _dst(cur.dst))
 			table.insert(tokens, "=")
 			table.insert_all(tokens, {_action(cur.action)(_op(cur.op1), _op(cur.op2))})
+			table.insert(tokens, ";")
 		end
 	end
 	table.insert(tokens, "return oA, oB, oC, oD end")
