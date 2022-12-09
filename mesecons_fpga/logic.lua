@@ -6,16 +6,16 @@ local operations = {
 	-- gate:    Internal name
 	-- short:   Serialized form, single character
 	-- fs_name: Display name, padded to 4 characters
-	-- func:    Function that returns tokens representing the operation
+	-- func:    Function that returns a string representing the operation
 	-- unary:   Whether this gate only has one input
-	{ gate = "and",  short = "&", fs_name = " AND", func = function(a, b) return a, "and", b end },
-	{ gate = "or",   short = "|", fs_name = "  OR", func = function(a, b) return a, "or", b end },
-	{ gate = "not",  short = "~", fs_name = " NOT", func = function(_, b) return "not", b end, unary = true },
-	{ gate = "xor",  short = "^", fs_name = " XOR", func = function(a, b) return a, "~=", b end },
-	{ gate = "nand", short = "?", fs_name = "NAND", func = function(a, b) return "not (", a, "and", b, ")" end },
+	{ gate = "and",  short = "&", fs_name = " AND", func = function(a, b) return ("%s and %s"):format(a, b) end },
+	{ gate = "or",   short = "|", fs_name = "  OR", func = function(a, b) return ("%s or %s"):format(a, b) end },
+	{ gate = "not",  short = "~", fs_name = " NOT", func = function(_, b) return ("not %s"):format(b) end, unary = true },
+	{ gate = "xor",  short = "^", fs_name = " XOR", func = function(a, b) return ("%s~=%s"):format(a, b) end },
+	{ gate = "nand", short = "?", fs_name = "NAND", func = function(a, b) return ("not(%s and %s)"):format(a, b) end },
 	{ gate = "buf",  short = "_", fs_name = "   =", func = function(_, b) return b end, unary = true },
-	{ gate = "xnor", short = "=", fs_name = "XNOR", func = function(a, b) return a, "==", b end },
-	{ gate = "nor",  short = "!", fs_name = " NOR", func = function(a, b) return "not (", a, "or", b, ")" end },
+	{ gate = "xnor", short = "=", fs_name = "XNOR", func = function(a, b) return ("%s==%s"):format(a, b) end },
+	{ gate = "nor",  short = "!", fs_name = " NOR", func = function(a, b) return ("not(%s or %s)"):format(a, b) end },
 }
 
 lg.get_operations = function()
@@ -216,23 +216,22 @@ lg.compile = function(t)
 		end
 	end
 
-	local tokens = {
+	local code = {
 		-- Declare inputs and outputs:
-		"return function(iA, iB, iC, iD) local oA, oB, oC, oD;",
+		"return function(iA,iB,iC,iD)local oA,oB,oC,oD;",
 	}
 	for i = 1, 14 do
 		local cur = t[i]
 		if next(cur) ~= nil then
-			table.insert(tokens, _dst(cur.dst))
-			table.insert(tokens, "=")
-			table.insert_all(tokens, {_action(cur.action)(_op(cur.op1), _op(cur.op2))})
-			table.insert(tokens, ";")
+			table.insert(code, _dst(cur.dst))
+			table.insert(code, "=")
+			table.insert(code, _action(cur.action)(_op(cur.op1), _op(cur.op2)))
+			table.insert(code, ";")
 		end
 	end
-	table.insert(tokens, "return oA, oB, oC, oD end")
+	table.insert(code, "return oA,oB,oC,oD;end")
 
-	local code = table.concat(tokens, " ")
-	local func = assert(loadstring(code))()
+	local func = assert(loadstring(table.concat(code)))()
 	setfenv(func, fpga_env)
 	return func
 end
