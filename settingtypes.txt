@@ -17,6 +17,12 @@ mesecon.detector_radius (Player detector scanning radius) int 6 3 16
 mesecon.node_detector_distance_max (Node detector distance limit) int 10 1 16
 
 
+[mesecons_fpga]
+
+# The minimum time in minutes that unused cached FPGA configurations will be kept around.
+mesecon.fpga_cache_max_age (Compile cache max age) int 1 0 10
+
+
 [mesecons_luacontroller]
 
 mesecon.luacontroller_string_rep_max (string:rep result length limit) int 64000 1000 1000000

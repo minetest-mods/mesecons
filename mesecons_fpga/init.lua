@@ -330,9 +330,10 @@ plg.compile_with_cache = function(instr)
 end
 
 -- Entries are removed from the cache if they are unused for at least a minute.
+local compile_cache_max_age = mesecon.setting("fpga_cache_max_age", 1)
 local function clean_compile_cache()
 	for instr, entry in pairs(compile_cache) do
-		if entry.age < 1 then
+		if entry.age < compile_cache_max_age then
 			entry.age = entry.age + 1
 		else
 			compile_cache[instr] = nil
