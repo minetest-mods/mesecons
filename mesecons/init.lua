@@ -118,8 +118,6 @@ function mesecon.receptor_off(pos, rules)
 end
 
 
-minetest.log("info", "[OK] Mesecons")
-
 -- Deprecated stuff
 -- To be removed in future releases
 dofile(minetest.get_modpath("mesecons").."/legacy.lua");
