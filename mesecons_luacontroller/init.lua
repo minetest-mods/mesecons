@@ -203,11 +203,13 @@ end
 -------------------------
 
 local function safe_print(param)
-	local string_meta = getmetatable("")
-	local sandbox = string_meta.__index
-	string_meta.__index = string -- Leave string sandbox temporarily
-	print(dump(param))
-	string_meta.__index = sandbox -- Restore string sandbox
+	if mesecon.setting("luacontroller_print_behavior", "log") == "log" then
+		local string_meta = getmetatable("")
+		local sandbox = string_meta.__index
+		string_meta.__index = string -- Leave string sandbox temporarily
+		minetest.log("action", string.format("[mesecons_luacontroller] print(%s)", dump(param)))
+		string_meta.__index = sandbox -- Restore string sandbox
+	end
 end
 
 local function safe_date()
