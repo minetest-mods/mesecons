@@ -28,7 +28,7 @@ mesecon.luacontroller_memsize (Controller memory limit) int 100000 10000 1000000
 # IID is ignored and at most one interrupt may be queued if this setting is enabled.
 mesecon.luacontroller_lightweight_interrupts (Lightweight interrupts) bool false
 
-# Behavior of "print" inside a luacontroller. By default, this emits a message into debug.txt.
+# Behavior of print() inside a luacontroller. By default, this emits a message into actionstream.
 # Set it to noop if you wish to disable that behavior.
 mesecon.luacontroller_print_behavior (Behavior of print) enum log log,noop
 
