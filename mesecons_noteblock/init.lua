@@ -94,7 +94,6 @@ mesecon.noteblock_play = function(pos, param2)
 		-- Calculate pitch
 		-- Adding 1 to param2 because param2=11 is *lowest* pitch sound
 		local val = (param2+1)%12
-		-- All semitones from C to B (analog to piano mode)
 		pitch = 2^((val-6)/12)
 	end
 	pos.y = pos.y+1
