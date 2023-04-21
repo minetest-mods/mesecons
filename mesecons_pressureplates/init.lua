@@ -38,6 +38,7 @@ local function pp_on_timer(pos)
 		local plate_x_max = plate_pos.x + 7 / 16
 		local plate_z_min = plate_pos.z - 7 / 16
 		local plate_z_max = plate_pos.z + 7 / 16
+		local plate_y_min = plate_pos.y - 8 / 16
 		local plate_y_max = plate_pos.y - 6.5 / 16
 
 		local obj_x_min = obj_pos.x + collisionbox[1]
@@ -45,9 +46,11 @@ local function pp_on_timer(pos)
 		local obj_z_min = obj_pos.z + collisionbox[3]
 		local obj_z_max = obj_pos.z + collisionbox[6]
 		local obj_y_min = obj_pos.y + collisionbox[2]
+		local obj_y_max = obj_pos.y + collisionbox[5]
 
 		if
-			obj_y_min <= plate_y_max and
+			obj_y_min < plate_y_max and
+			obj_y_max > plate_y_min and
 			obj_x_min < plate_x_max and
 			obj_x_max > plate_x_min and
 			obj_z_min < plate_z_max and
