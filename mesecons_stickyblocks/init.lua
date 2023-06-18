@@ -19,3 +19,15 @@ minetest.register_node("mesecons_stickyblocks:sticky_block_all", {
 	end,
 	sounds = mesecon.node_sound.wood,
 })
+
+local wood = "group:wood"
+local glue = "mesecons_materials:glue"
+
+minetest.register_craft({
+	output = "mesecons_stickyblocks:sticky_block_all",
+	recipe = {
+		{glue, glue, glue},
+		{glue, wood, glue},
+		{glue, glue, glue},
+	}
+})
