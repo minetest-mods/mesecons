@@ -148,7 +148,7 @@ do
 		table.insert(mesecon._test_eff_conductor_events, {"off", pos})
 		minetest.swap_node(pos, {name = "mesecons:test_effect_conductor_off", param2 = node.param2})
 	end
-	local function action_change(pos, node, rule_name, new_state)
+	local function action_change(pos, _node, _rule_name, _new_state)
 		if mesecon.do_overheat(pos) then
 			table.insert(mesecon._test_eff_conductor_events, {"overheat", pos})
 			minetest.remove_node(pos)
