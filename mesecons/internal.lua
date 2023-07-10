@@ -192,6 +192,12 @@ mesecon.queue:add_function("activate", function (pos, rulename)
 
 	if effector and effector.action_on then
 		effector.action_on(pos, node, rulename)
+	elseif mesecon.is_conductor(node.name) then
+		local node_name = mesecon.get_conductor_off(node, rulename)
+		effector = mesecon.get_effector(node_name)
+		if effector and effector.action_on then
+			effector.action_on(pos, node, rulename)
+		end
 	end
 end)
 
@@ -215,6 +221,12 @@ mesecon.queue:add_function("deactivate", function (pos, rulename)
 
 	if effector and effector.action_off then
 		effector.action_off(pos, node, rulename)
+	elseif mesecon.is_conductor(node.name) then
+		local node_name = mesecon.get_conductor_on(node, rulename)
+		effector = mesecon.get_effector(node_name)
+		if effector and effector.action_off then
+			effector.action_off(pos, node, rulename)
+		end
 	end
 end)
 
