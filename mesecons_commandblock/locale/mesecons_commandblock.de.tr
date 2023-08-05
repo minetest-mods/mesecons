@@ -1,0 +1,5 @@
+# textdomain: mesecons_commandblock
+Say <text> as the server=<Text> als Server sagen
+Say <text> to <name> privately=<Text> an <Name> privat senden
+Set health of <name> to <value> hitpoints=Gesundheit von <Name> auf <Wert> Trefferpunkte setzen
+Command Block=Befehlsblock
