@@ -88,7 +88,7 @@ local piston_on = function(pos, node)
 	local meta = minetest.get_meta(pos)
 	-- NOTE: this gets calculated twice, but fixing this would mean changing the public api.
 	local stack = mesecon.mvps_get_stack(pusher_pos, dir, max_push, meta:get_string("owner"))
-	for _, n in ipairs(stack) do
+	for _, n in ipairs(stack or {}) do
 		-- fix issue 645
 		if vector.equals(n.pos, behind_pos) then
 			return
