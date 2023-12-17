@@ -95,16 +95,19 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 			-- position
 			for _, r in ipairs(mesecon.rules.alldirs) do
 				local adjpos = vector.add(np, r)
-				local adjnode = minetest.get_node(adjpos)
-				if minetest.registered_nodes[adjnode.name]
-				and minetest.registered_nodes[adjnode.name].mvps_sticky then
-					local sticksto = minetest.registered_nodes[adjnode.name]
-						.mvps_sticky(adjpos, adjnode)
-
-					-- connects to this position?
-					for _, link in ipairs(sticksto) do
-						if vector.equals(link, np) then
-							frontiers:add(adjpos)
+				-- optimization: don't check blocks that are already part of the stack
+				if not pos_set[minetest.hash_node_position(adjpos)] then
+					local adjnode = minetest.get_node(adjpos)
+					if minetest.registered_nodes[adjnode.name]
+					and minetest.registered_nodes[adjnode.name].mvps_sticky then
+						local sticksto = minetest.registered_nodes[adjnode.name]
+							.mvps_sticky(adjpos, adjnode)
+	
+						-- connects to this position?
+						for _, link in ipairs(sticksto) do
+							if vector.equals(link, np) then
+								frontiers:add(adjpos)
+							end
 						end
 					end
 				end
