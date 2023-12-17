@@ -204,13 +204,10 @@ end
 --  - empty string means legacy MVPS, actual check depends on configuration
 --  - "$unknown" is a sentinel for forcing the check
 function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sticky, player_name)
-	local time_start = minetest.get_us_time()
 	local nodes = mesecon.mvps_get_stack(pos, movedir, maximum, all_pull_sticky)
-	local time_get_stack = minetest.get_us_time()
 
 	if not nodes then return end
 
-	local time_protection_check_start = minetest.get_us_time()
 	local protection_check_set = {}
 	if vector.equals(stackdir, movedir) then -- pushing
 		add_pos(protection_check_set, pos)
@@ -226,9 +223,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	if are_protected(protection_check_set, player_name) then
 		return false, "protected"
 	end
-	local time_protection_check_end = minetest.get_us_time()
 
-	local time_remove_nodes_start = minetest.get_us_time()
 	-- remove all nodes
 	for _, n in ipairs(nodes) do
 		n.meta = minetest.get_meta(n.pos):to_table()
@@ -238,7 +233,6 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 		end
 		minetest.remove_node(n.pos)
 	end
-	local time_remove_nodes_end = minetest.get_us_time()
 	local oldstack = mesecon.tablecopy(nodes)
 
 	-- update mesecons for removed nodes ( has to be done after all nodes have been removed )
@@ -246,7 +240,6 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 		mesecon.on_dignode(n.pos, n.node)
 	end
 
-	local time_set_nodes_start = minetest.get_us_time()
 	-- add nodes
 	for _, n in ipairs(nodes) do
 		local np = vector.add(n.pos, movedir)
@@ -263,9 +256,7 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 			minetest.get_node_timer(np):set(unpack(n.node_timer))
 		end
 	end
-	local time_set_nodes_end = minetest.get_us_time()
 
-	local time_moved_nodes_start = minetest.get_us_time()
 	local moved_nodes = {}
 	for i in ipairs(nodes) do
 		moved_nodes[i] = {}
@@ -276,15 +267,9 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 		moved_nodes[i].meta = nodes[i].meta
 		moved_nodes[i].node_timer = nodes[i].node_timer
 	end
-	local time_moved_nodes_end = minetest.get_us_time()
 	
 
 	on_mvps_move(moved_nodes)	
-	--[[minetest.debug("get_stack time", time_get_stack - time_start)
-	minetest.debug("remove_nodes time", time_remove_nodes_end - time_remove_nodes_start)
-	minetest.debug("set_nodes time", time_set_nodes_end - time_set_nodes_start)
-	minetest.debug("moved_nodes time", time_moved_nodes_end - time_moved_nodes_start)
-	minetest.debug("full time", minetest.get_us_time() - time_start)]]
 	return true, nodes, oldstack
 end
 
