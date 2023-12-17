@@ -85,9 +85,10 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 			if minetest.registered_nodes[nn.name]
 			and minetest.registered_nodes[nn.name].mvps_sticky then
 				local connected = minetest.registered_nodes[nn.name].mvps_sticky(np, nn)
-				for _, cp in ipairs(connected) do
+				frontiers:add_list(connected)
+				--[[for _, cp in ipairs(connected) do
 					frontiers:add(cp)
-				end
+				end]]
 			end
 
 			frontiers:add(vector.add(np, dir))
