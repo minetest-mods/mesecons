@@ -70,21 +70,28 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	local nodes = {}
 	local pos_set = {}
 	local frontiers = mesecon.fifo_queue.new()
-	local vector_equals = vector.equals
+	--local vector_equals = vector.equals
 	frontiers:add(vector.new(pos))
+	local nodedef
+	local np_hash
+	local nn
+	local connected
+	local adjnode
+	local adjdef
+	local sticksto
 
 	for np in frontiers:iter() do
-		local np_hash = minetest.hash_node_position(np)
-		local nn = not pos_set[np_hash] and minetest.get_node(np)
+		np_hash = minetest.hash_node_position(np)
+		nn = not pos_set[np_hash] and minetest.get_node(np)
 		if nn and not node_replaceable(nn.name) then
 			pos_set[np_hash] = true
 			table.insert(nodes, {node = nn, pos = np})
 			if #nodes > maximum then return nil end
 
 			-- add connected nodes to frontiers
-			local nodedef = minetest.registered_nodes[nn.name]
+			nodedef = minetest.registered_nodes[nn.name]
 			if nodedef and nodedef.mvps_sticky then
-				local connected = nodedef.mvps_sticky(np, nn)
+				connected = nodedef.mvps_sticky(np, nn)
 				frontiers:add_list(connected)
 			end
 
@@ -96,14 +103,14 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 				local adjpos = vector.add(np, r)
 				-- optimization: don't check blocks that are already part of the stack
 				if not pos_set[minetest.hash_node_position(adjpos)] then
-					local adjnode = minetest.get_node(adjpos)
-					local adjdef = minetest.registered_nodes[adjnode.name]
+					adjnode = minetest.get_node(adjpos)
+					adjdef = minetest.registered_nodes[adjnode.name]
 					if adjdef and adjdef.mvps_sticky then
-						local sticksto = adjdef.mvps_sticky(adjpos, adjnode)
+						sticksto = adjdef.mvps_sticky(adjpos, adjnode)
 	
 						-- connects to this position?
 						for _, link in ipairs(sticksto) do
-							if vector_equals(link, np) then
+							if vector.equals(link, np) then
 								frontiers:add(adjpos)
 								break
 							end
@@ -273,11 +280,11 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	
 
 	on_mvps_move(moved_nodes)	
-	minetest.debug("get_stack time", time_get_stack - time_start)
+	--[[minetest.debug("get_stack time", time_get_stack - time_start)
 	minetest.debug("remove_nodes time", time_remove_nodes_end - time_remove_nodes_start)
 	minetest.debug("set_nodes time", time_set_nodes_end - time_set_nodes_start)
 	minetest.debug("moved_nodes time", time_moved_nodes_end - time_moved_nodes_start)
-	minetest.debug("full time", minetest.get_us_time() - time_start)
+	minetest.debug("full time", minetest.get_us_time() - time_start)]]
 	return true, nodes, oldstack
 end
 
