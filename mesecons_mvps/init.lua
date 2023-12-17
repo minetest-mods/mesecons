@@ -70,6 +70,7 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	local nodes = {}
 	local pos_set = {}
 	local frontiers = mesecon.fifo_queue.new()
+	local vector_equals = vector.equals
 	frontiers:add(vector.new(pos))
 
 	for np in frontiers:iter() do
@@ -105,7 +106,7 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	
 						-- connects to this position?
 						for _, link in ipairs(sticksto) do
-							if vector.equals(link, np) then
+							if vector_equals(link, np) then
 								frontiers:add(adjpos)
 								break
 							end
