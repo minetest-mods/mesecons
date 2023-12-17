@@ -70,8 +70,8 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	local nodes = {}
 	local pos_set = {}
 	local frontiers = mesecon.fifo_queue.new()
-	--local vector_equals = vector.equals
 	frontiers:add(vector.new(pos))
+	-- micro-optimization: lift local definitions out of loop
 	local nodedef
 	local np_hash
 	local nn
@@ -100,7 +100,7 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 			-- If adjacent node is sticky block and connects add that
 			-- position
 			for _, r in ipairs(mesecon.rules.alldirs) do
-				local adjpos = vector.add(np, r)
+				adjpos = vector.add(np, r)
 				-- optimization: don't check blocks that are already part of the stack
 				if not pos_set[minetest.hash_node_position(adjpos)] then
 					adjnode = minetest.get_node(adjpos)
