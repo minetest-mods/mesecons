@@ -4,6 +4,16 @@ local side_texture = mesecon.texture.steel_block or "mesecons_detector_side.png"
 
 local GET_COMMAND = "GET"
 
+
+local function comma_list_to_table(comma_list)
+	local tbl = {}
+	for _, str in pairs(string.split(comma_list:gsub(" ", ""), ",")) do
+		tbl[str] = true
+	end
+	return tbl
+end
+
+
 -- Object detector
 -- Detects players in a certain radius
 -- The radius can be specified in mesecons/settings.lua
@@ -35,10 +45,7 @@ local function object_detector_scan(pos)
 	if next(objs) == nil then return false end
 
 	local scanname = minetest.get_meta(pos):get_string("scanname")
-	local scan_for = {}
-	for _, str in pairs(string.split(scanname:gsub(" ", ""), ",")) do
-		scan_for[str] = true
-	end
+	local scan_for = comma_list_to_table(scanname)
 
 	local every_player = scanname == ""
 	for _, obj in pairs(objs) do
@@ -188,8 +195,9 @@ local function node_detector_scan(pos)
 		vector.subtract(pos, vector.multiply(minetest.facedir_to_dir(node.param2), distance + 1))
 	).name
 	local scanname = meta:get_string("scanname")
+	local scan_for = comma_list_to_table(scanname)
 
-	return (frontname == scanname) or
+	return (scan_for[frontname]) or
 		(frontname ~= "air" and frontname ~= "ignore" and scanname == "")
 end
 
