@@ -103,6 +103,7 @@ local off_state = {
 		effector =
 		{
 			rules = delayer_get_input_rules,
+			action_off = delayer_deactivate,
 			action_on = delayer_activate
 		}
 	},
@@ -144,7 +145,8 @@ local on_state = {
 		effector =
 		{
 			rules = delayer_get_input_rules,
-			action_off = delayer_deactivate
+			action_off = delayer_deactivate,
+			action_on = delayer_activate
 		}
 	},
 }
