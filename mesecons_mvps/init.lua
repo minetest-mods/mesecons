@@ -71,27 +71,19 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 	local pos_set = {}
 	local frontiers = mesecon.fifo_queue.new()
 	frontiers:add(vector.new(pos))
-	-- micro-optimization: lift local definitions out of loop
-	local nodedef
-	local np_hash
-	local nn
-	local connected
-	local adjnode
-	local adjdef
-	local sticksto
 
 	for np in frontiers:iter() do
-		np_hash = minetest.hash_node_position(np)
-		nn = not pos_set[np_hash] and minetest.get_node(np)
+		local np_hash = minetest.hash_node_position(np)
+		local nn = not pos_set[np_hash] and minetest.get_node(np)
 		if nn and not node_replaceable(nn.name) then
 			pos_set[np_hash] = true
 			table.insert(nodes, {node = nn, pos = np})
 			if #nodes > maximum then return nil end
 
 			-- add connected nodes to frontiers
-			nodedef = minetest.registered_nodes[nn.name]
+			local nodedef = minetest.registered_nodes[nn.name]
 			if nodedef and nodedef.mvps_sticky then
-				connected = nodedef.mvps_sticky(np, nn)
+				local connected = nodedef.mvps_sticky(np, nn)
 				frontiers:add_list(connected)
 			end
 
@@ -100,13 +92,13 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 			-- If adjacent node is sticky block and connects add that
 			-- position
 			for _, r in ipairs(mesecon.rules.alldirs) do
-				adjpos = vector.add(np, r)
+				local adjpos = vector.add(np, r)
 				-- optimization: don't check blocks that are already part of the stack
 				if not pos_set[minetest.hash_node_position(adjpos)] then
-					adjnode = minetest.get_node(adjpos)
-					adjdef = minetest.registered_nodes[adjnode.name]
+					local adjnode = minetest.get_node(adjpos)
+					local adjdef = minetest.registered_nodes[adjnode.name]
 					if adjdef and adjdef.mvps_sticky then
-						sticksto = adjdef.mvps_sticky(adjpos, adjnode)
+						local sticksto = adjdef.mvps_sticky(adjpos, adjnode)
 	
 						-- connects to this position?
 						for _, link in ipairs(sticksto) do
