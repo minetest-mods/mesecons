@@ -20,10 +20,19 @@ function fifo_queue.add(self, v)
 	self.buf_in[n] = v
 end
 
--- add several elements to the queue
-function fifo_queue.add_list(self, v)
-	table.move(v, 1, #v, self.n_in + 1, self.buf_in)
-	self.n_in = self.n_in + #v
+-- table.move is not available in some lua versions, provide a fallback implementaion
+if table.move ~= nil then
+	-- add several elements to the queue
+	function fifo_queue.add_list(self, v)
+		table.move(v, 1, #v, self.n_in + 1, self.buf_in)
+		self.n_in = self.n_in + #v
+	end
+else
+	function fifo_queue.add_list(self, v)
+		for _, elem in ipairs(v) do
+			self:add(elem)
+		end
+	end
 end
 -- removes and returns the next element, or nil of empty
 function fifo_queue.take(self)
