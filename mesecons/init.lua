@@ -77,8 +77,8 @@ mesecon.queue:add_function("receptor_on", function (pos, rules)
 	-- Call turnon on all linking positions
 	for _, rule in ipairs(mesecon.flattenrules(rules)) do
 		local np = vector.add(pos, rule)
-		local rulenames = mesecon.rules_link_rule_all(pos, rule)
-		for _, rulename in ipairs(rulenames) do
+		local rulename = mesecon.link(pos, np)
+		if rulename then
 			mesecon.turnon(np, rulename)
 		end
 	end
@@ -96,8 +96,8 @@ mesecon.queue:add_function("receptor_off", function (pos, rules)
 	-- Call turnoff on all linking positions
 	for _, rule in ipairs(mesecon.flattenrules(rules)) do
 		local np = vector.add(pos, rule)
-		local rulenames = mesecon.rules_link_rule_all(pos, rule)
-		for _, rulename in ipairs(rulenames) do
+		local rulename = mesecon.link(pos, np)
+		if rulename then
 			mesecon.vm_begin()
 
 			-- Turnoff returns true if turnoff process was successful, no onstate receptor

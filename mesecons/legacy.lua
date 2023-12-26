@@ -12,3 +12,15 @@ for hash, _ in pairs(old_forceloaded_blocks) do
 	minetest.forceload_free_block(unhash_blockpos(hash))
 end
 os.remove(minetest.get_worldpath().."/mesecon_forceloaded")
+
+-- Implement mesecon.rules_link_rule_all and mesecon.rules_link_rule_all_inverted
+-- for mods that use them, even though they were internal functions.
+
+function mesecon.rules_link_rule_all(output, rule)
+	return {mesecon.link(output, vector.add(output, rule))}
+end
+
+function mesecon.rules_link_rule_all_inverted(input, rule)
+	local r = mesecon.link_inverted(input, vector.add(input, rule))
+	return {r and mesecon.invertRule(r)}
+end

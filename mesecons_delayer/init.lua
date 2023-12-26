@@ -98,10 +98,12 @@ local off_state = {
 		receptor =
 		{
 			state = mesecon.state.off,
+			rule_node_nocopy = true,
 			rules = delayer_get_output_rules
 		},
 		effector =
 		{
+			rule_node_nocopy = true,
 			rules = delayer_get_input_rules,
 			action_on = delayer_activate
 		}

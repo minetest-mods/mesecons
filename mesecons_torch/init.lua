@@ -69,6 +69,7 @@ minetest.register_node("mesecons_torch:mesecon_torch_off", {
 	sounds = mesecon.node_sound.default,
 	mesecons = {receptor = {
 		state = mesecon.state.off,
+		rule_node_nocopy = true,
 		rules = torch_get_output_rules
 	}},
 	on_blast = mesecon.on_blastnode,

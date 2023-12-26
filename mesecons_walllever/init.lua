@@ -36,6 +36,7 @@ mesecon.register_node("mesecons_walllever:wall_lever", {
 	mesh="jeija_wall_lever_off.obj",
 	on_rotate = mesecon.buttonlike_onrotate,
 	mesecons = {receptor = {
+		rule_node_nocopy = true,
 		rules = mesecon.rules.buttonlike_get,
 		state = mesecon.state.off
 	}},
@@ -50,6 +51,7 @@ mesecon.register_node("mesecons_walllever:wall_lever", {
 	mesh="jeija_wall_lever_on.obj",
 	on_rotate = false,
 	mesecons = {receptor = {
+		rule_node_nocopy = true,
 		rules = mesecon.rules.buttonlike_get,
 		state = mesecon.state.on
 	}},
