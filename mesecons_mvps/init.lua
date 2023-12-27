@@ -81,9 +81,9 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 			if #nodes > maximum then return nil end
 
 			-- add connected nodes to frontiers
-			if minetest.registered_nodes[nn.name]
-			and minetest.registered_nodes[nn.name].mvps_sticky then
-				local connected = minetest.registered_nodes[nn.name].mvps_sticky(np, nn)
+			local nndef = minetest.registered_nodes[nn.name]
+			if nndef and nndef.mvps_sticky then
+				local connected = nndef.mvps_sticky(np, nn)
 				for _, cp in ipairs(connected) do
 					frontiers:add(cp)
 				end
@@ -96,10 +96,9 @@ function mesecon.mvps_get_stack(pos, dir, maximum, all_pull_sticky)
 			for _, r in ipairs(mesecon.rules.alldirs) do
 				local adjpos = vector.add(np, r)
 				local adjnode = minetest.get_node(adjpos)
-				if minetest.registered_nodes[adjnode.name]
-				and minetest.registered_nodes[adjnode.name].mvps_sticky then
-					local sticksto = minetest.registered_nodes[adjnode.name]
-						.mvps_sticky(adjpos, adjnode)
+				local adjdef = minetest.registered_nodes[adjnode.name]
+				if adjdef and adjdef.mvps_sticky then
+					local sticksto = adjdef.mvps_sticky(adjpos, adjnode)
 
 					-- connects to this position?
 					for _, link in ipairs(sticksto) do
