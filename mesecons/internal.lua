@@ -51,27 +51,18 @@ mesecon.fifo_queue = dofile(minetest.get_modpath("mesecons").."/fifo_queue.lua")
 
 -- General
 function mesecon.get_effector(nodename)
-	if  minetest.registered_nodes[nodename]
-	and minetest.registered_nodes[nodename].mesecons
-	and minetest.registered_nodes[nodename].mesecons.effector then
-		return minetest.registered_nodes[nodename].mesecons.effector
-	end
+	local def = minetest.registered_nodes[nodename]
+	return def and def.mesecons and def.mesecons.effector
 end
 
 function mesecon.get_receptor(nodename)
-	if  minetest.registered_nodes[nodename]
-	and minetest.registered_nodes[nodename].mesecons
-	and minetest.registered_nodes[nodename].mesecons.receptor then
-		return minetest.registered_nodes[nodename].mesecons.receptor
-	end
+	local def = minetest.registered_nodes[nodename]
+	return def and def.mesecons and def.mesecons.receptor
 end
 
 function mesecon.get_conductor(nodename)
-	if  minetest.registered_nodes[nodename]
-	and minetest.registered_nodes[nodename].mesecons
-	and minetest.registered_nodes[nodename].mesecons.conductor then
-		return minetest.registered_nodes[nodename].mesecons.conductor
-	end
+	local def = minetest.registered_nodes[nodename]
+	return def and def.mesecons and def.mesecons.conductor
 end
 
 function mesecon.get_any_outputrules(node)
