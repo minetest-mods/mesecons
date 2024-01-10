@@ -62,6 +62,8 @@ local def = {
 	sounds = mesecon.node_sound.stone,
 	on_blast = mesecon.on_blastnode,
 	drop = "mesecons_delayer:delayer_off_1",
+	delayer_onstate = "mesecons_delayer:delayer_on_"..tostring(i),
+	delayer_offstate = "mesecons_delayer:delayer_off_"..tostring(i),
 }
 
 -- Deactivated delayer definition defaults
@@ -93,7 +95,6 @@ local off_state = {
 			param2 = node.param2
 		})
 	end,
-	delayer_onstate = "mesecons_delayer:delayer_on_"..tostring(i),
 	mesecons = {
 		receptor =
 		{
@@ -135,7 +136,6 @@ local on_state = {
 			param2 = node.param2
 		})
 	end,
-	delayer_offstate = "mesecons_delayer:delayer_off_"..tostring(i),
 	mesecons = {
 		receptor =
 		{
