@@ -7,7 +7,7 @@ local GET_COMMAND = "GET"
 
 local function comma_list_to_table(comma_list)
 	local tbl = {}
-	for _, str in pairs(string.split(comma_list:gsub(" ", ""), ",")) do
+	for _, str in ipairs(string.split(comma_list:gsub("%s", ""), ",")) do
 		tbl[str] = true
 	end
 	return tbl
