@@ -42,6 +42,7 @@
 	},
 	"Logic" : {
 		"Luacontroller" : "mesecons_luacontroller/doc/luacontroller",
+		"Microcontroller" : "mesecons_microcontroller/doc/microcontroler",
 		"FPGA" : "mesecons_fpga/doc/fpga",
 		"FPGA Programmer" : "mesecons_fpga/doc/programmer",
 		"Torch" : "mesecons_torch/doc/torch",
