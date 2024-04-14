@@ -61,10 +61,10 @@ end
 local off_state = {
 	description = S("Delayer"),
 	tiles = {
-		"mesecons_delayer_bottom.png^mesecons_delayer_off.png^mesecons_delayer_"..tostring(i)..".png",
-		"mesecons_delayer_bottom.png",
+		"jeija_microcontroller_bottom.png^mesecons_delayer_off.png^mesecons_delayer_"..tostring(i)..".png",
+		"jeija_microcontroller_bottom.png",
 	},
-	wield_image = "mesecons_delayer_bottom.png^mesecons_delayer_off.png^mesecons_delayer_1.png",
+	wield_image = "jeija_microcontroller_bottom.png^mesecons_delayer_off.png^mesecons_delayer_1.png",
 	groups = off_groups,
 	on_punch = function(pos, node, puncher)
 		if minetest.is_protected(pos, puncher and puncher:get_player_name() or "") then
@@ -99,8 +99,8 @@ minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), off_state)
 local on_state = {
 	description = S("You hacker you"),
 	tiles = {
-		"mesecons_delayer_bottom.png^mesecons_delayer_on.png^mesecons_delayer_"..tostring(i)..".png",
-		"mesecons_delayer_bottom.png",
+		"jeija_microcontroller_bottom.png^mesecons_delayer_on.png^mesecons_delayer_"..tostring(i)..".png",
+		"jeija_microcontroller_bottom.png",
 	},
 	groups = {bendy = 2, snappy = 1, dig_immediate = 2, not_in_creative_inventory = 1},
 	on_punch = function(pos, node, puncher)
