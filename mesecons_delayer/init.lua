@@ -27,20 +27,6 @@ local delaytime = { 0.1, 0.3, 0.5, 1.0 }
 
 for i = 1, 4 do
 
-local boxes = {
-	 { -6/16, -8/16, -6/16, 6/16, -7/16, 6/16 },		-- the main slab
-
-	 { -2/16, -7/16, -4/16, 2/16, -26/64, -3/16 },		-- the jeweled "on" indicator
-	 { -3/16, -7/16, -3/16, 3/16, -26/64, -2/16 },
-	 { -4/16, -7/16, -2/16, 4/16, -26/64, 2/16 },
-	 { -3/16, -7/16,  2/16, 3/16, -26/64, 3/16 },
-	 { -2/16, -7/16,  3/16, 2/16, -26/64, 4/16 },
-
-	 { -6/16, -7/16, -6/16, -4/16, -27/64, -4/16 },		-- the timer indicator
-	 { -8/16, -8/16, -1/16, -6/16, -7/16, 1/16 },		-- the two wire stubs
-	 { 6/16, -8/16, -1/16, 8/16, -7/16, 1/16 }
-}
-
 -- Delayer definition defaults
 local def = {
 	drawtype = "nodebox",
@@ -48,11 +34,11 @@ local def = {
 	walkable = true,
 	selection_box = {
 		type = "fixed",
-		fixed = { -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 },
+		fixed = { -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 },
 	},
 	node_box = {
 		type = "fixed",
-		fixed = boxes
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.5+(1/16), 0.5}
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -75,15 +61,10 @@ end
 local off_state = {
 	description = S("Delayer"),
 	tiles = {
-		"mesecons_delayer_off_"..tostring(i)..".png",
+		"mesecons_delayer_bottom.png^mesecons_delayer_off.png^mesecons_delayer_"..tostring(i)..".png",
 		"mesecons_delayer_bottom.png",
-		"mesecons_delayer_ends_off.png",
-		"mesecons_delayer_ends_off.png",
-		"mesecons_delayer_sides_off.png",
-		"mesecons_delayer_sides_off.png"
 	},
-	inventory_image = "mesecons_delayer_off_1.png",
-	wield_image = "mesecons_delayer_off_1.png",
+	wield_image = "mesecons_delayer_bottom.png^mesecons_delayer_off.png^mesecons_delayer_1.png",
 	groups = off_groups,
 	on_punch = function(pos, node, puncher)
 		if minetest.is_protected(pos, puncher and puncher:get_player_name() or "") then
@@ -118,12 +99,8 @@ minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), off_state)
 local on_state = {
 	description = S("You hacker you"),
 	tiles = {
-		"mesecons_delayer_on_"..tostring(i)..".png",
+		"mesecons_delayer_bottom.png^mesecons_delayer_on.png^mesecons_delayer_"..tostring(i)..".png",
 		"mesecons_delayer_bottom.png",
-		"mesecons_delayer_ends_on.png",
-		"mesecons_delayer_ends_on.png",
-		"mesecons_delayer_sides_on.png",
-		"mesecons_delayer_sides_on.png"
 	},
 	groups = {bendy = 2, snappy = 1, dig_immediate = 2, not_in_creative_inventory = 1},
 	on_punch = function(pos, node, puncher)
