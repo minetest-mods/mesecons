@@ -38,7 +38,10 @@ local def = {
 	},
 	node_box = {
 		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -0.5+(1/16), 0.5}
+		fixed = {
+			{ -8/16, -8/16, -8/16, 8/16, -7/16, 8/16 }, -- bottom slab
+			{ -6/16, -7/16, -6/16, 6/16, -6/16, 6/16 }
+		},
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -60,11 +63,16 @@ end
 
 local off_state = {
 	description = S("Delayer"),
+	inventory_image = "jeija_gate_off.png^jeija_delayer.png",
+	wield_image = "jeija_gate_off.png^jeija_delayer.png",
 	tiles = {
-		"jeija_microcontroller_bottom.png^mesecons_delayer_off.png^mesecons_delayer_"..tostring(i)..".png",
+		"jeija_microcontroller_bottom.png^jeija_gate_off.png^jeija_delayer.png^mesecons_delayer_"..tostring(i)..".png",
 		"jeija_microcontroller_bottom.png",
+		"jeija_gate_side.png",
+		"jeija_gate_side.png",
+		"jeija_gate_side.png",
+		"jeija_gate_side.png",
 	},
-	wield_image = "jeija_microcontroller_bottom.png^mesecons_delayer_off.png^mesecons_delayer_1.png",
 	groups = off_groups,
 	on_punch = function(pos, node, puncher)
 		if minetest.is_protected(pos, puncher and puncher:get_player_name() or "") then
@@ -98,9 +106,15 @@ minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), off_state)
 -- Activated delayer definition defaults
 local on_state = {
 	description = S("You hacker you"),
+	inventory_image = "jeija_gate_on.png^jeija_delayer.png",
+	wield_image = "jeija_gate_on.png^jeija_delayer.png",
 	tiles = {
-		"jeija_microcontroller_bottom.png^mesecons_delayer_on.png^mesecons_delayer_"..tostring(i)..".png",
+		"jeija_microcontroller_bottom.png^jeija_gate_on.png^jeija_delayer.png^mesecons_delayer_"..tostring(i)..".png",
 		"jeija_microcontroller_bottom.png",
+		"jeija_gate_side.png",
+		"jeija_gate_side.png",
+		"jeija_gate_side.png",
+		"jeija_gate_side.png",
 	},
 	groups = {bendy = 2, snappy = 1, dig_immediate = 2, not_in_creative_inventory = 1},
 	on_punch = function(pos, node, puncher)
