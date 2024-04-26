@@ -818,16 +818,16 @@ for d = 0, 1 do
 	local node_name = BASENAME..cid
 	local top = "jeija_luacontroller_top.png"
 	if a == 1 then
-		top = top.."^jeija_microcontroller_LED_A.png"
+		top = top.."^jeija_luacontroller_LED_A.png"
 	end
 	if b == 1 then
-		top = top.."^jeija_microcontroller_LED_B.png"
+		top = top.."^jeija_luacontroller_LED_B.png"
 	end
 	if c == 1 then
-		top = top.."^jeija_microcontroller_LED_C.png"
+		top = top.."^jeija_luacontroller_LED_C.png"
 	end
 	if d == 1 then
-		top = top.."^jeija_microcontroller_LED_D.png"
+		top = top.."^jeija_luacontroller_LED_D.png"
 	end
 
 	local groups
