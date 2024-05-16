@@ -83,18 +83,18 @@ local doors_list = {
 for i=1,#doors_list do meseconify_door(doors_list[i]) end
 
 -- Trapdoor
-local function trapdoor_switch(pos, node)
-	local state = minetest.get_meta(pos):get_int("state")
-
-	if state == 1 then
-		minetest.sound_play("doors_door_close", { pos = pos, gain = 0.3, max_hear_distance = 10 }, true)
-		minetest.set_node(pos, {name="doors:trapdoor", param2 = node.param2})
-	else
-		minetest.sound_play("doors_door_open", { pos = pos, gain = 0.3, max_hear_distance = 10 }, true)
-		minetest.set_node(pos, {name="doors:trapdoor_open", param2 = node.param2})
+local function trapdoor_switch(name)
+	return function(pos, node)
+		local state = minetest.get_meta(pos):get_int("state")
+		if state == 1 then
+			minetest.sound_play("doors_door_close", { pos = pos, gain = 0.3, max_hear_distance = 10 }, true)
+			minetest.set_node(pos, {name=name, param2 = node.param2})
+		else
+			minetest.sound_play("doors_door_open", { pos = pos, gain = 0.3, max_hear_distance = 10 }, true)
+			minetest.set_node(pos, {name=name.."_open", param2 = node.param2})
+		end
+		minetest.get_meta(pos):set_int("state", state == 1 and 0 or 1)
 	end
-
-	minetest.get_meta(pos):set_int("state", state == 1 and 0 or 1)
 end
 
 local function meseconify_trapdoor(name)
@@ -119,8 +119,8 @@ local function meseconify_trapdoor(name)
 	else
 		override = {
 			mesecons = {effector = {
-				action_on = trapdoor_switch,
-				action_off = trapdoor_switch
+				action_on = trapdoor_switch(name),
+				action_off = trapdoor_switch(name)
 			}},
 		}
 	end
