@@ -157,6 +157,23 @@ minetest.register_abm({
 -- Node detector
 -- Detects the node in front of it
 
+local blacklist = {
+	air = true,
+	ignore = true,
+}
+
+function mesecon.node_detector_blacklist_add(node)
+	blacklist[node] = true
+end
+
+function mesecon.node_detector_blacklist_remove(node)
+	blacklist[node] = nil
+end
+
+function mesecon.node_detector_on_blacklist(node)
+	return blacklist[node] == true
+end
+
 local function node_detector_make_formspec(pos)
 	local meta = minetest.get_meta(pos)
 	if meta:get_string("distance") == ""  then meta:set_string("distance", "0") end
@@ -198,7 +215,7 @@ local function node_detector_scan(pos)
 	local scan_for = comma_list_to_table(scanname)
 
 	return (scan_for[frontname]) or
-		(frontname ~= "air" and frontname ~= "ignore" and scanname == "")
+		(blacklist[frontname] ~= true and scanname == "")
 end
 
 local function node_detector_send_node_name(pos, node, channel, meta)
