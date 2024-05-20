@@ -73,68 +73,67 @@ local function meseconify_door(name)
 	end
 end
 
-meseconify_door("doors:door_wood")
-meseconify_door("doors:door_steel")
-meseconify_door("doors:door_glass")
-meseconify_door("doors:door_obsidian_glass")
-meseconify_door("xpanes:door_steel_bar")
+local doors_list = {
+	"doors:door_wood",
+	"doors:door_steel",
+	"doors:door_glass",
+	"doors:door_obsidian_glass",
+	"xpanes:door_steel_bar",
+}
+for i=1,#doors_list do meseconify_door(doors_list[i]) end
 
 -- Trapdoor
-local function trapdoor_switch(pos, node)
-	local state = minetest.get_meta(pos):get_int("state")
+local function trapdoor_switch(name)
+	return function(pos, node)
+		local state = minetest.get_meta(pos):get_int("state")
+		if state == 1 then
+			minetest.sound_play("doors_door_close", { pos = pos, gain = 0.3, max_hear_distance = 10 }, true)
+			minetest.set_node(pos, {name=name, param2 = node.param2})
+		else
+			minetest.sound_play("doors_door_open", { pos = pos, gain = 0.3, max_hear_distance = 10 }, true)
+			minetest.set_node(pos, {name=name.."_open", param2 = node.param2})
+		end
+		minetest.get_meta(pos):set_int("state", state == 1 and 0 or 1)
+	end
+end
 
-	if state == 1 then
-		minetest.sound_play("doors_door_close", { pos = pos, gain = 0.3, max_hear_distance = 10 }, true)
-		minetest.set_node(pos, {name="doors:trapdoor", param2 = node.param2})
+local function meseconify_trapdoor(name)
+	local override
+	if doors and doors.get then
+		override = {
+			mesecons = {effector = {
+				action_on = function(pos)
+					local door = doors.get(pos)
+					if door then
+						door:open()
+					end
+				end,
+				action_off = function(pos)
+					local door = doors.get(pos)
+					if door then
+						door:close()
+					end
+				end,
+			}},
+		}
 	else
-		minetest.sound_play("doors_door_open", { pos = pos, gain = 0.3, max_hear_distance = 10 }, true)
-		minetest.set_node(pos, {name="doors:trapdoor_open", param2 = node.param2})
+		override = {
+			mesecons = {effector = {
+				action_on = trapdoor_switch(name),
+				action_off = trapdoor_switch(name)
+			}},
+		}
 	end
 
-	minetest.get_meta(pos):set_int("state", state == 1 and 0 or 1)
+	if minetest.registered_items[name] then
+		minetest.override_item(name, override)
+		minetest.override_item(name.."_open", override)
+	end
 end
 
-if doors and doors.get then
-	local override = {
-		mesecons = {effector = {
-			action_on = function(pos)
-				local door = doors.get(pos)
-				if door then
-					door:open()
-				end
-			end,
-			action_off = function(pos)
-				local door = doors.get(pos)
-				if door then
-					door:close()
-				end
-			end,
-		}},
-	}
-	minetest.override_item("doors:trapdoor", override)
-	minetest.override_item("doors:trapdoor_open", override)
-	minetest.override_item("doors:trapdoor_steel", override)
-	minetest.override_item("doors:trapdoor_steel_open", override)
-
-	if minetest.registered_items["xpanes:trapdoor_steel_bar"] then
-		minetest.override_item("xpanes:trapdoor_steel_bar", override)
-		minetest.override_item("xpanes:trapdoor_steel_bar_open", override)
-	end
-
-else
-	if minetest.registered_nodes["doors:trapdoor"] then
-		minetest.override_item("doors:trapdoor", {
-			mesecons = {effector = {
-				action_on = trapdoor_switch,
-				action_off = trapdoor_switch
-			}},
-		})
-
-		minetest.override_item("doors:trapdoor_open", {
-			mesecons = {effector = {
-				action_on = trapdoor_switch,
-				action_off = trapdoor_switch
-			}},
-		})
-	end
-end
+local trapdoors_list = {
+	"doors:trapdoor",
+	"doors:trapdoor_steel",
+	"xpanes:trapdoor_steel_bar"
+}
+for i=1,#trapdoors_list do meseconify_trapdoor(trapdoors_list[i]) end
