@@ -66,7 +66,8 @@ local off_state = {
 	inventory_image = "jeija_gate_off.png^jeija_delayer.png",
 	wield_image = "jeija_gate_off.png^jeija_delayer.png",
 	tiles = {
-		"jeija_microcontroller_bottom.png^jeija_gate_output_off.png^jeija_gate_off.png^jeija_delayer.png^mesecons_delayer_"..tostring(i)..".png",
+		"jeija_microcontroller_bottom.png^jeija_gate_output_off.png^jeija_gate_off.png^"..
+			"jeija_delayer.png^mesecons_delayer_"..tostring(i)..".png",
 		"jeija_microcontroller_bottom.png^jeija_gate_output_off.png",
 		"jeija_gate_side.png^jeija_gate_side_output_off.png",
 		"jeija_gate_side.png",
@@ -109,7 +110,8 @@ local on_state = {
 	inventory_image = "jeija_gate_on.png^jeija_delayer.png",
 	wield_image = "jeija_gate_on.png^jeija_delayer.png",
 	tiles = {
-		"jeija_microcontroller_bottom.png^jeija_gate_output_on.png^jeija_gate_on.png^jeija_delayer.png^mesecons_delayer_"..tostring(i)..".png",
+		"jeija_microcontroller_bottom.png^jeija_gate_output_on.png^jeija_gate_on.png^"..
+			"jeija_delayer.png^mesecons_delayer_"..tostring(i)..".png",
 		"jeija_microcontroller_bottom.png^jeija_gate_output_on.png",
 		"jeija_gate_side.png^jeija_gate_side_output_on.png",
 		"jeija_gate_side.png",
