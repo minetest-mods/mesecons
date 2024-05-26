@@ -1,5 +1,0 @@
-# textdomain: mesecons_delayer
-
-### init.lua ###
-Delayer=
-You hacker you=

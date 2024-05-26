@@ -1,0 +1,5 @@
+# textdomain: mesecons_delayer
+
+### init.lua ###
+Delayer=Retardateur
+You hacker you=Vous êtes un pirate informatique
