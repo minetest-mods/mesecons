@@ -223,10 +223,10 @@ local node_detector_digiline = {
 
 			if type(msg) == "table" then
 				if msg.distance or msg.scanname then
-					if msg.distance then
+					if type(msg.distance) == "string" then
 						meta:set_string("distance", msg.distance)
 					end
-					if msg.scanname then
+					if type(msg.scanname) == "string" then
 						meta:set_string("scanname", msg.scanname)
 					end
 					node_detector_make_formspec(pos)
@@ -240,7 +240,7 @@ local node_detector_digiline = {
 			else
 				if msg == GET_COMMAND then
 					node_detector_send_node_name(pos, node, channel, meta)
-				else
+				elseif type(msg) == "string" then
 					meta:set_string("scanname", msg)
 					node_detector_make_formspec(pos)
 				end
