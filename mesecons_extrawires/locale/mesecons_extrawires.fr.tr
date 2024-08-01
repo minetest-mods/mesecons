@@ -1,0 +1,20 @@
+# textdomain: mesecons_extrawires
+
+### corner.lua ###
+Insulated Mesecon Corner=Coin de Mesecon isolé
+
+### crossover.lua ###
+Insulated Mesecon Crossover=Croisement de Mesecon isolé
+You hacker you!=Vous êtes un pirate informatique !
+
+### doublecorner.lua ###
+Insulated Mesecon Double Corner=Double coin de Mesecon isolé
+
+### mesewire.lua ###
+Mese Wire=Câble de Mesecon
+
+### tjunction.lua ###
+Insulated Mesecon T-junction=Croisement en T de Mesecon isolé
+
+### vertical.lua ###
+Vertical Mesecon=Mesecon vertical

@@ -1,0 +1,7 @@
+# textdomain: mesecons_movestones
+
+### init.lua ###
+Movestone=Pierre mouvante
+Sticky Movestone=Pierre collante mouvante
+Vertical Movestone=Pierre mouvante verticalement
+Vertical Sticky Movestone=Pierre collante mouvante verticalement
