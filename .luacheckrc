@@ -27,6 +27,8 @@ read_globals = {
 	"table.insert_all",
 	"vector",
 	"VoxelArea",
+	"mcl_dyes",
+	"mcl_sounds",
 }
 
 globals = {"mesecon"}
