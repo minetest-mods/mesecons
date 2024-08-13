@@ -127,6 +127,10 @@ do
 		end
 		-- replace this globalstep function
 		minetest.registered_globalsteps[globalstep_func_index] = globalstep_func
+		minetest.callback_origins[globalstep_func] = {
+			mod = minetest.get_current_modname() or "mesecons",
+			name = "register_globalstep"
+		}
 	end)
 end
 
