@@ -223,7 +223,7 @@ local node_detector_digiline = {
 
 			if type(msg) == "table" then
 				if msg.distance or msg.scanname then
-					if type(msg.distance) == "string" then
+					if type(msg.distance) == "number" or type(msg.distance) == "string" then
 						meta:set_string("distance", msg.distance)
 					end
 					if type(msg.scanname) == "string" then
