@@ -123,3 +123,11 @@ dofile(minetest.get_modpath("mesecons").."/legacy.lua");
 
 --Services like turnoff receptor on dignode and so on
 dofile(minetest.get_modpath("mesecons").."/services.lua");
+
+-- Automated test run
+if mesecon.setting("internal_test", false) then
+	-- currently does nothing, we only fail if some error happens right on startup
+	minetest.after(5, function()
+		minetest.request_shutdown()
+	end)
+end
