@@ -52,11 +52,34 @@ local soundnames = {
 local node_sounds = {}
 for alias, sound in pairs({
 	["mesecons_gamecompat:lava_source"] = mesecon.sound_name.fire,
+	["mesecons_gamecompat:water_source"] = "mesecons_noteblock_bubble",
+	["mesecons_gamecompat:river_water_source"] = "mesecons_noteblock_bubble",
 	["mesecons_gamecompat:chest"] = "mesecons_noteblock_snare",
 	["mesecons_gamecompat:chest_locked"] = "mesecons_noteblock_snare",
 	["mesecons_gamecompat:coalblock"] = mesecon.sound_name.explode,
+	["mesecons_gamecompat:goldblock"] = "mesecons_noteblock_bell",
+	["mesecons_gamecompat:copperblock"] = "mesecons_noteblock_cowbell",
+	["mesecons_gamecompat:bronzeblock"] = "mesecons_noteblock_gong",
+	["mesecons_gamecompat:tinblock"] = "mesecons_noteblock_xylophone_metal",
+	["mesecons_gamecompat:diamondblock"] = "mesecons_noteblock_squarewave",
+	["mesecons_gamecompat:silver_sandstone_brick"] = "mesecons_noteblock_chorus",
+	["mesecons_gamecompat:sandstone"] = "mesecons_noteblock_sticks",
+	["mesecons_gamecompat:silver_sandstone"] = "mesecons_noteblock_sticks",
+	["mesecons_gamecompat:desert_sandstone"] = "mesecons_noteblock_sticks",
 	["mesecons_gamecompat:glass"] = "mesecons_noteblock_hihat",
 	["mesecons_gamecompat:obsidian_glass"] = "mesecons_noteblock_hihat",
+	["mesecons_gamecompat:obsidian"] = "mesecons_noteblock_bass_drum",
+	["mesecons_gamecompat:obsidian_block"] = "mesecons_noteblock_bass_drum",
+	["mesecons_gamecompat:obsidianbrick"] = "mesecons_noteblock_bass_drum",
+	["mesecons_gamecompat:straw"] = "mesecons_noteblock_banjo",
+	["mesecons_gamecompat:meselamp"] = "mesecons_noteblock_piano_digital",
+	["mesecons_gamecompat:coral_skeleton"] = "mesecons_noteblock_xylophone_wood",
+	["mesecons_gamecompat:bones"] = "mesecons_noteblock_xylophone_wood",
+	["mesecons_gamecompat:cactus"] = "mesecons_noteblock_didgeridoo",
+	["mesecons_gamecompat:gravel"] = "mesecons_noteblock_bass_guitar",
+	["mesecons_gamecompat:ice"] = "mesecons_noteblock_chime",
+	["mesecons_gamecompat:cave_ice"] = "mesecons_noteblock_chime",
+	["mesecons_gamecompat:vessels_shelf"] = "mesecons_noteblock_glass",
 }) do
 	local nodename = minetest.registered_aliases[alias]
 	if nodename then
@@ -68,6 +91,9 @@ local node_sounds_group = {
 	["stone"] = "mesecons_noteblock_kick",
 	["tree"] = "mesecons_noteblock_crash",
 	["wood"] = "mesecons_noteblock_litecrash",
+	["sand"] = "mesecons_noteblock_hit",
+	["wool"] = "mesecons_noteblock_guitar",
+	["leaves"] = "mesecons_noteblock_flute",
 }
 
 local steelblock_nodename = minetest.registered_aliases["mesecons_gamecompat:steelblock"]
