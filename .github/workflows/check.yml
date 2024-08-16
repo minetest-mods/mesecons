@@ -1,10 +1,10 @@
 on: [push, pull_request]
-name: Check & Release
+name: "Check"
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-
+    name: "Luacheck"
     steps:
     - uses: actions/checkout@main
     - name: apt
@@ -14,9 +14,9 @@ jobs:
     - name: luacheck run
       run: $HOME/.luarocks/bin/luacheck ./
 
-  test:
+  mineunit:
     runs-on: ubuntu-latest
-
+    name: "Mineunit tests"
     steps:
     - uses: actions/checkout@main
     - name: apt
