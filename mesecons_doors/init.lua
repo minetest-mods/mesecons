@@ -123,14 +123,14 @@ local function meseconify_trapdoor(name)
 end
 
 minetest.register_on_mods_loaded(function()
-		for k,_ in pairs(doors.registered_doors) do
-			if k:find("_a$") then
-				meseconify_door(k:sub(1,-3))
-			end
+	for k,_ in pairs(doors.registered_doors) do
+		if k:find("_a$") then
+			meseconify_door(k:sub(1,-3))
 		end
-		for k,_ in pairs(doors.registered_trapdoors) do
-			if not k:find("_open$") then
-				meseconify_trapdoor(k)
-			end
+	end
+	for k,_ in pairs(doors.registered_trapdoors) do
+		if not k:find("_open$") then
+			meseconify_trapdoor(k)
 		end
-	end)
+	end
+end)
