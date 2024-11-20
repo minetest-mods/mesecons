@@ -278,27 +278,32 @@ function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 	dir = vector.multiply(dir, movefactor)
 	for id, obj in pairs(minetest.get_objects_inside_radius(pos, #nodestack + 1)) do
 		local obj_pos = obj:get_pos()
-		local cbox = obj:get_properties().collisionbox
-		local min_pos = vector.add(obj_pos, vector.new(cbox[1], cbox[2], cbox[3]))
-		local max_pos = vector.add(obj_pos, vector.new(cbox[4], cbox[5], cbox[6]))
+		local props = obj:get_properties()
 		local ok = true
-		for k, v in pairs(pos) do
-			local edge1, edge2
-			if k ~= dir_k then
-				edge1 = v - 0.51 -- More than 0.5 to move objects near to the stack.
-				edge2 = v + 0.51
-			else
-				edge1 = v - 0.5 * dir_l
-				edge2 = v + (#nodestack + 0.5 * movefactor) * dir_l
-				-- Make sure, edge1 is bigger than edge2:
-				if edge1 > edge2 then
-					edge1, edge2 = edge2, edge1
+		if props.physical then
+			local cbox = props.collisionbox
+			local min_pos = vector.add(obj_pos, vector.new(cbox[1], cbox[2], cbox[3]))
+			local max_pos = vector.add(obj_pos, vector.new(cbox[4], cbox[5], cbox[6]))
+			for k, v in pairs(pos) do
+				local edge1, edge2
+				if k ~= dir_k then
+					edge1 = v - 0.51 -- More than 0.5 to move objects near to the stack.
+					edge2 = v + 0.51
+				else
+					edge1 = v - 0.5 * dir_l
+					edge2 = v + (#nodestack + 0.5 * movefactor) * dir_l
+					-- Make sure, edge1 is bigger than edge2:
+					if edge1 > edge2 then
+						edge1, edge2 = edge2, edge1
+					end
+				end
+				if min_pos[k] > edge2 or max_pos[k] < edge1 then
+					ok = false
+					break
 				end
 			end
-			if min_pos[k] > edge2 or max_pos[k] < edge1 then
-				ok = false
-				break
-			end
+		else
+			ok = false  -- not physical
 		end
 		if ok then
 			local ent = obj:get_luaentity()
