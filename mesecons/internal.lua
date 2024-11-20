@@ -363,17 +363,33 @@ end
 -- The set of conductor states which require light updates when they change.
 local light_update_conductors
 
--- Calculate the contents of the above set if they have not been calculated.
-local function find_light_update_conductors()
+-- Prepare all conductor content before the first turnon/turnoff:
+-- - Resolve aliases in conductor state lists.
+-- - Calculate the contents of light_update_conductors.
+local function prepare_conductors()
 	-- The expensive calculation is only done the first time.
 	if light_update_conductors then return end
 
 	light_update_conductors = {}
 
-	-- Find conductors whose lighting characteristics change depending on their state.
 	local checked = {}
 	for name, def in pairs(minetest.registered_nodes) do
 		local conductor = mesecon.get_conductor(name)
+
+		-- Resolve aliases in state list.
+		if conductor then
+			if conductor.onstate then
+				conductor.onstate = minetest.registered_aliases[conductor.onstate] or conductor.onstate
+			elseif conductor.offstate then
+				conductor.offstate = minetest.registered_aliases[conductor.offstate] or conductor.offstate
+			else
+				for i, state in ipairs(conductor.states) do
+					conductor.states[i] = minetest.registered_aliases[state] or state
+				end
+			end
+		end
+
+		-- Find conductors whose lighting characteristics change depending on their state.
 		if conductor and not checked[name] then
 			-- Find the other states of the conductor besides the current one.
 			local other_states
@@ -411,7 +427,7 @@ end
 -- Follow all all conductor paths replacing conductors that were already
 -- looked at, activating / changing all effectors along the way.
 function mesecon.turnon(pos, link)
-	find_light_update_conductors()
+	prepare_conductors()
 
 	local frontiers = mesecon.fifo_queue.new()
 	frontiers:add({pos = pos, link = link})
@@ -474,7 +490,7 @@ end
 --	depth = indicates order in which signals wire fired, higher is later
 -- }
 function mesecon.turnoff(pos, link)
-	find_light_update_conductors()
+	prepare_conductors()
 
 	local frontiers = mesecon.fifo_queue.new()
 	frontiers:add({pos = pos, link = link})
