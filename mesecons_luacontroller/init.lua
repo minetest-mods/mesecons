@@ -509,6 +509,7 @@ local function create_environment(pos, mem, event, itbl, send_warning)
 		print = safe_print,
 		interrupt = get_interrupt(pos, itbl, send_warning),
 		digiline_send = get_digiline_send(pos, itbl, send_warning),
+		sha256sum = minetest.sha256,
 		string = {
 			byte = string.byte,
 			char = string.char,
