@@ -1,0 +1,8 @@
+# textdomain: mesecons_gates
+Diode=Диод
+NOT Gate=НЕ-шлюз
+AND Gate=И-шлюз
+NAND Gate=NAND-шлюз
+XOR Gate=XOR-шлюз
+NOR Gate=NOR-шлюз
+OR Gate=ИЛИ-шлюз
