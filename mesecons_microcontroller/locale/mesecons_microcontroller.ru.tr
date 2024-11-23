@@ -1,0 +1,4 @@
+# textdomain: mesecons_microcontroller
+
+### init.lua ###
+Microcontroller=Микроконтроллер
