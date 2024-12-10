@@ -10,7 +10,7 @@ jobs:
       matrix:
         cfg:
           - { image: 'registry.gitlab.com/minetest/minetest/server:5.0.1', mtg: false }
-          - { image: 'ghcr.io/minetest/minetest:5.9.0', mtg: true }
+          - { image: 'ghcr.io/minetest/minetest:5.10.0', mtg: true }
     steps:
     - uses: actions/checkout@main
 
