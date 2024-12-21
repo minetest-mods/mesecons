@@ -158,8 +158,8 @@ local function commandblock_action_on(pos, node)
 			return
 		end
 		if #param > param_maxlen then
-			minetest.chat_send_player(owner, "Command parameters can only be " ..
-				param_maxlen .. " bytes long")
+			minetest.chat_send_player(owner, "Command parameters are limited to max. " ..
+				param_maxlen .. " bytes.")
 			return
 		end
 		local has_privs, missing_privs = minetest.check_player_privs(owner, cmddef.privs)
