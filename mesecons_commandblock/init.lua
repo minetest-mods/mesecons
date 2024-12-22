@@ -1,4 +1,5 @@
 local S = minetest.get_translator(minetest.get_current_modname())
+local param_maxlen = mesecon.setting("commandblock_param_maxlen", 10000)
 
 minetest.register_chatcommand("say", {
 	params = "<text>",
@@ -154,6 +155,11 @@ local function commandblock_action_on(pos, node)
 		local cmddef = minetest.chatcommands[cmd]
 		if not cmddef then
 			minetest.chat_send_player(owner, "The command "..cmd.." does not exist")
+			return
+		end
+		if #param > param_maxlen then
+			minetest.chat_send_player(owner, "Command parameters are limited to max. " ..
+				param_maxlen .. " bytes.")
 			return
 		end
 		local has_privs, missing_privs = minetest.check_player_privs(owner, cmddef.privs)
