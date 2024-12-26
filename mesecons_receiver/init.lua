@@ -98,6 +98,7 @@ mesecon.register_node("mesecons_receiver:receiver_up", {
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
 	sounds = mesecon.node_sound.default,
+	use_texture_alpha = "clip",
 }, {
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
@@ -143,6 +144,7 @@ mesecon.register_node("mesecons_receiver:receiver_down", {
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
 	sounds = mesecon.node_sound.default,
+	use_texture_alpha = "clip",
 }, {
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {

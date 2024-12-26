@@ -96,6 +96,7 @@ mesecon.register_node("mesecons_extrawires:vertical", {
 	after_place_node = vertical_update,
 	after_dig_node = vertical_update,
 	sounds = mesecon.node_sound.default,
+	use_texture_alpha = "clip",
 },{
 	tiles = {"mesecons_wire_off.png"},
 	groups = {dig_immediate=3},
@@ -130,6 +131,7 @@ mesecon.register_node("mesecons_extrawires:vertical_top", {
 	after_place_node = vertical_update,
 	after_dig_node = vertical_update,
 	sounds = mesecon.node_sound.default,
+	use_texture_alpha = "clip",
 },{
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
@@ -162,6 +164,7 @@ mesecon.register_node("mesecons_extrawires:vertical_bottom", {
 	after_place_node = vertical_update,
 	after_dig_node = vertical_update,
 	sounds = mesecon.node_sound.default,
+	use_texture_alpha = "clip",
 },{
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
