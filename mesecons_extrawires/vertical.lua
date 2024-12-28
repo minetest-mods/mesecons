@@ -40,6 +40,8 @@ local bottom_rules = {
 	{x=0, y=2, z=0} -- receive power from pressure plate / detector / ... 2 nodes above
 }
 
+local use_texture_alpha = minetest.features.use_texture_alpha_string_modes and "clip" or nil
+
 local function is_vertical_conductor(nodename)
 	local def = minetest.registered_nodes[nodename]
 	return def and def.is_vertical_conductor
@@ -96,6 +98,7 @@ mesecon.register_node("mesecons_extrawires:vertical", {
 	after_place_node = vertical_update,
 	after_dig_node = vertical_update,
 	sounds = mesecon.node_sound.default,
+	use_texture_alpha = use_texture_alpha,
 },{
 	tiles = {"mesecons_wire_off.png"},
 	groups = {dig_immediate=3},
@@ -130,6 +133,7 @@ mesecon.register_node("mesecons_extrawires:vertical_top", {
 	after_place_node = vertical_update,
 	after_dig_node = vertical_update,
 	sounds = mesecon.node_sound.default,
+	use_texture_alpha = use_texture_alpha,
 },{
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
@@ -162,6 +166,7 @@ mesecon.register_node("mesecons_extrawires:vertical_bottom", {
 	after_place_node = vertical_update,
 	after_dig_node = vertical_update,
 	sounds = mesecon.node_sound.default,
+	use_texture_alpha = use_texture_alpha,
 },{
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
