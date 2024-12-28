@@ -30,6 +30,8 @@ local receiver_get_rules = mesecon.horiz_rules_getter({
 	{x = 0, y = 0, z = -2},
 })
 
+local use_texture_alpha = minetest.features.use_texture_alpha_string_modes and "clip" or nil
+
 mesecon.register_node("mesecons_receiver:receiver", {
 	drawtype = "nodebox",
 	paramtype = "light",
@@ -98,7 +100,7 @@ mesecon.register_node("mesecons_receiver:receiver_up", {
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
 	sounds = mesecon.node_sound.default,
-	use_texture_alpha = "clip",
+	use_texture_alpha = use_texture_alpha,
 }, {
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
@@ -144,7 +146,7 @@ mesecon.register_node("mesecons_receiver:receiver_down", {
 	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
 	drop = "mesecons:wire_00000000_off",
 	sounds = mesecon.node_sound.default,
-	use_texture_alpha = "clip",
+	use_texture_alpha = use_texture_alpha,
 }, {
 	tiles = {"mesecons_wire_off.png"},
 	mesecons = {conductor = {
