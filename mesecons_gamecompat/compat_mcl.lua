@@ -7,9 +7,9 @@ minetest.register_alias("mesecons_gamecompat:coalblock", "mcl_core:coalblock")
 minetest.register_alias("mesecons_gamecompat:cobble", "mcl_core:cobble")
 minetest.register_alias("mesecons_gamecompat:glass", "mcl_core:glass")
 minetest.register_alias("mesecons_gamecompat:lava_source", "mcl_core:lava_source")
-minetest.register_alias("mesecons_gamecompat:mese", "mesecons:redstoneblock")
-minetest.register_alias("mesecons_gamecompat:mese_crystal", "mesecoms:redstone")
-minetest.register_alias("mesecons_gamecompat:mese_crystal_fragment", "mesecons:redstone")
+minetest.register_alias("mesecons_gamecompat:mese", "mesecons_torch:redstoneblock")
+minetest.register_alias("mesecons_gamecompat:mese_crystal", "mesecons:redstone")
+--minetest.register_alias("mesecons_gamecompat:mese_crystal_fragment", "mesecons:redstone")
 minetest.register_alias("mesecons_gamecompat:obsidian_glass", "mcl_core:glass")
 minetest.register_alias("mesecons_gamecompat:stone", "mcl_core:stone")
 minetest.register_alias("mesecons_gamecompat:steel_ingot", "mcl_core:iron_ingot")
@@ -17,7 +17,7 @@ minetest.register_alias("mesecons_gamecompat:steelblock", "mcl_core:steelblock")
 minetest.register_alias("mesecons_gamecompat:torch", "mcl_torches:torch")
 
 if minetest.get_modpath("mcl_dyes") then
-	for color, def in ipairs(mcl_dyes.colors) do
+	for color, def in pairs(mcl_dyes.colors) do
 		minetest.register_alias("mesecons_gamecompat:dye_" .. def.mcl2, "mcl_dyes:" .. color)
 	end
 end
