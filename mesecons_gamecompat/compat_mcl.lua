@@ -41,3 +41,16 @@ end
 -- Textures
 
 mesecon.texture.steel_block = "default_steel_block.png"
+
+if minetest.get_modpath("mesecons_mvps") then
+	core.register_on_mods_loaded(function()
+		for _,v in pairs(core.registered_nodes) do
+			if v.groups and v.groups.bed then
+				mesecon.register_mvps_stopper(v.name)
+			end
+			if v.groups and v.groups.door then
+				mesecon.register_mvps_stopper(v.name)
+			end
+		end
+	end)
+end
