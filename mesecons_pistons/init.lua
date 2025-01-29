@@ -115,27 +115,13 @@ local function piston_off(pos, node)
 	end
 end
 
-local orientations = {
-	[0] = { 4,  8},
-	      {13, 17},
-	      {10,  6},
-	      {20, 15},
-}
-
 local function piston_orientate(pos, placer)
 	mesecon.mvps_set_owner(pos, placer)
 	if not placer then
 		return
 	end
-	local pitch = math.deg(placer:get_look_vertical())
 	local node = minetest.get_node(pos)
-	if pitch > 55 then
-		node.param2 = orientations[node.param2][1]
-	elseif pitch < -55 then
-		node.param2 = orientations[node.param2][2]
-	else
-		return
-	end
+	node.param2 = core.dir_to_facedir(placer:get_look_dir(), true)
 	minetest.swap_node(pos, node)
 	-- minetest.after, because on_placenode for unoriented piston must be processed first
 	minetest.after(0, mesecon.on_placenode, pos, node)
