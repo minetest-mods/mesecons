@@ -120,7 +120,6 @@ local function piston_orientate(pos, placer)
 	if not placer then
 		return
 	end
-	local pitch = math.deg(placer:get_look_vertical())
 	local node = minetest.get_node(pos)
 	node.param2 = core.dir_to_facedir(placer:get_look_dir(), true)
 	minetest.swap_node(pos, node)
