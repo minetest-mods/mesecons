@@ -48,28 +48,26 @@ if minetest.get_modpath("mesecons_mvps") then
 	for _, name in ipairs({
 		"default:chest_locked",
 		"default:chest_locked_open",
-		"doors:door_steel_b_1", -- old style doors
-		"doors:door_steel_b_2", --
-		"doors:door_steel_t_1", --
-		"doors:door_steel_t_2", --
-		"doors:door_steel_a",   -- new style doors
-		"doors:door_steel_b",   --
-		"doors:door_steel_c",   --
-		"doors:door_steel_d",   --
 		"doors:hidden",
 		"doors:trapdoor_steel",
 		"doors:trapdoor_steel_open",
-		"beds:bed_bottom",
-		"beds:bed_top",
-		"beds:fancy_bed_bottom",
-		"beds:fancy_bed_top",
-		"xpanes:door_steel_bar_a",
-		"xpanes:door_steel_bar_b",
-		"xpanes:door_steel_bar_c",
-		"xpanes:door_steel_bar_d",
 		"xpanes:trapdoor_steel_bar",
 		"xpanes:trapdoor_steel_bar_open",
 	}) do
 		mesecon.register_mvps_stopper(name)
 	end
+	core.register_on_mods_loaded(function()
+		if minetest.get_modpath("doors") then
+			for k,_ in pairs(doors.registered_doors) do
+				mesecon.register_mvps_stopper(k)
+			end
+		end
+		if minetest.get_modpath("beds") then
+			for _,v in pairs(core.registered_nodes) do
+				if v.groups and v.groups.bed then
+					mesecon.register_mvps_stopper(v.name)
+				end
+			end
+		end
+	end)
 end
