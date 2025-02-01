@@ -15,6 +15,7 @@ ignore = {
 max_line_length = 200
 
 read_globals = {
+	"core",
 	"default",
 	"digiline",
 	"doors",
