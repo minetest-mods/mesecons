@@ -49,6 +49,10 @@ if minetest.get_modpath("mesecons_mvps") then
 		"default:chest_locked",
 		"default:chest_locked_open",
 		"doors:hidden",
+		"doors:trapdoor_steel",
+		"doors:trapdoor_steel_open",
+		"xpanes:trapdoor_steel_bar",
+		"xpanes:trapdoor_steel_bar_open",
 	}) do
 		mesecon.register_mvps_stopper(name)
 	end
