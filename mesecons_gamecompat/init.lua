@@ -14,9 +14,9 @@ if minetest.get_modpath("default") then
 	dofile(minetest.get_modpath("mesecons_gamecompat").."/compat_mtg.lua")
 end
 
-if minetest.get_modpath("mcl_core") then
+if minetest.get_modpath("mcl_redstone") then
 	minetest.log("info", "Mesecons: detected MineClonia Game for game compatibility")
-	dofile(minetest.get_modpath("mesecons_gamecompat").."/compat_mcl.lua")
+	dofile(minetest.get_modpath("mesecons_gamecompat").."/compat_mcla.lua")
 end
 
 if minetest.get_modpath("doors") then

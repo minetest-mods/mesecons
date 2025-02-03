@@ -41,3 +41,12 @@ end
 -- Textures
 
 mesecon.texture.steel_block = "default_steel_block.png"
+
+core.register_craft({
+	output = "mesecons:wire_00000000_off",
+	recipe = {{"mcl_redstone:redstone"}}
+})
+core.register_craft({
+	output = "mcl_redstone:redstone",
+	recipe = {{"mesecons:wire_00000000_off"}}
+})
