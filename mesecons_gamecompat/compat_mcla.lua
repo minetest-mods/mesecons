@@ -54,3 +54,13 @@ if minetest.get_modpath("mesecons_mvps") then
 		end
 	end)
 end
+
+
+core.register_craft({
+	output = "mesecons:wire_00000000_off",
+	recipe = {{"mcl_redstone:redstone"}}
+})
+core.register_craft({
+	output = "mcl_redstone:redstone",
+	recipe = {{"mesecons:wire_00000000_off"}}
+})
