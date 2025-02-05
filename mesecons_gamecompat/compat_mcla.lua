@@ -43,6 +43,29 @@ end
 mesecon.texture.steel_block = "default_steel_block.png"
 
 if minetest.get_modpath("mesecons_mvps") then
+	for k,v in pairs(core.registered_nodes) do
+		local is_stopper = mesecon.mvps_stoppers[k]
+		if v.groups and v.groups.unmovable_by_piston then
+			mesecon.register_mvps_stopper(k)
+		end
+		if is_stopper then
+			local groups = table.copy(v.groups or {})
+			groups.unmovable_by_piston = 1
+			v.groups = groups
+			core.register_node(":"..k, v)
+		end
+	end
+	for k,v in pairs(core.registered_entities) do
+		local is_unmov = mesecon.mvps_unmov[k]
+		if v._mcl_pistons_unmovable then
+			mesecon.register_mvps_unmov(k)
+		end
+		if is_unmov then
+			v._mcl_pistons_unmovable = true
+			core.register_entity(":"..k, v)
+		end
+	end
+
 	core.register_on_mods_loaded(function()
 		for _,v in pairs(core.registered_nodes) do
 			if v.groups and v.groups.bed then
