@@ -1,7 +1,7 @@
 # textdomain: mesecons_fpga
 
 ### init.lua ###
-FPGA=ПЛИС
+FPGA=ППВМ
 
 ### tool.lua ###
-FPGA Programmer=ПЛИС-программер
+FPGA Programmer=ППВМ-Программатор

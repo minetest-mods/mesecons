@@ -5,7 +5,6 @@ Insulated Mesecon Corner=
 
 ### crossover.lua ###
 Insulated Mesecon Crossover=
-You hacker you!=
 
 ### doublecorner.lua ###
 Insulated Mesecon Double Corner=

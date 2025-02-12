@@ -1,15 +1,15 @@
 # textdomain: mesecons_lightstone
 
 ### init.lua ###
-Red Lightstone=Красный светящийся камень
-Green Lightstone=Зеленый светящийся камень
-Blue Lightstone=Синий светящийся камень
-Grey Lightstone=Серый светящийся камень
-Dark Grey Lightstone=Темно-серый светящийся камень
-Yellow Lightstone=Желтый светящийся камень
-Orange Lightstone=Оранжевый светящийся камень
-White Lightstone=Белый светящийся камень
-Pink Lightstone=Розовый светящийся камень
-Magenta Lightstone=Пурпурный светящийся камень
-Cyan Lightstone=Голубой светящийся камень
-Violet Lightstone=Фиолетовый светящийся камень
+Red Lightstone=Красный Световой камень
+Green Lightstone=Зеленый Световой камень
+Blue Lightstone=Синий Световой камень
+Grey Lightstone=Серый Световой камень
+Dark Grey Lightstone=Темно-Серый Световой камень
+Yellow Lightstone=Желтый Световой камень
+Orange Lightstone=Оранжевый Световой камень
+White Lightstone=Белый Световой камень
+Pink Lightstone=Розовый Световой камень
+Magenta Lightstone=Пурпурный Световой камень
+Cyan Lightstone=Голубой Световой камень
+Violet Lightstone=Фиолетовый Световой камень
