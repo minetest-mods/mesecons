@@ -1,4 +1,7 @@
 # textdomain: mesecons
 
 ### oldwires.lua ###
-Mesecons=Мезеконы
+Mesecons=Мэлектроника
+
+### ContentDB ###
+Adds digital circuitry, including wires, buttons, lights, and even programmable controllers.=Добавляет цифровые схемы, включая провода, кнопки, индикаторы и даже программируемые контроллеры.
