@@ -1,20 +1,19 @@
 # textdomain: mesecons_extrawires
 
 ### corner.lua ###
-Insulated Mesecon Corner=Изолированный мезекон (угол)
+Insulated Mesecon Corner=Изолированный Мэлепровод (Угол)
 
 ### crossover.lua ###
-Insulated Mesecon Crossover=Изолированный мезекон (перекрестие)
-You hacker you!=Ти хакер ти!
+Insulated Mesecon Crossover=Изолированный Мэлепровод (Перекрестие)
 
 ### doublecorner.lua ###
-Insulated Mesecon Double Corner=Изолированный мезекон (двойной угол)
+Insulated Mesecon Double Corner=Изолированный Мэлепровод (Двойной Угол)
 
 ### mesewire.lua ###
-Mese Wire=Мезе-провод
+Mese Wire=Мэлепровод
 
 ### tjunction.lua ###
-Insulated Mesecon T-junction=Изолированный мезекон (Т-соединение)
+Insulated Mesecon T-junction=Изолированный Мэлепровод (соединение-T)
 
 ### vertical.lua ###
-Vertical Mesecon=Вертикальный мезекон
+Vertical Mesecon=Вертикальный Мэлепровод
