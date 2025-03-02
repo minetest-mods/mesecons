@@ -1,0 +1,4 @@
+# textdomain: mesecons_switch
+
+### init.lua ###
+Switch=Перемикач

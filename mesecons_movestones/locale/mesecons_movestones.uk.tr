@@ -1,0 +1,7 @@
+# textdomain: mesecons_movestones
+
+### init.lua ###
+Movestone=Ходовий камінь
+Sticky Movestone=Липкий ходовий камінь
+Vertical Movestone=Вертикальний ходовий камінь
+Vertical Sticky Movestone=Вертикальний липкий ходовий камінь
