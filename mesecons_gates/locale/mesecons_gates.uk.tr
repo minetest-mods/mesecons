@@ -1,0 +1,8 @@
+# textdomain: mesecons_gates
+Diode=Діод
+NOT Gate=NOT перехідник
+AND Gate=AND перехідник
+NAND Gate=NAND перехідник
+XOR Gate=XOR перехідник
+NOR Gate=NOR перехідник
+OR Gate=OR перехідник
