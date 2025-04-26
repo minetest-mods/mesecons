@@ -2,13 +2,13 @@ local S = minetest.get_translator(minetest.get_current_modname())
 
 -- Glue and fiber
 minetest.register_craftitem("mesecons_materials:glue", {
-	image = "mesecons_glue.png",
+	inventory_image = "mesecons_glue.png",
 	on_place_on_ground = minetest.craftitem_place_item,
 	description = S("Glue"),
 })
 
 minetest.register_craftitem("mesecons_materials:fiber", {
-	image = "mesecons_fiber.png",
+	inventory_image = "mesecons_fiber.png",
 	on_place_on_ground = minetest.craftitem_place_item,
 	description = S("Fiber"),
 })
@@ -29,7 +29,7 @@ minetest.register_craft({
 
 -- Silicon
 minetest.register_craftitem("mesecons_materials:silicon", {
-	image = "mesecons_silicon.png",
+	inventory_image = "mesecons_silicon.png",
 	on_place_on_ground = minetest.craftitem_place_item,
 	description = S("Silicon"),
 })
