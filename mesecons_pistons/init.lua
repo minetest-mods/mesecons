@@ -84,7 +84,16 @@ local piston_on = function(pos, node)
 	local pistonspec = get_pistonspec(node.name, "offname")
 	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 	local pusher_pos = vector.add(pos, dir)
+	local behind_pos = vector.subtract(pos, dir)
 	local meta = minetest.get_meta(pos)
+	-- NOTE: this gets calculated twice, but fixing this would mean changing the public api.
+	local stack_preview = mesecon.mvps_get_stack(pusher_pos, dir, max_push, meta:get_string("owner"))
+	for _, n in ipairs(stack_preview or {}) do
+		-- fix issue 645
+		if vector.equals(n.pos, behind_pos) then
+			return
+		end
+	end
 	local success, stack, oldstack = mesecon.mvps_push(pusher_pos, dir, max_push, meta:get_string("owner"))
 	if not success then
 		if stack == "protected" then
