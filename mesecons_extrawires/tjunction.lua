@@ -29,7 +29,7 @@ minetest.register_node("mesecons_extrawires:tjunction_on", {
 		"jeija_insulated_wire_ends_on.png"
 	},
 	paramtype = "light",
-	paramtype2 = "facedir",
+	paramtype2 = "4dir",
 	is_ground_content = false,
 	walkable = false,
 	sunlight_propagates = true,
@@ -45,7 +45,7 @@ minetest.register_node("mesecons_extrawires:tjunction_on", {
 		offstate = "mesecons_extrawires:tjunction_off"
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = mesecon.on_rotate_horiz,
+	on_rotate = mesecon.on_rotate,
 })
 
 minetest.register_node("mesecons_extrawires:tjunction_off", {
@@ -60,7 +60,7 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 		"jeija_insulated_wire_ends_off.png"
 	},
 	paramtype = "light",
-	paramtype2 = "facedir",
+	paramtype2 = "4dir",
 	is_ground_content = false,
 	walkable = false,
 	sunlight_propagates = true,
@@ -75,7 +75,7 @@ minetest.register_node("mesecons_extrawires:tjunction_off", {
 		onstate = "mesecons_extrawires:tjunction_on"
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = mesecon.on_rotate_horiz,
+	on_rotate = mesecon.on_rotate,
 })
 
 minetest.register_craft({
