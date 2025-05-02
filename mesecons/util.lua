@@ -17,6 +17,7 @@ function mesecon.on_rotate(pos, node, _, _, new_param2)
 end
 
 -- An on_rotate callback for components which stay horizontal.
+-- Deprecated. Use paramtype2 = "4dir" instead.
 function mesecon.on_rotate_horiz(pos, node, user, mode, new_param2)
 	if not minetest.global_exists("screwdriver") or mode ~= screwdriver.ROTATE_FACE then
 		return false
