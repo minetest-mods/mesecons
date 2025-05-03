@@ -9,9 +9,9 @@ jobs:
     - uses: actions/checkout@main
     - name: apt
       run: sudo apt-get install -y luarocks
-    - name: luacheck install
+    - name: install luacheck
       run: luarocks install --local luacheck
-    - name: luacheck run
+    - name: run luacheck
       run: $HOME/.luarocks/bin/luacheck ./
 
   mineunit:
@@ -20,12 +20,11 @@ jobs:
     steps:
     - uses: actions/checkout@main
     - name: apt
-      run: sudo apt-get install -y luarocks
-    - name: busted install
-      run: luarocks install --local busted
-    - name: luacov install
-      run: luarocks install --local luacov
-    - name: mineunit install
+      run: sudo apt-get install -y luarocks lua-bitop
+    - name: install lua deps
+      run: for x in busted luacov; do luarocks install --local $x; done
+    - name: install mineunit
+      # FIXME: this seems to be abandoned?
       run: luarocks install --server=https://luarocks.org/dev --local mineunit
     - name: run mesecons tests
       working-directory: ./mesecons/
