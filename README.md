@@ -13,9 +13,10 @@ MESECONS by Jeija and contributors
 Mezzee-what?
 ------------
 
-[Mesecons](https://mesecons.net/)! They're yellow, they're conductive, and they'll add a whole new dimension to Minetest's gameplay.
+[Mesecons](https://mesecons.net/)! They're yellow, they're conductive, and they'll add a whole new dimension to Luanti's gameplay.
 
-Mesecons is a mod for [Minetest](https://www.minetest.net/) that implements a ton of items related to digital circuitry, such as wires, buttons, lights, and even programmable controllers. Among other things, there are also pistons, solar panels, pressure plates, and note blocks.
+Mesecons is a mod for [Luanti](https://www.luanti.org/) that implements a ton of items related to digital circuitry, such as wires, buttons, lights, and even programmable controllers.
+Among other things, there are also pistons, solar panels, pressure plates, and note blocks.
 
 Mesecons has a similar goal to Redstone in Minecraft, but works in its own way, with different rules and mechanics.
 
@@ -24,15 +25,15 @@ OK, I want in.
 
 Go get it!
 
-[![ContentDB](https://content.minetest.net/packages/Jeija/mesecons/shields/downloads/)](https://content.minetest.net/packages/Jeija/mesecons/)
+[![ContentDB](https://content.luanti.org/packages/Jeija/mesecons/shields/downloads/)](https://content.luanti.org/packages/Jeija/mesecons/)
 
 Install it directly from your client by searching it in the Online Content tab.
 
-**Or** if you've downloaded a ZIP file check out [this page](https://wiki.minetest.net/Mods) over at the official Minetest Wiki. For your convenience, here's a quick summary:
+**Or** if you've downloaded a ZIP file check out [this page](https://docs.luanti.org/for-players/mods/) over at the official Luanti Wiki. For your convenience, here's a quick summary:
 
 1. If Mesecons is still in a ZIP file, extract the folder inside to somewhere on the computer.
 2. Make sure that when you open the folder, you can directly find `README.md` in the listing. If you just see another folder, move that folder up one level and delete the old one.
-3. Open up the Minetest mods folder - called `mods`.
+3. Open up the Luanti mods folder - called `mods`.
 4. Copy the Mesecons folder into the mods folder.
 
 Don't like some parts of Mesecons? Open up the Mesecons folder and delete the subfolder containing the mod you don't want. If you didn't want movestones, for example, all you have to do is delete the `mesecons_movestones` folder and they will no longer be available.
