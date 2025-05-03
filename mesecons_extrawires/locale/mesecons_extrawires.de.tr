@@ -1,8 +1,19 @@
 # textdomain: mesecons_extrawires
+
+### corner.lua ###
 Insulated Mesecon Corner=Isolierte Meseconecke
+
+### crossover.lua ###
 Insulated Mesecon Crossover=Isolierter Meseconübergang
-You hacker you!=Sie Hacker!
+
+### doublecorner.lua ###
 Insulated Mesecon Double Corner=Isolierte Mesecondoppelecke
+
+### mesewire.lua ###
 Mese Wire=Mesedraht
+
+### tjunction.lua ###
 Insulated Mesecon T-junction=Isolierte Mesecongabelung
+
+### vertical.lua ###
 Vertical Mesecon=Vertikaler Mesecon

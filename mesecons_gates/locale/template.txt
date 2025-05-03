@@ -1,4 +1,6 @@
 # textdomain: mesecons_gates
+
+### init.lua ###
 Diode=
 NOT Gate=
 AND Gate=

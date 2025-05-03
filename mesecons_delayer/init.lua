@@ -106,7 +106,7 @@ minetest.register_node("mesecons_delayer:delayer_off_"..tostring(i), off_state)
 
 -- Activated delayer definition defaults
 local on_state = {
-	description = S("You hacker you"),
+	description = "You hacker you",
 	inventory_image = "jeija_gate_on.png^jeija_delayer.png",
 	wield_image = "jeija_gate_on.png^jeija_delayer.png",
 	tiles = {

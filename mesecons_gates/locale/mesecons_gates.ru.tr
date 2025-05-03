@@ -1,8 +1,10 @@
 # textdomain: mesecons_gates
+
+### init.lua ###
 Diode=Диод
-NOT Gate=НЕ-шлюз
-AND Gate=И-шлюз
-NAND Gate=NAND-шлюз
-XOR Gate=XOR-шлюз
-NOR Gate=NOR-шлюз
-OR Gate=ИЛИ-шлюз
+NOT Gate=NOT Шлюз
+AND Gate=AND Шлюз
+NAND Gate=NAND Шлюз
+XOR Gate=XOR Шлюз
+NOR Gate=NOR Шлюз
+OR Gate=OR Шлюз
