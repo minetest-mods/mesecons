@@ -89,7 +89,7 @@ local function register_gate(name, inputnumber, assess, recipe, description)
 		description = description,
 		inventory_image = "jeija_gate_off.png^jeija_gate_"..name..".png",
 		paramtype = "light",
-		paramtype2 = "facedir",
+		paramtype2 = "4dir",
 		is_ground_content = false,
 		drawtype = "nodebox",
 		drop = basename.."_off",
@@ -102,7 +102,7 @@ local function register_gate(name, inputnumber, assess, recipe, description)
 		offstate = basename.."_off",
 		inputnumber = inputnumber,
 		after_dig_node = mesecon.do_cooldown,
-		on_rotate = mesecon.on_rotate_horiz,
+		on_rotate = mesecon.on_rotate,
 	},{
 		tiles = {
 			"jeija_microcontroller_bottom.png^".."jeija_gate_off.png^"..

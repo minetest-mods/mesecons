@@ -17,7 +17,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 		"jeija_insulated_wire_sides_on.png"
 	},
 	paramtype = "light",
-	paramtype2 = "facedir",
+	paramtype2 = "4dir",
 	is_ground_content = false,
 	walkable = false,
 	sunlight_propagates = true,
@@ -39,7 +39,7 @@ minetest.register_node("mesecons_insulated:insulated_on", {
 		rules = insulated_wire_get_rules
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = mesecon.on_rotate_horiz,
+	on_rotate = mesecon.on_rotate,
 })
 
 minetest.register_node("mesecons_insulated:insulated_off", {
@@ -54,7 +54,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 		"jeija_insulated_wire_sides_off.png"
 	},
 	paramtype = "light",
-	paramtype2 = "facedir",
+	paramtype2 = "4dir",
 	is_ground_content = false,
 	walkable = false,
 	sunlight_propagates = true,
@@ -75,7 +75,7 @@ minetest.register_node("mesecons_insulated:insulated_off", {
 		rules = insulated_wire_get_rules
 	}},
 	on_blast = mesecon.on_blastnode,
-	on_rotate = mesecon.on_rotate_horiz,
+	on_rotate = mesecon.on_rotate,
 })
 
 minetest.register_craft({
