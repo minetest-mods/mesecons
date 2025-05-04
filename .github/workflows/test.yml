@@ -1,0 +1,28 @@
+on: [push, pull_request]
+name: "Test"
+
+jobs:
+  test:
+    name: "Smoke Test ${{ matrix.cfg.image }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        cfg:
+          - { image: 'registry.gitlab.com/minetest/minetest/server:5.0.1', mtg: false }
+          - { image: 'ghcr.io/minetest/minetest:5.9.0', mtg: true }
+          - { image: 'ghcr.io/luanti-org/luanti:5.11.0', mtg: true }
+    steps:
+    - uses: actions/checkout@main
+
+    - name: Download Minetest Game
+      uses: actions/checkout@main
+      with:
+        repository: 'minetest/minetest_game'
+        path: ./.test/minetest_game
+      if: ${{ matrix.cfg.mtg }}
+
+    - name: Run tests
+      run: ./.test/run.sh
+      env:
+        DOCKER_IMAGE: "${{ matrix.cfg.image }}"

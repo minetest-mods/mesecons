@@ -1,0 +1,7 @@
+# textdomain: mesecons_fpga
+
+### init.lua ###
+FPGA=Circuit logique programmable (FPGA)
+
+### tool.lua ###
+FPGA Programmer=Programmateur de circuit logique

@@ -70,7 +70,17 @@ end
 -- However, even that does not work in some cases, that's why we delay the time the globalsteps
 -- start to be execute by 4 seconds
 
+local m_time = 0
+local resumetime = mesecon.setting("resumetime", 4)
+
 local function globalstep_func(dtime)
+	-- don't even try if server has not been running for XY seconds; resumetime = time to wait
+	-- after starting the server before processing the ActionQueue, don't set this too low
+	if m_time < resumetime then
+		m_time = m_time + dtime
+		return
+	end
+
 	local actions = queue.actions
 	-- split into two categories:
 	-- actions_now: actions to execute now
@@ -112,23 +122,7 @@ local function globalstep_func(dtime)
 	end
 end
 
--- delay the time the globalsteps start to be execute by 4 seconds
-do
-	local m_time = 0
-	local resumetime = mesecon.setting("resumetime", 4)
-	local globalstep_func_index = #minetest.registered_globalsteps + 1
-
-	minetest.register_globalstep(function(dtime)
-		m_time = m_time + dtime
-		-- don't even try if server has not been running for XY seconds; resumetime = time to wait
-		-- after starting the server before processing the ActionQueue, don't set this too low
-		if m_time < resumetime then
-			return
-		end
-		-- replace this globalstep function
-		minetest.registered_globalsteps[globalstep_func_index] = globalstep_func
-	end)
-end
+minetest.register_globalstep(globalstep_func)
 
 function queue:execute(action)
 	-- ignore if action queue function name doesn't exist,

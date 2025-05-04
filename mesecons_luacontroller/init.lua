@@ -388,7 +388,10 @@ local function clean_and_weigh_digiline_message(msg, back_references)
 		return msg, #msg + 25
 	elseif t == "number" then
 		-- Numbers are passed by value so need not be touched, and cost 8 bytes
-		-- as all numbers in Lua are doubles.
+		-- as all numbers in Lua are doubles. NaN values are removed.
+		if msg ~= msg then
+			return nil, 0
+		end
 		return msg, 8
 	elseif t == "boolean" then
 		-- Booleans are passed by value so need not be touched, and cost 1
@@ -506,6 +509,7 @@ local function create_environment(pos, mem, event, itbl, send_warning)
 		print = safe_print,
 		interrupt = get_interrupt(pos, itbl, send_warning),
 		digiline_send = get_digiline_send(pos, itbl, send_warning),
+		sha256sum = minetest.sha256,
 		string = {
 			byte = string.byte,
 			char = string.char,

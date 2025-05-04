@@ -15,6 +15,7 @@ ignore = {
 max_line_length = 200
 
 read_globals = {
+	"core",
 	"default",
 	"digiline",
 	"doors",
@@ -27,6 +28,8 @@ read_globals = {
 	"table.insert_all",
 	"vector",
 	"VoxelArea",
+	"mcl_dyes",
+	"mcl_sounds",
 }
 
 globals = {"mesecon"}

@@ -13,11 +13,11 @@ local S = minetest.get_translator(minetest.get_current_modname())
 -- self_pos = pos of any mesecon node, from_pos = pos of conductor to getconnect for
 local wire_getconnect = function (from_pos, self_pos)
 	local node = minetest.get_node(self_pos)
-	if minetest.registered_nodes[node.name]
-	and minetest.registered_nodes[node.name].mesecons then
+	local def = minetest.registered_nodes[node.name]
+	if def and def.mesecons then
 		-- rules of node to possibly connect to
 		local rules
-		if (minetest.registered_nodes[node.name].mesecon_wire) then
+		if def.mesecon_wire then
 			rules = mesecon.rules.default
 		else
 			rules = mesecon.get_any_rules(node)
@@ -68,16 +68,18 @@ end
 
 local update_on_place_dig = function (pos, node)
 	-- Update placed node (get_node again as it may have been dug)
-	local nn = minetest.get_node(pos)
-	if (minetest.registered_nodes[nn.name])
-	and (minetest.registered_nodes[nn.name].mesecon_wire) then
-		wire_updateconnect(pos)
+	do
+		local nn = minetest.get_node(pos)
+		local def = minetest.registered_nodes[nn.name]
+		if def and def.mesecon_wire then
+			wire_updateconnect(pos)
+		end
 	end
 
 	-- Update nodes around it
 	local rules
-	if minetest.registered_nodes[node.name]
-	and minetest.registered_nodes[node.name].mesecon_wire then
+	local ndef = minetest.registered_nodes[node.name]
+	if ndef and ndef.mesecon_wire then
 		rules = mesecon.rules.default
 	else
 		rules = mesecon.get_any_rules(node)
@@ -86,8 +88,8 @@ local update_on_place_dig = function (pos, node)
 
 	for _, r in ipairs(mesecon.flattenrules(rules)) do
 		local np = vector.add(pos, r)
-		if minetest.registered_nodes[minetest.get_node(np).name]
-		and minetest.registered_nodes[minetest.get_node(np).name].mesecon_wire then
+		local rdef = minetest.registered_nodes[minetest.get_node(np).name]
+		if rdef and rdef.mesecon_wire then
 			wire_updateconnect(np)
 		end
 	end

@@ -4,6 +4,16 @@ local side_texture = mesecon.texture.steel_block or "mesecons_detector_side.png"
 
 local GET_COMMAND = "GET"
 
+
+local function comma_list_to_table(comma_list)
+	local tbl = {}
+	for _, str in ipairs(string.split(comma_list:gsub("%s", ""), ",")) do
+		tbl[str] = true
+	end
+	return tbl
+end
+
+
 -- Object detector
 -- Detects players in a certain radius
 -- The radius can be specified in mesecons/settings.lua
@@ -35,10 +45,7 @@ local function object_detector_scan(pos)
 	if next(objs) == nil then return false end
 
 	local scanname = minetest.get_meta(pos):get_string("scanname")
-	local scan_for = {}
-	for _, str in pairs(string.split(scanname:gsub(" ", ""), ",")) do
-		scan_for[str] = true
-	end
+	local scan_for = comma_list_to_table(scanname)
 
 	local every_player = scanname == ""
 	for _, obj in pairs(objs) do
@@ -59,7 +66,8 @@ local object_detector_digiline = {
 	effector = {
 		action = function(pos, _, channel, msg)
 			local meta = minetest.get_meta(pos)
-			if channel == meta:get_string("digiline_channel") then
+			if channel == meta:get_string("digiline_channel") and
+					(type(msg) == "string" or type(msg) == "number") then
 				meta:set_string("scanname", msg)
 				object_detector_make_formspec(pos)
 			end
@@ -103,14 +111,16 @@ minetest.register_node("mesecons_detector:object_detector_on", {
 	on_blast = mesecon.on_blastnode,
 })
 
-minetest.register_craft({
-	output = 'mesecons_detector:object_detector_off',
-	recipe = {
-		{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot"},
-		{"mesecons_gamecompat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_gamecompat:steel_ingot"},
-		{"mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot"},
-	}
-})
+if minetest.get_modpath("mesecons_luacontroller") then
+	minetest.register_craft({
+		output = 'mesecons_detector:object_detector_off',
+		recipe = {
+			{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot"},
+			{"mesecons_gamecompat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_gamecompat:steel_ingot"},
+			{"mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot"},
+		}
+	})
+end
 
 minetest.register_craft({
 	output = 'mesecons_detector:object_detector_off',
@@ -188,8 +198,9 @@ local function node_detector_scan(pos)
 		vector.subtract(pos, vector.multiply(minetest.facedir_to_dir(node.param2), distance + 1))
 	).name
 	local scanname = meta:get_string("scanname")
+	local scan_for = comma_list_to_table(scanname)
 
-	return (frontname == scanname) or
+	return (scan_for[frontname]) or
 		(frontname ~= "air" and frontname ~= "ignore" and scanname == "")
 end
 
@@ -215,10 +226,10 @@ local node_detector_digiline = {
 
 			if type(msg) == "table" then
 				if msg.distance or msg.scanname then
-					if msg.distance then
+					if type(msg.distance) == "number" or type(msg.distance) == "string" then
 						meta:set_string("distance", msg.distance)
 					end
-					if msg.scanname then
+					if type(msg.scanname) == "string" then
 						meta:set_string("scanname", msg.scanname)
 					end
 					node_detector_make_formspec(pos)
@@ -232,7 +243,7 @@ local node_detector_digiline = {
 			else
 				if msg == GET_COMMAND then
 					node_detector_send_node_name(pos, node, channel, meta)
-				else
+				elseif type(msg) == "string" then
 					meta:set_string("scanname", msg)
 					node_detector_make_formspec(pos)
 				end
@@ -278,14 +289,16 @@ minetest.register_node("mesecons_detector:node_detector_on", {
 	on_blast = mesecon.on_blastnode,
 })
 
-minetest.register_craft({
-	output = 'mesecons_detector:node_detector_off',
-	recipe = {
-		{"mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot"},
-		{"mesecons_gamecompat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_gamecompat:steel_ingot"},
-		{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot"},
-	}
-})
+if minetest.get_modpath("mesecons_luacontroller") then
+	minetest.register_craft({
+		output = 'mesecons_detector:node_detector_off',
+		recipe = {
+			{"mesecons_gamecompat:steel_ingot", "group:mesecon_conductor_craftable", "mesecons_gamecompat:steel_ingot"},
+			{"mesecons_gamecompat:steel_ingot", "mesecons_luacontroller:luacontroller0000", "mesecons_gamecompat:steel_ingot"},
+			{"mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot", "mesecons_gamecompat:steel_ingot"},
+		}
+	})
+end
 
 minetest.register_craft({
 	output = 'mesecons_detector:node_detector_off',

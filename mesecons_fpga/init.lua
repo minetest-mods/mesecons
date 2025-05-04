@@ -20,10 +20,10 @@ plg.register_nodes = function(template)
 
 		-- build top texture string
 		local texture = "jeija_fpga_top.png"
-		if a == 1 then texture = texture .. "^jeija_microcontroller_LED_A.png" end
-		if b == 1 then texture = texture .. "^jeija_microcontroller_LED_B.png" end
-		if c == 1 then texture = texture .. "^jeija_microcontroller_LED_C.png" end
-		if d == 1 then texture = texture .. "^jeija_microcontroller_LED_D.png" end
+		if a == 1 then texture = texture .. "^jeija_luacontroller_LED_A.png" end
+		if b == 1 then texture = texture .. "^jeija_luacontroller_LED_B.png" end
+		if c == 1 then texture = texture .. "^jeija_luacontroller_LED_C.png" end
+		if d == 1 then texture = texture .. "^jeija_luacontroller_LED_D.png" end
 		ndef.tiles[1] = texture
 		ndef.inventory_image = texture
 

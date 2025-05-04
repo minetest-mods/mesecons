@@ -115,27 +115,13 @@ local function piston_off(pos, node)
 	end
 end
 
-local orientations = {
-	[0] = { 4,  8},
-	      {13, 17},
-	      {10,  6},
-	      {20, 15},
-}
-
 local function piston_orientate(pos, placer)
 	mesecon.mvps_set_owner(pos, placer)
 	if not placer then
 		return
 	end
-	local pitch = math.deg(placer:get_look_vertical())
 	local node = minetest.get_node(pos)
-	if pitch > 55 then
-		node.param2 = orientations[node.param2][1]
-	elseif pitch < -55 then
-		node.param2 = orientations[node.param2][2]
-	else
-		return
-	end
+	node.param2 = core.dir_to_facedir(placer:get_look_dir(), true)
 	minetest.swap_node(pos, node)
 	-- minetest.after, because on_placenode for unoriented piston must be processed first
 	minetest.after(0, mesecon.on_placenode, pos, node)
@@ -270,9 +256,9 @@ minetest.register_node("mesecons_pistons:piston_normal_off", {
 	description = S("Piston"),
 	tiles = {
 		"mesecons_piston_top.png",
-		"mesecons_piston_bottom.png",
-		"mesecons_piston_left.png",
-		"mesecons_piston_right.png",
+		"mesecons_piston_top.png^[transform2",
+		"mesecons_piston_top.png^[transform3",
+		"mesecons_piston_top.png^[transform1",
 		"mesecons_piston_back.png",
 		"mesecons_piston_pusher_front.png"
 	},
@@ -296,9 +282,9 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_top.png",
-		"mesecons_piston_bottom.png",
-		"mesecons_piston_left.png",
-		"mesecons_piston_right.png",
+		"mesecons_piston_top.png^[transform2",
+		"mesecons_piston_top.png^[transform3",
+		"mesecons_piston_top.png^[transform1",
 		"mesecons_piston_back.png",
 		"mesecons_piston_on_front.png"
 	},
@@ -325,9 +311,9 @@ minetest.register_node("mesecons_pistons:piston_pusher_normal", {
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_pusher_top.png",
-		"mesecons_piston_pusher_bottom.png",
-		"mesecons_piston_pusher_left.png",
-		"mesecons_piston_pusher_right.png",
+		"mesecons_piston_pusher_top.png^[transform2",
+		"mesecons_piston_pusher_top.png^[transform3",
+		"mesecons_piston_pusher_top.png^[transform1",
 		"mesecons_piston_pusher_back.png",
 		"mesecons_piston_pusher_front.png"
 	},
@@ -349,9 +335,9 @@ minetest.register_node("mesecons_pistons:piston_sticky_off", {
 	description = S("Sticky Piston"),
 	tiles = {
 		"mesecons_piston_top.png",
-		"mesecons_piston_bottom.png",
-		"mesecons_piston_left.png",
-		"mesecons_piston_right.png",
+		"mesecons_piston_top.png^[transform2",
+		"mesecons_piston_top.png^[transform3",
+		"mesecons_piston_top.png^[transform1",
 		"mesecons_piston_back.png",
 		"mesecons_piston_pusher_front_sticky.png"
 	},
@@ -375,9 +361,9 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_top.png",
-		"mesecons_piston_bottom.png",
-		"mesecons_piston_left.png",
-		"mesecons_piston_right.png",
+		"mesecons_piston_top.png^[transform2",
+		"mesecons_piston_top.png^[transform3",
+		"mesecons_piston_top.png^[transform1",
 		"mesecons_piston_back.png",
 		"mesecons_piston_on_front.png"
 	},
@@ -404,9 +390,9 @@ minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 	drawtype = "nodebox",
 	tiles = {
 		"mesecons_piston_pusher_top.png",
-		"mesecons_piston_pusher_bottom.png",
-		"mesecons_piston_pusher_left.png",
-		"mesecons_piston_pusher_right.png",
+		"mesecons_piston_pusher_top.png^[transform2",
+		"mesecons_piston_pusher_top.png^[transform3",
+		"mesecons_piston_pusher_top.png^[transform1",
 		"mesecons_piston_pusher_back.png",
 		"mesecons_piston_pusher_front_sticky.png"
 	},

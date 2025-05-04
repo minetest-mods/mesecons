@@ -1,0 +1,7 @@
+# textdomain: mesecons_commandblock
+
+### init.lua ###
+Say <text> as the server=Сказати <текст> від імені сервера
+Say <text> to <name> privately=Сказати <текст> гравцю <ім'я> в приватному повідомленні
+Set health of <name> to <value> hitpoints=Встановити здоров'я гравця <ім'я> на <значення> ХП
+Command Block=Командний блок

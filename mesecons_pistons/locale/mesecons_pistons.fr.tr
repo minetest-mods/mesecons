@@ -1,0 +1,9 @@
+# textdomain: mesecons_pistons
+
+### init.lua ###
+Piston=Piston
+Activated Piston Base=Base de piston activé
+Piston Pusher=Bras de piston
+Sticky Piston=Piston collant
+Activated Sticky Piston Base=Base de piston collant activé
+Sticky Piston Pusher=Bras de piston collant

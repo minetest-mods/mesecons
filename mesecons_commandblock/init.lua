@@ -1,4 +1,5 @@
 local S = minetest.get_translator(minetest.get_current_modname())
+local param_maxlen = mesecon.setting("commandblock_param_maxlen", 10000)
 
 minetest.register_chatcommand("say", {
 	params = "<text>",
@@ -48,7 +49,7 @@ minetest.register_chatcommand("hp", {
 local function initialize_data(meta)
 	local commands = minetest.formspec_escape(meta:get_string("commands"))
 	meta:set_string("formspec",
-		"invsize[9,5;]" ..
+		"size[9,5]" ..
 		"textarea[0.5,0.5;8.5,4;commands;Commands;"..commands.."]" ..
 		"label[1,3.8;@nearest, @farthest, and @random are replaced by the respective player names]" ..
 		"button_exit[3.3,4.5;2,1;submit;Submit]")
@@ -154,6 +155,11 @@ local function commandblock_action_on(pos, node)
 		local cmddef = minetest.chatcommands[cmd]
 		if not cmddef then
 			minetest.chat_send_player(owner, "The command "..cmd.." does not exist")
+			return
+		end
+		if #param > param_maxlen then
+			minetest.chat_send_player(owner, "Command parameters are limited to max. " ..
+				param_maxlen .. " bytes.")
 			return
 		end
 		local has_privs, missing_privs = minetest.check_player_privs(owner, cmddef.privs)

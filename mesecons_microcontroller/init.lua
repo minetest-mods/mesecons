@@ -12,16 +12,16 @@ for d = 0, 1 do
 local nodename = "mesecons_microcontroller:microcontroller"..tostring(d)..tostring(c)..tostring(b)..tostring(a)
 local top = "jeija_microcontroller_top.png"
 if tostring(a) == "1" then
-	top = top.."^jeija_microcontroller_LED_A.png"
+	top = top.."^jeija_luacontroller_LED_A.png"
 end
 if tostring(b) == "1" then
-	top = top.."^jeija_microcontroller_LED_B.png"
+	top = top.."^jeija_luacontroller_LED_B.png"
 end
 if tostring(c) == "1" then
-	top = top.."^jeija_microcontroller_LED_C.png"
+	top = top.."^jeija_luacontroller_LED_C.png"
 end
 if tostring(d) == "1" then
-	top = top.."^jeija_microcontroller_LED_D.png"
+	top = top.."^jeija_luacontroller_LED_D.png"
 end
 local groups
 if tostring(d)..tostring(c)..tostring(b)..tostring(a) ~= "0000" then
@@ -122,7 +122,7 @@ minetest.register_node(nodename, {
 		elseif fields.bnand then
 			fields.code = "sbi(C, !A|!B) :A and B are inputs, C is output"
 		elseif fields.btflop then
-			fields.code = "if(A)sbi(1,1);if(!A&#1)sbi(B,!B)sbi(1,0); if(C)off(B,1); :A is input, B is output (Q), C is reset, toggles with falling edge"
+			fields.code = "if(A)sbi(1,1);if(!A&#1)sbi(B,!B)sbi(1,0); if(C)off(B); :A is input, B is output (Q), C is reset, toggles with falling edge"
 		elseif fields.brsflop then
 			fields.code = "if(A)on(C);if(B)off(C); :A is S (Set), B is R (Reset), C is output (R dominates)"
 		end

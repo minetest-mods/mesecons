@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 local selection_box = {
 	type = "fixed",
 	fixed = { -8/16, -8/16, -8/16, 8/16, -6/16, 8/16 }
@@ -146,38 +148,38 @@ end
 
 register_gate("diode", 1, function (input) return input end,
 	{{"mesecons:mesecon", "mesecons_torch:mesecon_torch_on", "mesecons_torch:mesecon_torch_on"}},
-	"Diode")
+	S("Diode"))
 
 register_gate("not", 1, function (input) return not input end,
 	{{"mesecons:mesecon", "mesecons_torch:mesecon_torch_on", "mesecons:mesecon"}},
-	"NOT Gate")
+	S("NOT Gate"))
 
 register_gate("and", 2, function (val1, val2) return val1 and val2 end,
 	{{"mesecons:mesecon", "", ""},
 	 {"", "mesecons_materials:silicon", "mesecons:mesecon"},
 	 {"mesecons:mesecon", "", ""}},
-	"AND Gate")
+	S("AND Gate"))
 
 register_gate("nand", 2, function (val1, val2) return not (val1 and val2) end,
 	{{"mesecons:mesecon", "", ""},
 	 {"", "mesecons_materials:silicon", "mesecons_torch:mesecon_torch_on"},
 	 {"mesecons:mesecon", "", ""}},
-	"NAND Gate")
+	S("NAND Gate"))
 
 register_gate("xor", 2, function (val1, val2) return (val1 or val2) and not (val1 and val2) end,
 	{{"mesecons:mesecon", "", ""},
 	 {"", "mesecons_materials:silicon", "mesecons_materials:silicon"},
 	 {"mesecons:mesecon", "", ""}},
-	"XOR Gate")
+	S("XOR Gate"))
 
 register_gate("nor", 2, function (val1, val2) return not (val1 or val2) end,
 	{{"mesecons:mesecon", "", ""},
 	 {"", "mesecons:mesecon", "mesecons_torch:mesecon_torch_on"},
 	 {"mesecons:mesecon", "", ""}},
-	"NOR Gate")
+	S("NOR Gate"))
 
 register_gate("or", 2, function (val1, val2) return (val1 or val2) end,
 	{{"mesecons:mesecon", "", ""},
 	 {"", "mesecons:mesecon", "mesecons:mesecon"},
 	 {"mesecons:mesecon", "", ""}},
-	"OR Gate")
+	S("OR Gate"))

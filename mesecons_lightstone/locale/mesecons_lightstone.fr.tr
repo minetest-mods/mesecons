@@ -1,0 +1,15 @@
+# textdomain: mesecons_lightstone
+
+### init.lua ###
+Red Lightstone=Pierre lumineuse rouge
+Green Lightstone=Pierre lumineuse verte
+Blue Lightstone=Pierre lumineuse bleue
+Grey Lightstone=Pierre lumineuse grise
+Dark Grey Lightstone=Pierre lumineuse gris foncée
+Yellow Lightstone=Pierre lumineuse jaune
+Orange Lightstone=Pierre lumineuse orange
+White Lightstone=Pierre lumineuse blanche
+Pink Lightstone=Pierre lumineuse rose
+Magenta Lightstone=Pierre lumineuse magenta
+Cyan Lightstone=Pierre lumineuse bleu clair
+Violet Lightstone=Pierre lumineuse violette

@@ -1,0 +1,5 @@
+# textdomain: mesecons_detector
+
+### init.lua ###
+Player Detector=Детектор игрока
+Node Detector=Детектор блока
