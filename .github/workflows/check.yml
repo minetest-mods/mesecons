@@ -19,22 +19,27 @@ jobs:
     name: "Mineunit tests"
     steps:
     - uses: actions/checkout@main
-    - name: apt
-      run: sudo apt-get install -y luarocks lua-bitop
-    - name: install lua deps
-      run: for x in busted luacov; do luarocks install --local $x; done
-    - name: install mineunit
-      # FIXME: this seems to be abandoned?
-      run: luarocks install --server=https://luarocks.org/dev --local mineunit
     - name: run mesecons tests
-      working-directory: ./mesecons/
-      run: $HOME/.luarocks/bin/mineunit -q
+      uses: mt-mods/mineunit-actions@master
+      with:
+        coverage: false
+        mineunit-args: -q
+        working-directory: ./mesecons
     - name: run mesecons_mvps tests
-      working-directory: ./mesecons_mvps/
-      run: $HOME/.luarocks/bin/mineunit -q
+      uses: mt-mods/mineunit-actions@master
+      with:
+        coverage: false
+        mineunit-args: -q
+        working-directory: ./mesecons_mvps
     - name: run mesecons_fpga tests
-      working-directory: ./mesecons_fpga/
-      run: $HOME/.luarocks/bin/mineunit -q
+      uses: mt-mods/mineunit-actions@master
+      with:
+        coverage: false
+        mineunit-args: -q
+        working-directory: ./mesecons_fpga
     - name: run mesecons_luacontroller tests
-      working-directory: ./mesecons_luacontroller/
-      run: $HOME/.luarocks/bin/mineunit -q
+      uses: mt-mods/mineunit-actions@master
+      with:
+        coverage: false
+        mineunit-args: -q
+        working-directory: ./mesecons_luacontroller
