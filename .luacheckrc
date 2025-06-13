@@ -30,6 +30,7 @@ read_globals = {
 	"VoxelArea",
 	"mcl_dyes",
 	"mcl_sounds",
+	"hades_sounds",
 }
 
 globals = {"mesecon"}
