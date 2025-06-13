@@ -19,6 +19,11 @@ if minetest.get_modpath("mcl_redstone") then
 	dofile(minetest.get_modpath("mesecons_gamecompat").."/compat_mcla.lua")
 end
 
+if minetest.get_modpath("hades_core") then
+	minetest.log("info", "Mesecons: detected Hades Revisited Game for game compatibility")
+	dofile(minetest.get_modpath("mesecons_gamecompat").."/compat_hades.lua")
+end
+
 if minetest.get_modpath("doors") then
 	dofile(minetest.get_modpath("mesecons_gamecompat").."/doors.lua")
 end
