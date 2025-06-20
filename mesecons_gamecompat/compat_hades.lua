@@ -17,7 +17,7 @@ core.register_alias("mesecons_gamecompat:torch", "hades_torches:torch")
 
 if core.get_modpath("hades_dye") then
 	for _, color in ipairs(mesecon.dye_colors) do
-		core.register_alias("mesecons_gamecompat:dye_" .. color, "dye:" .. color)
+		core.register_alias("mesecons_gamecompat:dye_" .. color, "hades_dye:" .. color)
 	end
 end
 
@@ -44,7 +44,7 @@ mesecon.texture.steel_block = "default_steel_block.png"
 -- MVPS stoppers
 
 if core.get_modpath("mesecons_mvps") then
-	-- All of the locked and internal nodes in Minetest Game
+	-- All of the locked and internal nodes in Hades Revisited
 	for _, name in ipairs({
 		"hades_chests:chest_locked",
 		"hades_chests:chest_locked_open",
