@@ -264,6 +264,52 @@ function mesecon.mvps_push_or_pull(pos, stackdir, movedir, maximum, all_pull_sti
 	return true, nodes, oldstack
 end
 
+-- Returns whether the given area intersects any nodes in the given set of position hashes,
+-- or any walkable nodes in the map if no set is given.
+local function area_intersects_nodes(min_pos, max_pos, positions)
+	min_pos = vector.round(min_pos)
+	max_pos = vector.round(max_pos)
+	local pos = vector.new(min_pos)
+	while pos.x <= max_pos.x do
+		while pos.y <= max_pos.y do
+			while pos.z <= max_pos.z do
+				if positions then
+					if positions[minetest.hash_node_position(pos)] then
+						return true
+					end
+				else
+					local def = minetest.registered_nodes[minetest.get_node(pos).name]
+					if not def or def.walkable then
+						return true
+					end
+				end
+				pos.z = pos.z + 1
+			end
+			pos.z = min_pos.z
+			pos.y = pos.y + 1
+		end
+		pos.y = min_pos.y
+		pos.x = pos.x + 1
+	end
+	return false
+end
+
+-- Returns whether the given area intersects the node face with the given normal axis and center point.
+local function area_intersects_face(min_pos, max_pos, normal_axis, center)
+	for k, v in pairs(center) do
+		if k == normal_axis then
+			if min_pos[k] >= v or max_pos[k] <= v then
+				return false
+			end
+		else
+			if min_pos[k] >= v + 0.5 or max_pos[k] <= v - 0.5 then
+				return false
+			end
+		end
+	end
+	return true
+end
+
 function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 	local dir_k
 	local dir_l
@@ -276,42 +322,61 @@ function mesecon.mvps_move_objects(pos, dir, nodestack, movefactor)
 	end
 	movefactor = movefactor or 1
 	dir = vector.multiply(dir, movefactor)
-	for id, obj in pairs(minetest.get_objects_inside_radius(pos, #nodestack + 1)) do
+	-- The collision box min and max positions will be extended by these values.
+	-- These small scalars are so that objects next to the moved stack are also moved.
+	local extension_min = vector.new(-0.01, -0.01, -0.01)
+	local extension_max = vector.new(0.01, 0.01, 0.01)
+	-- The collision box is extended in one direction to account for node displacement,
+	-- except in the special case where no nodes are moved.
+	local extension = nodestack[1] ~= nil and -dir[dir_k] or 0
+	if extension < 0 then
+		extension_min[dir_k] = extension
+		extension_max[dir_k] = 0
+	else
+		extension_min[dir_k] = 0
+		extension_max[dir_k] = extension
+	end
+
+	local max_distance = 0
+	local moved_positions, face_center
+	if movefactor == 1 or nodestack[1] ~= nil then
+		-- Usually, objects are moved if they intersect with moved node positions.
+		moved_positions = {}
+		if nodestack[1] == nil then
+			-- Push objects intersecting the mvps position.
+			moved_positions[minetest.hash_node_position(pos)] = true
+		end
+		for _, n in ipairs(nodestack) do
+			moved_positions[minetest.hash_node_position(n.pos)] = true
+			max_distance = math.max(max_distance, vector.distance(pos, n.pos))
+		end
+	else
+		-- When zero nodes are retracted, objects are moved if they intersect with the retracting face.
+		face_center = vector.new(pos)
+		face_center[dir_k] = face_center[dir_k] - 0.5 * dir_l
+	end
+
+	for id, obj in pairs(minetest.get_objects_inside_radius(pos, max_distance + 2)) do
 		local obj_pos = obj:get_pos()
 		local cbox = obj:get_properties().collisionbox
-		local min_pos = vector.add(obj_pos, vector.new(cbox[1], cbox[2], cbox[3]))
-		local max_pos = vector.add(obj_pos, vector.new(cbox[4], cbox[5], cbox[6]))
-		local ok = true
-		for k, v in pairs(pos) do
-			local edge1, edge2
-			if k ~= dir_k then
-				edge1 = v - 0.51 -- More than 0.5 to move objects near to the stack.
-				edge2 = v + 0.51
-			else
-				edge1 = v - 0.5 * dir_l
-				edge2 = v + (#nodestack + 0.5 * movefactor) * dir_l
-				-- Make sure, edge1 is bigger than edge2:
-				if edge1 > edge2 then
-					edge1, edge2 = edge2, edge1
-				end
-			end
-			if min_pos[k] > edge2 or max_pos[k] < edge1 then
-				ok = false
-				break
-			end
+		local min_pos = vector.add(obj_pos, vector.offset(extension_min, cbox[1], cbox[2], cbox[3]))
+		local max_pos = vector.add(obj_pos, vector.offset(extension_max, cbox[4], cbox[5], cbox[6]))
+		local ok
+		if moved_positions then
+			ok = area_intersects_nodes(min_pos, max_pos, moved_positions)
+		else
+			ok = area_intersects_face(min_pos, max_pos, dir_k, face_center)
 		end
 		if ok then
 			local ent = obj:get_luaentity()
 			if obj:is_player() or (ent and not mesecon.is_mvps_unmov(ent.name)) then
-				local np = vector.add(obj_pos, dir)
 				-- Move only if destination is not solid or object is inside stack:
-				local nn = minetest.get_node(np)
-				local node_def = minetest.registered_nodes[nn.name]
-				local obj_offset = dir_l * (obj_pos[dir_k] - pos[dir_k])
-				if (node_def and not node_def.walkable) or
-						(obj_offset >= 0 and
-						obj_offset <= #nodestack - 0.5) then
-					obj:move_to(np)
+				-- (A small bias is added to prevent rounding issues.)
+				local min_pos = vector.offset(obj_pos, cbox[1] + 0.01, cbox[2] + 0.01, cbox[3] + 0.01)
+				local max_pos = vector.offset(obj_pos, cbox[4] - 0.01, cbox[5] - 0.01, cbox[6] - 0.01)
+				if not area_intersects_nodes(vector.add(min_pos, dir), vector.add(max_pos, dir)) or
+						(nodestack[1] ~= nil and area_intersects_nodes(min_pos, max_pos, moved_positions)) then
+					obj:move_to(vector.add(obj_pos, dir))
 				end
 			end
 		end
