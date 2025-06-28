@@ -128,6 +128,67 @@ do
 	end
 end
 
+-- Utility node: this effector with conductor is used to test outputs.
+do
+	local _rules = {
+		{x =  1, y =  0, z =  0, name = "000001"},
+		{x = -1, y =  0, z =  0, name = "000010"},
+		{x =  0, y =  1, z =  0, name = "000100"},
+		{x =  0, y = -1, z =  0, name = "001000"},
+		{x =  0, y =  0, z =  1, name = "010000"},
+		{x =  0, y =  0, z = -1, name = "100000"},
+}
+	-- This is a list of actions in the form {<kind>, <pos>},
+	-- where <kind> is "on", "off", or "overheat".
+	mesecon._test_eff_conductor_events = {}
+	local function action_on(pos, node)
+		table.insert(mesecon._test_eff_conductor_events, {"on", pos})
+		minetest.swap_node(pos, {name = "mesecons:test_effect_conductor_on", param2 = node.param2})
+	end
+	local function action_off(pos, node)
+		table.insert(mesecon._test_eff_conductor_events, {"off", pos})
+		minetest.swap_node(pos, {name = "mesecons:test_effect_conductor_off", param2 = node.param2})
+	end
+	local function action_change(pos, _node, _rule_name, _new_state)
+		if mesecon.do_overheat(pos) then
+			table.insert(mesecon._test_eff_conductor_events, {"overheat", pos})
+			minetest.remove_node(pos)
+			return
+		end
+		-- minetest.swap_node(pos, node)
+	end
+	local off_spec = {
+		effector = {
+			rules = _rules,
+			action_on = action_on,
+			action_off = action_off,
+			action_change = action_change,
+		},
+		conductor = {
+			state = mesecon.state.off,
+			rules = _rules,
+			onstate = "mesecons:test_effect_conductor_on",
+		}
+	}
+	local on_spec = {
+		effector = {
+			rules = _rules,
+			action_on = action_on,
+			action_off = action_off,
+			action_change = action_change,
+		},
+		conductor = {
+			state = mesecon.state.on,
+			rules = _rules,
+			offstate = "mesecons:test_effect_conductor_off",
+		}
+	}
+	mesecon.register_node("mesecons:test_effect_conductor", {
+		description = "Test Effector With Conductor",
+	}, {mesecons = off_spec}, {mesecons = on_spec})
+end
+
+
 mesecon._test_autoconnects = {}
 mesecon.register_autoconnect_hook("test", function(pos, node)
 	table.insert(mesecon._test_autoconnects, {pos, node})
