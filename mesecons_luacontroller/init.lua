@@ -39,6 +39,14 @@ local rules = {
 	d = {x =  0, y = 0, z = -1, name="D"},
 }
 
+local digiline_port_rules = {}
+for port, rule in pairs(rules) do
+	digiline_port_rules[port] = {
+		rule,
+		vector.add(rule, {x=0,y=1,z=0}),
+		vector.add(rule, {x=0,y=-1,z=0})
+	}
+end
 
 ------------------
 -- Action stuff --
@@ -449,7 +457,7 @@ local function get_digiline_send(pos, itbl, send_warning)
 	if not minetest.global_exists("digilines") then return end
 	local chan_maxlen = mesecon.setting("luacontroller_digiline_channel_maxlen", 256)
 	local maxlen = mesecon.setting("luacontroller_digiline_maxlen", 50000)
-	return function(channel, msg)
+	return function(channel, msg, port)
 		-- NOTE: This runs within string metatable sandbox, so don't *rely* on anything of the form (""):y
 		--        or via anything that could.
 		-- Make sure channel is string, number or boolean
@@ -473,7 +481,7 @@ local function get_digiline_send(pos, itbl, send_warning)
 		table.insert(itbl, function ()
 			-- Runs outside of string metatable sandbox
 			local luac_id = minetest.get_meta(pos):get_int("luac_id")
-			mesecon.queue:add_action(pos, "lc_digiline_relay", {channel, luac_id, msg})
+			mesecon.queue:add_action(pos, "lc_digiline_relay", {channel, luac_id, msg, port })
 		end)
 		return true
 	end
@@ -744,13 +752,14 @@ mesecon.queue:add_function("lc_interrupt", function (pos, luac_id, iid)
 	run(pos, {type="interrupt", iid = iid})
 end)
 
-mesecon.queue:add_function("lc_digiline_relay", function (pos, channel, luac_id, msg)
+mesecon.queue:add_function("lc_digiline_relay", function (pos, channel, luac_id, msg, port)
 	if not digiline then return end
 	-- This check is only really necessary because in case of server crash, old actions can be thrown into the future
 	if (minetest.get_meta(pos):get_int("luac_id") ~= luac_id) then return end
 	if (minetest.registered_nodes[minetest.get_node(pos).name].is_burnt) then return end
 	-- The actual work
-	digiline:receptor_send(pos, digiline.rules.default, channel, msg)
+	local send_rules = (port and type(port) == 'string' and digiline_port_rules[string.lower(port)]) or digilines.rules.default
+	digiline:receptor_send(pos, send_rules, channel, msg)
 end)
 
 -----------------------
