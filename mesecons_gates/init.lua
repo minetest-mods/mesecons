@@ -183,3 +183,32 @@ register_gate("or", 2, function (val1, val2) return (val1 or val2) end,
 	 {"", "mesecons:mesecon", "mesecons:mesecon"},
 	 {"mesecons:mesecon", "", ""}},
 	S("OR Gate"))
+
+-- alternate gate recipes without silicon
+
+core.register_craft({
+		output = "mesecons_gates:and",
+		recipe = {
+			{"mesecons_torch:mesecon_torch_on", ""                , ""                               },
+			{""                               , "mesecons:mesecon", "mesecons_torch:mesecon_torch_on"},
+			{"mesecons_torch:mesecon_torch_on", ""                , ""                               },
+		},
+})
+
+core.register_craft({
+		output = "mesecons_gates:nand",
+		recipe = {
+			{"mesecons_torch:mesecon_torch_on", ""                , ""                },
+			{""                               , "mesecons:mesecon", "mesecons:mesecon"},
+			{"mesecons_torch:mesecon_torch_on", ""                , ""                },
+		},
+})
+
+core.register_craft({
+		output = "mesecons_gates:xor",
+		recipe = {
+			{"mesecons_torch:mesecon_torch_on", "mesecons:mesecon"               , "mesecons_torch:mesecon_torch_on"},
+			{"mesecons:mesecon"               , "mesecons_torch:mesecon_torch_on", "mesecons:mesecon"               },
+			{"mesecons_torch:mesecon_torch_on", "mesecons:mesecon"               , "mesecons_torch:mesecon_torch_on"},
+		},
+})
