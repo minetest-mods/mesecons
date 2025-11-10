@@ -90,6 +90,16 @@ function mesecon.get_any_rules(node)
 		mesecon.get_any_outputrules(node))
 end
 
+local function get_rules_from_ndef(ndef, node)
+	local rules = ndef and ndef.rules
+	if type(rules) == 'function' then
+		return rules(node)
+	elseif rules then
+		return rules
+	end
+	return mesecon.rules.default
+end
+
 -- Receptors
 -- Nodes that can power mesecons
 function mesecon.is_receptor_on(nodename)
@@ -117,17 +127,7 @@ function mesecon.is_receptor(nodename)
 end
 
 function mesecon.receptor_get_rules(node)
-	local receptor = mesecon.get_receptor(node.name)
-	if receptor then
-		local rules = receptor.rules
-		if type(rules) == 'function' then
-			return rules(node)
-		elseif rules then
-			return rules
-		end
-	end
-
-	return mesecon.rules.default
+	return get_rules_from_ndef(mesecon.get_receptor(node.name), node)
 end
 
 -- Effectors
@@ -157,16 +157,7 @@ function mesecon.is_effector(nodename)
 end
 
 function mesecon.effector_get_rules(node)
-	local effector = mesecon.get_effector(node.name)
-	if effector then
-		local rules = effector.rules
-		if type(rules) == 'function' then
-			return rules(node)
-		elseif rules then
-			return rules
-		end
-	end
-	return mesecon.rules.default
+	return get_rules_from_ndef(mesecon.get_effector(node.name), node)
 end
 
 -- #######################
@@ -330,16 +321,7 @@ function mesecon.get_conductor_off(node_on, rulename)
 end
 
 function mesecon.conductor_get_rules(node)
-	local conductor = mesecon.get_conductor(node.name)
-	if conductor then
-		local rules = conductor.rules
-		if type(rules) == 'function' then
-			return rules(node)
-		elseif rules then
-			return rules
-		end
-	end
-	return mesecon.rules.default
+	return get_rules_from_ndef(mesecon.get_conductor(node.name), node)
 end
 
 -- some more general high-level stuff
@@ -545,46 +527,42 @@ function mesecon.turnoff(pos, link)
 	return true
 end
 
+-- @param getter_function Function that returns nested rules (vectors)
+-- @return The matching rule or `nil`
+local function find_rule_in_rules(pos, rule, getter_function)
+	local r_pos = vector.add(pos, rule)
+	local r_node = mesecon.get_node_force(r_pos)
+	local r_rules = getter_function(r_node)
+	if not r_rules then
+		return
+	end
+
+	local dir = vector.subtract(pos, r_pos)
+	for _, r_rule in ipairs(mesecon.flattenrules(r_rules)) do
+		if vector.equals(dir, r_rule) then
+			-- Other matches are duplicates
+			return r_rule
+		end
+	end
+end
+
 -- Get all linking inputrules of inputnode (effector or conductor) that is connected to
 -- outputnode (receptor or conductor) at position `output` and has an output in direction `rule`
 function mesecon.rules_link_rule_all(output, rule)
-	local input = vector.add(output, rule)
-	local inputnode = mesecon.get_node_force(input)
-	local inputrules = mesecon.get_any_inputrules(inputnode)
-	if not inputrules then
-		return {}
-	end
-	local rules = {}
-
-	for _, inputrule in ipairs(mesecon.flattenrules(inputrules)) do
-		-- Check if input accepts from output
-		if  vector.equals(vector.add(input, inputrule), output) then
-			table.insert(rules, inputrule)
-		end
-	end
-
-	return rules
+	local match = find_rule_in_rules(output, rule, mesecon.get_any_inputrules)
+	return { match }
 end
 
 -- Get all linking outputnodes of outputnode (receptor or conductor) that is connected to
 -- inputnode (effector or conductor) at position `input` and has an input in direction `rule`
 function mesecon.rules_link_rule_all_inverted(input, rule)
-	local output = vector.add(input, rule)
-	local outputnode = mesecon.get_node_force(output)
-	local outputrules = mesecon.get_any_outputrules(outputnode)
-	if not outputrules then
-		return {}
-	end
-	local rules = {}
-
-	for _, outputrule in ipairs(mesecon.flattenrules(outputrules)) do
-		if  vector.equals(vector.add(output, outputrule), input) then
-			table.insert(rules, mesecon.invertRule(outputrule))
-		end
-	end
-	return rules
+	local match = find_rule_in_rules(input, rule, mesecon.get_any_outputrules)
+	return { match and mesecon.invertRule(match) }
 end
 
+-- @param  pos  Node position (a vector) to check
+-- @param  rule Optional. Specific rule (i.e. node side) to check.
+-- @return Returns a list of vectors that power `pos`, or `false` if unpowered.
 function mesecon.is_powered(pos, rule)
 	local node = mesecon.get_node_force(pos)
 	local rules = mesecon.get_any_inputrules(node)
@@ -593,26 +571,15 @@ function mesecon.is_powered(pos, rule)
 	-- List of nodes that send out power to pos
 	local sourcepos = {}
 
-	if not rule then
-		for _, rule in ipairs(mesecon.flattenrules(rules)) do
-			local rulenames = mesecon.rules_link_rule_all_inverted(pos, rule)
-			for _, rname in ipairs(rulenames) do
-				local np = vector.add(pos, rname)
-				local nn = mesecon.get_node_force(np)
-
-				if (mesecon.is_conductor_on(nn, mesecon.invertRule(rname))
-				or mesecon.is_receptor_on(nn.name)) then
-					table.insert(sourcepos, np)
-				end
-			end
-		end
-	else
+	local rules_flat = rule and { rule } or mesecon.flattenrules(rules)
+	for _, rule in ipairs(rules_flat) do
 		local rulenames = mesecon.rules_link_rule_all_inverted(pos, rule)
 		for _, rname in ipairs(rulenames) do
 			local np = vector.add(pos, rname)
 			local nn = mesecon.get_node_force(np)
-			if (mesecon.is_conductor_on (nn, mesecon.invertRule(rname))
-			or mesecon.is_receptor_on (nn.name)) then
+
+			if (mesecon.is_conductor_on(nn, mesecon.invertRule(rname))
+					or mesecon.is_receptor_on(nn.name)) then
 				table.insert(sourcepos, np)
 			end
 		end
