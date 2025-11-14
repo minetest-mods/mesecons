@@ -174,11 +174,6 @@ end
 -- Overheating --
 -----------------
 
--- Overheating factor of deferred tasks (e.g. digilines).
--- Higher values result in faster overheating.
--- See also: settings 'overheat_max' and 'cooldown_time'
-local TASK_HEAT_FACTOR = 0.8
-
 is_controller_burnt = function(node_name)
 	return node_name == (BASENAME .. "_burnt")
 end
@@ -469,10 +464,6 @@ local function get_digiline_send(pos, itbl, send_warning)
 	local chan_maxlen = mesecon.setting("luacontroller_digiline_channel_maxlen", 256)
 	local maxlen = mesecon.setting("luacontroller_digiline_maxlen", 50000)
 	return function(channel, msg)
-		if is_controller_burnt(pos) then
-			return false
-		end
-
 		-- NOTE: This runs within string metatable sandbox, so don't *rely* on anything of the form (""):y
 		--        or via anything that could.
 		-- Make sure channel is string, number or boolean
@@ -700,13 +691,6 @@ local function run_inner(pos, code, event)
 	-- Save memory. This may burn the luacontroller if a memory overflow occurs.
 	save_memory(pos, meta, env.mem)
 
-	-- Action queues can escape the sandbox, thus give a harsh penalty.
-	for i = 1, math.floor(#itbl * TASK_HEAT_FACTOR + 0.5) do
-		if overheat(pos) then
-			break
-		end
-	end
-
 	-- Execute deferred tasks
 	for _, v in ipairs(itbl) do
 		local failure = v()
@@ -714,7 +698,6 @@ local function run_inner(pos, code, event)
 			return false, failure
 		end
 	end
-
 	return true, warning
 end
 
@@ -780,7 +763,8 @@ mesecon.queue:add_function("lc_digiline_relay", function (pos, channel, luac_id,
 	if not digiline then return end
 	-- This check is only really necessary because in case of server crash, old actions can be thrown into the future
 	if (minetest.get_meta(pos):get_int("luac_id") ~= luac_id) then return end
-	if is_controller_burnt(core.get_node(pos).name) then return end
+	-- This escapes the sandbox, thus give a harsh penalty.
+	if overheat(pos) then return end
 	-- The actual work
 	digiline:receptor_send(pos, digiline.rules.default, channel, msg)
 end)
