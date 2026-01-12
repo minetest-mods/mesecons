@@ -847,11 +847,9 @@ for d = 0, 1 do
 		top = top.."^jeija_luacontroller_LED_D.png"
 	end
 
-	local groups
+	local groups = {dig_immediate=2, overheat=1, heatsinkable=1}
 	if a + b + c + d ~= 0 then
-		groups = {dig_immediate=2, not_in_creative_inventory=1, overheat = 1}
-	else
-		groups = {dig_immediate=2, overheat = 1}
+		groups.not_in_creative_inventory = 1
 	end
 
 	output_rules[cid] = {}
