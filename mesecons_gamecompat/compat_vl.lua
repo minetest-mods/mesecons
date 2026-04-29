@@ -32,6 +32,21 @@ function mesecon.horiz_rules_getter(base_rules)
 	end
 end
 
+-- Merges two tables, with entries from `replacements` taking precedence over
+-- those from `base`. Returns the new table.
+-- Values are deep-copied from either table, keys are referenced.
+-- Numerical indices aren’t handled specially.
+function mesecon.merge_tables(base, replacements)
+	local ret = mesecon.tablecopy(replacements) -- these are never overriden so have to be copied in any case
+	for k, v in pairs(base) do
+		if ret[k] == nil then -- it could be `false`
+			ret[k] = mesecon.tablecopy(v)
+		end
+	end
+	return ret
+end
+
+
 --Aliases
 
 minetest.register_alias("mesecons_gamecompat:chest", "mcl_chests:chest")
