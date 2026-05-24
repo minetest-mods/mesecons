@@ -707,13 +707,14 @@ local function reset_formspec(meta, code, errmsg)
 	meta:mark_as_private("code")
 	code = minetest.formspec_escape(code)
 	errmsg = minetest.formspec_escape(tostring(errmsg or ""))
-	meta:set_string("formspec", "size[12,10]"
+	meta:set_string("formspec", "formspec_version[2]"
+		.."size[15,12]"
 		.."style_type[label,textarea;font=mono]"
-		.."background[-0.2,-0.25;12.4,10.75;jeija_luac_background.png]"
-		.."label[0.1,8.3;"..errmsg.."]"
-		.."textarea[0.2,0.2;12.2,9.5;code;;"..code.."]"
-		.."image_button[4.75,8.75;2.5,1;jeija_luac_runbutton.png;program;]"
-		.."image_button_exit[11.72,-0.25;0.425,0.4;jeija_close_window.png;exit;]"
+		.."background[0,0;15,12;jeija_luac_background.png]"
+		.."textarea[0.2,0.5;14.6,9.0;code;;"..code.."]"
+		.."textarea[0.2,9.8;14.6,1.0;;;"..errmsg.."]"
+		.."image_button[6.25,10.8;2.5,1;jeija_luac_runbutton.png;program;]"
+		.."image_button_exit[14.5,0;0.4,0.387;jeija_close_window.png;exit;]"
 		)
 end
 
@@ -827,6 +828,8 @@ local function on_receive_fields(pos, _, fields, sender)
 	end
 end
 
+local controller_nodenames = {}
+
 for a = 0, 1 do -- 0 = off  1 = on
 for b = 0, 1 do
 for c = 0, 1 do
@@ -885,6 +888,7 @@ for d = 0, 1 do
 		},
 	}
 
+	table.insert(controller_nodenames, node_name)
 	minetest.register_node(node_name, {
 		description = S("Luacontroller"),
 		drawtype = "nodebox",
@@ -929,6 +933,19 @@ end
 end
 end
 end
+
+core.register_lbm({
+	name = "mesecons_luacontroller:formspec_update_1",
+	label = "'formspec' field update",
+	run_at_every_load = false,
+	nodenames = controller_nodenames,
+	action = function(pos, node)
+		local meta = core.get_meta(pos)
+		local code = meta:get_string("code")
+		local errmsg = "" -- cannot recover trivially
+		reset_formspec(meta, code, errmsg)
+	end
+})
 
 ------------------------------
 -- Overheated Luacontroller --
