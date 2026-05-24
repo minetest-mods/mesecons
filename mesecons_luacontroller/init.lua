@@ -939,7 +939,7 @@ core.register_lbm({
 	label = "'formspec' field update",
 	run_at_every_load = false,
 	nodenames = controller_nodenames,
-	action = function(pos, node)
+	action = function(pos, _)
 		local meta = core.get_meta(pos)
 		local code = meta:get_string("code")
 		local errmsg = "" -- cannot recover trivially
