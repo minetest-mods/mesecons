@@ -812,7 +812,7 @@ local function set_program(pos, code)
 	return run(pos, {type="program"})
 end
 
-on_construct = function(pos)
+local function on_construct(pos)
 	reset_meta(pos)
 end
 
