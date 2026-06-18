@@ -812,6 +812,10 @@ local function set_program(pos, code)
 	return run(pos, {type="program"})
 end
 
+on_construct = function(pos)
+	reset_meta(pos)
+end
+
 local function on_receive_fields(pos, _, fields, sender)
 	if not fields.program then
 		return
@@ -908,7 +912,7 @@ for d = 0, 1 do
 		sunlight_propagates = true,
 		selection_box = selection_box,
 		node_box = node_box,
-		on_construct = reset_meta,
+		on_construct = on_construct,
 		on_receive_fields = on_receive_fields,
 		sounds = mesecon.node_sound.stone,
 		mesecons = mesecons,
