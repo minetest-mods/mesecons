@@ -425,6 +425,7 @@ function mesecon.vm_get_node(pos)
 end
 
 -- Sets a node’s name during a VoxelManipulator-based transaction.
+-- Aliases may not work correctly.
 --
 -- Existing param1, param2, and metadata are left alone.
 --
@@ -475,6 +476,7 @@ end
 -- the server’s main map data cache and then accessed from there.
 --
 -- Inside a VM transaction, the transaction’s VM cache is used.
+-- Aliases may not work correctly.
 --
 -- This function can only be used to change the node’s name, not its parameters
 -- or metadata.
