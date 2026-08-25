@@ -65,3 +65,7 @@ mesecon.piston_max_pull (Max pull) int 15 1 100
 [mesecons_pressureplates]
 
 mesecon.pplate_interval (Check interval) float 0.1 0.1 1.0
+
+[mesecons_gamecompat]
+
+mesecon.disable_door_override (Disable door override) bool false
