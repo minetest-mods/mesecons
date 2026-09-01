@@ -229,6 +229,11 @@ local function piston_punch(pos, _, player)
 	end
 end
 
+local function piston_blast_on(pos, intensity)
+	local node = core.get_node(pos)
+	piston_remove_pusher(pos, node, true)
+	return mesecon.on_blastnode(pos, intensity)
+end
 
 -- Boxes:
 
@@ -302,7 +307,7 @@ minetest.register_node("mesecons_pistons:piston_normal_on", {
 		rules = piston_get_rules,
 	}},
 	on_rotate = piston_rotate_on,
-	on_blast = mesecon.on_blastnode,
+	on_blast = piston_blast_on,
 })
 
 -- pusher
@@ -325,6 +330,7 @@ minetest.register_node("mesecons_pistons:piston_pusher_normal", {
 	selection_box = piston_pusher_box,
 	node_box = piston_pusher_box,
 	on_rotate = piston_rotate_pusher,
+	on_blast = function () end,
 	drop = "",
 	sounds = mesecon.node_sound.wood,
 })
@@ -381,7 +387,7 @@ minetest.register_node("mesecons_pistons:piston_sticky_on", {
 		rules = piston_get_rules,
 	}},
 	on_rotate = piston_rotate_on,
-	on_blast = mesecon.on_blastnode,
+	on_blast = piston_blast_on,
 })
 
 -- pusher
@@ -404,6 +410,7 @@ minetest.register_node("mesecons_pistons:piston_pusher_sticky", {
 	selection_box = piston_pusher_box,
 	node_box = piston_pusher_box,
 	on_rotate = piston_rotate_pusher,
+	on_blast = function () end,
 	drop = "",
 	sounds = mesecon.node_sound.wood,
 })
