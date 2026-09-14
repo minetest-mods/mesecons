@@ -284,7 +284,7 @@ function mesecon.merge_rule_sets(...)
 			if not set[id] then
 				set[id] = true
 				n = n + 1
-				rval[n] = vector.copy(rule)
+				rval[n] = (vector.copy or vector.new)(rule)
 			end
 		end
 	end
