@@ -81,18 +81,17 @@ local dir_to_vec = function(dirname)
 end
 
 local vec_to_dir = function(dir)
-	if dir.z > 0 then return "F"
-	elseif dir.z < 0 then return "B"
-	elseif dir.x > 0 then return "R"
-	elseif dir.x < 0 then return "L"
-	elseif dir.y > 0 then return "U"
+	if dir.z > 0.5 then return "F"
+	elseif dir.z < -0.5 then return "B"
+	elseif dir.x > 0.5 then return "R"
+	elseif dir.x < -0.5 then return "L"
+	elseif dir.y > 0.5 then return "U"
 	else return "D"
 	end
 end
 
-for dirname in pairs(dirtable) do
+for dirname, invec in pairs(dirtable) do
 	for facedir, rotation in pairs(facedir_to_rot) do
-		local invec = dir_to_vec(dirname)
 		local outvec = vector.rotate(invec, rotation)
 		local outdir = vec_to_dir(outvec)
 		rotate_dirname_facedir_LUT[dirname][facedir] = outvec
