@@ -26,7 +26,6 @@ read_globals = {
 	"string.split",
 	"table.copy",
 	"table.insert_all",
-	"math.isfinite",
 	"vector",
 	"VoxelArea",
 	"mcl_dyes",
