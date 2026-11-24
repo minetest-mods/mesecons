@@ -344,8 +344,8 @@ local function check_number(n)
 	if not (n > -math.huge and n < math.huge) then
 		error("Invalid number value (NaN or infinity)")
 	end
-	if n <= 0 then
-		error("Delay must be greater than zero")
+	if n < 0 then
+		error("Delay cannot be negative")
 	end
 end
 
