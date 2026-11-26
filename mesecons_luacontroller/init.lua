@@ -337,13 +337,25 @@ local function validate_iid(iid)
 	return true, "Table interrupt IDs are deprecated and are unreliable; use strings instead"
 end
 
+local function check_interrupt_time(n)
+	if type(n) ~= "number" then
+		error("Delay must be a number")
+	end
+	if not (n > -math.huge and n < math.huge) then
+		error("Invalid number value (NaN or infinity)")
+	end
+	if n < 0 then
+		error("Delay cannot be negative")
+	end
+end
+
 -- The setting affects API so is not intended to be changeable at runtime
 local get_interrupt
 if mesecon.setting("luacontroller_lightweight_interrupts", false) then
 	-- use node timer
 	get_interrupt = function(pos, itbl, send_warning)
 		return (function(time, iid)
-			if type(time) ~= "number" then error("Delay must be a number") end
+			check_interrupt_time(time)
 			if iid ~= nil then send_warning("Interrupt IDs are disabled on this server") end
 			table.insert(itbl, function() minetest.get_node_timer(pos):start(time) end)
 		end)
@@ -356,7 +368,7 @@ else
 		return function (time, iid)
 			-- NOTE: This runs within string metatable sandbox, so don't *rely* on anything of the form (""):y
 			-- Hence the values get moved out. Should take less time than original, so totally compatible
-			if type(time) ~= "number" then error("Delay must be a number") end
+			check_interrupt_time(time)
 			table.insert(itbl, function ()
 				-- Outside string metatable sandbox, can safely run this now
 				local luac_id = minetest.get_meta(pos):get_int("luac_id")
