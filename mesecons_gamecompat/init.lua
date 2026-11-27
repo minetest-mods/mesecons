@@ -24,6 +24,7 @@ if minetest.get_modpath("hades_core") then
 	dofile(minetest.get_modpath("mesecons_gamecompat").."/compat_hades.lua")
 end
 
-if minetest.get_modpath("doors") then
+if minetest.get_modpath("doors") and
+		not core.settings:get_bool("mesecon.disable_door_override") then
 	dofile(minetest.get_modpath("mesecons_gamecompat").."/doors.lua")
 end
