@@ -270,14 +270,23 @@ function mesecon.mergetable(source, dest)
 	return rval
 end
 
--- Merges several rule sets in one. Order may not be preserved. Nil arguments
+-- Returns the union of several rule sets. Order may not be preserved. Nil arguments
 -- are ignored.
 -- The rule sets must be of the same kind (either all single-level or all two-level).
 -- The function may be changed to normalize the resulting set in some way.
 function mesecon.merge_rule_sets(...)
 	local rval = {}
+	local n = 0
+	local set = {}
 	for _, t in pairs({...}) do -- ignores nils automatically
-		table.insert_all(rval, mesecon.tablecopy(t))
+		for _, rule in ipairs(t) do
+			local id = core.hash_node_position(rule)
+			if not set[id] then
+				set[id] = true
+				n = n + 1
+				rval[n] = (vector.copy or vector.new)(rule)
+			end
+		end
 	end
 	return rval
 end
